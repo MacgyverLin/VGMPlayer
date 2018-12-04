@@ -1,0 +1,4 @@
+(sym_lib_table
+  (lib (name VGM)(type Legacy)(uri C:/Users/mac.lian/Desktop/VGMPlayer/Hardware/VGMPlayer/VGM.lib)(options "")(descr ""))
+  (lib (name YM2612)(type Legacy)(uri C:/Users/mac.lian/Desktop/VGMPlayer/Hardware/VGMPlayer/YM2612.lib)(options "")(descr ""))
+)
