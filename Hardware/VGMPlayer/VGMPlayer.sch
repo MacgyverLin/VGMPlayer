@@ -59,7 +59,7 @@ F 3 "~" H 1950 8450 50  0001 C CNN
 	0    -1   -1   0   
 $EndComp
 $Comp
-L VGM:AUDIOJACK U6
+L VGMPlayer-rescue:AUDIOJACK-VGM U6
 U 1 1 5C00BAD0
 P 7650 8750
 F 0 "U6" H 7679 9192 50  0000 C CNN
@@ -70,7 +70,7 @@ F 3 "" H 7375 9075 50  0001 C CNN
 	-1   0    0    1   
 $EndComp
 $Comp
-L VGM:LD1117 U2
+L VGMPlayer-rescue:LD1117-VGM U2
 U 1 1 5C00BB96
 P 4500 6900
 F 0 "U2" H 4550 7267 50  0000 C CNN
@@ -81,7 +81,7 @@ F 3 "" H 4300 7150 50  0001 C CNN
 	1    0    0    -1  
 $EndComp
 $Comp
-L VGM:OLED_128_64_I2C U5
+L VGMPlayer-rescue:OLED_128_64_I2C-VGM U5
 U 1 1 5C00BCE4
 P 6750 7000
 F 0 "U5" H 7019 7467 50  0000 C CNN
@@ -92,7 +92,7 @@ F 3 "" H 6500 7350 50  0001 C CNN
 	1    0    0    -1  
 $EndComp
 $Comp
-L VGM:SN76489 U8
+L VGMPlayer-rescue:SN76489-VGM U8
 U 1 1 5C00BD65
 P 9550 9700
 F 0 "U8" H 9550 10267 50  0000 C CNN
@@ -103,7 +103,7 @@ F 3 "" H 9300 10150 50  0001 C CNN
 	1    0    0    -1  
 $EndComp
 $Comp
-L VGM:YM2612 U7
+L VGMPlayer-rescue:YM2612-VGM U7
 U 1 1 5C00BE09
 P 9550 8300
 F 0 "U7" H 9550 9017 50  0000 C CNN
@@ -1107,7 +1107,7 @@ READY
 Wire Wire Line
 	10050 9700 10450 9700
 $Comp
-L VGM:LTC6903 U9
+L VGMPlayer-rescue:LTC6903-VGM U9
 U 1 1 5C1B9B2C
 P 12450 8300
 F 0 "U9" H 12450 8767 50  0000 C CNN
@@ -1209,7 +1209,7 @@ F 3 "~" H 13400 9550 50  0001 C CNN
 	1    0    0    1   
 $EndComp
 $Comp
-L VGM:LTC6903 U10
+L VGMPlayer-rescue:LTC6903-VGM U10
 U 1 1 5C266C0B
 P 12450 9400
 F 0 "U10" H 12450 9867 50  0000 C CNN
@@ -1319,7 +1319,7 @@ Connection ~ 11800 8800
 Wire Wire Line
 	11800 8800 11800 9400
 $Comp
-L VGM:HC-06 U11
+L VGMPlayer-rescue:HC-06-VGM U11
 U 1 1 5C125DAA
 P 14700 8900
 F 0 "U11" V 14641 8520 50  0000 R CNN
@@ -1380,7 +1380,7 @@ Connection ~ 2950 9900
 Wire Wire Line
 	2950 9900 3300 9900
 $Comp
-L VGM:STC8951 U1
+L VGMPlayer-rescue:STC8951-VGM U1
 U 1 1 5C2DD3EE
 P 2700 4600
 F 0 "U1" H 2450 5250 50  0000 C CNN
@@ -1518,7 +1518,7 @@ Wire Wire Line
 Wire Wire Line
 	1350 6000 1350 5900
 Wire Wire Line
-	1350 5900 2200 5900
+	1350 5900 1700 5900
 Text GLabel 1850 4100 0    50   Input ~ 0
 YM_D0
 Text GLabel 1850 4200 0    50   Input ~ 0
@@ -1650,7 +1650,7 @@ Wire Wire Line
 Wire Wire Line
 	4800 5000 4800 4100
 Wire Wire Line
-	850  5800 2200 5800
+	850  5800 1800 5800
 Connection ~ 850  6000
 Wire Wire Line
 	850  5800 850  6000
@@ -1993,4 +1993,54 @@ Wire Wire Line
 	4800 4100 4950 4100
 Wire Wire Line
 	3600 4100 4800 4100
+Text GLabel 3950 5200 2    50   Input ~ 0
+PSEN
+Text GLabel 3950 5100 2    50   Input ~ 0
+ALE
+Wire Wire Line
+	3950 5200 3600 5200
+Wire Wire Line
+	3950 5100 3600 5100
+Text GLabel 6950 5200 2    50   Input ~ 0
+PSEN
+Text GLabel 6950 5100 2    50   Input ~ 0
+ALE
+Text GLabel 6950 5000 2    50   Input ~ 0
+EA
+Wire Wire Line
+	6950 5000 6650 5000
+Wire Wire Line
+	6950 5100 6650 5100
+Wire Wire Line
+	6650 5200 6950 5200
+Text GLabel 1250 4900 0    50   Input ~ 0
+RST
+Wire Wire Line
+	1350 4900 1250 4900
+Text GLabel 1700 6000 3    50   Input ~ 0
+XTAL1
+Text GLabel 1800 6000 3    50   Input ~ 0
+XTAL2
+Wire Wire Line
+	1800 5800 1800 6000
+Connection ~ 1800 5800
+Wire Wire Line
+	1800 5800 2200 5800
+Wire Wire Line
+	1700 5900 1700 6000
+Connection ~ 1700 5900
+Wire Wire Line
+	1700 5900 2200 5900
+Text GLabel 5800 4900 0    50   Input ~ 0
+RST
+Wire Wire Line
+	5800 4900 6150 4900
+Text GLabel 5800 5800 0    50   Input ~ 0
+XTAL2
+Text GLabel 5800 5900 0    50   Input ~ 0
+XTAL1
+Wire Wire Line
+	6150 5800 5800 5800
+Wire Wire Line
+	5800 5900 6150 5900
 $EndSCHEMATC
