@@ -1,0 +1,87 @@
+
+(rules PCB VGMPlayer
+  (snap_angle 
+    fortyfive_degree
+  )
+  (autoroute_settings
+    (fanout off)
+    (autoroute on)
+    (postroute on)
+    (vias on)
+    (via_costs 50)
+    (plane_via_costs 5)
+    (start_ripup_costs 100)
+    (start_pass_no 3956)
+    (layer_rule F.Cu
+      (active on)
+      (preferred_direction horizontal)
+      (preferred_direction_trace_costs 1.0)
+      (against_preferred_direction_trace_costs 2.5)
+    )
+    (layer_rule B.Cu
+      (active on)
+      (preferred_direction vertical)
+      (preferred_direction_trace_costs 1.0)
+      (against_preferred_direction_trace_costs 1.7)
+    )
+  )
+  (rule
+    (width 250.0)
+    (clear 250.2)
+    (clear 125.0 (type smd_to_turn_gap))
+    (clear 62.6 (type smd_smd))
+  )
+  (padstack "Via[0-1]_800:400_um"
+    (shape
+      (circle F.Cu 800.0 0.0 0.0)
+    )
+    (shape
+      (circle B.Cu 800.0 0.0 0.0)
+    )
+    (attach off)
+  )
+  (via 
+    "Via[0-1]_800:400_um" "Via[0-1]_800:400_um" default
+  )
+  (via 
+    "Via[0-1]_800:400_um-kicad_default" "Via[0-1]_800:400_um" "kicad_default"
+  )
+  (via_rule
+    default "Via[0-1]_800:400_um"
+  )
+  (via_rule
+    "kicad_default" "Via[0-1]_800:400_um-kicad_default"
+  )
+  (class default
+    (clearance_class default)
+    (via_rule default)
+    (rule
+      (width 250.0)
+    )
+    (circuit 
+      (use_layer F.Cu B.Cu)
+    )
+  )
+  (class "kicad_default"
+    VCC "I2C_SCK" "I2C_SDA" "SN_WR" P0.3 P0.4 P0.5 P0.6
+    P0.7 "Net-(C19-Pad1)" GND "Net-(C7-Pad2)" "Net-(C9-Pad1)" "SN_OUT" "YM_MOL" "YM_MOR"
+    "Net-(C8-Pad1)" "Net-(C5-Pad2)" "Net-(C8-Pad2)" "Net-(C9-Pad2)" "Net-(C11-Pad1)" "Net-(C12-Pad1)" "Net-(C20-Pad1)" "Net-(C6-Pad2)"
+    "IIC_SDA" "IIC_SCK" "YM_CLK_CS" "Net-(U9-Pad5)" "Net-(U7-Pad24)" "Net-(U10-Pad6)" "Net-(U10-Pad5)" "SN_CLK_CS"
+    "Net-(U3-Pad1)" "Net-(C19-Pad2)" "Net-(C11-Pad2)" "Net-(C17-Pad1)" "Net-(U3-Pad8)" "Net-(U4-Pad8)" "Net-(C18-Pad1)" "Net-(C12-Pad2)"
+    "Net-(C20-Pad2)" "Net-(U4-Pad1)" "YM_D0" "SN_D0" "YM_D1" "SN_D1" "YM_D2" "SN_D2"
+    "YM_D3" "SN_D3" "YM_D4" "SN_D4" "YM_D5" "SN_D5" "YM_D6" "SN_D6"
+    "YM_D7" "SN_D7" RXD TXD "YM_CS" "YM_WR" "YM_RD" "YM_A0"
+    "YM_A1" "YM_IC" IRQ "Net-(U7-Pad10)" "Net-(U8-Pad9)" READY +5V "Net-(J1-Pad2)"
+    "Net-(J1-Pad3)" "Net-(J1-Pad4)" "Net-(J1-Pad6)" "Net-(U6-Pad4)" "Net-(U6-Pad5)" "Net-(C21-Pad2)" "Net-(C22-Pad2)" "Net-(U6-Pad6)"
+    RST PSEN ALE XTAL1 XTAL2 EA P2.0 P2.1
+    P2.2 P2.3 P2.4 P2.5 P2.6 P2.7
+    (clearance_class "kicad_default")
+    (via_rule kicad_default)
+    (rule
+      (width 250.0)
+    )
+    (circuit 
+      (use_layer F.Cu B.Cu)
+    )
+  )
+)

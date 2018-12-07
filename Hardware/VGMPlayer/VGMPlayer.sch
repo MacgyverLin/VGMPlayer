@@ -53,32 +53,10 @@ U 1 1 5BFFCA7F
 P 1950 8450
 F 0 "C5" V 2202 8450 50  0000 C CNN
 F 1 "10uF" V 2111 8450 50  0000 C CNN
-F 2 "Capacitor_THT:CP_Axial_L18.0mm_D10.0mm_P25.00mm_Horizontal" H 1950 8450 50  0001 C CNN
+F 2 "Capacitor_THT:CP_Radial_D4.0mm_P1.50mm" H 1950 8450 50  0001 C CNN
 F 3 "~" H 1950 8450 50  0001 C CNN
 	1    1950 8450
 	0    -1   -1   0   
-$EndComp
-$Comp
-L VGMPlayer-rescue:AUDIOJACK-VGM U6
-U 1 1 5C00BAD0
-P 7650 8750
-F 0 "U6" H 7679 9192 50  0000 C CNN
-F 1 "AUDIOJACK" H 7679 9101 50  0000 C CNN
-F 2 "Connector_Audio:Jack_3.5mm_PJ31060-I_Horizontal" H 7375 9075 50  0001 C CNN
-F 3 "" H 7375 9075 50  0001 C CNN
-	1    7650 8750
-	-1   0    0    1   
-$EndComp
-$Comp
-L VGMPlayer-rescue:LD1117-VGM U2
-U 1 1 5C00BB96
-P 4500 6900
-F 0 "U2" H 4550 7267 50  0000 C CNN
-F 1 "LD1117" H 4550 7176 50  0000 C CNN
-F 2 "Package_TO_SOT_THT:TO-220-3_Vertical" H 4300 7150 50  0001 C CNN
-F 3 "" H 4300 7150 50  0001 C CNN
-	1    4500 6900
-	1    0    0    -1  
 $EndComp
 $Comp
 L VGMPlayer-rescue:OLED_128_64_I2C-VGM U5
@@ -152,7 +130,7 @@ U 1 1 5C00C261
 P 4650 8450
 F 0 "C11" V 4902 8450 50  0000 C CNN
 F 1 "16uF" V 4811 8450 50  0000 C CNN
-F 2 "Capacitor_THT:CP_Axial_L18.0mm_D10.0mm_P25.00mm_Horizontal" H 4650 8450 50  0001 C CNN
+F 2 "Capacitor_THT:CP_Radial_D4.0mm_P1.50mm" H 4650 8450 50  0001 C CNN
 F 3 "~" H 4650 8450 50  0001 C CNN
 	1    4650 8450
 	0    -1   -1   0   
@@ -174,7 +152,7 @@ U 1 1 5C00C479
 P 2000 6900
 F 0 "C7" V 2050 7000 50  0000 C CNN
 F 1 "1uF" V 2050 6750 50  0000 C CNN
-F 2 "Capacitor_THT:CP_Axial_L18.0mm_D10.0mm_P25.00mm_Horizontal" H 2000 6900 50  0001 C CNN
+F 2 "Capacitor_THT:CP_Radial_D4.0mm_P1.50mm" H 2000 6900 50  0001 C CNN
 F 3 "~" H 2000 6900 50  0001 C CNN
 	1    2000 6900
 	0    -1   -1   0   
@@ -196,7 +174,7 @@ U 1 1 5C00C60E
 P 5700 7900
 F 0 "C17" V 5952 7900 50  0000 C CNN
 F 1 "100uF" V 5861 7900 50  0000 C CNN
-F 2 "Capacitor_THT:CP_Axial_L18.0mm_D10.0mm_P25.00mm_Horizontal" H 5700 7900 50  0001 C CNN
+F 2 "Capacitor_THT:CP_Radial_D8.0mm_P3.50mm" H 5700 7900 50  0001 C CNN
 F 3 "~" H 5700 7900 50  0001 C CNN
 	1    5700 7900
 	0    -1   -1   0   
@@ -207,7 +185,7 @@ U 1 1 5C00C649
 P 5150 7900
 F 0 "C14" V 5402 7900 50  0000 C CNN
 F 1 "100uF" V 5311 7900 50  0000 C CNN
-F 2 "Capacitor_THT:CP_Axial_L18.0mm_D10.0mm_P25.00mm_Horizontal" H 5150 7900 50  0001 C CNN
+F 2 "Capacitor_THT:CP_Radial_D8.0mm_P3.50mm" H 5150 7900 50  0001 C CNN
 F 3 "~" H 5150 7900 50  0001 C CNN
 	1    5150 7900
 	0    1    -1   0   
@@ -262,7 +240,7 @@ U 1 1 5C00E26E
 P 6800 8550
 F 0 "C21" V 7052 8550 50  0000 C CNN
 F 1 "1000uF" V 6961 8550 50  0000 C CNN
-F 2 "Capacitor_THT:C_Axial_L17.0mm_D7.0mm_P20.00mm_Horizontal" H 6800 8550 50  0001 C CNN
+F 2 "Capacitor_THT:CP_Radial_D8.0mm_P3.50mm" H 6800 8550 50  0001 C CNN
 F 3 "~" H 6800 8550 50  0001 C CNN
 	1    6800 8550
 	0    -1   -1   0   
@@ -383,7 +361,7 @@ $EndComp
 Wire Wire Line
 	6250 9350 6250 9450
 Wire Wire Line
-	6950 8550 7300 8550
+	6950 8550 7050 8550
 Wire Wire Line
 	4300 8450 4500 8450
 Wire Wire Line
@@ -421,7 +399,7 @@ U 1 1 5C016A95
 P 1950 9900
 F 0 "C6" V 2202 9900 50  0000 C CNN
 F 1 "10uF" V 2111 9900 50  0000 C CNN
-F 2 "Capacitor_THT:CP_Axial_L18.0mm_D10.0mm_P25.00mm_Horizontal" H 1950 9900 50  0001 C CNN
+F 2 "Capacitor_THT:CP_Radial_D4.0mm_P1.50mm" H 1950 9900 50  0001 C CNN
 F 3 "~" H 1950 9900 50  0001 C CNN
 	1    1950 9900
 	0    -1   -1   0   
@@ -465,7 +443,7 @@ U 1 1 5C016AB1
 P 4650 9900
 F 0 "C12" V 4902 9900 50  0000 C CNN
 F 1 "16uF" V 4811 9900 50  0000 C CNN
-F 2 "Capacitor_THT:CP_Axial_L18.0mm_D10.0mm_P25.00mm_Horizontal" H 4650 9900 50  0001 C CNN
+F 2 "Capacitor_THT:CP_Radial_D4.0mm_P1.50mm" H 4650 9900 50  0001 C CNN
 F 3 "~" H 4650 9900 50  0001 C CNN
 	1    4650 9900
 	0    -1   -1   0   
@@ -476,7 +454,7 @@ U 1 1 5C016AB8
 P 5750 9450
 F 0 "C18" V 6002 9450 50  0000 C CNN
 F 1 "100uF" V 5911 9450 50  0000 C CNN
-F 2 "Capacitor_THT:CP_Axial_L18.0mm_D10.0mm_P25.00mm_Horizontal" H 5750 9450 50  0001 C CNN
+F 2 "Capacitor_THT:CP_Radial_D8.0mm_P3.50mm" H 5750 9450 50  0001 C CNN
 F 3 "~" H 5750 9450 50  0001 C CNN
 	1    5750 9450
 	0    -1   -1   0   
@@ -487,7 +465,7 @@ U 1 1 5C016ABF
 P 5150 9450
 F 0 "C15" V 5402 9450 50  0000 C CNN
 F 1 "100uF" V 5311 9450 50  0000 C CNN
-F 2 "Capacitor_THT:CP_Axial_L18.0mm_D10.0mm_P25.00mm_Horizontal" H 5150 9450 50  0001 C CNN
+F 2 "Capacitor_THT:CP_Radial_D8.0mm_P3.50mm" H 5150 9450 50  0001 C CNN
 F 3 "~" H 5150 9450 50  0001 C CNN
 	1    5150 9450
 	0    1    -1   0   
@@ -531,7 +509,7 @@ U 1 1 5C016ADB
 P 6800 10000
 F 0 "C22" V 7052 10000 50  0000 C CNN
 F 1 "1000uF" V 6961 10000 50  0000 C CNN
-F 2 "Capacitor_THT:C_Axial_L17.0mm_D7.0mm_P20.00mm_Horizontal" H 6800 10000 50  0001 C CNN
+F 2 "Capacitor_THT:CP_Radial_D8.0mm_P3.50mm" H 6800 10000 50  0001 C CNN
 F 3 "~" H 6800 10000 50  0001 C CNN
 	1    6800 10000
 	0    -1   -1   0   
@@ -653,9 +631,7 @@ Wire Wire Line
 	1500 9900 1200 9900
 Connection ~ 1500 9900
 Wire Wire Line
-	7050 10000 7050 8750
-Wire Wire Line
-	7050 8750 7300 8750
+	7050 10000 7050 8850
 Wire Wire Line
 	6950 10000 7050 10000
 Wire Wire Line
@@ -724,7 +700,7 @@ U 1 1 5C0439B3
 P 5200 7150
 F 0 "C16" H 5085 7196 50  0000 R CNN
 F 1 "10uF" H 5085 7105 50  0000 R CNN
-F 2 "Capacitor_THT:CP_Axial_L18.0mm_D10.0mm_P25.00mm_Horizontal" H 5200 7150 50  0001 C CNN
+F 2 "Capacitor_THT:CP_Radial_D4.0mm_P1.50mm" H 5200 7150 50  0001 C CNN
 F 3 "~" H 5200 7150 50  0001 C CNN
 	1    5200 7150
 	-1   0    0    -1  
@@ -787,32 +763,8 @@ $EndComp
 Wire Wire Line
 	5200 6700 5200 6800
 Connection ~ 5200 6800
-$Comp
-L power:VCC #PWR014
-U 1 1 5C08E946
-P 5400 7900
-F 0 "#PWR014" H 5400 7750 50  0001 C CNN
-F 1 "VCC" H 5417 8073 50  0000 C CNN
-F 2 "" H 5400 7900 50  0001 C CNN
-F 3 "" H 5400 7900 50  0001 C CNN
-	1    5400 7900
-	1    0    0    -1  
-$EndComp
-$Comp
-L power:VCC #PWR016
-U 1 1 5C091984
-P 5400 9450
-F 0 "#PWR016" H 5400 9300 50  0001 C CNN
-F 1 "VCC" H 5417 9623 50  0000 C CNN
-F 2 "" H 5400 9450 50  0001 C CNN
-F 3 "" H 5400 9450 50  0001 C CNN
-	1    5400 9450
-	1    0    0    -1  
-$EndComp
 Wire Wire Line
 	5400 9450 5400 9700
-Connection ~ 5400 9450
-Connection ~ 5400 7900
 Wire Wire Line
 	5900 9450 6000 9450
 Wire Wire Line
@@ -842,7 +794,7 @@ U 1 1 5C113481
 P 13600 8250
 F 0 "C27" H 13485 8296 50  0000 R CNN
 F 1 "1uF" H 13485 8205 50  0000 R CNN
-F 2 "Capacitor_THT:CP_Axial_L18.0mm_D10.0mm_P25.00mm_Horizontal" H 13600 8250 50  0001 C CNN
+F 2 "Capacitor_THT:CP_Radial_D4.0mm_P1.50mm" H 13600 8250 50  0001 C CNN
 F 3 "~" H 13600 8250 50  0001 C CNN
 	1    13600 8250
 	-1   0    0    -1  
@@ -928,7 +880,7 @@ U 1 1 5C0BC1B5
 P 10700 8150
 F 0 "C23" H 10585 8196 50  0000 R CNN
 F 1 "1000uF" H 10585 8105 50  0000 R CNN
-F 2 "Capacitor_THT:C_Axial_L17.0mm_D7.0mm_P20.00mm_Horizontal" H 10700 8150 50  0001 C CNN
+F 2 "Capacitor_THT:CP_Radial_D8.0mm_P3.50mm" H 10700 8150 50  0001 C CNN
 F 3 "~" H 10700 8150 50  0001 C CNN
 	1    10700 8150
 	-1   0    0    -1  
@@ -1061,7 +1013,7 @@ U 1 1 5C156FE1
 P 10950 9900
 F 0 "C24" H 10835 9946 50  0000 R CNN
 F 1 "1000uF" H 10835 9855 50  0000 R CNN
-F 2 "Capacitor_THT:C_Axial_L17.0mm_D7.0mm_P20.00mm_Horizontal" H 10950 9900 50  0001 C CNN
+F 2 "Capacitor_THT:CP_Radial_D8.0mm_P3.50mm" H 10950 9900 50  0001 C CNN
 F 3 "~" H 10950 9900 50  0001 C CNN
 	1    10950 9900
 	-1   0    0    -1  
@@ -1192,7 +1144,7 @@ U 1 1 5C266BFD
 P 13600 9350
 F 0 "C28" H 13485 9396 50  0000 R CNN
 F 1 "1uF" H 13485 9305 50  0000 R CNN
-F 2 "Capacitor_THT:CP_Axial_L18.0mm_D10.0mm_P25.00mm_Horizontal" H 13600 9350 50  0001 C CNN
+F 2 "Capacitor_THT:CP_Radial_D4.0mm_P1.50mm" H 13600 9350 50  0001 C CNN
 F 3 "~" H 13600 9350 50  0001 C CNN
 	1    13600 9350
 	-1   0    0    -1  
@@ -1407,7 +1359,7 @@ U 1 1 5C2E7CDF
 P 1350 4650
 F 0 "C2" V 1602 4650 50  0000 C CNN
 F 1 "10uF" V 1511 4650 50  0000 C CNN
-F 2 "Capacitor_THT:CP_Axial_L18.0mm_D10.0mm_P25.00mm_Horizontal" H 1350 4650 50  0001 C CNN
+F 2 "Capacitor_THT:CP_Radial_D4.0mm_P1.50mm" H 1350 4650 50  0001 C CNN
 F 3 "~" H 1350 4650 50  0001 C CNN
 	1    1350 4650
 	-1   0    0    -1  
@@ -1552,21 +1504,21 @@ Wire Wire Line
 Wire Wire Line
 	1850 4800 2200 4800
 Text GLabel 3950 6000 2    50   Input ~ 0
-SN_D0
+P2.0
 Text GLabel 3950 5900 2    50   Input ~ 0
-SN_D1
+P2.1
 Text GLabel 3950 5800 2    50   Input ~ 0
-SN_D2
+P2.2
 Text GLabel 3950 5700 2    50   Input ~ 0
-SN_D3
+P2.3
 Text GLabel 3950 5600 2    50   Input ~ 0
-SN_D4
+P2.4
 Text GLabel 3950 5500 2    50   Input ~ 0
-SN_D5
+P2.5
 Text GLabel 3950 5400 2    50   Input ~ 0
-SN_D6
+P2.6
 Text GLabel 3950 5300 2    50   Input ~ 0
-SN_D7
+P2.7
 Wire Wire Line
 	3950 6000 3600 6000
 Wire Wire Line
@@ -1785,21 +1737,21 @@ Wire Wire Line
 Wire Wire Line
 	6950 4900 6650 4900
 Text GLabel 6950 6000 2    50   Input ~ 0
-SN_D0
+P2.0
 Text GLabel 6950 5900 2    50   Input ~ 0
-SN_D1
+P2.1
 Text GLabel 6950 5800 2    50   Input ~ 0
-SN_D2
+P2.2
 Text GLabel 6950 5700 2    50   Input ~ 0
-SN_D3
+P2.3
 Text GLabel 6950 5600 2    50   Input ~ 0
-SN_D4
+P2.4
 Text GLabel 6950 5500 2    50   Input ~ 0
-SN_D5
+P2.5
 Text GLabel 6950 5400 2    50   Input ~ 0
-SN_D6
+P2.6
 Text GLabel 6950 5300 2    50   Input ~ 0
-SN_D7
+P2.7
 Wire Wire Line
 	6950 5300 6650 5300
 Wire Wire Line
@@ -1910,17 +1862,6 @@ Wire Wire Line
 	6150 6000 6000 6000
 Wire Wire Line
 	6000 6000 6000 6050
-$Comp
-L Connector:USB_B_Mini J1
-U 1 1 5D3C2192
-P 3300 7000
-F 0 "J1" H 3355 7467 50  0000 C CNN
-F 1 "USB_B_Mini" H 3355 7376 50  0000 C CNN
-F 2 "Connector_USB:USB_Mini-B_Lumberg_2486_01_Horizontal" H 3450 6950 50  0001 C CNN
-F 3 "~" H 3450 6950 50  0001 C CNN
-	1    3300 7000
-	1    0    0    -1  
-$EndComp
 Wire Wire Line
 	3300 7400 3850 7400
 Connection ~ 3850 7400
@@ -1931,18 +1872,6 @@ Wire Wire Line
 Connection ~ 4000 6800
 Wire Wire Line
 	4000 6800 4050 6800
-Connection ~ 5050 6800
-$Comp
-L Jumper:SolderJumper_2_Bridged JP1
-U 1 1 5D4B3231
-P 4550 6400
-F 0 "JP1" H 4550 6605 50  0000 C CNN
-F 1 "SolderJumper_2_Bridged" H 4550 6514 50  0000 C CNN
-F 2 "Jumper:SolderJumper-2_P1.3mm_Bridged_RoundedPad1.0x1.5mm" H 4550 6400 50  0001 C CNN
-F 3 "~" H 4550 6400 50  0001 C CNN
-	1    4550 6400
-	1    0    0    -1  
-$EndComp
 Wire Wire Line
 	5050 6800 5200 6800
 Wire Wire Line
@@ -2043,4 +1972,383 @@ Wire Wire Line
 	6150 5800 5800 5800
 Wire Wire Line
 	5800 5900 6150 5900
+$Comp
+L Device:R R15
+U 1 1 5C114D7B
+P 4550 6400
+F 0 "R15" V 4450 6400 50  0000 C CNN
+F 1 "0" V 4500 6600 50  0000 C CNN
+F 2 "Resistor_SMD:R_0805_2012Metric" V 4480 6400 50  0001 C CNN
+F 3 "~" H 4550 6400 50  0001 C CNN
+	1    4550 6400
+	0    1    1    0   
+$EndComp
+Connection ~ 5400 9450
+$Comp
+L power:VCC #PWR016
+U 1 1 5C091984
+P 5400 9450
+F 0 "#PWR016" H 5400 9300 50  0001 C CNN
+F 1 "VCC" H 5417 9623 50  0000 C CNN
+F 2 "" H 5400 9450 50  0001 C CNN
+F 3 "" H 5400 9450 50  0001 C CNN
+	1    5400 9450
+	1    0    0    -1  
+$EndComp
+Connection ~ 5400 7900
+$Comp
+L power:VCC #PWR014
+U 1 1 5C08E946
+P 5400 7900
+F 0 "#PWR014" H 5400 7750 50  0001 C CNN
+F 1 "VCC" H 5417 8073 50  0000 C CNN
+F 2 "" H 5400 7900 50  0001 C CNN
+F 3 "" H 5400 7900 50  0001 C CNN
+	1    5400 7900
+	1    0    0    -1  
+$EndComp
+Text GLabel 9150 6950 2    50   Input ~ 0
+SN_D0
+Text GLabel 9150 6850 2    50   Input ~ 0
+SN_D1
+Text GLabel 9150 6750 2    50   Input ~ 0
+SN_D2
+Text GLabel 9150 6650 2    50   Input ~ 0
+SN_D3
+Text GLabel 9150 6550 2    50   Input ~ 0
+SN_D4
+Text GLabel 9150 6450 2    50   Input ~ 0
+SN_D5
+Text GLabel 9150 6350 2    50   Input ~ 0
+SN_D6
+Text GLabel 9150 6250 2    50   Input ~ 0
+SN_D7
+Text GLabel 8750 6250 0    50   Input ~ 0
+P2.7
+Text GLabel 8750 6350 0    50   Input ~ 0
+P2.6
+Text GLabel 8750 6450 0    50   Input ~ 0
+P2.5
+Text GLabel 8750 6550 0    50   Input ~ 0
+P2.4
+Text GLabel 8750 6650 0    50   Input ~ 0
+P2.3
+Text GLabel 8750 6750 0    50   Input ~ 0
+P2.2
+Text GLabel 8750 6850 0    50   Input ~ 0
+P2.1
+Text GLabel 8750 6950 0    50   Input ~ 0
+P2.0
+Wire Wire Line
+	8850 6250 8750 6250
+Wire Wire Line
+	9050 6250 9150 6250
+Wire Wire Line
+	8850 6350 8750 6350
+Wire Wire Line
+	9050 6350 9150 6350
+Wire Wire Line
+	8850 6450 8750 6450
+Wire Wire Line
+	9050 6450 9150 6450
+Wire Wire Line
+	8850 6550 8750 6550
+Wire Wire Line
+	9050 6550 9150 6550
+Wire Wire Line
+	8850 6650 8750 6650
+Wire Wire Line
+	9050 6650 9150 6650
+Wire Wire Line
+	8850 6750 8750 6750
+Wire Wire Line
+	9050 6750 9150 6750
+Wire Wire Line
+	8850 6850 8750 6850
+Wire Wire Line
+	9050 6850 9150 6850
+Wire Wire Line
+	8850 6950 8750 6950
+Wire Wire Line
+	9050 6950 9150 6950
+$Comp
+L Device:Jumper_NC_Small JP1
+U 1 1 5C53428C
+P 8950 6250
+F 0 "JP1" H 8850 6300 50  0000 C CNN
+F 1 "Jumper_NC_Small" H 8950 6371 50  0001 C CNN
+F 2 "Jumper:SolderJumper-2_P1.3mm_Open_TrianglePad1.0x1.5mm" H 8950 6250 50  0001 C CNN
+F 3 "~" H 8950 6250 50  0001 C CNN
+	1    8950 6250
+	1    0    0    -1  
+$EndComp
+$Comp
+L Device:Jumper_NC_Small JP2
+U 1 1 5C5A662B
+P 8950 6350
+F 0 "JP2" H 8850 6400 50  0000 C CNN
+F 1 "Jumper_NC_Small" H 8950 6471 50  0001 C CNN
+F 2 "Jumper:SolderJumper-2_P1.3mm_Open_TrianglePad1.0x1.5mm" H 8950 6350 50  0001 C CNN
+F 3 "~" H 8950 6350 50  0001 C CNN
+	1    8950 6350
+	1    0    0    -1  
+$EndComp
+$Comp
+L Device:Jumper_NC_Small JP3
+U 1 1 5C5F2B89
+P 8950 6450
+F 0 "JP3" H 8850 6500 50  0000 C CNN
+F 1 "Jumper_NC_Small" H 8950 6571 50  0001 C CNN
+F 2 "Jumper:SolderJumper-2_P1.3mm_Open_TrianglePad1.0x1.5mm" H 8950 6450 50  0001 C CNN
+F 3 "~" H 8950 6450 50  0001 C CNN
+	1    8950 6450
+	1    0    0    -1  
+$EndComp
+$Comp
+L Device:Jumper_NC_Small JP4
+U 1 1 5C5F2B90
+P 8950 6550
+F 0 "JP4" H 8850 6600 50  0000 C CNN
+F 1 "Jumper_NC_Small" H 8950 6671 50  0001 C CNN
+F 2 "Jumper:SolderJumper-2_P1.3mm_Open_TrianglePad1.0x1.5mm" H 8950 6550 50  0001 C CNN
+F 3 "~" H 8950 6550 50  0001 C CNN
+	1    8950 6550
+	1    0    0    -1  
+$EndComp
+$Comp
+L Device:Jumper_NC_Small JP5
+U 1 1 5C618B83
+P 8950 6650
+F 0 "JP5" H 8850 6700 50  0000 C CNN
+F 1 "Jumper_NC_Small" H 8950 6771 50  0001 C CNN
+F 2 "Jumper:SolderJumper-2_P1.3mm_Open_TrianglePad1.0x1.5mm" H 8950 6650 50  0001 C CNN
+F 3 "~" H 8950 6650 50  0001 C CNN
+	1    8950 6650
+	1    0    0    -1  
+$EndComp
+$Comp
+L Device:Jumper_NC_Small JP6
+U 1 1 5C618B8A
+P 8950 6750
+F 0 "JP6" H 8850 6800 50  0000 C CNN
+F 1 "Jumper_NC_Small" H 8950 6871 50  0001 C CNN
+F 2 "Jumper:SolderJumper-2_P1.3mm_Open_TrianglePad1.0x1.5mm" H 8950 6750 50  0001 C CNN
+F 3 "~" H 8950 6750 50  0001 C CNN
+	1    8950 6750
+	1    0    0    -1  
+$EndComp
+$Comp
+L Device:Jumper_NC_Small JP7
+U 1 1 5C63EB6B
+P 8950 6850
+F 0 "JP7" H 8850 6900 50  0000 C CNN
+F 1 "Jumper_NC_Small" H 8950 6971 50  0001 C CNN
+F 2 "Jumper:SolderJumper-2_P1.3mm_Open_TrianglePad1.0x1.5mm" H 8950 6850 50  0001 C CNN
+F 3 "~" H 8950 6850 50  0001 C CNN
+	1    8950 6850
+	1    0    0    -1  
+$EndComp
+$Comp
+L Device:Jumper_NC_Small JP8
+U 1 1 5C63EB72
+P 8950 6950
+F 0 "JP8" H 8850 7000 50  0000 C CNN
+F 1 "Jumper_NC_Small" H 8950 7071 50  0001 C CNN
+F 2 "Jumper:SolderJumper-2_P1.3mm_Open_TrianglePad1.0x1.5mm" H 8950 6950 50  0001 C CNN
+F 3 "~" H 8950 6950 50  0001 C CNN
+	1    8950 6950
+	1    0    0    -1  
+$EndComp
+$Comp
+L VGMPlayer-rescue:7805-VGM U2
+U 1 1 5C6D7E1A
+P 4500 6900
+F 0 "U2" H 4550 7267 50  0000 C CNN
+F 1 "7805-VGM" H 4550 7176 50  0000 C CNN
+F 2 "Package_TO_SOT_THT:TO-220-3_Vertical" H 4300 7150 50  0001 C CNN
+F 3 "" H 4300 7150 50  0001 C CNN
+	1    4500 6900
+	1    0    0    -1  
+$EndComp
+Connection ~ 5050 6800
+Text GLabel 9150 6000 2    50   Input ~ 0
+SN_D0
+Text GLabel 9150 5900 2    50   Input ~ 0
+SN_D1
+Text GLabel 9150 5800 2    50   Input ~ 0
+SN_D2
+Text GLabel 9150 5700 2    50   Input ~ 0
+SN_D3
+Text GLabel 9150 5600 2    50   Input ~ 0
+SN_D4
+Text GLabel 9150 5500 2    50   Input ~ 0
+SN_D5
+Text GLabel 9150 5400 2    50   Input ~ 0
+SN_D6
+Text GLabel 9150 5300 2    50   Input ~ 0
+SN_D7
+Text GLabel 8750 5300 0    50   Input ~ 0
+YM_D7
+Text GLabel 8750 5400 0    50   Input ~ 0
+YM_D6
+Text GLabel 8750 5500 0    50   Input ~ 0
+YM_D5
+Text GLabel 8750 5600 0    50   Input ~ 0
+YM_D4
+Text GLabel 8750 5700 0    50   Input ~ 0
+YM_D3
+Text GLabel 8750 5800 0    50   Input ~ 0
+YM_D2
+Text GLabel 8750 5900 0    50   Input ~ 0
+YM_D1
+Text GLabel 8750 6000 0    50   Input ~ 0
+YM_D0
+Wire Wire Line
+	8850 5300 8750 5300
+Wire Wire Line
+	9050 5300 9150 5300
+Wire Wire Line
+	8850 5400 8750 5400
+Wire Wire Line
+	9050 5400 9150 5400
+Wire Wire Line
+	8850 5500 8750 5500
+Wire Wire Line
+	9050 5500 9150 5500
+Wire Wire Line
+	8850 5600 8750 5600
+Wire Wire Line
+	9050 5600 9150 5600
+Wire Wire Line
+	8850 5700 8750 5700
+Wire Wire Line
+	9050 5700 9150 5700
+Wire Wire Line
+	8850 5800 8750 5800
+Wire Wire Line
+	9050 5800 9150 5800
+Wire Wire Line
+	8850 5900 8750 5900
+Wire Wire Line
+	9050 5900 9150 5900
+Wire Wire Line
+	8850 6000 8750 6000
+Wire Wire Line
+	9050 6000 9150 6000
+$Comp
+L Device:Jumper_NC_Small JP9
+U 1 1 5C729373
+P 8950 5300
+F 0 "JP9" H 8850 5350 50  0000 C CNN
+F 1 "Jumper_NC_Small" H 8950 5421 50  0001 C CNN
+F 2 "Jumper:SolderJumper-2_P1.3mm_Open_TrianglePad1.0x1.5mm" H 8950 5300 50  0001 C CNN
+F 3 "~" H 8950 5300 50  0001 C CNN
+	1    8950 5300
+	1    0    0    -1  
+$EndComp
+$Comp
+L Device:Jumper_NC_Small JP10
+U 1 1 5C72937A
+P 8950 5400
+F 0 "JP10" H 8850 5450 50  0000 C CNN
+F 1 "Jumper_NC_Small" H 8950 5521 50  0001 C CNN
+F 2 "Jumper:SolderJumper-2_P1.3mm_Open_TrianglePad1.0x1.5mm" H 8950 5400 50  0001 C CNN
+F 3 "~" H 8950 5400 50  0001 C CNN
+	1    8950 5400
+	1    0    0    -1  
+$EndComp
+$Comp
+L Device:Jumper_NC_Small JP11
+U 1 1 5C729381
+P 8950 5500
+F 0 "JP11" H 8850 5550 50  0000 C CNN
+F 1 "Jumper_NC_Small" H 8950 5621 50  0001 C CNN
+F 2 "Jumper:SolderJumper-2_P1.3mm_Open_TrianglePad1.0x1.5mm" H 8950 5500 50  0001 C CNN
+F 3 "~" H 8950 5500 50  0001 C CNN
+	1    8950 5500
+	1    0    0    -1  
+$EndComp
+$Comp
+L Device:Jumper_NC_Small JP12
+U 1 1 5C729388
+P 8950 5600
+F 0 "JP12" H 8850 5650 50  0000 C CNN
+F 1 "Jumper_NC_Small" H 8950 5721 50  0001 C CNN
+F 2 "Jumper:SolderJumper-2_P1.3mm_Open_TrianglePad1.0x1.5mm" H 8950 5600 50  0001 C CNN
+F 3 "~" H 8950 5600 50  0001 C CNN
+	1    8950 5600
+	1    0    0    -1  
+$EndComp
+$Comp
+L Device:Jumper_NC_Small JP13
+U 1 1 5C72938F
+P 8950 5700
+F 0 "JP13" H 8850 5750 50  0000 C CNN
+F 1 "Jumper_NC_Small" H 8950 5821 50  0001 C CNN
+F 2 "Jumper:SolderJumper-2_P1.3mm_Open_TrianglePad1.0x1.5mm" H 8950 5700 50  0001 C CNN
+F 3 "~" H 8950 5700 50  0001 C CNN
+	1    8950 5700
+	1    0    0    -1  
+$EndComp
+$Comp
+L Device:Jumper_NC_Small JP14
+U 1 1 5C729396
+P 8950 5800
+F 0 "JP14" H 8850 5850 50  0000 C CNN
+F 1 "Jumper_NC_Small" H 8950 5921 50  0001 C CNN
+F 2 "Jumper:SolderJumper-2_P1.3mm_Open_TrianglePad1.0x1.5mm" H 8950 5800 50  0001 C CNN
+F 3 "~" H 8950 5800 50  0001 C CNN
+	1    8950 5800
+	1    0    0    -1  
+$EndComp
+$Comp
+L Device:Jumper_NC_Small JP15
+U 1 1 5C72939D
+P 8950 5900
+F 0 "JP15" H 8850 5950 50  0000 C CNN
+F 1 "Jumper_NC_Small" H 8950 6021 50  0001 C CNN
+F 2 "Jumper:SolderJumper-2_P1.3mm_Open_TrianglePad1.0x1.5mm" H 8950 5900 50  0001 C CNN
+F 3 "~" H 8950 5900 50  0001 C CNN
+	1    8950 5900
+	1    0    0    -1  
+$EndComp
+$Comp
+L Device:Jumper_NC_Small JP16
+U 1 1 5C7293A4
+P 8950 6000
+F 0 "JP16" H 8850 6050 50  0000 C CNN
+F 1 "Jumper_NC_Small" H 8950 6121 50  0001 C CNN
+F 2 "Jumper:SolderJumper-2_P1.3mm_Open_TrianglePad1.0x1.5mm" H 8950 6000 50  0001 C CNN
+F 3 "~" H 8950 6000 50  0001 C CNN
+	1    8950 6000
+	1    0    0    -1  
+$EndComp
+$Comp
+L Connector:USB_B_Micro J1
+U 1 1 5C7D80AD
+P 3300 7000
+F 0 "J1" H 3355 7467 50  0000 C CNN
+F 1 "USB_B_Micro" H 3355 7376 50  0000 C CNN
+F 2 "Connector_USB:USB_Micro-B_Amphenol_10103594-0001LF_Horizontal" H 3450 6950 50  0001 C CNN
+F 3 "~" H 3450 6950 50  0001 C CNN
+	1    3300 7000
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	7050 8550 7050 8750
+Wire Wire Line
+	7050 8750 7300 8750
+Wire Wire Line
+	7050 8850 7300 8850
+$Comp
+L VGMPlayer-rescue:AUDIOJACK-VGM U6
+U 1 1 5C956422
+P 7550 8850
+F 0 "U6" H 7367 8779 50  0000 R CNN
+F 1 "AUDIOJACK-VGM" H 7367 8870 50  0000 R CNN
+F 2 "Connector_Audio:Jack_Horizontal" H 7425 8575 50  0001 C CNN
+F 3 "" H 7425 8575 50  0001 C CNN
+	1    7550 8850
+	-1   0    0    1   
+$EndComp
 $EndSCHEMATC
