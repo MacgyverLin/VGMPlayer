@@ -2,7 +2,7 @@
 
   (general
     (thickness 1.6)
-    (drawings 4)
+    (drawings 6)
     (tracks 860)
     (zones 0)
     (modules 141)
@@ -8138,6 +8138,12 @@
     )
   )
 
+  (gr_text "Designed By Mac Lin" (at 122.174 65.786) (layer F.SilkS)
+    (effects (font (size 1.5 1.5) (thickness 0.3)))
+  )
+  (gr_text "VGM PLAYER V0.1" (at 120.269 63.246) (layer F.SilkS) (tstamp 5C267515)
+    (effects (font (size 1.5 1.5) (thickness 0.3)))
+  )
   (gr_line (start 147.32 60.452) (end 147.32 160.274) (layer Edge.Cuts) (width 0.15))
   (gr_line (start 52.832 160.274) (end 52.832 60.452) (layer Edge.Cuts) (width 0.15))
   (gr_line (start 147.32 160.274) (end 52.832 160.274) (layer Edge.Cuts) (width 0.15))
