@@ -1,41 +1,6 @@
-﻿  psg.c
-  pwm.c
-  sound.c
-c:\users\mac.lian\desktop\vgmplayer\vgmplayer\vgmplayerlib\sound.c(101): warning C4013: 'memset' undefined; assuming extern returning int
-c:\users\mac.lian\desktop\vgmplayer\vgmplayer\vgmplayerlib\sound.c(206): warning C4013: 'memcpy' undefined; assuming extern returning int
-c:\users\mac.lian\desktop\vgmplayer\vgmplayer\vgmplayerlib\sound.c(164): warning C4244: 'initializing': conversion from 'float' to 'int', possible loss of data
-c:\users\mac.lian\desktop\vgmplayer\vgmplayer\vgmplayerlib\sound.c(288): warning C4018: '>': signed/unsigned mismatch
-c:\users\mac.lian\desktop\vgmplayer\vgmplayer\vgmplayerlib\sound.c(313): warning C4013: 'Clear_Sound_Buffer' undefined; assuming extern returning int
-c:\users\mac.lian\desktop\vgmplayer\vgmplayer\vgmplayerlib\sound.c(610): warning C4020: 'DirectSoundSoundBuffer_Lock': too many actual parameters
-c:\users\mac.lian\desktop\vgmplayer\vgmplayer\vgmplayerlib\sound.c(620): warning C4020: 'DirectSoundSoundBuffer_Unlock': too many actual parameters
-c:\users\mac.lian\desktop\vgmplayer\vgmplayer\vgmplayerlib\sound.c(599): warning C4101: 'rval': unreferenced local variable
-c:\users\mac.lian\desktop\vgmplayer\vgmplayer\vgmplayerlib\sound.c(641): warning C4020: 'DirectSoundSoundBuffer_Lock': too many actual parameters
-c:\users\mac.lian\desktop\vgmplayer\vgmplayer\vgmplayerlib\sound.c(649): warning C4020: 'DirectSoundSoundBuffer_Unlock': too many actual parameters
-c:\users\mac.lian\desktop\vgmplayer\vgmplayer\vgmplayerlib\sound.c(701): warning C4013: 'strcpy' undefined; assuming extern returning int
-c:\users\mac.lian\desktop\vgmplayer\vgmplayer\vgmplayerlib\sound.c(702): warning C4013: 'strcat' undefined; assuming extern returning int
-c:\users\mac.lian\desktop\vgmplayer\vgmplayer\vgmplayerlib\sound.c(704): warning C4013: 'waveCreateWave' undefined; assuming extern returning int
-c:\users\mac.lian\desktop\vgmplayer\vgmplayer\vgmplayerlib\sound.c(710): warning C4013: 'waveStartDataWrite' undefined; assuming extern returning int
-c:\users\mac.lian\desktop\vgmplayer\vgmplayer\vgmplayerlib\sound.c(737): warning C4013: 'waveWriteFile' undefined; assuming extern returning int
-c:\users\mac.lian\desktop\vgmplayer\vgmplayer\vgmplayerlib\sound.c(725): warning C4101: 'Writted': unreferenced local variable
-c:\users\mac.lian\desktop\vgmplayer\vgmplayer\vgmplayerlib\sound.c(755): warning C4013: 'waveCloseWriteFile' undefined; assuming extern returning int
-c:\users\mac.lian\desktop\vgmplayer\vgmplayer\vgmplayerlib\sound.c(824): warning C4013: 'YM2612_Save' undefined; assuming extern returning int
-c:\users\mac.lian\desktop\vgmplayer\vgmplayer\vgmplayerlib\sound.c(766): warning C4101: 'Name2': unreferenced local variable
-c:\users\mac.lian\desktop\vgmplayer\vgmplayer\vgmplayerlib\sound.c(769): warning C4101: 'j': unreferenced local variable
-c:\users\mac.lian\desktop\vgmplayer\vgmplayer\vgmplayerlib\sound.c(956): warning C4013: 'YM2612_Init' undefined; assuming extern returning int
-c:\users\mac.lian\desktop\vgmplayer\vgmplayer\vgmplayerlib\sound.c(957): warning C4013: 'PSG_Init' undefined; assuming extern returning int
-c:\users\mac.lian\desktop\vgmplayer\vgmplayer\vgmplayerlib\sound.c(1007): warning C4013: 'PSG_Update' undefined; assuming extern returning int
-c:\users\mac.lian\desktop\vgmplayer\vgmplayer\vgmplayerlib\sound.c(1008): warning C4013: 'YM2612_Update' undefined; assuming extern returning int
-c:\users\mac.lian\desktop\vgmplayer\vgmplayer\vgmplayerlib\sound.c(1014): warning C4013: 'YM2612_Write' undefined; assuming extern returning int
-c:\users\mac.lian\desktop\vgmplayer\vgmplayer\vgmplayerlib\sound.c(1034): warning C4013: 'PSG_Write' undefined; assuming extern returning int
-c:\users\mac.lian\desktop\vgmplayer\vgmplayer\vgmplayerlib\sound.c(1121): warning C4133: 'function': incompatible types - from 'char [4]' to 'FILE *'
-c:\users\mac.lian\desktop\vgmplayer\vgmplayer\vgmplayerlib\sound.c(1121): warning C4020: 'fwrite': too many actual parameters
-c:\users\mac.lian\desktop\vgmplayer\vgmplayer\vgmplayerlib\sound.c(1094): warning C4101: 'l2': unreferenced local variable
-c:\users\mac.lian\desktop\vgmplayer\vgmplayer\vgmplayerlib\sound.c(1092): warning C4101: 'bResult': unreferenced local variable
-  wave.c
-c:\users\mac.lian\desktop\vgmplayer\vgmplayer\vgmplayerlib\wave.c(161): warning C4090: 'function': different 'const' qualifiers
-c:\users\mac.lian\desktop\vgmplayer\vgmplayer\vgmplayerlib\wave.c(125): warning C4101: 'j': unreferenced local variable
-c:\users\mac.lian\desktop\vgmplayer\vgmplayer\vgmplayerlib\wave.c(125): warning C4101: 'i': unreferenced local variable
-  ym2612.c
-  Generating Code...
-c:\users\mac.lian\desktop\vgmplayer\vgmplayer\vgmplayerlib\wave.c(110): warning C4716: 'waveCloseWriteFile': must return a value
-  VGMPlayerLib.vcxproj -> C:\Users\mac.lian\Desktop\VGMPlayer\VGMPlayer\Debug\VGMPlayerLib.lib
+﻿  SoundDevice.c
+c:\project\vgmplayer\vgmplayerlib\sounddevice.c(345): warning C4013: 'memset' undefined; assuming extern returning int
+c:\project\vgmplayer\vgmplayerlib\sounddevice.c(476): warning C4013: 'memcpy' undefined; assuming extern returning int
+c:\project\vgmplayer\vgmplayerlib\sounddevice.c(434): warning C4244: 'initializing': conversion from 'float' to 'int', possible loss of data
+c:\project\vgmplayer\vgmplayerlib\sounddevice.c(539): warning C4018: '>': signed/unsigned mismatch
+  VGMPlayerLib.vcxproj -> C:\Project\VGMPlayer\Debug\VGMPlayerLib.lib

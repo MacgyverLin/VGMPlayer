@@ -42,6 +42,9 @@
     <ClInclude Include="wave.h">
       <Filter>Source Files</Filter>
     </ClInclude>
+    <ClInclude Include="SoundDevice.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="pwm.asm">
@@ -62,6 +65,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="wave.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="SoundDevice.c">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
