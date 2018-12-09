@@ -35,8 +35,6 @@ extern "C" {
 	int Init_Sound();
 	void End_Sound(void);
 	void Update_Sound(float time);	
-	int Get_Current_Seg(void);
-	int Check_Sound_Timing(void);
 	int Write_Sound_Buffer(void *Dump_Buf);
 	int Clear_Sound_Buffer(void);
 	int Play_Sound(void);
@@ -51,7 +49,7 @@ extern "C" {
 	int Stop_GYM_Dump(void);
 	
 	int Start_Play_GYM(const char* filename);
-	int Play_GYM(float dt);
+	int Play_GYM();
 	int Stop_Play_GYM(void);
 
 #ifdef __cplusplus

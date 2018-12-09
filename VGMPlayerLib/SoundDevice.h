@@ -35,16 +35,15 @@ extern "C" {
 
 	typedef struct
 	{
-		SoundBuffer *primary;
-		SoundBuffer *sources;
-
 		ALCcontext*		context;
 		ALCdevice*		device;
 		ALuint			outSource;
 		ALint			processed;
 		ALint			queued;
 		int				processedBuffer;
+		int				RP;
 
+		ALuint			sndBuffer[32];
 		int				channels;
 		int				bitsPerSample;
 		int				sampleRate;
@@ -55,17 +54,23 @@ extern "C" {
 		float			playRate;
 	}SoundDevice;
 
-	extern int createOpenAL(SoundDevice** soundDevice, int channels, int bitsPerSample, int sampleRate, int bufferSegmentSize, int bufferSegmentCount);
-	extern void releaseOpenAL(SoundDevice* soundDevice);
-	extern int playSound(SoundDevice* soundDevice);
-	extern int stopSound(SoundDevice* soundDevice);
-	extern int updataQueueBuffer(SoundDevice* soundDevice);
-	extern int addAudioToQueue(SoundDevice* soundDevice, char* data_, int dataSize_);
-	extern void setVolume(SoundDevice* soundDevice, float volume_);
-	extern float getVolume(SoundDevice* soundDevice);
-	extern void setPlayRate(SoundDevice* soundDevice, float playRate_);
-	extern float getPlayRate(SoundDevice* soundDevice);
+	extern int SoundDevice_Create(SoundDevice** soundDevice, int channels, int bitsPerSample, int sampleRate, int bufferSegmentSize, int bufferSegmentCount);
+	extern void SoundDevice_Release(SoundDevice* soundDevice);
+	extern int SoundDevice_PlaySound(SoundDevice* soundDevice);
+	extern int SoundDevice_StopSound(SoundDevice* soundDevice);
+	extern int GetDeviceState(SoundDevice* soundDevice);
+	extern int SoundDevice_UpdataQueueBuffer(SoundDevice* soundDevice);
+	extern int SoundDevice_AddAudioToQueue(SoundDevice* soundDevice, int WP, char* data_, int dataSize_);
+	extern int SoundDevice_GetQueuedAudioCount(SoundDevice* soundDevice);
+	extern void SoundDevice_SetVolume(SoundDevice* soundDevice, float volume_);
+	extern float SoundDevice_GetVolume(SoundDevice* soundDevice);
+	extern void SoundDevice_SetPlayRate(SoundDevice* soundDevice, float playRate_);
+	extern float SoundDevice_GetPlayRate(SoundDevice* soundDevice);
+
+
 #else
+
+
 	typedef struct
 	{
 		char primary;
@@ -89,23 +94,24 @@ extern "C" {
 		SoundBuffer *primary;
 		SoundBuffer *sources;
 	}SoundDevice;
+
+	int DirectSound_Create(void *ptr1, SoundDevice** soundDevice, void *ptr2);
+	int DirectSound_SetCooperativeLevel(SoundDevice* soundDevice);
+	void DirectSound_Release(SoundDevice* soundDevice);
+	int DirectSoundSoundBuffer_Create(SoundDevice* soundDevice, int primary, unsigned int channels, unsigned int sampleRate,
+		unsigned int bitsPerSample, unsigned int bytesPerUnit, unsigned int bufferSize, SoundBuffer** soundBuffer);
+	void DirectSoundSoundBuffer_Release(SoundBuffer* soundBuffer);
+	int DirectSound_Update(SoundDevice* soundDevice, float dt);
+	void DirectSoundSoundBuffer_GetCurrentPosition(SoundBuffer* soundBuffer, unsigned long* R);
+	int DirectSoundSoundBuffer_Play(SoundBuffer* soundBuffer, int a, int b, int loop);
+	int DirectSoundSoundBuffer_Stop(SoundBuffer* soundBuffer);
+	int DirectSoundSoundBuffer_Lock(SoundBuffer* soundBuffer, unsigned long offset, unsigned long length, void** audioPtr, int* audioBytes);
+	int DirectSoundSoundBuffer_Unlock(SoundBuffer* soundBuffer, void* audioPtr, int audioBytes);
+
 #endif
 
 #ifdef __cplusplus 
 };
 #endif
-
-int DirectSound_Create(void *ptr1, SoundDevice** soundDevice, void *ptr2);
-int DirectSound_SetCooperativeLevel(SoundDevice* soundDevice);
-void DirectSound_Release(SoundDevice* soundDevice);
-int DirectSoundSoundBuffer_Create(SoundDevice* soundDevice, int primary, unsigned int channels, unsigned int sampleRate,
-	unsigned int bitsPerSample, unsigned int bytesPerUnit, unsigned int bufferSize, SoundBuffer** soundBuffer);
-void DirectSoundSoundBuffer_Release(SoundBuffer* soundBuffer);
-int DirectSound_Update(SoundDevice* soundDevice, float dt);
-void DirectSoundSoundBuffer_GetCurrentPosition(SoundBuffer* soundBuffer, unsigned long* R);
-int DirectSoundSoundBuffer_Play(SoundBuffer* soundBuffer, int a, int b, int loop);
-int DirectSoundSoundBuffer_Stop(SoundBuffer* soundBuffer);
-int DirectSoundSoundBuffer_Lock(SoundBuffer* soundBuffer, unsigned long offset, unsigned long length, void** audioPtr, int* audioBytes);
-int DirectSoundSoundBuffer_Unlock(SoundBuffer* soundBuffer, void* audioPtr, int audioBytes);
 
 #endif

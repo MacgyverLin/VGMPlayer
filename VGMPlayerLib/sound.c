@@ -8,14 +8,11 @@ int VDP_Num_Lines = 0;
 int VDP_Status = 0;
 
 #include "SoundDevice.h"
-
-SoundDevice* lpDS;
-SoundBuffer* lpDSPrimary;
-SoundBuffer* lpDSBuffer;
+SoundDevice* soundDevice;
 
 int Seg_L[882], Seg_R[882];
 int Seg_Lenght, SBuffer_Lenght;
-int Sound_Rate = 22050, Sound_Segs = 8;
+int Sound_Rate = 44100, Sound_Segs = 8;
 int Bytes_Per_Unit;
 int Sound_Enable;
 int Sound_Stereo = 1;
@@ -44,26 +41,9 @@ void End_Sound()
 	{
 		Clear_Sound_Buffer();
 
-		if (lpDSPrimary)
-		{
-			DirectSoundSoundBuffer_Release(lpDSPrimary);
-			lpDSPrimary = 0;
-		}
+		SoundDevice_StopSound(soundDevice);
 
-		if (lpDSBuffer)
-		{
-			DirectSoundSoundBuffer_Stop(lpDSBuffer);
-			Sound_Is_Playing = 0;
-
-			DirectSoundSoundBuffer_Release(lpDSBuffer);
-			lpDSBuffer = 0;
-		}
-
-		if (lpDS)
-		{
-			DirectSound_Release(lpDS);
-			lpDS = 0;
-		}
+		SoundDevice_Release(soundDevice);
 
 		Sound_Initialised = 0;
 	}
@@ -71,7 +51,7 @@ void End_Sound()
 
 void Update_Sound(float time)
 {
-	DirectSound_Update(lpDS, time);
+	SoundDevice_UpdataQueueBuffer(soundDevice);
 }
 
 ///////////////////////////////////////////////////////////
@@ -136,37 +116,7 @@ int Init_Sound()
 
 	WP = 0;
 	RP = 0;
-
-	rval = DirectSound_Create(0, &lpDS, 0);
-	if (!rval)
-		return 0;
-
-	rval = DirectSound_SetCooperativeLevel(lpDS/* DSSCL_PRIORITY*/);
-	if (!rval)
-	{
-		DirectSound_Release(lpDS);
-		lpDS = 0;
-		return 0;
-	}
-
-	/*
-	memset(&dsbdesc, 0, sizeof(DSBUFFERDESC));
-	dsbdesc.dwSize = sizeof(DSBUFFERDESC);
-	dsbdesc.dwFlags = DSBCAPS_PRIMARYBUFFER;
-	*/
-	/*
-	memset(&wfx, 0, sizeof(WAVEFORMATEX));
-	wfx.wFormatTag = WAVE_FORMAT_PCM;
-	if (Sound_Stereo)
-		wfx.nChannels = 2;
-	else
-		wfx.nChannels = 1;
-	wfx.nSamplesPerSec = Sound_Rate;
-	wfx.wBitsPerSample = 16;
-	wfx.nBlockAlign = Bytes_Per_Unit = (wfx.wBitsPerSample / 8) * wfx.nChannels;
-	wfx.nAvgBytesPerSec = wfx.nSamplesPerSec * Bytes_Per_Unit;
-	rval = lpDSPrimary->SetFormat(&wfx);
-	*/
+	
 	int nBitsPerSample = 16;
 	int nChannels = 0;
 	if (Sound_Stereo)
@@ -176,53 +126,14 @@ int Init_Sound()
 	Bytes_Per_Unit = nBitsPerSample / 8 * nChannels;
 	SBuffer_Lenght = Seg_Lenght * Sound_Segs * Bytes_Per_Unit;
 
-	rval = DirectSoundSoundBuffer_Create(lpDS, -1, nChannels, Sound_Rate, nBitsPerSample, Bytes_Per_Unit, SBuffer_Lenght, &lpDSPrimary/*, NULL*/);
-	if (!rval)
-	{
-		DirectSound_Release(lpDS);
-		lpDS = 0;
-		return 0;
-	}
-
-	rval = DirectSoundSoundBuffer_Create(lpDS, 0, nChannels, Sound_Rate, nBitsPerSample, Bytes_Per_Unit, SBuffer_Lenght, &lpDSBuffer/*, NULL*/);
-	if (!rval)
-	{
-		DirectSound_Release(lpDS);
-		lpDS = 0;
-		return 0;
-	}
+	SoundDevice_Create(&soundDevice, 
+		nChannels, nBitsPerSample, Sound_Rate, Seg_Lenght * Bytes_Per_Unit, Sound_Segs);
 
 	Sound_Initialised = -1;
 
 	return Sound_Initialised;
 }
 
-int Get_Current_Seg(void)
-{
-	unsigned long R;
-
-	DirectSoundSoundBuffer_GetCurrentPosition(lpDSBuffer, &R);
-
-	return R / (Seg_Lenght * Bytes_Per_Unit);
-}
-
-
-int Check_Sound_Timing(void)
-{
-	unsigned long R;
-
-	DirectSoundSoundBuffer_GetCurrentPosition(lpDSBuffer, &R);
-
-	RP = R / (Seg_Lenght * Bytes_Per_Unit);
-
-	if (RP == ((WP + 1) & (Sound_Segs - 1)))
-		return 2;
-
-	if (RP != WP)
-		return 1;
-
-	return 0;
-}
 
 void Write_Sound_Stereo(short *Dest, int lenght)
 {
@@ -280,7 +191,6 @@ void Dump_Sound_Stereo(short *Dest, int lenght)
 	}
 }
 
-
 void Write_Sound_Mono(short *Dest, int lenght)
 {
 	int i, out;
@@ -299,7 +209,6 @@ void Write_Sound_Mono(short *Dest, int lenght)
 			*dest++ = (short)(out >> 1);
 	}
 }
-
 
 void Dump_Sound_Mono(short *Dest, int lenght)
 {
@@ -339,17 +248,20 @@ int Write_Sound_Buffer(void *Dump_Buf)
 	}
 	else
 	{
-		DirectSoundSoundBuffer_Lock(lpDSBuffer, WP * Seg_Lenght * Bytes_Per_Unit, Seg_Lenght * Bytes_Per_Unit, &lpvPtr1, &dwBytes1, NULL, NULL, 0);
+		char* data = malloc(Seg_Lenght * Bytes_Per_Unit);
+		//assert(data);
 		if (Sound_Stereo)
 		{
-			Write_Sound_Stereo((short *)lpvPtr1, Seg_Lenght);
+			Write_Sound_Stereo((short *)data, Seg_Lenght);
 		}
 		else
 		{
-			Write_Sound_Mono((short *)lpvPtr1, Seg_Lenght);
+			Write_Sound_Mono((short *)data, Seg_Lenght);
 		}
 
-		DirectSoundSoundBuffer_Unlock(lpDSBuffer, lpvPtr1, dwBytes1, NULL, NULL);
+		SoundDevice_AddAudioToQueue(soundDevice, WP, data, Seg_Lenght * Bytes_Per_Unit);
+
+		free(data);
 	}
 
 	return 1;
@@ -370,6 +282,8 @@ int Clear_Sound_Buffer(void)
 	if (!Sound_Initialised)
 		return 0;
 
+#ifdef SOUND_DEVICE_USE_OPENAL
+#else
 	rval = DirectSoundSoundBuffer_Lock(lpDSBuffer, 0, Seg_Lenght * Sound_Segs * Bytes_Per_Unit, &lpvPtr1, &dwBytes1, NULL, NULL, 0);
 	if (rval)
 	{
@@ -382,6 +296,7 @@ int Clear_Sound_Buffer(void)
 		if (rval)
 			return 1;
 	}
+#endif
 
 	return 0;
 }
@@ -393,10 +308,7 @@ int Play_Sound(void)
 	if (Sound_Is_Playing)
 		return 1;
 
-	rval = DirectSoundSoundBuffer_Play(lpDSBuffer, 0, 0, -1/*DSBPLAY_LOOPING*/);
-	Clear_Sound_Buffer();
-
-	if (!rval)
+	if(!SoundDevice_PlaySound(soundDevice))
 		return 0;
 
 	Sound_Is_Playing = -1;
@@ -406,10 +318,7 @@ int Play_Sound(void)
 
 int Stop_Sound(void)
 {
-	int rval;
-
-	rval = DirectSoundSoundBuffer_Stop(lpDSBuffer);
-	if (!rval)
+	if (!SoundDevice_StopSound(soundDevice))
 		return 0;
 
 	Sound_Is_Playing = 0;
@@ -772,37 +681,32 @@ int GYM_Next(void)
 	return 1;
 }
 
-int Play_GYM(float dt)
+int Play_GYM()
 {
-	if (!GYM_Next())
+	while (SoundDevice_GetQueuedAudioCount(soundDevice) < soundDevice->bufferSegmentCount / 2)
 	{
-		Stop_Play_GYM();
-		return 0;
-	}
+		if (!GYM_Next())
+		{
+			Stop_Play_GYM();
+			return 0;
+		}
 
-	while (WP == Get_Current_Seg())
-	{
-		Update_Sound(dt);
-	}
-
-	RP = Get_Current_Seg();
-	while (WP != RP)
-	{
-		Update_WAV_Dump();
 		Write_Sound_Buffer(NULL);
 		WP = (WP + 1) & (Sound_Segs - 1);
+	};
 
-		if (WP != RP)
-		{
-			if (!GYM_Next())
-			{
-				Stop_Play_GYM();
-				return 0;
-			}
-		}
+	if (GetDeviceState(soundDevice) != 3)
+	{
+		SoundDevice_PlaySound(soundDevice);
+
+		SoundDevice_SetVolume(soundDevice, 1.0);
+		SoundDevice_SetPlayRate(soundDevice, 1.0);
 	}
 
-	return 1;
+	if (!SoundDevice_UpdataQueueBuffer(soundDevice))
+		return 0;
+
+	return -1;
 }
 
 int Play_GYM_Bench(void)
