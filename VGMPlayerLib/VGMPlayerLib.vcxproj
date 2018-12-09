@@ -158,19 +158,16 @@
     <ClInclude Include="SoundDevice.h" />
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="targetver.h" />
+    <ClInclude Include="VGM.h" />
     <ClInclude Include="VGMPlayerLib.h" />
-    <ClInclude Include="wave.h" />
     <ClInclude Include="ym2612.h" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="pwm.asm" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="psg.c" />
     <ClCompile Include="pwm.c" />
     <ClCompile Include="sound.c" />
     <ClCompile Include="SoundDevice.c" />
-    <ClCompile Include="wave.c" />
+    <ClCompile Include="VGM.c" />
     <ClCompile Include="ym2612.c" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

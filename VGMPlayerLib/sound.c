@@ -282,22 +282,6 @@ int Clear_Sound_Buffer(void)
 	if (!Sound_Initialised)
 		return 0;
 
-#ifdef SOUND_DEVICE_USE_OPENAL
-#else
-	rval = DirectSoundSoundBuffer_Lock(lpDSBuffer, 0, Seg_Lenght * Sound_Segs * Bytes_Per_Unit, &lpvPtr1, &dwBytes1, NULL, NULL, 0);
-	if (rval)
-	{
-		signed short *w = (signed short *)lpvPtr1;
-
-		for (i = 0; i < Seg_Lenght * Sound_Segs * Bytes_Per_Unit; i += 2)
-			*w++ = (signed short)0;
-
-		rval = DirectSoundSoundBuffer_Unlock(lpDSBuffer, lpvPtr1, dwBytes1, NULL, NULL);
-		if (rval)
-			return 1;
-	}
-#endif
-
 	return 0;
 }
 
@@ -342,6 +326,7 @@ int Start_WAV_Dump(const char *filename)
 	strcpy(Name, Dump_Dir);
 	strcat(Name, filename);
 
+#if 0
 	if (waveCreateWave(filename))
 	{
 		Put_Info("Error in WAV dumping", 1000);
@@ -353,9 +338,11 @@ int Start_WAV_Dump(const char *filename)
 		Put_Info("Error in WAV dumping", 1000);
 		return(0);
 	}
+#endif
 
 	Put_Info("Starting to dump WAV sound", 1000);
 	WAV_Dumping = 1;
+
 
 	return 1;
 }
@@ -374,12 +361,13 @@ int Update_WAV_Dump(void)
 
 	if (Sound_Stereo)
 		lenght *= 2;
-
+#if 0
 	if (waveWriteFile(lenght, &Buf_Tmp[0]))
 	{
 		Put_Info("Error in WAV dumping", 1000);
 		return 0;
 	}
+#endif
 
 	return 1;
 }
@@ -387,15 +375,17 @@ int Update_WAV_Dump(void)
 
 int Stop_WAV_Dump(void)
 {
+
 	if (!WAV_Dumping)
 	{
 		Put_Info("Already stopped", 1000);
 		return 0;
 	}
 
+#if 0
 	if (waveCloseWriteFile())
 		return 0;
-
+#endif
 	Put_Info("WAV dump stopped", 1000);
 	WAV_Dumping = 0;
 

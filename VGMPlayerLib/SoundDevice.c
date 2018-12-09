@@ -1,7 +1,5 @@
 ﻿#include "SoundDevice.h"
 
-#define COPY_LOCK
-
 int SoundDevice_Create(SoundDevice** soundDevice, int channels, int bitsPerSample, int sampleRate, int bufferSegmentSize, int bufferSegmentCount)
 {
 	ALuint error = 0;
