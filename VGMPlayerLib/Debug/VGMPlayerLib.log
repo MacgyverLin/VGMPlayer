@@ -1,6 +1,5 @@
 ﻿  SoundDevice.c
-c:\project\vgmplayer\vgmplayerlib\sounddevice.c(345): warning C4013: 'memset' undefined; assuming extern returning int
-c:\project\vgmplayer\vgmplayerlib\sounddevice.c(476): warning C4013: 'memcpy' undefined; assuming extern returning int
-c:\project\vgmplayer\vgmplayerlib\sounddevice.c(434): warning C4244: 'initializing': conversion from 'float' to 'int', possible loss of data
-c:\project\vgmplayer\vgmplayerlib\sounddevice.c(539): warning C4018: '>': signed/unsigned mismatch
+c:\project\vgmplayer\vgmplayerlib\sounddevice.c(400): warning C4018: '>': signed/unsigned mismatch
+c:\project\vgmplayer\vgmplayerlib\sounddevice.c(405): warning C4013: 'memcpy' undefined; assuming extern returning int
+c:\project\vgmplayer\vgmplayerlib\sounddevice.c(426): warning C4018: '>': signed/unsigned mismatch
   VGMPlayerLib.vcxproj -> C:\Project\VGMPlayer\Debug\VGMPlayerLib.lib
