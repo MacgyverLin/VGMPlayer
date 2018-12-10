@@ -1,6 +1,6 @@
 ﻿#include "SoundDevice.h"
 
-int SoundDevice_Create(SoundDevice** soundDevice, int channels, int bitsPerSample, int sampleRate, int bufferSegmentSize, int bufferSegmentCount)
+int SoundDevice_Create(SoundDevice** soundDevice, int channels, int bitsPerSample, int sampleRate, int bufferSize, int bufferCount)
 {
 	ALuint error = 0;
 
@@ -18,8 +18,8 @@ int SoundDevice_Create(SoundDevice** soundDevice, int channels, int bitsPerSampl
 	(*soundDevice)->channels = channels;
 	(*soundDevice)->bitsPerSample = bitsPerSample;
 	(*soundDevice)->sampleRate = sampleRate;
-	(*soundDevice)->bufferSegmentSize = bufferSegmentSize;
-	(*soundDevice)->bufferSegmentCount = bufferSegmentCount;
+	(*soundDevice)->bufferSize = bufferSize;
+	(*soundDevice)->bufferCount = bufferCount;
 	(*soundDevice)->playRate = 1.0;
 	(*soundDevice)->volume = 1.0;
 
@@ -44,7 +44,7 @@ int SoundDevice_Create(SoundDevice** soundDevice, int channels, int bitsPerSampl
 
 #if 1
 	//创建一个buffer
-	alGenBuffers((*soundDevice)->bufferSegmentCount, (*soundDevice)->sndBuffer);
+	alGenBuffers((*soundDevice)->bufferCount, (*soundDevice)->sndBuffer);
 	error = alGetError();
 	if (error != AL_NO_ERROR)
 	{
@@ -74,7 +74,7 @@ void SoundDevice_Release(SoundDevice* soundDevice)
 #if 1
 		if (soundDevice->sndBuffer)
 		{
-			alDeleteBuffers(soundDevice->bufferSegmentCount, soundDevice->sndBuffer);
+			alDeleteBuffers(soundDevice->bufferCount, soundDevice->sndBuffer);
 		}
 #endif
 		if (soundDevice->outSource)
@@ -262,7 +262,7 @@ int SoundDevice_UpdataQueueBuffer(SoundDevice* soundDevice)
 		// 得到已经播放的音频队列多少块
 		soundDevice->processedBuffer++;
 		soundDevice->RP++;
-		if(soundDevice->RP >= soundDevice->bufferSegmentCount)
+		if(soundDevice->RP >= soundDevice->bufferCount)
 			soundDevice->RP = 0;
 	}
 

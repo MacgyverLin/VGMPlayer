@@ -125,9 +125,9 @@ int Init_Sound()
 		nChannels = 1;
 	Bytes_Per_Unit = nBitsPerSample / 8 * nChannels;
 	SBuffer_Lenght = Seg_Lenght * Sound_Segs * Bytes_Per_Unit;
-
+	
 	SoundDevice_Create(&soundDevice, 
-		nChannels, nBitsPerSample, Sound_Rate, Seg_Lenght * Bytes_Per_Unit, Sound_Segs);
+		nChannels, nBitsPerSample, Sound_Rate, SBuffer_Lenght, Sound_Segs);
 
 	Sound_Initialised = -1;
 
@@ -673,7 +673,7 @@ int GYM_Next(void)
 
 int Play_GYM()
 {
-	while (SoundDevice_GetQueuedAudioCount(soundDevice) < soundDevice->bufferSegmentCount / 2)
+	while (SoundDevice_GetQueuedAudioCount(soundDevice) < soundDevice->bufferCount / 2)
 	{
 		if (!GYM_Next())
 		{

@@ -24,14 +24,14 @@ extern "C" {
 		int				channels;
 		int				bitsPerSample;
 		int				sampleRate;
-		int				bufferSegmentSize;
-		int				bufferSegmentCount;
+		int				bufferSize;
+		int				bufferCount;
 
 		float			volume;
 		float			playRate;
 	}SoundDevice;
 
-	extern int SoundDevice_Create(SoundDevice** soundDevice, int channels, int bitsPerSample, int sampleRate, int bufferSegmentSize, int bufferSegmentCount);
+	extern int SoundDevice_Create(SoundDevice** soundDevice, int channels, int bitsPerSample, int sampleRate, int bufferSize, int bufferCount);
 	extern void SoundDevice_Release(SoundDevice* soundDevice);
 	extern int SoundDevice_PlaySound(SoundDevice* soundDevice);
 	extern int SoundDevice_StopSound(SoundDevice* soundDevice);
@@ -43,7 +43,6 @@ extern "C" {
 	extern float SoundDevice_GetVolume(SoundDevice* soundDevice);
 	extern void SoundDevice_SetPlayRate(SoundDevice* soundDevice, float playRate_);
 	extern float SoundDevice_GetPlayRate(SoundDevice* soundDevice);
-
 #ifdef __cplusplus 
 };
 #endif
