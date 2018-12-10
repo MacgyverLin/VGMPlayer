@@ -1,7 +1,4 @@
 ﻿  VGM.c
-c:\project\vgmplayer\vgmplayerlib\vgm.c(11): warning C4098: 'VGMPlayer_FClose': 'void' function returning a value
-c:\project\vgmplayer\vgmplayerlib\vgm.c(21): warning C4098: 'VGMPlayer_FSeekSet': 'void' function returning a value
-c:\project\vgmplayer\vgmplayerlib\vgm.c(27): warning C4013: 'malloc' undefined; assuming extern returning int
-c:\project\vgmplayer\vgmplayerlib\vgm.c(27): warning C4047: 'initializing': 'VGMPlayer *' differs in levels of indirection from 'int'
-c:\project\vgmplayer\vgmplayerlib\vgm.c(99): warning C4013: 'free' undefined; assuming extern returning int
+c:\project\vgmplayer\vgmplayerlib\vgm.c(219): warning C4028: formal parameter 2 different from declaration
+c:\project\vgmplayer\vgmplayerlib\vgm.c(219): warning C4029: declared formal parameter list different from definition
   VGMPlayerLib.vcxproj -> C:\Project\VGMPlayer\Debug\VGMPlayerLib.lib

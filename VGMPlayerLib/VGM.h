@@ -3,7 +3,13 @@
 
 // https://vgmrips.net/wiki/VGM_Specification
 // http://www.project2612.org/list.php?page=T
+// Unused space(marked with *) is reserved for future expansion, and must be zero.
+// All integer values are *unsigned* and written in "Intel" byte order(Little Endian), so for example 0x12345678 is written as 0x78 0x56 0x34 0x12.
+// All pointer offsets are written as relative to the current position in the file, so for example the GD3 offset at 0x14 in the header is the file position of the GD3 tag minus 0x14.
+// All header sizes are valid for all versions from 1.50 on, as long as header has at least 64 bytes.If the VGM data starts at an offset that is lower than 0x100, all overlapping header bytes have to be handled as they were zero.
+// VGMs run with a rate of 44100 samples per second.All sample values use this unit.
 #include <stdio.h>
+#include "SoundDevice.h"
 
 #ifdef __cplusplus 
 extern "C" {
@@ -290,34 +296,49 @@ extern "C" {
 
 #pragma pack(pop)
 
-
 	typedef struct
 	{
 		VGMHeader header;
-		void* file;
-		int currentMusic;
-		int musicCount;
+		void* data;
+	}VGMData;
+
+	typedef struct
+	{
 		int paused;
 		int playing;
+
+		int channels;
+		int bitPerSamples;
+		int sampleRate;
+
+		int sampleIdx;
+		int sampleCount;
+
+		int bufferIdx;
+		int bufferCount;
+		int bufferSize;
+		int bufferLeft[882];
+		int bufferRight[882];
+
+		VGMData* vgmData;
+		SoundDevice* outputDevice;
 	}VGMPlayer;
 
+	VGMData *VGMData_Create(const char* filename);
+	void VGMData_Release(VGMData *vgmData);
+	int VGMData_Read(void * buffer, unsigned int size);
 
-	VGMPlayer *VGMPlayer_Create(const char* filename);
+	VGMPlayer *VGMPlayer_Create(VGMData* vgmData, int sampleRate, int interpolation);
 	void VGMPlayer_Release(VGMPlayer *vgmPlayer);
 
 	int VGMPlayer_Play(VGMPlayer *vgmPlayer);
-	int VGMPlayer_Next(VGMPlayer *vgmPlayer);
-	int VGMPlayer_Prev(VGMPlayer *vgmPlayer);
 	int VGMPlayer_Stop(VGMPlayer *vgmPlayer);
-
-	int VGMPlayer_isPlaying(VGMPlayer *vgmPlayer);
-
 	int VGMPlayer_Paused(VGMPlayer *vgmPlayer);
 	int VGMPlayer_Resume(VGMPlayer *vgmPlayer);
+
+	int VGMPlayer_isPlaying(VGMPlayer *vgmPlayer);
 	int VGMPlayer_isPaused(VGMPlayer *vgmPlayer);
-
 	int VGMPlayer_Update(VGMPlayer *vgmPlayer);
-
 #ifdef __cplusplus 
 };
 #endif
