@@ -2,7 +2,7 @@
 #define _VGM_h_
 
 // https://vgmrips.net/wiki/VGM_Specification
-
+// http://www.project2612.org/list.php?page=T
 #include <stdio.h>
 
 #ifdef __cplusplus 
