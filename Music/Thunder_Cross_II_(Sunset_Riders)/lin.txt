@@ -1,0 +1,30 @@
+ Volume in drive C is BOOTCAMP
+ Volume Serial Number is 0246-9FF7
+
+ Directory of C:\Project\VGMPlayer\Music\Thunder_Cross_II_(Sunset_Riders)
+
+10/12/2018  23:40    <DIR>          .
+10/12/2018  23:40    <DIR>          ..
+30/10/2012  09:06             1,119 01 Credit.vgm
+30/10/2012  09:06           135,433 02 Rise in Arms (Opening Demo).vgm
+30/10/2012  09:06           184,651 03 Air Battle = Thunder Cross II (Stage 1 BGM).vgm
+30/10/2012  09:06           104,340 04 Approach the Boss (Boss Approach BGM).vgm
+30/10/2012  09:06           134,564 05 He is not dead = Evil Eye (Stage 1, 5 Boss BGM).vgm
+30/10/2012  09:06            77,075 06 Clear Demo (Stage Clear).vgm
+30/10/2012  09:06           267,598 07 Kartus-Part 2 (Stage 2 BGM).vgm
+30/10/2012  09:06           226,521 08 Theme of Ragamuffin (Stage 2 Boss BGM).vgm
+30/10/2012  09:06           539,094 09 Heavy Metal Bomber (Stage 3 BGM).vgm
+30/10/2012  09:08           183,790 10 Dark Force (Stage 3, 6 Boss BGM).vgm
+30/10/2012  09:06           305,631 11 Dog Fight III (Stage 4 BGM).vgm
+30/10/2012  09:06           118,983 12 Theme of Dinosaur Jr. (Stage 4 Boss BGM)
+30/10/2012  09:06           406,269 13 Battles of Battleship (Stage 5 BGM).vgm
+30/10/2012  09:06           236,209 14 Star Light (Stage 6 BGM).vgm
+30/10/2012  09:06           452,530 15 At The Front (Stage 7 BGM).vgm
+30/10/2012  09:06            52,055 16 An Ominous Silence (Boss Approach BGM).vgm
+30/10/2012  09:06           141,723 17 Theme of Sprouts Layber (Stage 7 Boss BGM).vgm
+30/10/2012  09:06           480,012 18 A Shooting Star (Ending).vgm
+30/10/2012  09:06            30,855 19 Game Over.vgm
+30/10/2012  09:06           120,404 20 A Victory March (Ranking).vgm
+10/12/2018  23:40                 0 lin.txt
+              21 File(s)      4,198,856 bytes
+               2 Dir(s)  59,237,449,728 bytes free

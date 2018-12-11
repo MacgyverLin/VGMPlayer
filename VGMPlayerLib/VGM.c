@@ -5,7 +5,8 @@
 #include "VGM.h"
 #include "psg.h"
 #include "ym2612.h"
-
+#include "ym2151.h"
+#include "k053260.h"
 
 enum VGMCommand
 {
@@ -32,6 +33,8 @@ enum VGMCommand
 	WAIT_735_SAMPLES = 0x62,
 	WAIT_882_SAMPLES = 0x63,
 	END_OF_SOUND = 0x66,
+	DATA_BLOCKS = 0x67,
+
 	WAIT_1_SAMPLES = 0x70,
 	WAIT_2_SAMPLES = 0x71,
 	WAIT_3_SAMPLES = 0x72,
@@ -48,6 +51,8 @@ enum VGMCommand
 	WAIT_14_SAMPLES = 0x7D,
 	WAIT_15_SAMPLES = 0x7E,
 	WAIT_16_SAMPLES = 0x7F,
+
+	K053260_WRITE = 0xBA,				// aa dd
 };
 
 typedef struct
@@ -71,7 +76,8 @@ int VGM_FClose(void *file)
 
 int VGM_FRead(void *file, void * buffer, unsigned int size)
 {
-	int tell = ftell((FILE*)(file));
+	//int tell = ftell((FILE*)(file));
+	//printf("tell: 0x%04x\n", tell);
 
 	return fread(buffer, 1, size, (FILE*)(file));
 }
@@ -79,6 +85,11 @@ int VGM_FRead(void *file, void * buffer, unsigned int size)
 int VGM_FSeekSet(void *file, int offset)
 {
 	return fseek((FILE*)(file), offset, SEEK_SET);
+}
+
+int VGM_FSeekCur(void *file, int offset)
+{
+	return fseek((FILE*)(file), offset, SEEK_CUR);
 }
 
 //////////////////////////////////////////////////////////////////////////////
@@ -97,7 +108,7 @@ VGMData *VGMData_Create(const char* path)
 		return 0;
 	}
 
-	if (VGM_FRead(vgmData->data, &vgmData->header, 0x38) != 0x38)
+	if (VGM_FRead(vgmData->data, &vgmData->header, 256) != 256)
 	{
 		VGMData_Release(vgmData);
 		vgmData = 0;
@@ -127,19 +138,11 @@ VGMData *VGMData_Create(const char* path)
 	{
 		if (vgmData->header.VGMDataOffset == 0x0c)
 		{
-			char buffer[256];
-			VGM_FRead(vgmData->data, buffer, 0x08); // point to 0x40
+			VGM_FSeekSet(vgmData->data, 0x40);		// point to 0x40
 		}
 		else
 		{
-			assert(vgmData->header.VGMDataOffset - (256 - 0x38) <= 256);
-
-			VGM_FRead(vgmData->data, &vgmData->header.SegaPCMclock, (256 - 0x38));
-			if (vgmData->header.VGMDataOffset - (256 - 0x38) >= 0)
-			{
-				char buffer[256];
-				VGM_FRead(vgmData->data, buffer, vgmData->header.VGMDataOffset - (256 - 0x38));
-			}
+			VGM_FSeekSet(vgmData->data, 0x34 + vgmData->header.VGMDataOffset);		// point to 0x40
 		}
 	}
 
@@ -161,6 +164,24 @@ void VGMData_Release(VGMData *vgmData)
 	}
 }
 
+
+int VGMData_Read(VGMData* vgmData, void * buffer, unsigned int size)
+{
+	return VGM_FRead(vgmData->data, buffer, size);
+}
+
+int VGMData_FSeekSet(VGMData* vgmData, unsigned int size)
+{
+	return VGM_FSeekSet(vgmData->data, size);
+}
+
+int VGMData_FSeekCur(VGMData* vgmData, unsigned int size)
+{
+	return VGM_FSeekCur(vgmData->data, size);
+}
+
+
+///////////////////////////////////////////////////////////////////////////
 VGMPlayer *VGMPlayer_Create(VGMData* vgmData, int sampleRate, int interpolation)
 {
 	VGMPlayer *vgmPlayer = (VGMPlayer *)malloc(sizeof(VGMPlayer));
@@ -175,10 +196,13 @@ VGMPlayer *VGMPlayer_Create(VGMData* vgmData, int sampleRate, int interpolation)
 	vgmPlayer->sampleRate = sampleRate;
 
 	vgmPlayer->sampleIdx = 0;
+	if (vgmData->header.Rate == 0)
+		vgmData->header.Rate = 60;
+
 	vgmPlayer->sampleCount = vgmPlayer->sampleRate / vgmData->header.Rate;
 
 	vgmPlayer->bufferIdx = 0;
-	vgmPlayer->bufferCount = 8;
+	vgmPlayer->bufferCount = 32;
 	vgmPlayer->bufferSize = vgmPlayer->channels * (vgmPlayer->bitPerSamples / 8) * vgmPlayer->sampleCount;
 	memset(&vgmPlayer->bufferLeft[0], 0, 882);
 	memset(&vgmPlayer->bufferRight[0], 0, 882);
@@ -194,8 +218,22 @@ VGMPlayer *VGMPlayer_Create(VGMData* vgmData, int sampleRate, int interpolation)
 		return 0;
 	}
 
-	YM2612_Init(vgmData->header.YM2612Clock, sampleRate, interpolation);
-	PSG_Init(vgmData->header.SN76489Clock, sampleRate);
+	if (vgmData->header.YM2612Clock)
+		YM2612_Init(vgmData->header.YM2612Clock, sampleRate, interpolation);
+
+	if (vgmData->header.SN76489Clock)
+	{
+		PSG_Init(vgmData->header.SN76489Clock, sampleRate);
+	}
+
+	if (vgmData->header.YM2151Clock)
+	{
+		YM2151Init(1, vgmData->header.YM2151Clock, sampleRate);
+	}
+	if (vgmData->header.K053260Clock)
+	{
+		K053260Init(0, vgmData->header.K053260Clock, sampleRate);
+	}
 
 	return vgmPlayer;
 }
@@ -204,6 +242,8 @@ void VGMPlayer_Release(VGMPlayer *vgmPlayer)
 {
 	if (vgmPlayer)
 	{
+		K053260Exit();
+		YM2151Shutdown();
 		YM2612_End();
 		//PSG_End();
 
@@ -213,11 +253,6 @@ void VGMPlayer_Release(VGMPlayer *vgmPlayer)
 		free(vgmPlayer);
 		vgmPlayer = 0;
 	}
-}
-
-int VGMData_Read(VGMData* vgmData, void * buffer, unsigned int size)
-{
-	return VGM_FRead(vgmData->data, buffer, size);
 }
 
 int VGMPlayer_Play(VGMPlayer *vgmPlayer)
@@ -308,15 +343,22 @@ void VGMPlayer_Wait_NNNN_Sample(VGMPlayer *vgmPlayer, unsigned short NNNN)
 {
 	int* buf[2];
 
-	int remainedSample = NNNN;
+	int remainedSample = NNNN * vgmPlayer->sampleRate / 44100;
 	while (remainedSample > 0)
 	{
 		buf[0] = &(vgmPlayer->bufferLeft[vgmPlayer->sampleIdx]);
 		buf[1] = &(vgmPlayer->bufferRight[vgmPlayer->sampleIdx]);
 
 		int updateSampleCount = VGMPlayer_MIN((vgmPlayer->sampleCount - vgmPlayer->sampleIdx), remainedSample);
-		YM2612_Update(buf, updateSampleCount);
-		PSG_Update(buf, updateSampleCount);
+
+		if (vgmPlayer->vgmData->header.YM2612Clock)
+			YM2612_Update(buf, updateSampleCount);
+		if (vgmPlayer->vgmData->header.SN76489Clock)
+			PSG_Update(buf, updateSampleCount);
+		if (vgmPlayer->vgmData->header.YM2151Clock)
+			YM2151UpdateOne(0, buf, updateSampleCount);
+		if (vgmPlayer->vgmData->header.K053260Clock)
+			K053260Update(0, buf, updateSampleCount);
 
 		remainedSample -= updateSampleCount;
 		vgmPlayer->sampleIdx = vgmPlayer->sampleIdx + updateSampleCount;
@@ -326,10 +368,10 @@ void VGMPlayer_Wait_NNNN_Sample(VGMPlayer *vgmPlayer, unsigned short NNNN)
 			vgmPlayer->sampleIdx = 0;
 
 			char* data = malloc(vgmPlayer->bufferSize);
-			
+
 			ConvertToShort(vgmPlayer, (short *)data);
-			
-			if (!SoundDevice_AddAudioToQueue(vgmPlayer->outputDevice, 
+
+			if (!SoundDevice_AddAudioToQueue(vgmPlayer->outputDevice,
 				vgmPlayer->bufferIdx, data, vgmPlayer->bufferSize))
 				break;
 
@@ -337,6 +379,40 @@ void VGMPlayer_Wait_NNNN_Sample(VGMPlayer *vgmPlayer, unsigned short NNNN)
 
 			vgmPlayer->bufferIdx = (vgmPlayer->bufferIdx + 1) % vgmPlayer->bufferCount;
 		}
+	}
+}
+
+
+void VGMPlayer_Data_Blocks(VGMPlayer *vgmPlayer)
+{
+	unsigned char skipByte0x66;
+	VGMData_Read(vgmPlayer->vgmData, &skipByte0x66, sizeof(skipByte0x66));
+
+	unsigned char blockType;
+	VGMData_Read(vgmPlayer->vgmData, &blockType, sizeof(blockType));
+
+	unsigned int blockSize;
+	VGMData_Read(vgmPlayer->vgmData, &blockSize, sizeof(blockSize));
+
+	if (blockType == 0x8e)
+	{
+		unsigned int entireRomSize;
+		VGMData_Read(vgmPlayer->vgmData, &entireRomSize, sizeof(entireRomSize));
+
+		unsigned int startAddress;
+		VGMData_Read(vgmPlayer->vgmData, &startAddress, sizeof(startAddress));
+
+		char* romData = malloc(blockSize - 8);
+		VGMData_Read(vgmPlayer->vgmData, romData, blockSize - 8);
+
+		// k053260_write_rom(0, entireRomSize, startAddress, blockSize - 8, romData);
+		K053260SetROM(0, entireRomSize, startAddress, romData, blockSize - 8);
+		
+		free(romData);
+	}
+	else
+	{
+		VGMData_FSeekCur(vgmPlayer->vgmData, blockSize);
 	}
 }
 
@@ -370,6 +446,14 @@ int VGMPlayer_Update(VGMPlayer *vgmPlayer)
 
 			VGMData_Read(vgmPlayer->vgmData, &dd, sizeof(dd));
 			YM2612_Write(3, dd);
+
+			break;
+
+		case YM2151_WRITE:
+			VGMData_Read(vgmPlayer->vgmData, &aa, sizeof(aa));
+			VGMData_Read(vgmPlayer->vgmData, &dd, sizeof(dd));
+			//printf("YM2151_WRITE(0x%02x, 0x%02x);\n", aa, dd);
+			YM2151WriteReg(0, aa, dd);
 
 			break;
 
@@ -425,6 +509,20 @@ int VGMPlayer_Update(VGMPlayer *vgmPlayer)
 		case END_OF_SOUND:
 			printf("END_OF_SOUND();\n");
 			return 0;
+			break;
+
+		case DATA_BLOCKS:
+			printf("VGMPlayer_Data_Blocks(vgmPlayer);\n");
+			VGMPlayer_Data_Blocks(vgmPlayer);
+			break;
+
+		case K053260_WRITE:
+			VGMData_Read(vgmPlayer->vgmData, &aa, sizeof(aa));
+			VGMData_Read(vgmPlayer->vgmData, &dd, sizeof(dd));
+
+			K053260Write(0, aa, dd);
+
+			//printf("k053260_w(0x%02x, 0x%02x);\n", aa, dd);
 			break;
 
 		default:

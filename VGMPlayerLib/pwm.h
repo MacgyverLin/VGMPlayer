@@ -1,5 +1,7 @@
-#ifndef _PWM_H_
-#define _PWM_H_
+#ifndef _pwm_h_
+#define _pwm_h_
+
+#include "vgmdef.h"
 
 #ifdef __cplusplus
 extern "C" {

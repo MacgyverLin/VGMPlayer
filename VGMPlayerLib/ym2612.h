@@ -1,6 +1,8 @@
 #ifndef _YM2612_H_
 #define _YM2612_H_
 
+#include "vgmdef.h"
+
 #ifdef __cplusplus
 extern "C" {
 #endif

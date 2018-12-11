@@ -1,6 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
-#include "def.h"
+#include "vgmdef.h"
 
 int CPU_Mode = 0;
 int VDP_Current_Line = 0;

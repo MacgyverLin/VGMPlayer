@@ -39,10 +39,16 @@
     <ClInclude Include="SoundDevice.h">
       <Filter>Source Files</Filter>
     </ClInclude>
-    <ClInclude Include="def.h">
+    <ClInclude Include="VGM.h">
       <Filter>Source Files</Filter>
     </ClInclude>
-    <ClInclude Include="VGM.h">
+    <ClInclude Include="ym2151.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="k053260.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="vgmdef.h">
       <Filter>Source Files</Filter>
     </ClInclude>
   </ItemGroup>
@@ -63,6 +69,12 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="VGM.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="ym2151.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="k053260.c">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

@@ -151,7 +151,8 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClInclude Include="def.h" />
+    <ClInclude Include="vgmdef.h" />
+    <ClInclude Include="k053260.h" />
     <ClInclude Include="psg.h" />
     <ClInclude Include="pwm.h" />
     <ClInclude Include="sound.h" />
@@ -160,14 +161,17 @@
     <ClInclude Include="targetver.h" />
     <ClInclude Include="VGM.h" />
     <ClInclude Include="VGMPlayerLib.h" />
+    <ClInclude Include="ym2151.h" />
     <ClInclude Include="ym2612.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="k053260.c" />
     <ClCompile Include="psg.c" />
     <ClCompile Include="pwm.c" />
     <ClCompile Include="sound.c" />
     <ClCompile Include="SoundDevice.c" />
     <ClCompile Include="VGM.c" />
+    <ClCompile Include="ym2151.c" />
     <ClCompile Include="ym2612.c" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

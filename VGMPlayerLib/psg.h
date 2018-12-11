@@ -1,10 +1,11 @@
-#ifndef _PSG_H
-#define _PSG_H
+#ifndef _psg_h_
+#define _psg_h_
+
+#include "vgmdef.h"
 
 #ifdef __cplusplus
 extern "C" {
 #endif
-
 
 extern unsigned int PSG_Save[8];
 

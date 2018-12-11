@@ -10,8 +10,9 @@
 // VGMs run with a rate of 44100 samples per second.All sample values use this unit.
 #include <stdio.h>
 #include "SoundDevice.h"
+#include "vgmdef.h"
 
-#ifdef __cplusplus 
+#ifdef __cplusplus
 extern "C" {
 #endif
 
@@ -339,6 +340,7 @@ extern "C" {
 	int VGMPlayer_isPlaying(VGMPlayer *vgmPlayer);
 	int VGMPlayer_isPaused(VGMPlayer *vgmPlayer);
 	int VGMPlayer_Update(VGMPlayer *vgmPlayer);
+
 #ifdef __cplusplus 
 };
 #endif

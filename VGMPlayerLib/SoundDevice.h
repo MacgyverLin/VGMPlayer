@@ -1,12 +1,13 @@
 #ifndef _SoundDevice_h_
 #define _SoundDevice_h_
 
+#include "vgmdef.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <AL/al.h>
 #include <AL/alc.h>
 
-#ifdef __cplusplus 
+#ifdef __cplusplus
 extern "C" {
 #endif
 
