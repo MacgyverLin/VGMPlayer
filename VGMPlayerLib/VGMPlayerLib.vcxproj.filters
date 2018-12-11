@@ -21,9 +21,6 @@
     <ClInclude Include="targetver.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="psg.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
     <ClInclude Include="pwm.h">
       <Filter>Source Files</Filter>
     </ClInclude>
@@ -48,11 +45,11 @@
     <ClInclude Include="VGMDef.h">
       <Filter>Source Files</Filter>
     </ClInclude>
+    <ClInclude Include="SN76489.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="psg.c">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="pwm.c">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -69,6 +66,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="k053260.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="SN76489.c">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

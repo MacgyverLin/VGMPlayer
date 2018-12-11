@@ -20,41 +20,12 @@ typedef INT16 SAMP;
 typedef INT8 SAMP;
 #endif
 
-/*
-** Initialize YM2151 emulator(s).
-**
-** 'num' is the number of virtual YM2151's to allocate
-** 'clock' is the chip clock in Hz
-** 'rate' is sampling rate
-*/
-int YM2151Init(int num, int clock, int rate);
-
-/* shutdown the YM2151 emulators*/
-void YM2151Shutdown(void);
-
-/* reset all chip registers for YM2151 number 'num'*/
-void YM2151ResetChip(int num);
-
-/*
-** Generate samples for one of the YM2151's
-**
-** 'num' is the number of virtual YM2151
-** '**buffers' is table of pointers to the buffers: left and right
-** 'length' is the number of samples that should be generated
-*/
-void YM2151UpdateOne(int num, int **buffers, int length);
-
-/* write 'v' to register 'r' on YM2151 chip number 'n'*/
-void YM2151WriteReg(int n, int r, int v);
-
-/* read status register on YM2151 chip number 'n'*/
-int YM2151ReadStatus(int n);
-
-/* set interrupt handler on YM2151 chip number 'n'*/
-// void YM2151SetIrqHandler(int n, void(*handler)(int irq));
-
-/* set port write handler on YM2151 chip number 'n'*/
-// void YM2151SetPortWriteHandler(int n, write8_handler handler);
+INT32 YM2151_Initialize(UINT8 chipCount, UINT32 clock, UINT32 rate);
+void YM2151_Shutdown(void);
+void YM2151_Reset(UINT8 chipID);
+void YM2151_Update(UINT8 chipID, INT32 **buffers, UINT32 length);
+void YM2151_WriteRegister(UINT8 chipID, UINT8 address, UINT8 data);
+UINT32 YM2151_ReadStatus(UINT8 chipID);
 
 #ifdef __cplusplus
 };

@@ -51,12 +51,12 @@ decoding bugs; added documentation.
 
 *********************************************************/
 #include "k053260.h"
+#include "stdlib.h"
+#include "string.h"
 
 /* 2004-02-28: Fixed ppcm decoding. Games sound much better now.*/
 
 #define BASE_SHIFT	16
-
-#define K053260_INLINE		static inline
 
 static UINT32 nUpdateStep;
 
@@ -115,7 +115,7 @@ static void InitDeltaTable(INT32 rate, INT32 clock) {
 	}
 }
 
-void K053260Reset(INT32 chip)
+void K053260_Reset(INT32 chip)
 {
 #if defined FBA_DEBUG
 	if (!DebugSnd_K053260Initted) bprintf(PRINT_ERROR, _T("K053260Reset called without init\n"));
@@ -139,7 +139,7 @@ void K053260Reset(INT32 chip)
 	}
 }
 
-K053260_INLINE INT32 limit(INT32 val, INT32 max, INT32 min) {
+INT32 limit(INT32 val, INT32 max, INT32 min) {
 	if (val > max)
 		val = max;
 	else if (val < min)
@@ -151,7 +151,7 @@ K053260_INLINE INT32 limit(INT32 val, INT32 max, INT32 min) {
 #define MAXOUT 0x7fff
 #define MINOUT -0x8000
 
-void K053260Update(INT32 chip, INT32 **pBuf, INT32 length)
+void K053260_Update(INT32 chip, INT32 **pBuf, INT32 length)
 {
 #if defined FBA_DEBUG
 	if (!DebugSnd_K053260Initted) bprintf(PRINT_ERROR, _T("K053260Update called without init\n"));
@@ -275,7 +275,7 @@ void K053260Update(INT32 chip, INT32 **pBuf, INT32 length)
 	}
 }
 
-void K053260Init(INT32 chip, INT32 clock, INT32 sampleRate)
+void K053260_Initialize(INT32 chip, INT32 clock, INT32 sampleRate)
 {
 //	DebugSnd_K053260Initted = 1;
 
@@ -291,7 +291,7 @@ void K053260Init(INT32 chip, INT32 clock, INT32 sampleRate)
 	ic->rom = 0;
 	ic->rom_size = 0;
 
-	K053260Reset(chip);
+	K053260_Reset(chip);
 
 	for (i = 0; i < 0x30; i++)
 		ic->regs[i] = 0;
@@ -312,21 +312,7 @@ void K053260Init(INT32 chip, INT32 clock, INT32 sampleRate)
 	//		timer_pulse( attotime_mul(ATTOTIME_IN_HZ(clock), 32), NULL, 0, ic->intf->irq );
 }
 
-void K053260SetRoute(INT32 chip, INT32 nIndex, double nVolume, INT32 nRouteDir)
-{
-#if defined FBA_DEBUG
-	if (!DebugSnd_K053260Initted) bprintf(PRINT_ERROR, _T("K053260SetRoute called without init\n"));
-	if (chip >nNumChips) bprintf(PRINT_ERROR, _T("K053260SetRoute called with invalid chip %x\n"), chip);
-	if (nIndex < 0 || nIndex > 1) bprintf(PRINT_ERROR, _T("K053260SetRoute called with invalid index %i\n"), nIndex);
-#endif
-
-	ic = &Chips[chip];
-
-	ic->gain[nIndex] = nVolume;
-	ic->output_dir[nIndex] = nRouteDir;
-}
-
-void K053260SetROM(INT32 chip, INT32 totalROMSize, INT32 startAddress, UINT8 *rom, INT32 nLen)
+void K053260_SetROM(INT32 chip, INT32 totalROMSize, INT32 startAddress, UINT8 *rom, INT32 nLen)
 {
 	ic = &Chips[chip];
 
@@ -352,7 +338,7 @@ void K053260SetROM(INT32 chip, INT32 totalROMSize, INT32 startAddress, UINT8 *ro
 	memcpy(&ic->rom[startAddress], rom , nLen);
 }
 
-void K053260Exit()
+void K053260_Shutdown()
 {
 #if defined FBA_DEBUG
 	if (!DebugSnd_K053260Initted) bprintf(PRINT_ERROR, _T("K053260Exit called without init\n"));
@@ -373,7 +359,7 @@ void K053260Exit()
 	nNumChips = 0;
 }
 
-K053260_INLINE void check_bounds(INT32 channel) {
+void check_bounds(INT32 channel) {
 
 	INT32 channel_start = (ic->channels[channel].bank << 16) + ic->channels[channel].start;
 	INT32 channel_end = channel_start + ic->channels[channel].size - 1;
@@ -389,7 +375,7 @@ K053260_INLINE void check_bounds(INT32 channel) {
 	}
 }
 
-void K053260Write(INT32 chip, INT32 offset, UINT8 data)
+void K053260_WriteRegister(INT32 chip, INT32 offset, UINT8 data)
 {
 #if defined FBA_DEBUG
 	if (!DebugSnd_K053260Initted) bprintf(PRINT_ERROR, _T("K053260Write called without init\n"));
@@ -509,7 +495,7 @@ void K053260Write(INT32 chip, INT32 offset, UINT8 data)
 	}
 }
 
-UINT8 K053260Read(INT32 chip, INT32 offset)
+UINT32 K053260_ReadStatus(INT32 chip, INT32 offset)
 {
 #if defined FBA_DEBUG
 	if (!DebugSnd_K053260Initted) bprintf(PRINT_ERROR, _T("K053260Read called without init\n"));
@@ -548,5 +534,3 @@ UINT8 K053260Read(INT32 chip, INT32 offset)
 
 	return ic->regs[offset];
 }
-
-#undef K053260_INLINE
