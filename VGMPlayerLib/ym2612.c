@@ -1742,12 +1742,12 @@ void Update_Chan_Algo7_LFO_Int(YM2612 *ym2612, Channel *CH, INT32 **buf, INT32 l
 }
 
 /////////////////////////////////////////////////////////////////////////////
-INT32 YM2612_Initialize(UINT8 chipCount, UINT32 clock, UINT32 rate)
+INT32 YM2612_Initialize(UINT8 chipCount, UINT32 clock, UINT32 sampleRate)
 {
 	INT32 i, j;
 	Float32 x;
 
-	if ((rate == 0) || (clock == 0))
+	if ((sampleRate == 0) || (clock == 0))
 		return 0;
 
 	YM2612Chips = (YM2612 *)malloc(sizeof(YM2612) * chipCount);
@@ -1760,7 +1760,7 @@ INT32 YM2612_Initialize(UINT8 chipCount, UINT32 clock, UINT32 rate)
 	for(UINT32 chipID = 0; chipID < YM2612NumChips; chipID++)
 	{
 		YM2612Chips[chipID].Clock = clock;
-		YM2612Chips[chipID].Rate = rate;
+		YM2612Chips[chipID].Rate = sampleRate;
 
 		// 144 = 12 * (prescale * 2) = 12 * 6 * 2
 		// prescale set to 6 by default

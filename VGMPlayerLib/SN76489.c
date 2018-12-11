@@ -280,7 +280,7 @@ void SN76489_Update(UINT8 chipID, INT32 **buffers, UINT32 length)
 		PSG.Counter[3] += PSG.CntStep[3] * length;
 }
 
-INT32 SN76489_Initialize(UINT8 chipCount, UINT32 clock, UINT32 rate)
+INT32 SN76489_Initialize(UINT8 chipCount, UINT32 clock, UINT32 sampleRate)
 {
 	int i, j;
 	double out;
@@ -290,7 +290,7 @@ INT32 SN76489_Initialize(UINT8 chipCount, UINT32 clock, UINT32 rate)
 		// Step calculation
 
 		out = (double)(clock) / (double)(i << 4);		// out = frequency
-		out /= (double)(rate);
+		out /= (double)(sampleRate);
 		out *= 65536.0;
 
 		PSG_Step_Table[i] = (unsigned int)out;
@@ -301,7 +301,7 @@ INT32 SN76489_Initialize(UINT8 chipCount, UINT32 clock, UINT32 rate)
 	for (i = 0; i < 3; i++)
 	{
 		out = (double)(clock) / (double)(1 << (9 + i));
-		out /= (double)(rate);
+		out /= (double)(sampleRate);
 		out *= 65536.0;
 
 		PSG_Noise_Step_Table[i] = (unsigned int)out;

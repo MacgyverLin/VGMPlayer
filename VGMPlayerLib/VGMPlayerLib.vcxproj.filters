@@ -13,6 +13,12 @@
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
+    <Filter Include="Source Files\NewFilter1">
+      <UniqueIdentifier>{69c42178-f995-4089-ae3b-2bd6a38713ef}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\chips">
+      <UniqueIdentifier>{90b8fce6-c59a-40e9-954c-affc203e5044}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="stdafx.h">
@@ -21,13 +27,7 @@
     <ClInclude Include="targetver.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="pwm.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
     <ClInclude Include="VGMPlayerLib.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="ym2612.h">
       <Filter>Source Files</Filter>
     </ClInclude>
     <ClInclude Include="SoundDevice.h">
@@ -36,26 +36,32 @@
     <ClInclude Include="VGM.h">
       <Filter>Source Files</Filter>
     </ClInclude>
-    <ClInclude Include="ym2151.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="k053260.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
     <ClInclude Include="VGMDef.h">
       <Filter>Source Files</Filter>
     </ClInclude>
+    <ClInclude Include="ym2151.h">
+      <Filter>Source Files\chips</Filter>
+    </ClInclude>
+    <ClInclude Include="ym2612.h">
+      <Filter>Source Files\chips</Filter>
+    </ClInclude>
+    <ClInclude Include="k053260.h">
+      <Filter>Source Files\chips</Filter>
+    </ClInclude>
     <ClInclude Include="SN76489.h">
-      <Filter>Source Files</Filter>
+      <Filter>Source Files\chips</Filter>
+    </ClInclude>
+    <ClInclude Include="pwm.h">
+      <Filter>Source Files\NewFilter1</Filter>
+    </ClInclude>
+    <ClInclude Include="nes_defs.h">
+      <Filter>Source Files\NewFilter1</Filter>
+    </ClInclude>
+    <ClInclude Include="NESAPU.h">
+      <Filter>Source Files\NewFilter1</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="pwm.c">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="ym2612.c">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="SoundDevice.c">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -63,13 +69,22 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="ym2151.c">
-      <Filter>Source Files</Filter>
+      <Filter>Source Files\chips</Filter>
+    </ClCompile>
+    <ClCompile Include="ym2612.c">
+      <Filter>Source Files\chips</Filter>
     </ClCompile>
     <ClCompile Include="k053260.c">
-      <Filter>Source Files</Filter>
+      <Filter>Source Files\chips</Filter>
     </ClCompile>
     <ClCompile Include="SN76489.c">
-      <Filter>Source Files</Filter>
+      <Filter>Source Files\chips</Filter>
+    </ClCompile>
+    <ClCompile Include="pwm.c">
+      <Filter>Source Files\NewFilter1</Filter>
+    </ClCompile>
+    <ClCompile Include="NESAPU.c">
+      <Filter>Source Files\NewFilter1</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

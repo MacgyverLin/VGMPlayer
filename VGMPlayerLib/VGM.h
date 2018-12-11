@@ -8,9 +8,9 @@
 // All pointer offsets are written as relative to the current position in the file, so for example the GD3 offset at 0x14 in the header is the file position of the GD3 tag minus 0x14.
 // All header sizes are valid for all versions from 1.50 on, as long as header has at least 64 bytes.If the VGM data starts at an offset that is lower than 0x100, all overlapping header bytes have to be handled as they were zero.
 // VGMs run with a rate of 44100 samples per second.All sample values use this unit.
-#include <stdio.h>
-#include "SoundDevice.h"
+#include <zlib.h>
 #include "vgmdef.h"
+#include "SoundDevice.h"
 
 #ifdef __cplusplus
 extern "C" {
@@ -300,7 +300,7 @@ extern "C" {
 	typedef struct
 	{
 		VGMHeader header;
-		void* data;
+		gzFile data;
 	}VGMData;
 
 	typedef struct
@@ -327,7 +327,7 @@ extern "C" {
 
 	VGMData *VGMData_Create(const char* filename);
 	void VGMData_Release(VGMData *vgmData);
-	int VGMData_Read(void * buffer, unsigned int size);
+	int VGMData_Read(VGMData* vgmData, void *buffer, unsigned int size);
 
 	VGMPlayer *VGMPlayer_Create(VGMData* vgmData, int sampleRate, int interpolation);
 	void VGMPlayer_Release(VGMPlayer *vgmPlayer);

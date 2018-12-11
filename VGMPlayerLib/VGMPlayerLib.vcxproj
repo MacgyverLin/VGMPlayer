@@ -90,7 +90,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS; WIN32;_DEBUG;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories> ../SDK/OpenAL/include</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories> ../SDK/OpenAL/include;  ../zlib</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -105,7 +105,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS; _DEBUG;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories> ../SDK/OpenAL/include</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories> ../SDK/OpenAL/include;  ../zlib</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -122,7 +122,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS; WIN32;NDEBUG;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories> ../SDK/OpenAL/include</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories> ../SDK/OpenAL/include;  ../zlib</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -141,7 +141,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS; NDEBUG;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories> ../SDK/OpenAL/include</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories> ../SDK/OpenAL/include;  ../zlib</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -151,6 +151,8 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="NESAPU.h" />
+    <ClInclude Include="nes_defs.h" />
     <ClInclude Include="VGMDef.h" />
     <ClInclude Include="k053260.h" />
     <ClInclude Include="SN76489.h" />
@@ -165,6 +167,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="k053260.c" />
+    <ClCompile Include="NESAPU.c" />
     <ClCompile Include="SN76489.c" />
     <ClCompile Include="pwm.c" />
     <ClCompile Include="SoundDevice.c" />

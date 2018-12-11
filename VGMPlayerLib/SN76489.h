@@ -7,7 +7,7 @@
 extern "C" {
 #endif
 
-INT32 SN76489_Initialize(UINT8 chipCount, UINT32 clock, UINT32 rate);
+INT32 SN76489_Initialize(UINT8 chipCount, UINT32 clock, UINT32 sampleRate);
 void SN76489_Shutdown(void);
 void SN76489_Reset(UINT8 chipID);
 void SN76489_Update(UINT8 chipID, INT32 **buffers, UINT32 length);

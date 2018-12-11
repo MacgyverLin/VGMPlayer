@@ -7,7 +7,7 @@
 extern "C" {
 #endif
 
-INT32 YM2612_Initialize(UINT8 chipCount, UINT32 clock, UINT32 rate);
+INT32 YM2612_Initialize(UINT8 chipCount, UINT32 clock, UINT32 sampleRate);
 void YM2612_Shutdown(void);
 void YM2612_Reset(UINT8 chipID);
 void YM2612_Update(UINT8 chipID, INT32 **buffers, UINT32 length);

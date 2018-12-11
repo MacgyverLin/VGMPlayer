@@ -2,7 +2,6 @@
 #define _k053260_h_
 
 #include "vgmdef.h"
-#include <stdlib.h>
 
 #ifdef __cplusplus
 extern "C" {

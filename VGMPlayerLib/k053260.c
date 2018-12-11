@@ -117,11 +117,6 @@ static void InitDeltaTable(INT32 rate, INT32 clock) {
 
 void K053260_Reset(INT32 chip)
 {
-#if defined FBA_DEBUG
-	if (!DebugSnd_K053260Initted) bprintf(PRINT_ERROR, _T("K053260Reset called without init\n"));
-	if (chip > nNumChips) bprintf(PRINT_ERROR, _T("K053260Reset called with invalid chip %x\n"), chip);
-#endif
-
 	ic = &Chips[chip];
 
 	for (INT32 i = 0; i < 4; i++) {
@@ -153,11 +148,6 @@ INT32 limit(INT32 val, INT32 max, INT32 min) {
 
 void K053260_Update(INT32 chip, INT32 **pBuf, INT32 length)
 {
-#if defined FBA_DEBUG
-	if (!DebugSnd_K053260Initted) bprintf(PRINT_ERROR, _T("K053260Update called without init\n"));
-	if (chip > nNumChips) bprintf(PRINT_ERROR, _T("K053260Update called with invalid chip %x\n"), chip);
-#endif
-
 	static const INT8 dpcmcnv[] = { 0,1,2,4,8,16,32,64, -128, -64, -32, -16, -8, -4, -2, -1 };
 
 	INT32 lvol[4], rvol[4], play[4], loop[4], ppcm[4];
@@ -340,10 +330,6 @@ void K053260_SetROM(INT32 chip, INT32 totalROMSize, INT32 startAddress, UINT8 *r
 
 void K053260_Shutdown()
 {
-#if defined FBA_DEBUG
-	if (!DebugSnd_K053260Initted) bprintf(PRINT_ERROR, _T("K053260Exit called without init\n"));
-#endif
-
 	//if (!DebugSnd_K053260Initted) return;
 
 	for (INT32 i = 0; i < 2; i++) {
@@ -377,11 +363,6 @@ void check_bounds(INT32 channel) {
 
 void K053260_WriteRegister(INT32 chip, INT32 offset, UINT8 data)
 {
-#if defined FBA_DEBUG
-	if (!DebugSnd_K053260Initted) bprintf(PRINT_ERROR, _T("K053260Write called without init\n"));
-	if (chip > nNumChips) bprintf(PRINT_ERROR, _T("K053260Write called with invalid chip %x\n"), chip);
-#endif
-
 	INT32 i, t;
 	INT32 r = offset;
 	INT32 v = data;
@@ -497,11 +478,6 @@ void K053260_WriteRegister(INT32 chip, INT32 offset, UINT8 data)
 
 UINT32 K053260_ReadStatus(INT32 chip, INT32 offset)
 {
-#if defined FBA_DEBUG
-	if (!DebugSnd_K053260Initted) bprintf(PRINT_ERROR, _T("K053260Read called without init\n"));
-	if (chip > nNumChips) bprintf(PRINT_ERROR, _T("K053260Read called with invalid chip %x\n"), chip);
-#endif
-
 	ic = &Chips[chip];
 
 	switch (offset) {

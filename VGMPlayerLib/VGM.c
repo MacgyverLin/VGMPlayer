@@ -7,6 +7,7 @@
 #include "YM2612.h"
 #include "YM2151.h"
 #include "K053260.h"
+#include "NESAPU.h"
 
 enum VGMCommand
 {
@@ -53,6 +54,7 @@ enum VGMCommand
 	WAIT_16_SAMPLES = 0x7F,
 
 	K053260_WRITE = 0xBA,				// aa dd
+	NES_APU_WRITE = 0xB4, 				// aa dd
 };
 
 typedef struct
@@ -64,6 +66,33 @@ typedef struct
 #define VGMPlayer_MIN(a, b) ((a)<(b)) ? (a) : (b)
 #define VGMPlayer_MAX(a, b) ((a)>(b)) ? (a) : (b)
 
+gzFile VGM_GZOpen(const char* path)
+{
+	return gzopen(path, "r");
+}
+
+int VGM_GZClose(gzFile file)
+{
+	return gzclose(file);
+}
+
+int VGM_GZRead(gzFile file, void *buffer, unsigned int size)
+{
+	return gzread(file, buffer, size);
+}
+
+int VGM_GZSeekSet(gzFile file, int offset)
+{
+	return gzseek(file, offset, SEEK_SET);
+}
+
+int VGM_GZSeekCur(gzFile file, int offset)
+{
+	return gzseek(file, offset, SEEK_CUR);
+}
+
+
+/*
 void *VGM_FOpen(const char* path)
 {
 	return fopen(path, "rb");
@@ -91,6 +120,7 @@ int VGM_FSeekCur(void *file, int offset)
 {
 	return fseek((FILE*)(file), offset, SEEK_CUR);
 }
+*/
 
 //////////////////////////////////////////////////////////////////////////////
 VGMData *VGMData_Create(const char* path)
@@ -99,7 +129,7 @@ VGMData *VGMData_Create(const char* path)
 	if (!vgmData)
 		return 0;
 
-	vgmData->data = VGM_FOpen(path);
+	vgmData->data = VGM_GZOpen(path);
 	if (!vgmData->data)
 	{
 		VGMData_Release(vgmData);
@@ -108,7 +138,7 @@ VGMData *VGMData_Create(const char* path)
 		return 0;
 	}
 
-	if (VGM_FRead(vgmData->data, &vgmData->header, 256) != 256)
+	if (VGMData_Read(vgmData, &vgmData->header, 256) != 256)
 	{
 		VGMData_Release(vgmData);
 		vgmData = 0;
@@ -138,11 +168,11 @@ VGMData *VGMData_Create(const char* path)
 	{
 		if (vgmData->header.VGMDataOffset == 0x0c)
 		{
-			VGM_FSeekSet(vgmData->data, 0x40);		// point to 0x40
+			VGMData_FSeekSet(vgmData, 0x40);		// point to 0x40
 		}
 		else
 		{
-			VGM_FSeekSet(vgmData->data, 0x34 + vgmData->header.VGMDataOffset);		// point to 0x40
+			VGMData_FSeekSet(vgmData, 0x34 + vgmData->header.VGMDataOffset);		// point to 0x40
 		}
 	}
 
@@ -155,7 +185,7 @@ void VGMData_Release(VGMData *vgmData)
 	{
 		if (vgmData->data)
 		{
-			VGM_FClose(vgmData->data);
+			VGM_GZClose(vgmData->data);
 			vgmData->data = 0;
 		}
 
@@ -164,20 +194,19 @@ void VGMData_Release(VGMData *vgmData)
 	}
 }
 
-
-int VGMData_Read(VGMData* vgmData, void * buffer, unsigned int size)
+int VGMData_Read(VGMData* vgmData, void *buffer, unsigned int size)
 {
-	return VGM_FRead(vgmData->data, buffer, size);
+	return VGM_GZRead(vgmData->data, buffer, size);
 }
 
 int VGMData_FSeekSet(VGMData* vgmData, unsigned int size)
 {
-	return VGM_FSeekSet(vgmData->data, size);
+	return VGM_GZSeekSet(vgmData->data, size);
 }
 
 int VGMData_FSeekCur(VGMData* vgmData, unsigned int size)
 {
-	return VGM_FSeekCur(vgmData->data, size);
+	return VGM_GZSeekCur(vgmData->data, size);
 }
 
 
@@ -237,6 +266,11 @@ VGMPlayer *VGMPlayer_Create(VGMData* vgmData, int sampleRate, int interpolation)
 		K053260_Initialize(0, vgmData->header.K053260Clock, sampleRate);
 	}
 
+	if (vgmData->header.NESAPUClock)
+	{
+		NESAPU_Initialize(0, vgmData->header.NESAPUClock, sampleRate);
+	}
+
 	return vgmPlayer;
 }
 
@@ -244,6 +278,7 @@ void VGMPlayer_Release(VGMPlayer *vgmPlayer)
 {
 	if (vgmPlayer)
 	{
+		NESAPU_Shutdown();
 		K053260_Shutdown();
 		YM2151_Shutdown();
 		SN76489_Shutdown();
@@ -310,8 +345,7 @@ int VGMPlayer_isPaused(VGMPlayer *vgmPlayer)
 	return vgmPlayer->paused;
 }
 
-
-void ConvertToShort(VGMPlayer *vgmPlayer, short *Dest)
+void VGMPlayer_ConvertAudioData(VGMPlayer *vgmPlayer, short *Dest)
 {
 	int i, out_L, out_R;
 	short *dest = Dest;
@@ -360,6 +394,8 @@ void VGMPlayer_Wait_NNNN_Sample(VGMPlayer *vgmPlayer, unsigned short NNNN)
 			YM2151_Update(0, buf, updateSampleCount);
 		if (vgmPlayer->vgmData->header.K053260Clock)
 			K053260_Update(0, buf, updateSampleCount);
+		if (vgmPlayer->vgmData->header.NESAPUClock)
+			NESAPU_Update(0, buf, vgmPlayer->vgmData->header.NESAPUClock);
 
 		remainedSample -= updateSampleCount;
 		vgmPlayer->sampleIdx = vgmPlayer->sampleIdx + updateSampleCount;
@@ -370,7 +406,7 @@ void VGMPlayer_Wait_NNNN_Sample(VGMPlayer *vgmPlayer, unsigned short NNNN)
 
 			char* data = malloc(vgmPlayer->bufferSize);
 
-			ConvertToShort(vgmPlayer, (short *)data);
+			VGMPlayer_ConvertAudioData(vgmPlayer, (short *)data);
 
 			if (!SoundDevice_AddAudioToQueue(vgmPlayer->outputDevice,
 				vgmPlayer->bufferIdx, data, vgmPlayer->bufferSize))
@@ -533,6 +569,13 @@ int VGMPlayer_Update(VGMPlayer *vgmPlayer)
 			K053260_WriteRegister(0, aa, dd);
 
 			//printf("k053260_w(0x%02x, 0x%02x);\n", aa, dd);
+			break;
+
+		case NES_APU_WRITE:
+			VGMData_Read(vgmPlayer->vgmData, &aa, sizeof(aa));
+			VGMData_Read(vgmPlayer->vgmData, &dd, sizeof(dd));
+
+			NESAPU_WriteRegister(0, aa, dd);
 			break;
 
 		default:

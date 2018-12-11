@@ -22,6 +22,9 @@ typedef unsigned long long UINT64;
 typedef float Float32;
 typedef double Float64;
 
+#define TRUE 0 
+#define FALSE -1
+
 #define logerror printf
 
 #define BURN_SND_CLIP(A) ((A) < -0x8000 ? -0x8000 : (A) > 0x7fff ? 0x7fff : (A))
