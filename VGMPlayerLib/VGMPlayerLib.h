@@ -5,7 +5,6 @@
 #include "ym2612.h"
 #include "psg.h"
 #include "pwm.h"
-#include "sound.h"
 #include "VGM.h"
 
 #endif

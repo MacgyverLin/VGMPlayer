@@ -42,7 +42,7 @@ void YM2151ResetChip(int num);
 ** '**buffers' is table of pointers to the buffers: left and right
 ** 'length' is the number of samples that should be generated
 */
-void YM2151UpdateOne(int num, signed short **buffers, int length);
+void YM2151UpdateOne(int num, int **buffers, int length);
 
 /* write 'v' to register 'r' on YM2151 chip number 'n'*/
 void YM2151WriteReg(int n, int r, int v);

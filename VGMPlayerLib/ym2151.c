@@ -2330,7 +2330,7 @@ signed int acc_calc(signed int value)
 *	'**buffers' is table of pointers to the buffers: left and right
 *	'length' is the number of samples that should be generated
 */
-void YM2151UpdateOne(int num, INT32 **buffers, int length)
+void YM2151UpdateOne(int num, int **buffers, int length)
 {
 	int i;
 	signed int outl, outr;

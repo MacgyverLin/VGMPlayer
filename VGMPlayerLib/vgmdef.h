@@ -1,5 +1,5 @@
-#ifndef _vgmdef_h_
-#define _vgmdef_h_
+#ifndef _VGMDef_h_
+#define _VGMDef_h_
 
 #ifdef __cplusplus
 extern "C" {
@@ -10,7 +10,6 @@ extern "C" {
 
 #define CLOCK_NTSC 53693175
 #define CLOCK_PAL  53203424
-
 	
 typedef signed long long INT64;
 typedef signed int INT32;
@@ -29,7 +28,6 @@ typedef unsigned long long UINT64;
 #define BURN_SND_ROUTE_LEFT			1
 #define BURN_SND_ROUTE_RIGHT		2
 #define BURN_SND_ROUTE_BOTH			(BURN_SND_ROUTE_LEFT | BURN_SND_ROUTE_RIGHT)
-
 
 #ifdef __cplusplus
 };

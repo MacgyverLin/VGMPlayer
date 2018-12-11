@@ -7,14 +7,69 @@
 extern "C" {
 #endif
 
-// Change it if you need to do long update
 #define  MAX_UPDATE_LENGHT   2000
 
-// Gens always uses 16 bits sound (in 32 bits buffer) and do the convertion later if needed.
-#define OUTPUT_BITS         16
+#define  OUTPUT_BITS         16
 
-// VC++ inline
-#define INLINE              __inline
+#ifndef PI
+#define PI 3.14159265358979323846
+#endif
+
+#define ATTACK    0
+#define DECAY     1
+#define SUBSTAIN  2
+#define RELEASE   3
+
+#define SIN_HBITS      12								// Sin phase counter integer
+#define SIN_LBITS      (26 - SIN_HBITS)					// Sin phase counter decimal part (best setting)
+
+#if(SIN_LBITS > 16)
+#define SIN_LBITS      16								// Can't be greater than 16 bits
+#endif
+
+#define ENV_HBITS      12								// Env phase counter integer
+#define ENV_LBITS      (28 - ENV_HBITS)					// Env phase counter decimal part (best setting)
+
+#define LFO_HBITS      10								// LFO phase counter integer
+#define LFO_LBITS      (28 - LFO_HBITS)					// LFO phase counter decimal part (best setting)
+
+#define SIN_LENGHT     (1 << SIN_HBITS)
+#define ENV_LENGHT     (1 << ENV_HBITS)
+#define LFO_LENGHT     (1 << LFO_HBITS)
+
+#define TL_LENGHT      (ENV_LENGHT * 3)					// Env + TL scaling + LFO
+
+#define SIN_MASK       (SIN_LENGHT - 1)
+#define ENV_MASK       (ENV_LENGHT - 1)
+#define LFO_MASK       (LFO_LENGHT - 1)
+
+#define ENV_STEP       (96.0 / ENV_LENGHT)				// ENV_MAX = 96 dB
+
+#define ENV_ATTACK     ((ENV_LENGHT * 0) << ENV_LBITS)
+#define ENV_DECAY      ((ENV_LENGHT * 1) << ENV_LBITS)
+#define ENV_END        ((ENV_LENGHT * 2) << ENV_LBITS)
+
+#define MAX_OUT_BITS   (SIN_HBITS + SIN_LBITS + 2)		// Modulation = -4 <--> +4
+#define MAX_OUT        ((1 << MAX_OUT_BITS) - 1)
+
+#define OUT_BITS       (OUTPUT_BITS - 2)
+#define OUT_SHIFT      (MAX_OUT_BITS - OUT_BITS)
+#define LIMIT_CH_OUT   ((int) (((1 << OUT_BITS) * 1.5) - 1))
+
+#define PG_CUT_OFF     ((int) (78.0 / ENV_STEP))
+#define ENV_CUT_OFF    ((int) (68.0 / ENV_STEP))
+
+#define AR_RATE        399128
+#define DR_RATE        5514396
+
+#define LFO_FMS_LBITS  9								// FIXED (LFO_FMS_BASE gives somethink as 1)
+#define LFO_FMS_BASE   ((int) (0.05946309436 * 0.0338 * (double) (1 << LFO_FMS_LBITS)))
+
+#define S0             0
+#define S1             2
+#define S2             1
+#define S3             3
+
 
 typedef struct slot__ {
   int *DT;  // paramètre detune
@@ -74,59 +129,81 @@ typedef struct channel__ {
 } channel_;
 
 typedef struct ym2612__ {
-  int Clock;      // Horloge YM2612
-  int Rate;      // Sample Rate (11025/22050/44100)
-  int TimerBase;    // TimerBase calculation
-  int Status;      // YM2612 Status (timer overflow)
-  int OPNAadr;    // addresse pour l'écriture dans l'OPN A (propre ?l'émulateur)
-  int OPNBadr;    // addresse pour l'écriture dans l'OPN B (propre ?l'émulateur)
-  int LFOcnt;      // LFO counter = compteur-fréquence pour le LFO
-  int LFOinc;      // LFO step counter = pas d'incrémentation du compteur-fréquence du LFO
-            // plus le pas est grand, plus la fréquence est grande
-  int TimerA;      // timerA limit = valeur jusqu'?laquelle le timer A doit compter
-  int TimerAL;
-  int TimerAcnt;    // timerA counter = valeur courante du Timer A
-  int TimerB;      // timerB limit = valeur jusqu'?laquelle le timer B doit compter
-  int TimerBL;
-  int TimerBcnt;    // timerB counter = valeur courante du Timer B
-  int Mode;      // Mode actuel des voie 3 et 6 (normal / spécial)
-  int DAC;      // DAC enabled flag
-  int DACdata;    // DAC data
-  double Frequence;  // Fréquence de base, se calcul par rapport ?l'horlage et au sample rate
-  unsigned int Inter_Cnt;      // Interpolation Counter
-  unsigned int Inter_Step;    // Interpolation Step
-  struct channel__ CHANNEL[6];  // Les 6 voies du YM2612
-  int REG[2][0x100];  // Sauvegardes des valeurs de tout les registres, c'est facultatif
-            // cela nous rend le débuggage plus facile
-} ym2612_;
+	int Clock;
+	int Rate;
+	int TimerBase;
+	int Status;
+	int OPNAadr;
+	int OPNBadr;
+	int LFOcnt;
+	int LFOinc;
+	
+	int TimerA;
+	int TimerAL;
+	int TimerAcnt;
+	int TimerB;
+	int TimerBL;
+	int TimerBcnt;
+	int Mode;
+	int DAC;
+	int DACdata;
+	double Frequence;
+	unsigned int Inter_Cnt;
+	unsigned int Inter_Step;
+	struct channel__ CHANNEL[6];
+	
+	int *SIN_TAB[SIN_LENGHT];							// SINUS TABLE (pointer on TL TABLE)
+	int TL_TAB[TL_LENGHT * 2];							// TOTAL LEVEL TABLE (positif and minus)
+	unsigned int ENV_TAB[2 * ENV_LENGHT + 8];			// ENV CURVE TABLE (attack & decay)
 
-/* Gens */
+	unsigned int DECAY_TO_ATTACK[ENV_LENGHT];			// Conversion from decay to attack phase
+	unsigned int FINC_TAB[2048];						// Frequency step table
 
-extern ym2612_ YM2612;
-extern int YM2612_Enable;
-extern int YM2612_Improv;
-extern int DAC_Enable;
-extern int *YM_Buf[2];
-extern int YM_Len;
-extern int YM2612_Enable_SSGEG;
+	unsigned int AR_TAB[128];							// Attack rate table
+	unsigned int DR_TAB[96];							// Decay rate table
+	unsigned int DT_TAB[8][32];							// Detune table
+	unsigned int SL_TAB[16];							// Substain level table
+	unsigned int NULL_RATE[32];							// Table for NULL rate
 
-/* end */
+	int LFO_ENV_TAB[LFO_LENGHT];						// LFO AMS TABLE (adjusted for 11.8 dB)
+	int LFO_FREQ_TAB[LFO_LENGHT];						// LFO FMS TABLE
+	int LFO_ENV_UP[MAX_UPDATE_LENGHT];					// Temporary calculated LFO AMS (adjusted for 11.8 dB)
+	int LFO_FREQ_UP[MAX_UPDATE_LENGHT];					// Temporary calculated LFO FMS
 
-int YM2612_Init(int clock, int rate, int interpolation);
-int YM2612_End(void);
-int YM2612_Reset(void);
-int YM2612_Read(void);
-int YM2612_Write(unsigned char adr, unsigned char data);
-void YM2612_Update(int **buf, int length);
-int YM2612_Save(unsigned char SAVE[0x200]);
-int YM2612_Restore(unsigned char SAVE[0x200]);
+	int INTER_TAB[MAX_UPDATE_LENGHT];					// Interpolation table
+	int LFO_INC_TAB[8];									// LFO step table
 
-/* Gens */
+	int in0, in1, in2, in3;								// current phase calculation
+	int en0, en1, en2, en3;								// current envelope calculation
 
-void YM2612_DacAndTimers_Update(int **buffer, int length);
-void YM2612_Special_Update(void);
+	int int_cnt;                // Interpolation calculation
 
-/* end */
+	int REG[2][0x100];
+}YM2612;
+
+int YM2612Init(int num, int clock, int rate);
+
+/* shutdown the YM2151 emulators*/
+void YM2612Shutdown();
+
+/* reset all chip registers for YM2151 number 'num'*/
+void YM2612ResetChip(int chipID);
+
+/*
+** Generate samples for one of the YM2151's
+**
+** 'num' is the number of virtual YM2151
+** '**buffers' is table of pointers to the buffers: left and right
+** 'length' is the number of samples that should be generated
+*/
+void YM2612UpdateOne(int chipID, int **buffers, int length);
+
+/* write 'v' to register 'r' on YM2151 chip number 'n'*/
+void YM2612WriteReg(int chipID, int r, int v);
+
+/* read status register on YM2151 chip number 'n'*/
+int YM2612ReadStatus(int chipID);
+
 
 #ifdef __cplusplus
 };

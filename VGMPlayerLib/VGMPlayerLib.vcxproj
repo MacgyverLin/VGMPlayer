@@ -151,11 +151,10 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClInclude Include="vgmdef.h" />
+    <ClInclude Include="VGMDef.h" />
     <ClInclude Include="k053260.h" />
     <ClInclude Include="psg.h" />
     <ClInclude Include="pwm.h" />
-    <ClInclude Include="sound.h" />
     <ClInclude Include="SoundDevice.h" />
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="targetver.h" />
@@ -168,7 +167,6 @@
     <ClCompile Include="k053260.c" />
     <ClCompile Include="psg.c" />
     <ClCompile Include="pwm.c" />
-    <ClCompile Include="sound.c" />
     <ClCompile Include="SoundDevice.c" />
     <ClCompile Include="VGM.c" />
     <ClCompile Include="ym2151.c" />

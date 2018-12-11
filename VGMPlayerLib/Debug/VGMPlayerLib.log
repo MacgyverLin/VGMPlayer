@@ -1,5 +1,4 @@
 ﻿  VGM.c
-c:\project\vgmplayer\vgmplayerlib\vgm.c(169): warning C4028: formal parameter 2 different from declaration
-c:\project\vgmplayer\vgmplayerlib\vgm.c(169): warning C4029: declared formal parameter list different from definition
-c:\project\vgmplayer\vgmplayerlib\vgm.c(359): warning C4133: 'function': incompatible types - from 'int *[2]' to 'short **'
-  VGMPlayerLib.vcxproj -> C:\Project\VGMPlayer\Debug\VGMPlayerLib.lib
+e:\project\vgmplayer\vgmplayerlib\vgm.c(169): warning C4028: formal parameter 2 different from declaration
+e:\project\vgmplayer\vgmplayerlib\vgm.c(169): warning C4029: declared formal parameter list different from definition
+  VGMPlayerLib.vcxproj -> E:\Project\VGMPlayer\Debug\VGMPlayerLib.lib

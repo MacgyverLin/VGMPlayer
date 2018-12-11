@@ -219,7 +219,9 @@ VGMPlayer *VGMPlayer_Create(VGMData* vgmData, int sampleRate, int interpolation)
 	}
 
 	if (vgmData->header.YM2612Clock)
-		YM2612_Init(vgmData->header.YM2612Clock, sampleRate, interpolation);
+	{
+		YM2612Init(2, vgmData->header.YM2612Clock, sampleRate);
+	}
 
 	if (vgmData->header.SN76489Clock)
 	{
@@ -244,7 +246,6 @@ void VGMPlayer_Release(VGMPlayer *vgmPlayer)
 	{
 		K053260Exit();
 		YM2151Shutdown();
-		YM2612_End();
 		//PSG_End();
 
 		SoundDevice_StopSound(vgmPlayer->outputDevice);
@@ -352,7 +353,7 @@ void VGMPlayer_Wait_NNNN_Sample(VGMPlayer *vgmPlayer, unsigned short NNNN)
 		int updateSampleCount = VGMPlayer_MIN((vgmPlayer->sampleCount - vgmPlayer->sampleIdx), remainedSample);
 
 		if (vgmPlayer->vgmData->header.YM2612Clock)
-			YM2612_Update(buf, updateSampleCount);
+			YM2612UpdateOne(1, buf, updateSampleCount);
 		if (vgmPlayer->vgmData->header.SN76489Clock)
 			PSG_Update(buf, updateSampleCount);
 		if (vgmPlayer->vgmData->header.YM2151Clock)
@@ -433,19 +434,24 @@ int VGMPlayer_Update(VGMPlayer *vgmPlayer)
 		{
 		case YM2612_PORT0_WRITE:
 			VGMData_Read(vgmPlayer->vgmData, &aa, sizeof(aa));
-			YM2612_Write(0, aa);
+			YM2612WriteReg(1, 0, aa);
 
 			VGMData_Read(vgmPlayer->vgmData, &dd, sizeof(dd));
-			YM2612_Write(1, dd);
+			YM2612WriteReg(1, 1, dd);
 
+			//printf("YM2612WriteReg(0, 0, 0x%02x)", aa);
+			//printf("YM2612WriteReg(0, 1, 0x%02x)", dd);
 			break;
 
 		case YM2612_PORT1_WRITE:
 			VGMData_Read(vgmPlayer->vgmData, &aa, sizeof(aa));
-			YM2612_Write(2, aa);
+			YM2612WriteReg(1, 2, aa);
 
 			VGMData_Read(vgmPlayer->vgmData, &dd, sizeof(dd));
-			YM2612_Write(3, dd);
+			YM2612WriteReg(1, 3, dd);
+
+			//printf("YM2612WriteReg(0, 2, 0x%02x)", aa);
+			//printf("YM2612WriteReg(0, 3, 0x%02x)", dd);
 
 			break;
 
