@@ -153,7 +153,7 @@ int SoundDevice_UpdataQueueBuffer(SoundDevice* soundDevice)
 	alGetSourcei(soundDevice->outSource, AL_BUFFERS_QUEUED, &soundDevice->queuedBuffer);
 	soundDevice->processedBuffer += processed;
 	
-	//printf("processedBuffer: %d, processed: %d, queuedBuffer: %d\n", soundDevice->processedBuffer, processed, soundDevice->queuedBuffer);
+	printf("processedBuffer: %d, processed: %d, queuedBuffer: %d\n", soundDevice->processedBuffer, processed, soundDevice->queuedBuffer);
 
 	while (processed--)
 	{
@@ -227,7 +227,7 @@ int SoundDevice_AddAudioToQueue(SoundDevice* soundDevice, int WP, char* data_, i
 	error = alGetError();
 	if (error != AL_NO_ERROR)
 	{
-		printf("alGetError %x: alBufferData(%d, %d, %d, %p, %d, %d) %x\n", error, buffer, format, data_, dataSize_, soundDevice->sampleRate);
+		printf("alGetError %x: alBufferData(%x, %x, %p, %d, %d)\n", error, buffer, format, data_, dataSize_, soundDevice->sampleRate);
 		//AL_ILLEGAL_ENUM
 		//AL_INVALID_VALUE
 		//#define AL_ILLEGAL_COMMAND                        0xA004

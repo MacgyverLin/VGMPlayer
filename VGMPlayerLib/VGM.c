@@ -394,8 +394,8 @@ void VGMPlayer_Wait_NNNN_Sample(VGMPlayer *vgmPlayer, unsigned short NNNN)
 			YM2151_Update(0, buf, updateSampleCount);
 		if (vgmPlayer->vgmData->header.K053260Clock)
 			K053260_Update(0, buf, updateSampleCount);
-		//if (vgmPlayer->vgmData->header.NESAPUClock)
-			//NESAPU_Update(0, buf, updateSampleCount);
+		if (vgmPlayer->vgmData->header.NESAPUClock)
+			NESAPU_Update(0, buf, updateSampleCount);
 
 		remainedSample -= updateSampleCount;
 		vgmPlayer->sampleIdx = vgmPlayer->sampleIdx + updateSampleCount;

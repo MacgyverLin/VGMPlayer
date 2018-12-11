@@ -1,3 +1,4 @@
-﻿  VGM.c
-e:\project\vgmplayer\vgmplayerlib\vgm.c(171): warning C4013: 'VGMData_FSeekSet' undefined; assuming extern returning int
+﻿  NESAPU.c
+e:\project\vgmplayer\vgmplayerlib\nesapu.c(105): warning C4244: '=': conversion from 'UINT64' to 'UINT32', possible loss of data
+e:\project\vgmplayer\vgmplayerlib\nesapu.c(112): warning C4244: '=': conversion from 'UINT64' to 'UINT32', possible loss of data
   VGMPlayerLib.vcxproj -> E:\Project\VGMPlayer\Debug\VGMPlayerLib.lib

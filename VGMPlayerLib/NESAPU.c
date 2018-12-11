@@ -632,17 +632,14 @@ static inline void apu_update(nesapu_info *info, INT32** buffer, INT32 samples)
 			accum = 32767;
 		else if (accum < -32768)
 			accum = -32768;
-
-		/*
-		float v = 30000.0 * sin(counter * 4000.0 / 44100.0 * 2.0 * 3.1416);
-		buffer[0][i] = v >0 ? 30000 : -30000;
-		buffer[1][i] = v > 0 ? 30000 : -30000;
-	
-		//printf("counter: %d: %f, %5d %5d\n", counter, 30000.0 * sin(counter * 1000.0 / 44100.0 * 2.0 * 3.1416), buffer[0][i], buffer[1][i]);
-		*/
+				
+		//float v = 30000.0 * sin(counter * 4000.0 / 44100.0 * 2.0 * 3.1416);
+		//buffer[0][i] = v >0 ? 30000 : -30000;
+		//buffer[1][i] = v > 0 ? 30000 : -30000;
 		counter++;
-		buffer[0][i] = accum;
-		buffer[1][i] = accum;
+		//printf("counter: %d: %f, %5d %5d\n", counter, 30000.0 * sin(counter * 1000.0 / 44100.0 * 2.0 * 3.1416), buffer[0][i], buffer[1][i]);
+		buffer[0][i] += accum;
+		buffer[1][i] += accum;
 	}
 	
 	//printf("counter: %d\n", accum);
