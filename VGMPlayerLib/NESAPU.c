@@ -609,10 +609,15 @@ static inline void apu_regwrite(nesapu_info *info, INT32 address, UINT8 value)
 	}
 }
 
+#include <math.h>
 /* UPDATE SOUND BUFFER USING CURRENT DATA */
+static int counter = 0;
+
 static inline void apu_update(nesapu_info *info, INT32** buffer, INT32 samples)
 {
 	INT32 accum;
+	
+	//printf("counter: %f", counter / 44100.0f);
 
 	for(int i=0; i<samples; i++)
 	{
@@ -628,9 +633,19 @@ static inline void apu_update(nesapu_info *info, INT32** buffer, INT32 samples)
 		else if (accum < -32768)
 			accum = -32768;
 
+		/*
+		float v = 30000.0 * sin(counter * 4000.0 / 44100.0 * 2.0 * 3.1416);
+		buffer[0][i] = v >0 ? 30000 : -30000;
+		buffer[1][i] = v > 0 ? 30000 : -30000;
+	
+		//printf("counter: %d: %f, %5d %5d\n", counter, 30000.0 * sin(counter * 1000.0 / 44100.0 * 2.0 * 3.1416), buffer[0][i], buffer[1][i]);
+		*/
+		counter++;
 		buffer[0][i] = accum;
 		buffer[1][i] = accum;
 	}
+	
+	//printf("counter: %d\n", accum);
 }
 
 /* READ VALUES FROM REGISTERS */
@@ -670,7 +685,8 @@ void NESAPU_WriteRegister(UINT8 chipID, INT32 address, UINT8 value)
 {
 	nesapu_info *info = &nesapu_chips[chipID]; //sndti_token(SOUND_NES, chip);
 
-	if (address > 0x17) return;
+	if (address > 0x17) 
+		return;
 
 	info->APU.regs[address] = value;
 	//apu_update(info);
@@ -768,7 +784,7 @@ void NESAPU_Initialize(UINT8 chipID, INT32 clock, UINT32 sampleRate)
 	INT32 nBurnFPS = 60;
 
 	/* Initialize global variables */
-	info->samps_per_sync = (rate * 100) / nBurnFPS;
+	info->samps_per_sync = (rate / 10) / nBurnFPS;
 	Float32 real_rate = (info->samps_per_sync * nBurnFPS) / 100.0f;
 	info->apu_incsize = clock / real_rate;
 

@@ -11,10 +11,8 @@ int SoundDevice_Create(SoundDevice** soundDevice, int channels, int bitsPerSampl
 	(*soundDevice)->context = 0;
 	(*soundDevice)->device = 0;
 	(*soundDevice)->outSource = 0;
-	(*soundDevice)->processed = 0;
-	(*soundDevice)->queued = 0;
 	(*soundDevice)->processedBuffer = 0;
-
+	(*soundDevice)->queuedBuffer = 0;
 	(*soundDevice)->channels = channels;
 	(*soundDevice)->bitsPerSample = bitsPerSample;
 	(*soundDevice)->sampleRate = sampleRate;
@@ -23,17 +21,16 @@ int SoundDevice_Create(SoundDevice** soundDevice, int channels, int bitsPerSampl
 	(*soundDevice)->playRate = 1.0;
 	(*soundDevice)->volume = 1.0;
 
+	// device
 	(*soundDevice)->device = alcOpenDevice(NULL);
 	if (!(*soundDevice)->device)
 		return 0;
 
-	//建立声音文本描述
+	// context
 	(*soundDevice)->context = alcCreateContext((*soundDevice)->device, NULL);
-
-	//设置行为文本描述
 	alcMakeContextCurrent((*soundDevice)->context);
 
-	//创建一个source并设置一些属性
+	// sources
 	alGenSources(1, &((*soundDevice)->outSource));
 	alSpeedOfSound(1.0);
 	alDopplerVelocity(1.0);
@@ -42,9 +39,8 @@ int SoundDevice_Create(SoundDevice** soundDevice, int channels, int bitsPerSampl
 	alSourcef((*soundDevice)->outSource, AL_PITCH, (*soundDevice)->playRate);
 	alSourcef((*soundDevice)->outSource, AL_GAIN, (*soundDevice)->volume);
 
-#if 1
-	//创建一个buffer
-	for(int i=0; i<32; i++)
+	// create 32 buffers
+	for(int i=0; i< (*soundDevice)->bufferCount; i++)
 		(*soundDevice)->sndBuffer[i] = 0;
 	alGenBuffers((*soundDevice)->bufferCount, (*soundDevice)->sndBuffer);
 	error = alGetError();
@@ -58,13 +54,6 @@ int SoundDevice_Create(SoundDevice** soundDevice, int channels, int bitsPerSampl
 		//#define AL_INVALID_OPERATION                      0xA004
 		return 0;
 	}
-#endif
-	error = alGetError();
-	if (error != AL_NO_ERROR)
-	{
-		printf("error initOpenAL %x\n", error);
-		return 0;
-	}
 
 	return -1;
 }
@@ -73,12 +62,11 @@ void SoundDevice_Release(SoundDevice* soundDevice)
 {
 	if (soundDevice)
 	{
-#if 1
 		if (soundDevice->sndBuffer)
 		{
 			alDeleteBuffers(soundDevice->bufferCount, soundDevice->sndBuffer);
 		}
-#endif
+
 		if (soundDevice->outSource)
 		{
 			alDeleteSources(1, &(soundDevice->outSource));
@@ -106,26 +94,8 @@ void SoundDevice_Release(SoundDevice* soundDevice)
 
 int SoundDevice_PlaySound(SoundDevice* soundDevice)
 {
-	int error;
-	ALuint sourceState;
-
+	ALuint error;
 	alSourcePlay(soundDevice->outSource);
-
-	alGetSourcei(soundDevice->outSource, AL_SOURCE_STATE, &sourceState);
-	switch (sourceState) {
-	case AL_INITIAL:
-		printf("AL_INITIAL\n");
-		break;
-	case AL_PAUSED:
-		printf("AL_PAUSED\n");
-		break;
-	case AL_STOPPED:
-		printf("AL_STOPPED\n");
-		break;
-	case AL_PLAYING:
-		printf("AL_PLAYING\n");
-		break;
-	};
 
 	error = alGetError();
 	if (error != AL_NO_ERROR)
@@ -178,61 +148,18 @@ int GetDeviceState(SoundDevice* soundDevice)
 
 int SoundDevice_UpdataQueueBuffer(SoundDevice* soundDevice)
 {
-	//播放状态字段
-	ALint sourceState = 0;
-	ALint offset = 0;
+	int processed;
+	alGetSourcei(soundDevice->outSource, AL_BUFFERS_PROCESSED, &processed);
+	alGetSourcei(soundDevice->outSource, AL_BUFFERS_QUEUED, &soundDevice->queuedBuffer);
+	soundDevice->processedBuffer += processed;
+	
+	//printf("processedBuffer: %d, processed: %d, queuedBuffer: %d\n", soundDevice->processedBuffer, processed, soundDevice->queuedBuffer);
 
-	//获取处理队列，得出已经播放过的缓冲器的数量
-	//获取缓存队列，缓存的队列数量
-	//获取播放状态，是不是正在播放
-	alGetSourcei(soundDevice->outSource, AL_BUFFERS_PROCESSED, &soundDevice->processed);
-	alGetSourcei(soundDevice->outSource, AL_BUFFERS_QUEUED, &soundDevice->queued);
-	alGetSourcei(soundDevice->outSource, AL_SOURCE_STATE, &sourceState);
-	printf("processed: %d, queued:%d\n", soundDevice->processed, soundDevice->queued);
-#if 1
-	alGetSourcei(soundDevice->outSource, AL_SOURCE_STATE, &sourceState);
-	if (sourceState == AL_STOPPED ||
-		sourceState == AL_PAUSED ||
-		sourceState == AL_INITIAL)
-	{
-		//如果没有数据,或数据播放完了
-		if (soundDevice->queued < soundDevice->processed ||
-			soundDevice->queued == 0 ||
-			(soundDevice->queued == 1 && soundDevice->processed == 1))
-		{
-			//停止播放
-			printf("...Audio Stop\n");
-
-			// stopSound();
-			// cleanUpOpenAL();
-
-			return 0;
-		}
-	}
-#else
-#endif
-
-	switch (sourceState) {
-	case AL_INITIAL:
-		printf("AL_INITIAL\n");
-		break;
-	case AL_PAUSED:
-		printf("AL_PAUSED\n");
-		break;
-	case AL_STOPPED:
-		printf("AL_STOPPED\n");
-		break;
-	case AL_PLAYING:
-		printf("AL_PLAYING\n");
-		break;
-	};
-
-	//将已经播放过的的数据删除掉
-	while (soundDevice->processed--)
+	while (processed--)
 	{
 		ALuint buff;
 
-		// 更新缓存buffer中的数据到source中
+		// unqueue process buffer
 		alSourceUnqueueBuffers(soundDevice->outSource, 1, &buff);
 
 		ALuint error;
@@ -246,26 +173,6 @@ int SoundDevice_UpdataQueueBuffer(SoundDevice* soundDevice)
 			//#define AL_INVALID_OPERATION                      0xA004
 			return 0;
 		}
-#if 1
-#else
-		// 删除缓存buff中的数据
-		alDeleteBuffers(1, &buff);
-		error = alGetError();
-		if (error != AL_NO_ERROR)
-		{
-			printf("error alDeleteBuffers %x\n", error);
-			//AL_ILLEGAL_ENUM
-			//AL_INVALID_VALUE
-			//#define AL_ILLEGAL_COMMAND                        0xA004
-			//#define AL_INVALID_OPERATION                      0xA004
-			return 0;
-		}
-#endif
-		// 得到已经播放的音频队列多少块
-		soundDevice->processedBuffer++;
-		soundDevice->RP++;
-		if(soundDevice->RP >= soundDevice->bufferCount)
-			soundDevice->RP = 0;
 	}
 
 	return -1;
@@ -273,7 +180,6 @@ int SoundDevice_UpdataQueueBuffer(SoundDevice* soundDevice)
 
 int SoundDevice_AddAudioToQueue(SoundDevice* soundDevice, int WP, char* data_, int dataSize_)
 {
-	//样本数openal的表示方法
 	ALenum format = 0;
 	ALuint error = 0;
 
@@ -315,13 +221,13 @@ int SoundDevice_AddAudioToQueue(SoundDevice* soundDevice, int WP, char* data_, i
 		return 0;
 	}
 
-	//指定要将数据复制到缓冲区中的数据
+	// fill data
 	ALuint buffer = soundDevice->sndBuffer[WP];
 	alBufferData(buffer, format, data_, dataSize_, soundDevice->sampleRate);
 	error = alGetError();
 	if (error != AL_NO_ERROR)
 	{
-		printf("error alBufferData %x\n", error);
+		printf("alGetError %x: alBufferData(%d, %d, %d, %p, %d, %d) %x\n", error, buffer, format, data_, dataSize_, soundDevice->sampleRate);
 		//AL_ILLEGAL_ENUM
 		//AL_INVALID_VALUE
 		//#define AL_ILLEGAL_COMMAND                        0xA004
@@ -329,7 +235,7 @@ int SoundDevice_AddAudioToQueue(SoundDevice* soundDevice, int WP, char* data_, i
 		return 0;
 	}
 
-	//附加一个或一组buffer到一个source上
+	// queue a buffer
 	alSourceQueueBuffers(soundDevice->outSource, 1, &buffer);
 	error = alGetError();
 	if (error != AL_NO_ERROR)
@@ -339,14 +245,14 @@ int SoundDevice_AddAudioToQueue(SoundDevice* soundDevice, int WP, char* data_, i
 		return 0;
 	}
 
+	alGetSourcei(soundDevice->outSource, AL_BUFFERS_QUEUED, &soundDevice->queuedBuffer);
+
 	return -1;
 }
 
 int SoundDevice_GetQueuedAudioCount(SoundDevice* soundDevice)
 {
-	alGetSourcei(soundDevice->outSource, AL_BUFFERS_QUEUED, &soundDevice->queued);
-
-	return soundDevice->queued;
+	return soundDevice->queuedBuffer;
 }
 
 void SoundDevice_SetVolume(SoundDevice* soundDevice, float volume_)

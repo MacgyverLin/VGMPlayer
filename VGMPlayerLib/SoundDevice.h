@@ -16,10 +16,8 @@ extern "C" {
 		ALCcontext*		context;
 		ALCdevice*		device;
 		ALuint			outSource;
-		ALint			processed;
-		ALint			queued;
-		int				processedBuffer;
-		int				RP;
+		ALint			processedBuffer;
+		ALint			queuedBuffer;
 
 		ALuint			sndBuffer[32];
 		int				channels;

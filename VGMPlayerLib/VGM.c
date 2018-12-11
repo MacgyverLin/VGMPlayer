@@ -394,8 +394,8 @@ void VGMPlayer_Wait_NNNN_Sample(VGMPlayer *vgmPlayer, unsigned short NNNN)
 			YM2151_Update(0, buf, updateSampleCount);
 		if (vgmPlayer->vgmData->header.K053260Clock)
 			K053260_Update(0, buf, updateSampleCount);
-		if (vgmPlayer->vgmData->header.NESAPUClock)
-			NESAPU_Update(0, buf, vgmPlayer->vgmData->header.NESAPUClock);
+		//if (vgmPlayer->vgmData->header.NESAPUClock)
+			//NESAPU_Update(0, buf, updateSampleCount);
 
 		remainedSample -= updateSampleCount;
 		vgmPlayer->sampleIdx = vgmPlayer->sampleIdx + updateSampleCount;
@@ -462,7 +462,7 @@ int VGMPlayer_Update(VGMPlayer *vgmPlayer)
 	if (!vgmPlayer)
 		return 0;
 
-	while (SoundDevice_GetQueuedAudioCount(vgmPlayer->outputDevice) < vgmPlayer->bufferCount / 2)
+	while (SoundDevice_GetQueuedAudioCount(vgmPlayer->outputDevice) < vgmPlayer->bufferCount / 4)
 	{
 		unsigned char command;
 		VGMData_Read(vgmPlayer->vgmData, &command, sizeof(command));
