@@ -386,6 +386,7 @@ void VGMPlayer_Wait_NNNN_Sample(VGMPlayer *vgmPlayer, unsigned short NNNN)
 
 		int updateSampleCount = VGMPlayer_MIN((vgmPlayer->sampleCount - vgmPlayer->sampleIdx), remainedSample);
 
+		/*
 		if (vgmPlayer->vgmData->header.YM2612Clock)
 			YM2612_Update(0, buf, updateSampleCount);
 		if (vgmPlayer->vgmData->header.SN76489Clock)
@@ -394,6 +395,7 @@ void VGMPlayer_Wait_NNNN_Sample(VGMPlayer *vgmPlayer, unsigned short NNNN)
 			YM2151_Update(0, buf, updateSampleCount);
 		if (vgmPlayer->vgmData->header.K053260Clock)
 			K053260_Update(0, buf, updateSampleCount);
+			*/
 		if (vgmPlayer->vgmData->header.NESAPUClock)
 			NESAPU_Update(0, buf, updateSampleCount);
 
@@ -416,8 +418,8 @@ void VGMPlayer_Wait_NNNN_Sample(VGMPlayer *vgmPlayer, unsigned short NNNN)
 
 			vgmPlayer->bufferIdx = (vgmPlayer->bufferIdx + 1) % vgmPlayer->bufferCount;
 
-			while (SoundDevice_GetQueuedAudioCount(vgmPlayer->outputDevice) == vgmPlayer->bufferCount)
-				SoundDevice_UpdataQueueBuffer(vgmPlayer->outputDevice);
+			//while (SoundDevice_GetQueuedAudioCount(vgmPlayer->outputDevice) == vgmPlayer->bufferCount)
+				//SoundDevice_UpdataQueueBuffer(vgmPlayer->outputDevice);
 		}
 	}
 }
