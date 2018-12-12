@@ -415,6 +415,9 @@ void VGMPlayer_Wait_NNNN_Sample(VGMPlayer *vgmPlayer, unsigned short NNNN)
 			free(data);
 
 			vgmPlayer->bufferIdx = (vgmPlayer->bufferIdx + 1) % vgmPlayer->bufferCount;
+
+			while (SoundDevice_GetQueuedAudioCount(vgmPlayer->outputDevice) == vgmPlayer->bufferCount)
+				SoundDevice_UpdataQueueBuffer(vgmPlayer->outputDevice);
 		}
 	}
 }
