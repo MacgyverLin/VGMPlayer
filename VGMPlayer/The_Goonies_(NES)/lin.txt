@@ -1,0 +1,25 @@
+ Volume in drive E has no label.
+ Volume Serial Number is 0007-91B0
+
+ Directory of E:\Project\VGMPlayer\VGMPlayer\The_Goonies_(NES)
+
+12/12/2018  16:12    <DIR>          .
+12/12/2018  16:12    <DIR>          ..
+25/11/2013  23:41               515 01 Start.vgz
+25/11/2013  23:41             2,872 02 The Goonies 'R' Good Enough.vgz
+25/11/2013  23:41               693 03 Round Clear.vgz
+25/11/2013  23:41             1,768 04 BGM 2.vgz
+25/11/2013  23:41             1,668 05 BGM 3.vgz
+25/11/2013  23:41               639 06 Secret Cave.vgz
+25/11/2013  23:41               495 07 Invincible.vgz
+25/11/2013  23:41             1,291 08 Ending.vgz
+25/11/2013  23:41               535 09 Miss.vgz
+25/11/2013  23:41               746 10 Game Over.vgz
+12/12/2018  16:12                 0 lin.txt
+11/11/2013  02:08             1,964 The Goonies (FDS).png
+12/11/2013  01:59               183 The Goonies.m3u
+11/11/2013  02:08             1,873 The Goonies.png
+22/11/2013  16:24             1,506 The Goonies.txt
+11/11/2013  02:07             1,314 Vs. The Goonies.png
+              16 File(s)         18,062 bytes
+               2 Dir(s)  230,432,583,680 bytes free

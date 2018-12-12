@@ -1,0 +1,59 @@
+***********************************************
+* VGM music package                           *
+* http://vgm.mdscene.net/                     *
+***********************************************
+Game name:           Gradius II
+System:              Family Computer
+Music hardware:      NES APU (N2A03)
+
+Music author:        Shinji Tasaka,
+                     Motoaki Furukawa,
+                     Kenichi Matsubara,
+                     Seiichi Fukami,
+                     Hidenori Maezawa,
+                     Yukie Morimoto
+Game developer:      Konami
+Game publisher:      Konami
+Game release date:   1988-12-16
+
+Package created by:  GTheGuardian
+Package version:     1.05
+
+Song list, in approximate game order:
+Song name                           Length:
+                                    Total  Loop
+01 Equipment (Selection)            0:15   0:15
+02 Tabidachi (Air Battle)           0:19   0:19
+03 Burning Heat (Stage 1)           0:23   0:22
+04 The Final Enemy (Boss)           0:27   0:27
+05 Fortress (Stage 2)               0:35   0:35
+06 Heavy Blow (Stage 3-1)           0:39   0:39
+07 Dead End (Stage 3-2)             0:30   0:30
+08 The Old Stone Age (Stage 4)      0:24   0:24
+09 Gradius I -Boss Theme-
+   (Stage 5-1)                      0:08   0:06
+10 Salamander -Boss Theme-
+   (Stage 5-2)                      0:35   0:35
+11 Over Heat (Stage 6)              0:38   0:38
+12 Something Ghostly (Stage 7)      0:24   0:24
+13 Take Care! (Final Boss)          0:26   0:26
+14 Farewell (Ending)                1:33   -
+15 Game Over                        0:07   -
+
+Total Length                        7:24  13:04
+
+
+Notes:
+Track names are from
+"Space Odyssey Gradius II ~GOFER no Yabou~"
+(BY30-5202) and
+"Konami Famicom Music Memorial Best Vol.1"
+(140A-7709)
+
+This pack was made using MESS 0.148 VGM mod.
+
+
+Package history:
+1.00 2013-05-01 GTheGuardian: Initial release.
+1.05 2013-12-26 GTheGuardian: Fixed composer
+ tags.

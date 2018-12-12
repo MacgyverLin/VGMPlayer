@@ -1,0 +1,46 @@
+***********************************************
+* VGM music package                           *
+* http://vgmrips.net/                         *
+***********************************************
+Game name:           Yume Koujou -
+                     Doki Doki Panic
+System:              Family Computer
+                     Disk System
+Music hardware:      NES APU + FDS
+
+Music author:        Koji Kondo
+Game developer:      Nintendo EAD
+Game publisher:      Fuji Television
+Game release date:   1987-07-10
+
+Package created by:  Sonic of 8!
+Package version:     1.00
+
+Song list, in approximate game order:
+Song name                           Length:
+                                    Total  Loop
+01 Title                            0:34   -
+02 Player Select                    0:10   0:06
+03 Overworld                        0:31   0:29
+04 Underworld                       0:10   0:10
+05 Subspace                         0:02   0:02
+06 Power-Up Fanfare                 0:02   -
+07 Catherine                        0:10   0:10
+08 Victory                          0:03   -
+09 World Clear                      0:05   -
+10 Invincible                       0:05   0:05
+11 Mamu                             0:14   0:14
+12 File Clear                       0:37   0:32
+13 Ending                           1:15   0:38
+14 Miss                             0:02   -
+15 Game Over                        0:02   -
+
+Total Length                        4:02   6:29
+
+
+Notes:
+-
+
+
+Package history:
+1.00 2016-01-10 Sonic of 8!: Initial release.
