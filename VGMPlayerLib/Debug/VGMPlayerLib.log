@@ -1,3 +1,0 @@
-﻿  VGM.c
-e:\project\vgmplayer\vgmplayerlib\vgm.c(171): warning C4013: 'VGMData_FSeekSet' undefined; assuming extern returning int
-  VGMPlayerLib.vcxproj -> E:\Project\VGMPlayer\Debug\VGMPlayerLib.lib
