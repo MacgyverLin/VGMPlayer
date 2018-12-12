@@ -303,7 +303,7 @@ INT8 apu_dpcm(UINT8 chipID, dpcm_t *chan)
 	** reg2: 8 bits of 64-byte aligned address offset : $C000 + (value * 64)
 	** reg3: length, (value * 16) + 1
 	*/
-
+	return 0;
 	if (chan->enabled)
 	{
 		freq = dpcm_clocks[chan->regs[0] & 0x0F];
@@ -335,7 +335,7 @@ INT8 apu_dpcm(UINT8 chipID, dpcm_t *chan)
 			bit_pos = 7 - (chan->bits_left & 7);
 			if (7 == bit_pos)
 			{
-				chan->cur_byte = chan->cpu_mem[chan->address];
+				chan->cur_byte = 0;//chan->cpu_mem[chan->address];
 				chan->address++;
 				chan->length--;
 			}
@@ -563,7 +563,7 @@ void apu_update(UINT8 chipID, INT32** buffer, UINT32 samples)
 		accum += apu_noise(chipID, &apu->APU.noi);
 		accum += apu_dpcm(chipID, &apu->APU.dpcm);
 
-		accum *= 256;
+		accum <<= 8;
 		if (accum > 32767)
 			accum = 32767;
 		else if (accum < -32768)

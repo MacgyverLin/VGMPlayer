@@ -268,7 +268,14 @@ VGMPlayer *VGMPlayer_Create(VGMData* vgmData, int sampleRate, int interpolation)
 
 	if (vgmData->header.NESAPUClock)
 	{
-		NESAPU_Initialize(0, vgmData->header.NESAPUClock, sampleRate);
+		if (vgmData->header.NESAPUClock & 0x80000000)
+		{
+			NESAPU_Initialize(0, vgmData->header.NESAPUClock & 0x7fffffff, sampleRate);
+		}
+		else
+		{
+			NESAPU_Initialize(0, vgmData->header.NESAPUClock & 0x7fffffff, sampleRate);
+		}
 	}
 
 	return vgmPlayer;
@@ -386,7 +393,6 @@ void VGMPlayer_Wait_NNNN_Sample(VGMPlayer *vgmPlayer, unsigned short NNNN)
 
 		int updateSampleCount = VGMPlayer_MIN((vgmPlayer->sampleCount - vgmPlayer->sampleIdx), remainedSample);
 
-		/*
 		if (vgmPlayer->vgmData->header.YM2612Clock)
 			YM2612_Update(0, buf, updateSampleCount);
 		if (vgmPlayer->vgmData->header.SN76489Clock)
@@ -395,7 +401,6 @@ void VGMPlayer_Wait_NNNN_Sample(VGMPlayer *vgmPlayer, unsigned short NNNN)
 			YM2151_Update(0, buf, updateSampleCount);
 		if (vgmPlayer->vgmData->header.K053260Clock)
 			K053260_Update(0, buf, updateSampleCount);
-			*/
 		if (vgmPlayer->vgmData->header.NESAPUClock)
 			NESAPU_Update(0, buf, updateSampleCount);
 
