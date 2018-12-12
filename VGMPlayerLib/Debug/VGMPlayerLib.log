@@ -1,4 +1,4 @@
 ﻿  NESAPU.c
-c:\project\vgmplayer\vgmplayerlib\nesapu.c(105): warning C4244: '=': conversion from 'UINT64' to 'UINT32', possible loss of data
-c:\project\vgmplayer\vgmplayerlib\nesapu.c(112): warning C4244: '=': conversion from 'UINT64' to 'UINT32', possible loss of data
-  VGMPlayerLib.vcxproj -> C:\Project\VGMPlayer\Debug\VGMPlayerLib.lib
+e:\project\vgmplayer\vgmplayerlib\nesapu.c(105): warning C4244: '=': conversion from 'UINT64' to 'UINT32', possible loss of data
+e:\project\vgmplayer\vgmplayerlib\nesapu.c(112): warning C4244: '=': conversion from 'UINT64' to 'UINT32', possible loss of data
+  VGMPlayerLib.vcxproj -> E:\Project\VGMPlayer\Debug\VGMPlayerLib.lib

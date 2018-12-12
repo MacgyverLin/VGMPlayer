@@ -497,6 +497,7 @@ static inline void apu_regwrite(nesapu_info *info, INT32 address, UINT8 value)
 
 		break;
 
+		// noise
 	case APU_WRD0:
 		info->APU.noi.regs[0] = value;
 		break;
@@ -519,8 +520,7 @@ static inline void apu_regwrite(nesapu_info *info, INT32 address, UINT8 value)
 		}
 		break;
 
-		/* DMC */
-	case APU_WRE0:
+	case APU_WRE0: /* DMC */
 		info->APU.dpcm.regs[0] = value;
 		if (0 == (value & 0x80))
 			info->APU.dpcm.irq_occurred = FALSE;
@@ -770,6 +770,11 @@ void NESAPU_Initialize(UINT8 chipID, INT32 clock, UINT32 sampleRate)
 	INT32 rate = clock / 4;
 
 	memset(info, 0, sizeof(nesapu_info));
+	info->APU.squ[0].enabled = TRUE;
+	info->APU.squ[1].enabled = TRUE;
+	info->APU.tri.enabled = TRUE;
+	info->APU.noi.enabled = TRUE;
+	info->APU.dpcm.enabled = TRUE;
 
 	INT32 nBurnFPS = 60;
 
