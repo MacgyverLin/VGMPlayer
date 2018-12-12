@@ -512,7 +512,7 @@ static FILE *sample[9];
 static void init_tables(void)
 {
 	INT32 i, x, n;
-	Float32 o, m;
+	FLOAT32 o, m;
 
 	for (x = 0; x<TL_RES_LEN; x++)
 	{
@@ -599,8 +599,8 @@ static void init_tables(void)
 static void init_chip_tables(YM2151 *chip)
 {
 	INT32 i, j;
-	Float32 mult, pom, phaseinc, Hz;
-	Float32 scaler;
+	FLOAT32 mult, pom, phaseinc, Hz;
+	FLOAT32 scaler;
 
 	scaler = ((double)chip->clock / 64.0) / ((double)chip->sampfreq);
 	/*logerror("scaler    = %20.15f\n", scaler);*/

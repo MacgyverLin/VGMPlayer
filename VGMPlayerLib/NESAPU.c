@@ -66,7 +66,7 @@
 typedef struct
 {
 	apu_t   APU;			       /* Actual APUs */
-	Float32 apu_incsize;           /* Adjustment increment */
+	FLOAT32 apu_incsize;           /* Adjustment increment */
 	UINT32	samps_per_sync;        /* Number of samples per vsync */
 	UINT8	noise_lut[NOISE_LONG]; /* Noise sample lookup table */
 	UINT32	vbl_times[0x20];       /* VBL durations in samples */
@@ -186,12 +186,10 @@ static int8 apu_square(nesapu_info *info, square_t *chan)
 		}
 	}
 
-	if ((0 == (chan->regs[1] & 8) && (chan->freq >> 16) > freq_limit[chan->regs[1] & 7])
-		|| (chan->freq >> 16) < 4)
+	if ((0 == (chan->regs[1] & 8) && (chan->freq >> 16) > freq_limit[chan->regs[1] & 7]) || (chan->freq >> 16) < 4)
 		return 0;
 
-	chan->phaseacc -= (float)info->apu_incsize; /* # of cycles per sample */
-
+	chan->phaseacc -= info->apu_incsize; /* # of cycles per sample */
 	while (chan->phaseacc < 0)
 	{
 		chan->phaseacc += (chan->freq >> 16);
@@ -249,7 +247,7 @@ static int8 apu_triangle(nesapu_info *info, triangle_t *chan)
 	if (freq < 4) /* inaudible */
 		return 0;
 
-	chan->phaseacc -= (float)info->apu_incsize; /* # of cycles per sample */
+	chan->phaseacc -= info->apu_incsize; /* # of cycles per sample */
 	while (chan->phaseacc < 0)
 	{
 		chan->phaseacc += freq;
@@ -307,7 +305,7 @@ static int8 apu_noise(nesapu_info *info, noise_t *chan)
 		return 0;
 
 	freq = noise_freq[chan->regs[2] & 0x0F];
-	chan->phaseacc -= (float)info->apu_incsize; /* # of cycles per sample */
+	chan->phaseacc -= info->apu_incsize; /* # of cycles per sample */
 	while (chan->phaseacc < 0)
 	{
 		chan->phaseacc += freq;
@@ -455,7 +453,7 @@ static inline void apu_regwrite(nesapu_info *info, INT32 address, UINT8 value)
 		info->APU.tri.regs[0] = value;
 
 		if (info->APU.tri.enabled)
-		{                                          /* ??? */
+		{
 			if (FALSE == info->APU.tri.counter_started)
 				info->APU.tri.linear_length = info->sync_times2[value & 0x7F];
 		}
@@ -463,7 +461,6 @@ static inline void apu_regwrite(nesapu_info *info, INT32 address, UINT8 value)
 		break;
 
 	case 0x4009:
-		/* unused */
 		info->APU.tri.regs[1] = value;
 		break;
 
@@ -473,7 +470,6 @@ static inline void apu_regwrite(nesapu_info *info, INT32 address, UINT8 value)
 
 	case APU_WRC3:
 		info->APU.tri.regs[3] = value;
-
 		/* this is somewhat of a hack.  there is some latency on the Real
 		** Thing between when trireg0 is written to and when the linear
 		** length counter actually begins its countdown.  we want to prevent
@@ -501,13 +497,11 @@ static inline void apu_regwrite(nesapu_info *info, INT32 address, UINT8 value)
 
 		break;
 
-		/* noise */
 	case APU_WRD0:
 		info->APU.noi.regs[0] = value;
 		break;
 
 	case 0x400D:
-		/* unused */
 		info->APU.noi.regs[1] = value;
 		break;
 
@@ -602,9 +596,6 @@ static inline void apu_regwrite(nesapu_info *info, INT32 address, UINT8 value)
 
 		break;
 	default:
-#ifdef MAME_DEBUG
-		logerror("invalid apu write: $%02X at $%04X\n", value, address);
-#endif
 		break;
 	}
 }
@@ -616,23 +607,25 @@ static int counter = 0;
 static inline void apu_update(nesapu_info *info, INT32** buffer, INT32 samples)
 {
 	INT32 accum;
-	
+
 	//printf("counter: %f", counter / 44100.0f);
 
-	for(int i=0; i<samples; i++)
+	for (int i = 0; i < samples; i++)
 	{
 		accum = apu_square(info, &info->APU.squ[0]);
 		accum += apu_square(info, &info->APU.squ[1]);
 		accum += apu_triangle(info, &info->APU.tri);
 		accum += apu_noise(info, &info->APU.noi);
-		accum += apu_dpcm(info, &info->APU.dpcm);
+		//accum += apu_dpcm(info, &info->APU.dpcm);
+
+		accum *= 256;
 
 		/* 16-bit clamps */
 		if (accum > 32767)
 			accum = 32767;
 		else if (accum < -32768)
 			accum = -32768;
-				
+
 		//float v = 30000.0 * sin(counter * 4000.0 / 44100.0 * 2.0 * 3.1416);
 		//buffer[0][i] = v >0 ? 30000 : -30000;
 		//buffer[1][i] = v > 0 ? 30000 : -30000;
@@ -641,7 +634,7 @@ static inline void apu_update(nesapu_info *info, INT32** buffer, INT32 samples)
 		buffer[0][i] += accum;
 		buffer[1][i] += accum;
 	}
-	
+
 	//printf("counter: %d\n", accum);
 }
 
@@ -682,7 +675,7 @@ void NESAPU_WriteRegister(UINT8 chipID, INT32 address, UINT8 value)
 {
 	nesapu_info *info = &nesapu_chips[chipID]; //sndti_token(SOUND_NES, chip);
 
-	if (address > 0x17) 
+	if (address > 0x17)
 		return;
 
 	info->APU.regs[address] = value;
@@ -781,14 +774,16 @@ void NESAPU_Initialize(UINT8 chipID, INT32 clock, UINT32 sampleRate)
 	INT32 nBurnFPS = 60;
 
 	/* Initialize global variables */
-	info->samps_per_sync = (rate / 10) / nBurnFPS;
-	Float32 real_rate = (info->samps_per_sync * nBurnFPS) / 100.0f;
+	info->samps_per_sync = (rate * 10) / nBurnFPS;
+	FLOAT32 real_rate = (info->samps_per_sync * nBurnFPS) / 100.0f;
 	info->apu_incsize = clock / real_rate;
 
 	/* Use initializer calls */
 	create_noise(info->noise_lut, 13, NOISE_LONG);
 	create_vbltimes(info->vbl_times, vbl_length, info->samps_per_sync);
 	create_syncs(info, info->samps_per_sync);
+
+	//info->samples_per_frame = (clock * 100) / 4 / nBurnFPS;
 }
 
 void NESAPU_Shutdown()

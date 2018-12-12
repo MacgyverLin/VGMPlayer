@@ -153,7 +153,7 @@ int SoundDevice_UpdataQueueBuffer(SoundDevice* soundDevice)
 	alGetSourcei(soundDevice->outSource, AL_BUFFERS_QUEUED, &soundDevice->queuedBuffer);
 	soundDevice->processedBuffer += processed;
 	
-	printf("processedBuffer: %d, processed: %d, queuedBuffer: %d\n", soundDevice->processedBuffer, processed, soundDevice->queuedBuffer);
+	//printf("processedBuffer: %d, processed: %d, queuedBuffer: %d\n", soundDevice->processedBuffer, processed, soundDevice->queuedBuffer);
 
 	while (processed--)
 	{

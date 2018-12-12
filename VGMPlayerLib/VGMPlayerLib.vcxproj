@@ -152,7 +152,6 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="NESAPU.h" />
-    <ClInclude Include="nes_defs.h" />
     <ClInclude Include="VGMDef.h" />
     <ClInclude Include="k053260.h" />
     <ClInclude Include="SN76489.h" />

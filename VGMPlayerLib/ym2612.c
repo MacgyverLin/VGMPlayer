@@ -60,7 +60,7 @@
 #define DR_RATE        5514396
 
 #define LFO_FMS_LBITS  9								// FIXED (LFO_FMS_BASE gives somethink as 1)
-#define LFO_FMS_BASE   ((INT32) (0.05946309436 * 0.0338 * (Float32) (1 << LFO_FMS_LBITS)))
+#define LFO_FMS_BASE   ((INT32) (0.05946309436 * 0.0338 * (FLOAT32) (1 << LFO_FMS_LBITS)))
 
 #define S0             0
 #define S1             2
@@ -144,7 +144,7 @@ typedef struct{
 	INT32 Mode;
 	INT32 DAC;
 	INT32 DACdata;
-	Float32 Frequence;
+	FLOAT32 Frequence;
 	UINT32 Inter_Cnt;
 	UINT32 Inter_Step;
 	Channel CHANNEL[6];
@@ -1745,7 +1745,7 @@ void Update_Chan_Algo7_LFO_Int(YM2612 *ym2612, Channel *CH, INT32 **buf, INT32 l
 INT32 YM2612_Initialize(UINT8 chipCount, UINT32 clock, UINT32 sampleRate)
 {
 	INT32 i, j;
-	Float32 x;
+	FLOAT32 x;
 
 	if ((sampleRate == 0) || (clock == 0))
 		return 0;
@@ -1765,13 +1765,13 @@ INT32 YM2612_Initialize(UINT8 chipCount, UINT32 clock, UINT32 sampleRate)
 		// 144 = 12 * (prescale * 2) = 12 * 6 * 2
 		// prescale set to 6 by default
 
-		YM2612Chips[chipID].Frequence = ((Float32)YM2612Chips[chipID].Clock / (Float32)YM2612Chips[chipID].Rate) / 144.0;
+		YM2612Chips[chipID].Frequence = ((FLOAT32)YM2612Chips[chipID].Clock / (FLOAT32)YM2612Chips[chipID].Rate) / 144.0;
 		YM2612Chips[chipID].TimerBase = (INT32)(YM2612Chips[chipID].Frequence * 4096.0);
 
 		INT32 Interpolation = -1;
 		if ((Interpolation) && (YM2612Chips[chipID].Frequence > 1.0))
 		{
-			YM2612Chips[chipID].Inter_Step = (UINT32)((1.0 / YM2612Chips[chipID].Frequence) * (Float32)(0x4000));
+			YM2612Chips[chipID].Inter_Step = (UINT32)((1.0 / YM2612Chips[chipID].Frequence) * (FLOAT32)(0x4000));
 			YM2612Chips[chipID].Inter_Cnt = 0;
 
 			// We recalculate rate and frequence after interpolation
@@ -1811,7 +1811,7 @@ INT32 YM2612_Initialize(UINT8 chipCount, UINT32 clock, UINT32 sampleRate)
 		YM2612Chips[chipID].SIN_TAB[0] = YM2612Chips[chipID].SIN_TAB[SIN_LENGHT / 2] = &YM2612Chips[chipID].TL_TAB[(INT32)PG_CUT_OFF];
 		for (i = 1; i <= SIN_LENGHT / 4; i++)
 		{
-			x = sin(2.0 * PI * (Float32)(i) / (Float32)(SIN_LENGHT));  // Sinus
+			x = sin(2.0 * PI * (FLOAT32)(i) / (FLOAT32)(SIN_LENGHT));  // Sinus
 			x = 20 * log10(1 / x);                    // convert to dB
 
 			j = (INT32)(x / ENV_STEP);            // Get TL range
@@ -1825,15 +1825,15 @@ INT32 YM2612_Initialize(UINT8 chipCount, UINT32 clock, UINT32 sampleRate)
 		// Tableau LFO (LFO wav) :
 		for (i = 0; i < LFO_LENGHT; i++)
 		{
-			x = sin(2.0 * PI * (Float32)(i) / (Float32)(LFO_LENGHT));  // Sinus
+			x = sin(2.0 * PI * (FLOAT32)(i) / (FLOAT32)(LFO_LENGHT));  // Sinus
 			x += 1.0;
 			x /= 2.0;          // positive only
 			x *= 11.8 / ENV_STEP;    // ajusted to MAX enveloppe modulation
 
 			YM2612Chips[chipID].LFO_ENV_TAB[i] = (INT32)x;
 
-			x = sin(2.0 * PI * (Float32)(i) / (Float32)(LFO_LENGHT));  // Sinus
-			x *= (Float32)((1 << (LFO_HBITS - 1)) - 1);
+			x = sin(2.0 * PI * (FLOAT32)(i) / (FLOAT32)(LFO_LENGHT));  // Sinus
+			x *= (FLOAT32)((1 << (LFO_HBITS - 1)) - 1);
 
 			YM2612Chips[chipID].LFO_FREQ_TAB[i] = (INT32)x;
 		}
@@ -1844,13 +1844,13 @@ INT32 YM2612_Initialize(UINT8 chipCount, UINT32 clock, UINT32 sampleRate)
 		for (i = 0; i < ENV_LENGHT; i++)
 		{
 			// Attack curve (x^8 - music level 2 Vectorman 2)
-			x = pow(((Float32)((ENV_LENGHT - 1) - i) / (Float32)(ENV_LENGHT)), 8);
+			x = pow(((FLOAT32)((ENV_LENGHT - 1) - i) / (FLOAT32)(ENV_LENGHT)), 8);
 			x *= ENV_LENGHT;
 
 			YM2612Chips[chipID].ENV_TAB[i] = (INT32)x;
 
 			// Decay curve (just linear)
-			x = pow(((Float32)(i) / (Float32)(ENV_LENGHT)), 1);
+			x = pow(((FLOAT32)(i) / (FLOAT32)(ENV_LENGHT)), 1);
 			x *= ENV_LENGHT;
 
 			YM2612Chips[chipID].ENV_TAB[ENV_LENGHT + i] = (INT32)x;
@@ -1885,12 +1885,12 @@ INT32 YM2612_Initialize(UINT8 chipCount, UINT32 clock, UINT32 sampleRate)
 		// Tableau Frequency Step
 		for (i = 0; i < 2048; i++)
 		{
-			x = (Float32)(i)* YM2612Chips[chipID].Frequence;
+			x = (FLOAT32)(i)* YM2612Chips[chipID].Frequence;
 
 #if((SIN_LBITS + SIN_HBITS - (21 - 7)) < 0)
-			x /= (Float32)(1 << ((21 - 7) - SIN_LBITS - SIN_HBITS));
+			x /= (FLOAT32)(1 << ((21 - 7) - SIN_LBITS - SIN_HBITS));
 #else
-			x *= (Float32)(1 << (SIN_LBITS + SIN_HBITS - (21 - 7)));
+			x *= (FLOAT32)(1 << (SIN_LBITS + SIN_HBITS - (21 - 7)));
 #endif
 			x /= 2.0;  // because MUL = value * 2
 
@@ -1910,8 +1910,8 @@ INT32 YM2612_Initialize(UINT8 chipCount, UINT32 clock, UINT32 sampleRate)
 			x = YM2612Chips[chipID].Frequence;
 
 			x *= 1.0 + ((i & 3) * 0.25);          // bits 0-1 : x1.00, x1.25, x1.50, x1.75
-			x *= (Float32)(1 << ((i >> 2)));        // bits 2-5 : shift bits (x2^0 - x2^15)
-			x *= (Float32)(ENV_LENGHT << ENV_LBITS);    // on ajuste pour le tableau ENV_TAB
+			x *= (FLOAT32)(1 << ((i >> 2)));        // bits 2-5 : shift bits (x2^0 - x2^15)
+			x *= (FLOAT32)(ENV_LENGHT << ENV_LBITS);    // on ajuste pour le tableau ENV_TAB
 
 			YM2612Chips[chipID].AR_TAB[i + 4] = (UINT32)(x / AR_RATE);
 			YM2612Chips[chipID].DR_TAB[i + 4] = (UINT32)(x / DR_RATE);
@@ -1932,9 +1932,9 @@ INT32 YM2612_Initialize(UINT8 chipCount, UINT32 clock, UINT32 sampleRate)
 			for (j = 0; j < 32; j++)
 			{
 #if((SIN_LBITS + SIN_HBITS - 21) < 0)
-				x = (Float32)DT_DEF_TAB[(i << 5) + j] * YM2612Chips[chipID].Frequence / (Float32)(1 << (21 - SIN_LBITS - SIN_HBITS));
+				x = (FLOAT32)DT_DEF_TAB[(i << 5) + j] * YM2612Chips[chipID].Frequence / (FLOAT32)(1 << (21 - SIN_LBITS - SIN_HBITS));
 #else
-				x = (Float32)DT_DEF_TAB[(i << 5) + j] * YM2612Chips[chipID].Frequence * (Float32)(1 << (SIN_LBITS + SIN_HBITS - 21));
+				x = (FLOAT32)DT_DEF_TAB[(i << 5) + j] * YM2612Chips[chipID].Frequence * (FLOAT32)(1 << (SIN_LBITS + SIN_HBITS - 21));
 #endif
 				YM2612Chips[chipID].DT_TAB[i + 0][j] = (INT32)x;
 				YM2612Chips[chipID].DT_TAB[i + 4][j] = (INT32)-x;
@@ -1945,14 +1945,14 @@ INT32 YM2612_Initialize(UINT8 chipCount, UINT32 clock, UINT32 sampleRate)
 
 		j = (YM2612Chips[chipID].Rate * YM2612Chips[chipID].Inter_Step) / 0x4000;
 
-		YM2612Chips[chipID].LFO_INC_TAB[0] = (UINT32)(3.98 * (Float32)(1 << (LFO_HBITS + LFO_LBITS)) / j);
-		YM2612Chips[chipID].LFO_INC_TAB[1] = (UINT32)(5.56 * (Float32)(1 << (LFO_HBITS + LFO_LBITS)) / j);
-		YM2612Chips[chipID].LFO_INC_TAB[2] = (UINT32)(6.02 * (Float32)(1 << (LFO_HBITS + LFO_LBITS)) / j);
-		YM2612Chips[chipID].LFO_INC_TAB[3] = (UINT32)(6.37 * (Float32)(1 << (LFO_HBITS + LFO_LBITS)) / j);
-		YM2612Chips[chipID].LFO_INC_TAB[4] = (UINT32)(6.88 * (Float32)(1 << (LFO_HBITS + LFO_LBITS)) / j);
-		YM2612Chips[chipID].LFO_INC_TAB[5] = (UINT32)(9.63 * (Float32)(1 << (LFO_HBITS + LFO_LBITS)) / j);
-		YM2612Chips[chipID].LFO_INC_TAB[6] = (UINT32)(48.1 * (Float32)(1 << (LFO_HBITS + LFO_LBITS)) / j);
-		YM2612Chips[chipID].LFO_INC_TAB[7] = (UINT32)(72.2 * (Float32)(1 << (LFO_HBITS + LFO_LBITS)) / j);
+		YM2612Chips[chipID].LFO_INC_TAB[0] = (UINT32)(3.98 * (FLOAT32)(1 << (LFO_HBITS + LFO_LBITS)) / j);
+		YM2612Chips[chipID].LFO_INC_TAB[1] = (UINT32)(5.56 * (FLOAT32)(1 << (LFO_HBITS + LFO_LBITS)) / j);
+		YM2612Chips[chipID].LFO_INC_TAB[2] = (UINT32)(6.02 * (FLOAT32)(1 << (LFO_HBITS + LFO_LBITS)) / j);
+		YM2612Chips[chipID].LFO_INC_TAB[3] = (UINT32)(6.37 * (FLOAT32)(1 << (LFO_HBITS + LFO_LBITS)) / j);
+		YM2612Chips[chipID].LFO_INC_TAB[4] = (UINT32)(6.88 * (FLOAT32)(1 << (LFO_HBITS + LFO_LBITS)) / j);
+		YM2612Chips[chipID].LFO_INC_TAB[5] = (UINT32)(9.63 * (FLOAT32)(1 << (LFO_HBITS + LFO_LBITS)) / j);
+		YM2612Chips[chipID].LFO_INC_TAB[6] = (UINT32)(48.1 * (FLOAT32)(1 << (LFO_HBITS + LFO_LBITS)) / j);
+		YM2612Chips[chipID].LFO_INC_TAB[7] = (UINT32)(72.2 * (FLOAT32)(1 << (LFO_HBITS + LFO_LBITS)) / j);
 
 		YM2612_Reset(chipID);
 	}

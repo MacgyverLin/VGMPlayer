@@ -7,9 +7,6 @@ extern "C" {
 
 #define CLOCK_NTSC 53693175
 #define CLOCK_PAL  53203424
-
-#define CLOCK_NTSC 53693175
-#define CLOCK_PAL  53203424
 	
 typedef signed long long INT64;
 typedef signed int INT32;
@@ -19,11 +16,11 @@ typedef unsigned int UINT32;
 typedef unsigned short UINT16;
 typedef unsigned char UINT8;
 typedef unsigned long long UINT64;
-typedef float Float32;
-typedef double Float64;
+typedef float FLOAT32;
+typedef double FLOAT64;
 
-#define TRUE 0 
-#define FALSE -1
+#define TRUE -1
+#define FALSE 0
 
 #define logerror printf
 
