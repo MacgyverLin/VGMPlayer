@@ -101,6 +101,7 @@ BOOL VGMData::open()
 {
 	onOpen();
 
+	int s = sizeof(header);
 	if (read(&header, 256) != 256)
 	{
 		return false;
@@ -463,12 +464,12 @@ BOOL VGMData::update()
 	{
 		while(bufferInfo.outputSampleBatchCount < VGM_OUTPUT_BUFFER_COUNT / 4)
 		{
-			unsigned char command;
+			UINT8 command;
 			read(&command, sizeof(command));
 
-			unsigned char aa;
-			unsigned char dd;
-			unsigned short NNNN;
+			UINT8 aa;
+			UINT8 dd;
+			UINT16 NNNN;
 			switch (command)
 			{
 			case YM2612_PORT0_WRITE:
