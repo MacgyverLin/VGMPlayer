@@ -217,14 +217,19 @@ INT32 SoundDevice::queue(void* data_, int dataSize_)
 		return 0;
 	}
 
+	if (dataSize_ == 3528)
+	{
+		int a= 1;
+	}
+
 	// fill data
 	printf("soundDevice->WP %d\n", WP);
 	ALuint buffer = sndBuffers[WP];
 	alBufferData(buffer, format, data_, dataSize_, sampleRate);
 	error = alGetError();
+	int p=0, q = 0;
 	if (error != AL_NO_ERROR)
 	{
-		int p, q;
 		alGetSourcei(outSource, AL_BUFFERS_PROCESSED, &p);
 		alGetSourcei(outSource, AL_BUFFERS_QUEUED, &q);
 		printf("alGetError %x: WP=%d, processed: %d, queued: %d, alBufferData(%x, %x, %p, %d, %d)\n",
@@ -246,7 +251,17 @@ INT32 SoundDevice::queue(void* data_, int dataSize_)
 		return 0;
 	}
 
-	WP = (WP + 1) % sndBuffers.size();
+	WP = WP + 1;
+	if(WP>=sndBuffers.size())
+	{
+		WP = 0;
+		if (q == 16)
+		{
+			return -1;
+		}
+
+	}
+	//WP = (WP + 1) % sndBuffers.size();
 
 	return -1;
 }

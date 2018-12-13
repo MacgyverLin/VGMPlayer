@@ -461,7 +461,7 @@ BOOL VGMData::update()
 {
 	if (updateDataRequest)
 	{
-		while (bufferInfo.outputSampleBatchCount < VGM_OUTPUT_BUFFER_COUNT / 4)
+		while(bufferInfo.outputSampleBatchCount < VGM_OUTPUT_BUFFER_COUNT / 4)
 		{
 			unsigned char command;
 			read(&command, sizeof(command));
@@ -507,7 +507,7 @@ BOOL VGMData::update()
 
 			case WAIT_NNNN_SAMPLES:
 				read(&NNNN, sizeof(NNNN));
-				if (NNNN >= VGM_SAMPLE_COUNT * VGM_OUTPUT_BUFFER_COUNT)
+				if (NNNN >= VGM_SAMPLE_COUNT*3/4 * VGM_OUTPUT_BUFFER_COUNT)
 				{
 					int a = 1;
 				}
