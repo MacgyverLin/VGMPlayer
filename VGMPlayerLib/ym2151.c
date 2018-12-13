@@ -202,22 +202,8 @@ typedef struct
 #define TL_RES_LEN		(256) /* 8 bits addressing (real chip) */
 
 
-#if (SAMPLE_BITS==32)
-#define FINAL_SH	(0)
 #define MAXOUT		(+32767)
-#define MINOUT		(-32768)
-#elif (SAMPLE_BITS==16)
-#define FINAL_SH	(0)
-#define MAXOUT		(+32767)
-#define MINOUT		(-32768)
-#elif (SAMPLE_BITS==8)
-#define FINAL_SH	(8)
-#define MAXOUT		(+127)
-#define MINOUT		(-128)
-#endif
-
-
-/*	TL_TAB_LEN is calculated as:
+#define MINOUT		(-32768)/*	TL_TAB_LEN is calculated as:
 *	13 - sinus amplitude bits     (Y axis)
 *	2  - sinus sign bit           (Y axis)
 *	TL_RES_LEN - sinus resolution (X axis)
@@ -2160,7 +2146,7 @@ void YM2151_Update(UINT8 chipID, INT32 **buffers, UINT32 length)
 {
 	int i;
 	signed int outl, outr;
-	SAMP *bufL, *bufR;
+	INT32 *bufL, *bufR;
 
 	bufL = buffers[0];
 	bufR = buffers[1];
@@ -2219,7 +2205,7 @@ void YM2151_Update(UINT8 chipID, INT32 **buffers, UINT32 length)
 			chan7_calc();
 		SAVE_SINGLE_CHANNEL(7)
 
-			outl = chanout[0] & PSG->pan[0];
+		outl = chanout[0] & PSG->pan[0];
 		outr = chanout[0] & PSG->pan[1];
 		outl += (chanout[1] & PSG->pan[2]);
 		outr += (chanout[1] & PSG->pan[3]);
@@ -2236,8 +2222,10 @@ void YM2151_Update(UINT8 chipID, INT32 **buffers, UINT32 length)
 		outl += (chanout[7] & PSG->pan[14]);
 		outr += (chanout[7] & PSG->pan[15]);
 
-		outl >>= FINAL_SH;
-		outr >>= FINAL_SH;
+#ifdef NO_CLAMP
+		bufL[i] += outl;
+		bufR[i] += outr;
+#else
 		if (outl > MAXOUT) 
 			outl = MAXOUT;
 		else if (outl < MINOUT) 
@@ -2247,9 +2235,9 @@ void YM2151_Update(UINT8 chipID, INT32 **buffers, UINT32 length)
 		else if (outr < MINOUT) 
 			outr = MINOUT;
 		
-		((SAMP*)bufL)[i] += (SAMP)outl;
-		((SAMP*)bufR)[i] += (SAMP)outr;
-
+		bufL[i] += outl;
+		bufR[i] += outr;
+#endif
 		SAVE_ALL_CHANNELS
 
 #ifdef USE_MAME_TIMERS

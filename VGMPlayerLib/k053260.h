@@ -10,7 +10,7 @@ extern "C" {
 void K053260_Initialize(INT32 chip, INT32 clock, INT32 sampleRate);
 void K053260_Shutdown();
 void K053260_Reset(INT32 chip);
-void K053260_Update(INT32 chip, INT32 **pBuf, INT32 length);
+void K053260_Update(INT32 chip, INT32 **buffer, INT32 length);
 void K053260_WriteRegister(INT32 chip, INT32 address, UINT8 data);
 UINT32 K053260_ReadStatus(INT32 chip, INT32 address);
 void K053260_SetROM(INT32 chip, INT32 totalROMSize, INT32 startAddress, UINT8 *rom, INT32 nLen);

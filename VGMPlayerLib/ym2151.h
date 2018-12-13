@@ -7,7 +7,7 @@
 extern "C" {
 #endif
 
-/* 16- and 8-bit samples (signed) are supported*/
+/*
 #define SAMPLE_BITS 32
 
 #if (SAMPLE_BITS==32)
@@ -19,6 +19,7 @@ typedef INT16 SAMP;
 #if (SAMPLE_BITS==8)
 typedef INT8 SAMP;
 #endif
+*/
 
 INT32 YM2151_Initialize(UINT8 chipCount, UINT32 clock, UINT32 rate);
 void YM2151_Shutdown(void);

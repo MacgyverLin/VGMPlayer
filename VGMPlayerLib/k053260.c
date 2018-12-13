@@ -146,7 +146,7 @@ INT32 limit(INT32 val, INT32 max, INT32 min) {
 #define MAXOUT 0x7fff
 #define MINOUT -0x8000
 
-void K053260_Update(INT32 chip, INT32 **pBuf, INT32 length)
+void K053260_Update(INT32 chip, INT32 **buffer, INT32 length)
 {
 	static const INT8 dpcmcnv[] = { 0,1,2,4,8,16,32,64, -128, -64, -32, -16, -8, -4, -2, -1 };
 
@@ -229,6 +229,10 @@ void K053260_Update(INT32 chip, INT32 **pBuf, INT32 length)
 			}
 		}
 
+#ifdef NO_CLAMP
+		buffer[0][j] += dataL + dataR;
+		buffer[1][j] += dataL + dataR;
+#else
 		dataL = limit(dataL, MAXOUT, MINOUT);
 		dataR = limit(dataR, MAXOUT, MINOUT);
 
@@ -253,8 +257,9 @@ void K053260_Update(INT32 chip, INT32 **pBuf, INT32 length)
 
 		//			pBuf[0] += nLeftSample;
 		//			pBuf[1] += nRightSample;
-		pBuf[0][j] = BURN_SND_CLIP(pBuf[0][j] + nLeftSample);
-		pBuf[1][j] = BURN_SND_CLIP(pBuf[1][j] + nRightSample);
+		buffer[0][j] = BURN_SND_CLIP(buffer[0][j] + nLeftSample);
+		buffer[1][j] = BURN_SND_CLIP(buffer[1][j] + nRightSample);
+#endif
 	}
 
 	/* update the regs now */

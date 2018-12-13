@@ -563,6 +563,12 @@ void apu_update(UINT8 chipID, INT32** buffer, UINT32 samples)
 		accum += apu_noise(chipID, &apu->APU.noi);
 		accum += apu_dpcm(chipID, &apu->APU.dpcm);
 
+#ifdef NO_CLAMP
+		accum <<= 8;
+
+		buffer[0][i] = accum;
+		buffer[1][i] = accum;
+#else
 		accum <<= 8;
 		if (accum > 32767)
 			accum = 32767;
@@ -571,6 +577,7 @@ void apu_update(UINT8 chipID, INT32** buffer, UINT32 samples)
 
 		buffer[0][i] = accum;
 		buffer[1][i] = accum;
+#endif
 	}
 #if 0
 	NESAPU *apu = &nesapu[chipID];

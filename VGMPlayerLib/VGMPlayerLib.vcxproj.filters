@@ -19,9 +19,6 @@
     <Filter Include="Source Files\chips">
       <UniqueIdentifier>{90b8fce6-c59a-40e9-954c-affc203e5044}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Source Files\NES">
-      <UniqueIdentifier>{a5302820-89a1-413c-b8b4-4db37342c92a}</UniqueIdentifier>
-    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="stdafx.h">
@@ -58,7 +55,7 @@
       <Filter>Source Files\NewFilter1</Filter>
     </ClInclude>
     <ClInclude Include="NESAPU.h">
-      <Filter>Source Files\NewFilter1</Filter>
+      <Filter>Source Files\chips</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -77,14 +74,14 @@
     <ClCompile Include="pwm.c">
       <Filter>Source Files\NewFilter1</Filter>
     </ClCompile>
-    <ClCompile Include="NESAPU.c">
-      <Filter>Source Files\NewFilter1</Filter>
-    </ClCompile>
     <ClCompile Include="VGM.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="SoundDevice.cpp">
       <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="NESAPU.c">
+      <Filter>Source Files\chips</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>
