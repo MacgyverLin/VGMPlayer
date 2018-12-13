@@ -1,15 +1,15 @@
-﻿#include "SoundDevice.h"
+﻿#include "AudioDevice.h"
 #include "assert.h"
 
-SoundDevice::SoundDevice()
+AudioDevice::AudioDevice()
 {
 }
 
-SoundDevice::~SoundDevice()
+AudioDevice::~AudioDevice()
 {
 }
 
-BOOL SoundDevice::open(int channels_, int bitsPerSample_, int sampleRate_, int bufferCount_)
+BOOL AudioDevice::open(int channels_, int bitsPerSample_, int sampleRate_, int bufferCount_)
 {
 	ALuint error = 0;
 
@@ -62,7 +62,7 @@ BOOL SoundDevice::open(int channels_, int bitsPerSample_, int sampleRate_, int b
 	return true;
 }
 
-VOID SoundDevice::close()
+VOID AudioDevice::close()
 {
 	if (sndBuffers.size() != 0)
 	{
@@ -90,7 +90,7 @@ VOID SoundDevice::close()
 	}
 }
 
-INT32 SoundDevice::play()
+INT32 AudioDevice::play()
 {
 	alSourcePlay(outSource);
 
@@ -105,7 +105,7 @@ INT32 SoundDevice::play()
 	return -1;
 }
 
-INT32 SoundDevice::stop()
+INT32 AudioDevice::stop()
 {
 	alSourceStop(outSource);
 
@@ -120,7 +120,7 @@ INT32 SoundDevice::stop()
 	return -1;
 }
 
-INT32 SoundDevice::getDeviceState()
+INT32 AudioDevice::getDeviceState()
 {
 	int sourceState;
 	alGetSourcei(outSource, AL_SOURCE_STATE, &sourceState);
@@ -143,7 +143,7 @@ INT32 SoundDevice::getDeviceState()
 	};
 }
 
-INT32 SoundDevice::update()
+INT32 AudioDevice::update()
 {
 	int processed;
 	alGetSourcei(outSource, AL_BUFFERS_PROCESSED, &processed);
@@ -174,7 +174,7 @@ INT32 SoundDevice::update()
 	return -1;
 }
 
-INT32 SoundDevice::queue(void* data_, int dataSize_)
+INT32 AudioDevice::queue(void* data_, int dataSize_)
 {
 	ALenum format = 0;
 	ALuint error = 0;
@@ -223,7 +223,7 @@ INT32 SoundDevice::queue(void* data_, int dataSize_)
 	}
 
 	// fill data
-	printf("soundDevice->WP %d\n", WP);
+	//printf("soundDevice->WP %d\n", WP);
 	ALuint buffer = sndBuffers[WP];
 	alBufferData(buffer, format, data_, dataSize_, sampleRate);
 	error = alGetError();
@@ -266,31 +266,31 @@ INT32 SoundDevice::queue(void* data_, int dataSize_)
 	return -1;
 }
 
-INT32 SoundDevice::getQueued()
+INT32 AudioDevice::getQueued()
 {
 	return queuedBuffer;
 }
 
-VOID SoundDevice::setVolume(FLOAT32 volume_)
+VOID AudioDevice::setVolume(FLOAT32 volume_)
 {
 	volume = volume_;
 
 	alSourcef(outSource, AL_GAIN, volume);
 }
 
-FLOAT32 SoundDevice::getVolume()
+FLOAT32 AudioDevice::getVolume()
 {
 	return volume;
 }
 
-VOID SoundDevice::setPlayRate(FLOAT32 playRate_)
+VOID AudioDevice::setPlayRate(FLOAT32 playRate_)
 {
 	playRate = playRate_;
 
 	alSourcef(outSource, AL_PITCH, playRate);
 }
 
-FLOAT32 SoundDevice::getPlayRate()
+FLOAT32 AudioDevice::getPlayRate()
 {
 	return playRate;
 }

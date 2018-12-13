@@ -1,7 +1,7 @@
 #include "VGMAudioPlayer.h"
 
-VGMAudioPlayer::VGMAudioPlayer(VGMData& vgmData)
-: VGMDataObverser(vgmData)
+VGMAudioPlayer::VGMAudioPlayer()
+: VGMDataObverser()
 {
 }
 

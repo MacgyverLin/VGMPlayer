@@ -7,7 +7,7 @@
 class VGMDataObverser : public Observer
 {
 public:
-	VGMDataObverser(VGMData& vgmData);
+	VGMDataObverser();
 	virtual ~VGMDataObverser();
 protected:
 private:
@@ -15,7 +15,6 @@ private:
 public:
 protected:
 private:
-	VGMData& vgmData;
 };
 
 #endif

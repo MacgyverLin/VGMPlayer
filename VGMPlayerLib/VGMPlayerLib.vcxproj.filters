@@ -33,9 +33,6 @@
     <ClInclude Include="VGMPlayerLib.h">
       <Filter>Source Files</Filter>
     </ClInclude>
-    <ClInclude Include="SoundDevice.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
     <ClInclude Include="VGMDef.h">
       <Filter>Source Files</Filter>
     </ClInclude>
@@ -75,6 +72,15 @@
     <ClInclude Include="VGMFile.h">
       <Filter>Source Files\VGM</Filter>
     </ClInclude>
+    <ClInclude Include="VGMChannelViewer.h">
+      <Filter>Source Files\VGM</Filter>
+    </ClInclude>
+    <ClInclude Include="AudioDevice.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="VideoDevice.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="ym2151.c">
@@ -91,9 +97,6 @@
     </ClCompile>
     <ClCompile Include="pwm.c">
       <Filter>Source Files\NewFilter1</Filter>
-    </ClCompile>
-    <ClCompile Include="SoundDevice.cpp">
-      <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="NESAPU.c">
       <Filter>Source Files\chips</Filter>
@@ -115,6 +118,15 @@
     </ClCompile>
     <ClCompile Include="Observer.cpp">
       <Filter>Source Files\VGM</Filter>
+    </ClCompile>
+    <ClCompile Include="VGMChannelViewer.cpp">
+      <Filter>Source Files\VGM</Filter>
+    </ClCompile>
+    <ClCompile Include="AudioDevice.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="VideoDevice.cpp">
+      <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

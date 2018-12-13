@@ -1,17 +1,15 @@
-#ifndef _VGMAudioPlayer_h_
-#define _VGMAudioPlayer_h_
+#ifndef _VGMChannelViewer_h_
+#define _VGMChannelViewer_h_
 
 #include "VGMData.h"
 #include "VGMDataObverser.h"
-#include "AudioDevice.h"
+#include "VideoDevice.h"
 
-class VGMAudioPlayer : public VGMDataObverser
+class VGMChannelViewer : public VGMDataObverser
 {
 public:
-	VGMAudioPlayer();
-	virtual ~VGMAudioPlayer();
-
-	UINT32 getQueued();
+	VGMChannelViewer(UINT32 x_, UINT32 y_, UINT32 width_, UINT32 height_, const Color& bg_);
+	virtual ~VGMChannelViewer();
 protected:
 	virtual void onNotifySomething(Obserable& vgmData);
 	virtual void onNotifyOpen(Obserable& vgmData);
@@ -25,7 +23,13 @@ private:
 public:
 protected:
 private:
-	AudioDevice outputDevice;
+	VideoDevice videoDevice;
+
+	UINT32 x;
+	UINT32 y;
+	UINT32 width;
+	UINT32 height;
+	Color bg;
 };
 
 #endif

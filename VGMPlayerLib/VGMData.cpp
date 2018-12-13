@@ -462,7 +462,7 @@ BOOL VGMData::update()
 {
 	if (updateDataRequest)
 	{
-		while(bufferInfo.outputSampleBatchCount < VGM_OUTPUT_BUFFER_COUNT / 4)
+		while(bufferInfo.outputSampleBatchCount < 1)
 		{
 			UINT8 command;
 			read(&command, sizeof(command));

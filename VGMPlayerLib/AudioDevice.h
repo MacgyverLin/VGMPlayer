@@ -7,11 +7,11 @@
 #include <vector>
 using namespace std;
 
-class SoundDevice
+class AudioDevice
 {
 public:
-	SoundDevice();
-	~SoundDevice();
+	AudioDevice();
+	~AudioDevice();
 
 	BOOL open(int channels, int bitsPerSample, int sampleRate, int bufferCount);
 	VOID close();
