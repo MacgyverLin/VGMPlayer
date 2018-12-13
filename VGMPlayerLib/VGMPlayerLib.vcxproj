@@ -152,6 +152,11 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="NESAPU.h" />
+    <ClInclude Include="Obserable.h" />
+    <ClInclude Include="Observer.h" />
+    <ClInclude Include="VGMAudioPlayer.h" />
+    <ClInclude Include="VGMData.h" />
+    <ClInclude Include="VGMDataObverser.h" />
     <ClInclude Include="VGMDef.h" />
     <ClInclude Include="k053260.h" />
     <ClInclude Include="SN76489.h" />
@@ -159,7 +164,7 @@
     <ClInclude Include="SoundDevice.h" />
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="targetver.h" />
-    <ClInclude Include="VGM.h" />
+    <ClInclude Include="VGMFile.h" />
     <ClInclude Include="VGMPlayerLib.h" />
     <ClInclude Include="ym2151.h" />
     <ClInclude Include="ym2612.h" />
@@ -167,10 +172,15 @@
   <ItemGroup>
     <ClCompile Include="k053260.c" />
     <ClCompile Include="NESAPU.c" />
+    <ClCompile Include="Obserable.cpp" />
+    <ClCompile Include="Observer.cpp" />
     <ClCompile Include="SN76489.c" />
     <ClCompile Include="pwm.c" />
     <ClCompile Include="SoundDevice.cpp" />
-    <ClCompile Include="VGM.cpp" />
+    <ClCompile Include="VGMAudioPlayer.cpp" />
+    <ClCompile Include="VGMData.cpp" />
+    <ClCompile Include="VGMDataObverser.cpp" />
+    <ClCompile Include="VGMFile.cpp" />
     <ClCompile Include="ym2151.c" />
     <ClCompile Include="ym2612.c" />
   </ItemGroup>

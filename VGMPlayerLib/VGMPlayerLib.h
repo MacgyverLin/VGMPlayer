@@ -2,10 +2,11 @@
 #define _VGMPlayerLib_h_
 
 #include "vgmdef.h"
-#include "YM2612.h"
-#include "YM2151.h"
-#include "SN76489.h"
-#include "pwm.h"
-#include "VGM.h"
+#include "VGMData.h"
+#include "VGMFile.h"
+#include "Obserable.h"
+#include "Observer.h"
+#include "VGMDataObverser.h"
+#include "VGMAudioPlayer.h"
 
 #endif

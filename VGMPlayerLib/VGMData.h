@@ -1,5 +1,5 @@
-#ifndef _VGM_h_
-#define _VGM_h_
+#ifndef _VGMData_h_
+#define _VGMData_h_
 
 // https://vgmrips.net/wiki/VGM_Specification
 // http://www.project2612.org/list.php?page=T
@@ -8,13 +8,9 @@
 // All pointer offsets are written as relative to the current position in the file, so for example the GD3 offset at 0x14 in the header is the file position of the GD3 tag minus 0x14.
 // All header sizes are valid for all versions from 1.50 on, as long as header has at least 64 bytes.If the VGM data starts at an offset that is lower than 0x100, all overlapping header bytes have to be handled as they were zero.
 // VGMs run with a rate of 44100 samples per second.All sample values use this unit.
-#include <zlib.h>
 #include "vgmdef.h"
-#include "SoundDevice.h"
-#include <string>
+#include "Obserable.h"
 #include <vector>
-#include <list>
-#include <stdio.h>
 using namespace std;
 
 #define VGMPlayer_MIN(a, b) ((a)<(b)) ? (a) : (b)
@@ -350,122 +346,6 @@ public:
 
 #pragma pack(pop)
 
-
-class Obserable;
-class Observer
-{
-	friend class Obserable;
-public:
-	Observer()
-	{
-	}
-
-	virtual ~Observer()
-	{
-	}
-protected:
-	virtual void onNotifySomething(Obserable& obserable) = 0;
-	virtual void onNotifyOpen(Obserable& obserable) = 0;
-	virtual void onNotifyClose(Obserable& obserable) = 0;
-	virtual void onNotifyPlay(Obserable& obserable) = 0;
-	virtual void onNotifyStop(Obserable& obserable) = 0;
-	virtual void onNotifyPause(Obserable& obserable) = 0;
-	virtual void onNotifyResume(Obserable& obserable) = 0;
-	virtual void onNotifyUpdate(Obserable& obserable) = 0;
-private:
-public:
-protected:
-private:
-};
-
-class Obserable
-{
-public:
-	Obserable()
-	{
-	}
-
-	virtual ~Obserable()
-	{
-	}
-
-	void attach(Observer& observer)
-	{
-		observers.push_back(&observer);
-	}
-
-	void detach(Observer& observer)
-	{
-		observers.remove(&observer);
-	}
-
-	void notifySomething()
-	{
-		for (Observer *o : observers)
-		{
-			o->onNotifySomething(*this);
-		}
-	}
-
-	void notifyOpen()
-	{
-		for (Observer *o : observers)
-		{
-			o->onNotifyOpen(*this);
-		}
-	}
-
-	void notifyClose()
-	{
-		for (Observer *o : observers)
-		{
-			o->onNotifyClose(*this);
-		}
-	}
-
-	void notifyPlay()
-	{
-		for (Observer *o : observers)
-		{
-			o->onNotifyPlay(*this);
-		}
-	}
-
-	void notifyStop()
-	{
-		for (Observer *o : observers)
-		{
-			o->onNotifyStop(*this);
-		}
-	}
-
-	void notifyPause()
-	{
-		for (Observer *o : observers)
-		{
-			o->onNotifyPause(*this);
-		}
-	}
-
-	void notifyResume()
-	{
-		for (Observer *o : observers)
-		{
-			o->onNotifyResume(*this);
-		}
-	}
-
-	void notifyUpdate()
-	{
-		for (Observer *o : observers)
-		{
-			o->onNotifyUpdate(*this);
-		}
-	}
-private:
-	list<Observer *> observers;
-};
-
 class VGMData : public Obserable
 {
 public:
@@ -552,70 +432,5 @@ protected:
 	BOOL updateDataRequest;
 private:
 };
-
-class VGMFile : public VGMData
-{
-public:
-	VGMFile(const string& path, INT32 channels_, INT32 bitPerSample_, INT32 sampleRate_);
-	virtual ~VGMFile();
-protected:
-	virtual BOOL onOpen();
-	virtual void onClose();
-	virtual void onPlay();
-	virtual void onStop();
-	virtual void onPause();
-	virtual void onResume();
-	virtual BOOL onUpdate();
-	virtual INT32 onRead(VOID *buffer, UINT32 size);
-	virtual INT32 onSeekSet(UINT32 size);
-	virtual INT32 onSeekCur(UINT32 size);
-private:
-
-public:
-protected:
-private:
-	string path;
-	FILE *file;
-	gzFile gzFile;
-};
-
-class VGMDataObverser : public Observer
-{
-public:
-	VGMDataObverser(VGMData& vgmData);
-	virtual ~VGMDataObverser();
-protected:
-private:
-
-public:
-protected:
-private:
-	VGMData& vgmData;
-};
-
-class VGMDataOpenALPlayer : public VGMDataObverser
-{
-public:
-	VGMDataOpenALPlayer(VGMData& vgmData);
-	virtual ~VGMDataOpenALPlayer();
-
-	UINT32 getQueued();
-protected:
-	virtual void onNotifySomething(Obserable& vgmData);
-	virtual void onNotifyOpen(Obserable& vgmData);
-	virtual void onNotifyClose(Obserable& vgmData);
-	virtual void onNotifyPlay(Obserable& vgmData);
-	virtual void onNotifyStop(Obserable& vgmData);
-	virtual void onNotifyPause(Obserable& vgmData);
-	virtual void onNotifyResume(Obserable& vgmData);
-	virtual void onNotifyUpdate(Obserable& vgmData);
-private:
-public:
-protected:
-private:
-	SoundDevice outputDevice;
-};
-
-
 
 #endif

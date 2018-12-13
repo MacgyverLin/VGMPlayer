@@ -24,8 +24,8 @@ typedef double FLOAT64;
 #define VGM_OUTPUT_BUFFER_COUNT 64   // 64 Frames
 #define NO_CLAMP
 
-
-
+#define VGMPlayer_MIN(a, b) ((a)<(b)) ? (a) : (b)
+#define VGMPlayer_MAX(a, b) ((a)>(b)) ? (a) : (b)
 
 #define logerror printf
 

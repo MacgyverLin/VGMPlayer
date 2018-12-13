@@ -19,6 +19,9 @@
     <Filter Include="Source Files\chips">
       <UniqueIdentifier>{90b8fce6-c59a-40e9-954c-affc203e5044}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source Files\VGM">
+      <UniqueIdentifier>{4ed98003-02f7-499a-8bfe-772b6c5f2cdb}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="stdafx.h">
@@ -31,9 +34,6 @@
       <Filter>Source Files</Filter>
     </ClInclude>
     <ClInclude Include="SoundDevice.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="VGM.h">
       <Filter>Source Files</Filter>
     </ClInclude>
     <ClInclude Include="VGMDef.h">
@@ -57,6 +57,24 @@
     <ClInclude Include="NESAPU.h">
       <Filter>Source Files\chips</Filter>
     </ClInclude>
+    <ClInclude Include="Obserable.h">
+      <Filter>Source Files\VGM</Filter>
+    </ClInclude>
+    <ClInclude Include="Observer.h">
+      <Filter>Source Files\VGM</Filter>
+    </ClInclude>
+    <ClInclude Include="VGMAudioPlayer.h">
+      <Filter>Source Files\VGM</Filter>
+    </ClInclude>
+    <ClInclude Include="VGMData.h">
+      <Filter>Source Files\VGM</Filter>
+    </ClInclude>
+    <ClInclude Include="VGMDataObverser.h">
+      <Filter>Source Files\VGM</Filter>
+    </ClInclude>
+    <ClInclude Include="VGMFile.h">
+      <Filter>Source Files\VGM</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="ym2151.c">
@@ -74,14 +92,29 @@
     <ClCompile Include="pwm.c">
       <Filter>Source Files\NewFilter1</Filter>
     </ClCompile>
-    <ClCompile Include="VGM.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="SoundDevice.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="NESAPU.c">
       <Filter>Source Files\chips</Filter>
+    </ClCompile>
+    <ClCompile Include="VGMAudioPlayer.cpp">
+      <Filter>Source Files\VGM</Filter>
+    </ClCompile>
+    <ClCompile Include="VGMData.cpp">
+      <Filter>Source Files\VGM</Filter>
+    </ClCompile>
+    <ClCompile Include="VGMDataObverser.cpp">
+      <Filter>Source Files\VGM</Filter>
+    </ClCompile>
+    <ClCompile Include="VGMFile.cpp">
+      <Filter>Source Files\VGM</Filter>
+    </ClCompile>
+    <ClCompile Include="Obserable.cpp">
+      <Filter>Source Files\VGM</Filter>
+    </ClCompile>
+    <ClCompile Include="Observer.cpp">
+      <Filter>Source Files\VGM</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>
