@@ -726,7 +726,6 @@ VGMDataObverser::~VGMDataObverser()
 ////////////////////////////////////////////////////////////////
 VGMDataOpenALPlayer::VGMDataOpenALPlayer(VGMData& vgmData)
 	: VGMDataObverser(vgmData)
-	, outputDevice(0)
 {
 }
 
@@ -736,7 +735,7 @@ VGMDataOpenALPlayer::~VGMDataOpenALPlayer()
 
 UINT32 VGMDataOpenALPlayer::getQueued()
 {
-	return SoundDevice_GetQueuedAudioCount(outputDevice);
+	return outputDevice.getQueued();
 }
 
 void VGMDataOpenALPlayer::onNotifySomething(Obserable& observable)
@@ -752,8 +751,8 @@ void VGMDataOpenALPlayer::onNotifyOpen(Obserable& observable)
 	const VGMData::PlayInfo& playInfo = vgmData.getPlayInfo();
 	const VGMData::BufferInfo& bufferInfo = vgmData.getBufferInfo();
 
-	int rval = SoundDevice_Create(&outputDevice, playInfo.channels, playInfo.bitPerSamples, playInfo.sampleRate, VGM_OUTPUT_BUFFER_COUNT);
-	assert(rval != 0);
+	BOOL rval = outputDevice.open(playInfo.channels, playInfo.bitPerSamples, playInfo.sampleRate, VGM_OUTPUT_BUFFER_COUNT);
+	assert(rval);
 }
 
 void VGMDataOpenALPlayer::onNotifyClose(Obserable& observable)
@@ -764,13 +763,7 @@ void VGMDataOpenALPlayer::onNotifyClose(Obserable& observable)
 	const VGMData::PlayInfo& playInfo = vgmData.getPlayInfo();
 	const VGMData::BufferInfo& bufferInfo = vgmData.getBufferInfo();
 
-	if (outputDevice)
-	{
-		SoundDevice_StopSound(outputDevice);
-		SoundDevice_Release(outputDevice);
-
-		outputDevice = 0;
-	}
+	outputDevice.close();
 }
 
 void VGMDataOpenALPlayer::onNotifyPlay(Obserable& observable)
@@ -801,19 +794,18 @@ void VGMDataOpenALPlayer::onNotifyUpdate(Obserable& observable)
 
 	for (int batchIdx = 0; batchIdx < bufferInfo.outputSampleBatchCount; batchIdx++)
 	{
-		if (!SoundDevice_AddAudioToQueue(outputDevice, 
-			(void*)(&bufferInfo.outputSamples[batchIdx * VGM_SAMPLE_COUNT].l), 
-			VGM_SAMPLE_COUNT * sizeof(VGMData::OutputSample)))
+		if (!outputDevice.queue((void*)(&bufferInfo.outputSamples[batchIdx * VGM_SAMPLE_COUNT].l), 
+								VGM_SAMPLE_COUNT * sizeof(VGMData::OutputSample)))
 			break;
 	}
 
-	if (SoundDevice_GetDeviceState(outputDevice) != 3)
+	if (outputDevice.getDeviceState() != 3)
 	{
-		SoundDevice_PlaySound(outputDevice);
+		outputDevice.play();
 
-		//SoundDevice_SetVolume(vgmPlayer->outputDevice, 1.0);
-		//SoundDevice_SetPlayRate(vgmPlayer->outputDevice, 1.0);
+		//outputDevice.setVolume(1.0);
+		//outputDevice.setPlayRate(1.0);
 	}
 
-	SoundDevice_UpdataQueueBuffer(outputDevice);
+	outputDevice.update();
 }

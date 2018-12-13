@@ -62,9 +62,6 @@
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="SoundDevice.c">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="ym2151.c">
       <Filter>Source Files\chips</Filter>
     </ClCompile>
@@ -84,6 +81,9 @@
       <Filter>Source Files\NewFilter1</Filter>
     </ClCompile>
     <ClCompile Include="VGM.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="SoundDevice.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

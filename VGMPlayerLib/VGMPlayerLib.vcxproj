@@ -169,7 +169,7 @@
     <ClCompile Include="NESAPU.c" />
     <ClCompile Include="SN76489.c" />
     <ClCompile Include="pwm.c" />
-    <ClCompile Include="SoundDevice.c" />
+    <ClCompile Include="SoundDevice.cpp" />
     <ClCompile Include="VGM.cpp" />
     <ClCompile Include="ym2151.c" />
     <ClCompile Include="ym2612.c" />

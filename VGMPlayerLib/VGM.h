@@ -613,7 +613,7 @@ private:
 public:
 protected:
 private:
-	SoundDevice* outputDevice;
+	SoundDevice outputDevice;
 };
 
 

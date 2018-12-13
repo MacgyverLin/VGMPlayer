@@ -2,51 +2,48 @@
 #define _SoundDevice_h_
 
 #include "vgmdef.h"
-#include <stdio.h>
-#include <stdlib.h>
 #include <AL/al.h>
 #include <AL/alc.h>
+#include <vector>
+using namespace std;
 
-#ifdef __cplusplus
-extern "C" {
-#endif
+class SoundDevice
+{
+public:
+	SoundDevice();
+	~SoundDevice();
 
-	typedef struct
-	{
-		ALCcontext*		context;
-		ALCdevice*		device;
-		ALuint			outSource;
-		ALint			processedBuffer;
-		ALint			queuedBuffer;
+	BOOL open(int channels, int bitsPerSample, int sampleRate, int bufferCount);
+	VOID close();
 
-		ALuint			sndBuffer[VGM_OUTPUT_BUFFER_COUNT];
-		int				channels;
-		int				bitsPerSample;
-		int				sampleRate;
-		int				bufferCount;
+	INT32 play();
+	INT32 stop();
+	INT32 update();
+	INT32 queue(void* data_, int dataSize_);
+	INT32 getQueued();
+	void setVolume(float volume_);
+	float getVolume();
+	void setPlayRate(float playRate_);
+	float getPlayRate();
 
-		float			volume;
-		float			playRate;
+	INT32 getDeviceState();
+protected:
+private:
+	ALCcontext*		context;
+	ALCdevice*		device;
+	ALuint			outSource;
+	ALint			processedBuffer;
+	ALint			queuedBuffer;
 
-		int				WP;
-	}SoundDevice;
+	vector<ALuint>	sndBuffers;
+	INT32			channels;
+	INT32			bitsPerSample;
+	INT32			sampleRate;
 
-	extern int SoundDevice_Create(SoundDevice** soundDevice, int channels, int bitsPerSample, int sampleRate, int bufferCount);
-	extern void SoundDevice_Release(SoundDevice* soundDevice);
-	extern int SoundDevice_PlaySound(SoundDevice* soundDevice);
-	extern int SoundDevice_StopSound(SoundDevice* soundDevice);
-	extern int SoundDevice_UpdataQueueBuffer(SoundDevice* soundDevice);
-	extern int SoundDevice_AddAudioToQueue(SoundDevice* soundDevice, void* data_, int dataSize_);
-	extern int SoundDevice_GetQueuedAudioCount(SoundDevice* soundDevice);
-	extern void SoundDevice_SetVolume(SoundDevice* soundDevice, float volume_);
-	extern float SoundDevice_GetVolume(SoundDevice* soundDevice);
-	extern void SoundDevice_SetPlayRate(SoundDevice* soundDevice, float playRate_);
-	extern float SoundDevice_GetPlayRate(SoundDevice* soundDevice);
+	FLOAT32			volume;
+	FLOAT32			playRate;
 
-	extern int SoundDevice_GetDeviceState(SoundDevice* soundDevice);
-	extern int SoundDevice_GetQueued(SoundDevice* soundDevice);
-#ifdef __cplusplus 
+	INT32			WP;
 };
-#endif
 
 #endif
