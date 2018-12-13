@@ -1,13 +1,11 @@
 #ifndef _VGMDef_h_
 #define _VGMDef_h_
 
-#ifdef __cplusplus
-extern "C" {
-#endif
+#include <windows.h>
 
-#define CLOCK_NTSC 53693175
-#define CLOCK_PAL  53203424
-	
+//typedef char BOOL;
+typedef char CHAR;
+//typedef void VOID;
 typedef signed long long INT64;
 typedef signed int INT32;
 typedef signed short INT16;
@@ -19,8 +17,13 @@ typedef unsigned long long UINT64;
 typedef float FLOAT32;
 typedef double FLOAT64;
 
-#define TRUE -1
-#define FALSE 0
+//#define TRUE -1
+//#define FALSE 0
+
+#define vgm_log printf
+
+#define VGM_SAMPLE_COUNT		882 // NTSC FRAME
+#define VGM_OUTPUT_BUFFER_COUNT 8   // 64 Frames
 
 #define logerror printf
 
@@ -30,9 +33,5 @@ typedef double FLOAT64;
 #define BURN_SND_ROUTE_LEFT			1
 #define BURN_SND_ROUTE_RIGHT		2
 #define BURN_SND_ROUTE_BOTH			(BURN_SND_ROUTE_LEFT | BURN_SND_ROUTE_RIGHT)
-
-#ifdef __cplusplus
-};
-#endif
 
 #endif

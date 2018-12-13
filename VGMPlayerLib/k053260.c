@@ -335,7 +335,17 @@ void K053260_Shutdown()
 	for (INT32 i = 0; i < 2; i++) {
 		ic = &Chips[i];
 
-		free(ic->delta_table);
+		if (ic->delta_table)
+		{
+			free(ic->delta_table);
+			ic->delta_table = 0;
+		}
+
+		if(ic->rom)
+		{
+			free(ic->rom);
+			ic->rom = 0;
+		}
 	}
 
 	nUpdateStep = 0;

@@ -1,6 +1,7 @@
 ﻿#include "SoundDevice.h"
+#include "assert.h"
 
-int SoundDevice_Create(SoundDevice** soundDevice, int channels, int bitsPerSample, int sampleRate, int bufferSize, int bufferCount)
+int SoundDevice_Create(SoundDevice** soundDevice, int channels, int bitsPerSample, int sampleRate, int bufferCount)
 {
 	ALuint error = 0;
 
@@ -16,10 +17,11 @@ int SoundDevice_Create(SoundDevice** soundDevice, int channels, int bitsPerSampl
 	(*soundDevice)->channels = channels;
 	(*soundDevice)->bitsPerSample = bitsPerSample;
 	(*soundDevice)->sampleRate = sampleRate;
-	(*soundDevice)->bufferSize = bufferSize;
 	(*soundDevice)->bufferCount = bufferCount;
 	(*soundDevice)->playRate = 1.0;
 	(*soundDevice)->volume = 1.0;
+
+	(*soundDevice)->WP = 0;
 
 	// device
 	(*soundDevice)->device = alcOpenDevice(NULL);
@@ -123,7 +125,7 @@ int SoundDevice_StopSound(SoundDevice* soundDevice)
 	return -1;
 }
 
-int GetDeviceState(SoundDevice* soundDevice)
+int SoundDevice_GetDeviceState(SoundDevice* soundDevice)
 {
 	int sourceState;
 	alGetSourcei(soundDevice->outSource, AL_SOURCE_STATE, &sourceState);
@@ -152,7 +154,6 @@ int SoundDevice_UpdataQueueBuffer(SoundDevice* soundDevice)
 	alGetSourcei(soundDevice->outSource, AL_BUFFERS_PROCESSED, &processed);
 	alGetSourcei(soundDevice->outSource, AL_BUFFERS_QUEUED, &soundDevice->queuedBuffer);
 	soundDevice->processedBuffer += processed;
-	
 	//printf("processedBuffer: %d, processed: %d, queuedBuffer: %d\n", soundDevice->processedBuffer, processed, soundDevice->queuedBuffer);
 
 	while (processed--)
@@ -178,7 +179,7 @@ int SoundDevice_UpdataQueueBuffer(SoundDevice* soundDevice)
 	return -1;
 }
 
-int SoundDevice_AddAudioToQueue(SoundDevice* soundDevice, int WP, char* data_, int dataSize_)
+int SoundDevice_AddAudioToQueue(SoundDevice* soundDevice, void* data_, int dataSize_)
 {
 	ALenum format = 0;
 	ALuint error = 0;
@@ -222,7 +223,8 @@ int SoundDevice_AddAudioToQueue(SoundDevice* soundDevice, int WP, char* data_, i
 	}
 
 	// fill data
-	ALuint buffer = soundDevice->sndBuffer[WP];
+	printf("soundDevice->WP %d\n", soundDevice->WP);
+	ALuint buffer = soundDevice->sndBuffer[soundDevice->WP];
 	alBufferData(buffer, format, data_, dataSize_, soundDevice->sampleRate);
 	error = alGetError();
 	if (error != AL_NO_ERROR)
@@ -231,7 +233,7 @@ int SoundDevice_AddAudioToQueue(SoundDevice* soundDevice, int WP, char* data_, i
 		alGetSourcei(soundDevice->outSource, AL_BUFFERS_PROCESSED, &p);
 		alGetSourcei(soundDevice->outSource, AL_BUFFERS_QUEUED, &q);		
 		printf("alGetError %x: WP=%d, processed: %d, queued: %d, alBufferData(%x, %x, %p, %d, %d)\n", 
-			error, WP, p, q, buffer, format, data_, dataSize_, soundDevice->sampleRate);
+			error, soundDevice->WP, p, q, buffer, format, data_, dataSize_, soundDevice->sampleRate);
 		//AL_ILLEGAL_ENUM
 		//AL_INVALID_VALUE
 		//#define AL_ILLEGAL_COMMAND                        0xA004
@@ -249,7 +251,7 @@ int SoundDevice_AddAudioToQueue(SoundDevice* soundDevice, int WP, char* data_, i
 		return 0;
 	}
 
-	alGetSourcei(soundDevice->outSource, AL_BUFFERS_QUEUED, &soundDevice->queuedBuffer);
+	soundDevice->WP = (soundDevice->WP+1) % soundDevice->bufferCount;
 
 	return -1;
 }
