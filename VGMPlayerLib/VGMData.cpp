@@ -350,8 +350,8 @@ void VGMData::fillOutputBuffer()
 
 	for (i = 0; i < VGM_SAMPLE_COUNT; i++) // always fill by fix size VGM_SAMPLE_COUNT
 	{
-		out_L = l[i];
-		out_R = r[i];
+		out_L = 1000 * sin(((float)i) * 4000.0 * 2.0f * 3.1415f); //l[i];
+		out_R = 1000 * sin(((float)i) * 4000.0 * 2.0f * 3.1415f); //r[i];
 		r[i] = 0;
 		l[i] = 0;
 
