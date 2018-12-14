@@ -564,12 +564,12 @@ void apu_update(UINT8 chipID, INT32** buffer, UINT32 samples)
 		accum += apu_dpcm(chipID, &apu->APU.dpcm);
 
 #ifdef NO_CLAMP
-		accum <<= 8;
+		accum <<= 10;
 
 		buffer[0][i] = accum;
 		buffer[1][i] = accum;
 #else
-		accum <<= 8;
+		accum <<= 10;
 		if (accum > 32767)
 			accum = 32767;
 		else if (accum < -32768)

@@ -81,6 +81,12 @@
     <ClInclude Include="VideoDevice.h">
       <Filter>Source Files</Filter>
     </ClInclude>
+    <ClInclude Include="FFT.h">
+      <Filter>Source Files\VGM</Filter>
+    </ClInclude>
+    <ClInclude Include="VGMFrequencyViewer.h">
+      <Filter>Source Files\VGM</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="ym2151.c">
@@ -127,6 +133,12 @@
     </ClCompile>
     <ClCompile Include="VideoDevice.cpp">
       <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="FFT.cpp">
+      <Filter>Source Files\VGM</Filter>
+    </ClCompile>
+    <ClCompile Include="VGMFrequencyViewer.cpp">
+      <Filter>Source Files\VGM</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

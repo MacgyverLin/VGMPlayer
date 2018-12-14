@@ -151,6 +151,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="FFT.h" />
     <ClInclude Include="NESAPU.h" />
     <ClInclude Include="Obserable.h" />
     <ClInclude Include="Observer.h" />
@@ -166,12 +167,14 @@
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="targetver.h" />
     <ClInclude Include="VGMFile.h" />
+    <ClInclude Include="VGMFrequencyViewer.h" />
     <ClInclude Include="VGMPlayerLib.h" />
     <ClInclude Include="VideoDevice.h" />
     <ClInclude Include="ym2151.h" />
     <ClInclude Include="ym2612.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="FFT.cpp" />
     <ClCompile Include="k053260.c" />
     <ClCompile Include="NESAPU.c" />
     <ClCompile Include="Obserable.cpp" />
@@ -184,6 +187,7 @@
     <ClCompile Include="VGMData.cpp" />
     <ClCompile Include="VGMDataObverser.cpp" />
     <ClCompile Include="VGMFile.cpp" />
+    <ClCompile Include="VGMFrequencyViewer.cpp" />
     <ClCompile Include="VideoDevice.cpp" />
     <ClCompile Include="ym2151.c" />
     <ClCompile Include="ym2612.c" />

@@ -217,13 +217,8 @@ INT32 AudioDevice::queue(void* data_, int dataSize_)
 		return 0;
 	}
 
-	if (dataSize_ == 3528)
-	{
-		int a= 1;
-	}
-
 	// fill data
-	//printf("soundDevice->WP %d\n", WP);
+	// printf("soundDevice->WP %d\n", WP);
 	ALuint buffer = sndBuffers[WP];
 	alBufferData(buffer, format, data_, dataSize_, sampleRate);
 	error = alGetError();

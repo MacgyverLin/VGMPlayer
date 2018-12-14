@@ -7,6 +7,7 @@
 #include <SDL_opengl.h>
 #include <GL/glu.h>
 #include <GL/gl.h>
+#include <string>
 using namespace std;
 
 class Vertex
@@ -45,7 +46,7 @@ public:
 	VideoDevice();
 	~VideoDevice();
 
-	BOOL open(UINT32 x_, UINT32 y_, UINT32 width_, UINT32 height_);
+	BOOL open(const string& name_, UINT32 x_, UINT32 y_, UINT32 width_, UINT32 height_);
 	VOID close();
 
 	void makeCurrent();

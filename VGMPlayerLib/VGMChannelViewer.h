@@ -8,7 +8,7 @@
 class VGMChannelViewer : public VGMDataObverser
 {
 public:
-	VGMChannelViewer(UINT32 x_, UINT32 y_, UINT32 width_, UINT32 height_, const Color& bg_);
+	VGMChannelViewer(const string& name_, UINT32 x_, UINT32 y_, UINT32 width_, UINT32 height_, const Color& bg_);
 	virtual ~VGMChannelViewer();
 protected:
 	virtual void onNotifySomething(Obserable& vgmData);
@@ -25,6 +25,7 @@ protected:
 private:
 	VideoDevice videoDevice;
 
+	string name;
 	UINT32 x;
 	UINT32 y;
 	UINT32 width;
