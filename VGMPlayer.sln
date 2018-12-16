@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
-VisualStudioVersion = 15.0.28010.2041
+VisualStudioVersion = 15.0.27130.2027
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "VGMPlayerLib", "VGMPlayerLib\VGMPlayerLib.vcxproj", "{5D9CF23A-72B0-4357-8018-D268F231B4EC}"
 	ProjectSection(ProjectDependencies) = postProject
@@ -10,7 +10,7 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "VGMPlayerLib", "VGMPlayerLi
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "zlib", "zlib\zlib.vcxproj", "{E1E38802-CB5C-4404-96BB-BFB61E81BDC9}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "VGMPlayer1", "VGMPlayer\VGMPlayer1.vcxproj", "{B5EEB573-145B-4822-AFA9-408BBDD075B0}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "VGMPlayer", "VGMPlayer\VGMPlayer.vcxproj", "{439F7383-7946-43C8-BA17-01F263CADC0D}"
 	ProjectSection(ProjectDependencies) = postProject
 		{E1E38802-CB5C-4404-96BB-BFB61E81BDC9} = {E1E38802-CB5C-4404-96BB-BFB61E81BDC9}
 		{5D9CF23A-72B0-4357-8018-D268F231B4EC} = {5D9CF23A-72B0-4357-8018-D268F231B4EC}
@@ -40,14 +40,14 @@ Global
 		{E1E38802-CB5C-4404-96BB-BFB61E81BDC9}.Release|x64.Build.0 = Release|x64
 		{E1E38802-CB5C-4404-96BB-BFB61E81BDC9}.Release|x86.ActiveCfg = Release|Win32
 		{E1E38802-CB5C-4404-96BB-BFB61E81BDC9}.Release|x86.Build.0 = Release|Win32
-		{B5EEB573-145B-4822-AFA9-408BBDD075B0}.Debug|x64.ActiveCfg = Debug|x64
-		{B5EEB573-145B-4822-AFA9-408BBDD075B0}.Debug|x64.Build.0 = Debug|x64
-		{B5EEB573-145B-4822-AFA9-408BBDD075B0}.Debug|x86.ActiveCfg = Debug|Win32
-		{B5EEB573-145B-4822-AFA9-408BBDD075B0}.Debug|x86.Build.0 = Debug|Win32
-		{B5EEB573-145B-4822-AFA9-408BBDD075B0}.Release|x64.ActiveCfg = Release|x64
-		{B5EEB573-145B-4822-AFA9-408BBDD075B0}.Release|x64.Build.0 = Release|x64
-		{B5EEB573-145B-4822-AFA9-408BBDD075B0}.Release|x86.ActiveCfg = Release|Win32
-		{B5EEB573-145B-4822-AFA9-408BBDD075B0}.Release|x86.Build.0 = Release|Win32
+		{439F7383-7946-43C8-BA17-01F263CADC0D}.Debug|x64.ActiveCfg = Debug|x64
+		{439F7383-7946-43C8-BA17-01F263CADC0D}.Debug|x64.Build.0 = Debug|x64
+		{439F7383-7946-43C8-BA17-01F263CADC0D}.Debug|x86.ActiveCfg = Debug|Win32
+		{439F7383-7946-43C8-BA17-01F263CADC0D}.Debug|x86.Build.0 = Debug|Win32
+		{439F7383-7946-43C8-BA17-01F263CADC0D}.Release|x64.ActiveCfg = Release|x64
+		{439F7383-7946-43C8-BA17-01F263CADC0D}.Release|x64.Build.0 = Release|x64
+		{439F7383-7946-43C8-BA17-01F263CADC0D}.Release|x86.ActiveCfg = Release|Win32
+		{439F7383-7946-43C8-BA17-01F263CADC0D}.Release|x86.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
