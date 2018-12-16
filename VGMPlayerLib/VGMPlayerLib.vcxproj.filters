@@ -87,6 +87,9 @@
     <ClInclude Include="VGMFrequencyViewer.h">
       <Filter>Source Files\VGM</Filter>
     </ClInclude>
+    <ClInclude Include="NESFDSAPU.h">
+      <Filter>Source Files\chips</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="ym2151.c">
@@ -139,6 +142,9 @@
     </ClCompile>
     <ClCompile Include="VGMFrequencyViewer.cpp">
       <Filter>Source Files\VGM</Filter>
+    </ClCompile>
+    <ClCompile Include="NESFDSAPU.c">
+      <Filter>Source Files\chips</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

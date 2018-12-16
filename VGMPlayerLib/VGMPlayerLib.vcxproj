@@ -90,7 +90,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS; WIN32;_DEBUG;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories> ../SDK/OpenAL/include;  ../zlib; ../SDK/SDL/include</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories> ../SDK/OpenAL/include; ../zlib; ../SDK/SDL/include</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -153,6 +153,7 @@
   <ItemGroup>
     <ClInclude Include="FFT.h" />
     <ClInclude Include="NESAPU.h" />
+    <ClInclude Include="NESFDSAPU.h" />
     <ClInclude Include="Obserable.h" />
     <ClInclude Include="Observer.h" />
     <ClInclude Include="VGMAudioPlayer.h" />
@@ -177,6 +178,7 @@
     <ClCompile Include="FFT.cpp" />
     <ClCompile Include="k053260.c" />
     <ClCompile Include="NESAPU.c" />
+    <ClCompile Include="NESFDSAPU.c" />
     <ClCompile Include="Obserable.cpp" />
     <ClCompile Include="Observer.cpp" />
     <ClCompile Include="SN76489.c" />

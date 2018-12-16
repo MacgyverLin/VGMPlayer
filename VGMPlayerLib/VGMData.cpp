@@ -9,10 +9,11 @@
 #include "YM2151.h"
 #include "K053260.h"
 #include "NESAPU.h"
+#include "NESFDSAPU.h"
 using namespace std;
 
 VGMData::VGMData(INT32 channels_, INT32 bitPerSample_, INT32 sampleRate_)
-: Obserable()
+	: Obserable()
 {
 	playInfo.paused = true;
 	playInfo.playing = false;
@@ -153,14 +154,9 @@ BOOL VGMData::open()
 	}
 	if (header.NESAPUClock)
 	{
-		if (header.NESAPUClock & 0x80000000)
-		{
-			NESAPU_Initialize(0, header.NESAPUClock & 0x7fffffff, playInfo.sampleRate);
-		}
-		else
-		{
-			NESAPU_Initialize(0, header.NESAPUClock & 0x7fffffff, playInfo.sampleRate);
-		}
+		NESAPU_Initialize(0, header.NESAPUClock & 0x7fffffff, playInfo.sampleRate);
+		if (header.NESAPUClock & 0x80000000 != 0)
+			NESFDSAPU_Initialize(0, header.NESAPUClock & 0x7fffffff, playInfo.sampleRate);
 	}
 
 	return true;
@@ -321,6 +317,8 @@ void VGMData::close()
 	if (header.NESAPUClock)
 	{
 		NESAPU_Shutdown();
+		if (header.NESAPUClock & 0x80000000 != 0)
+			NESFDSAPU_Shutdown();
 	}
 
 	onClose();
@@ -404,7 +402,11 @@ void VGMData::handleWaitNNNNSample(unsigned short NNNN)
 		if (header.K053260Clock)
 			K053260_Update(0, sampleBuffers, batchSampleSize);
 		if (header.NESAPUClock)
+		{
 			NESAPU_Update(0, sampleBuffers, batchSampleSize);
+			if (header.NESAPUClock & 0x80000000)
+				NESFDSAPU_Update(0, sampleBuffers, batchSampleSize);
+		}
 
 		samplesToUpdate -= batchSampleSize;								// updated samples, remain-
 		bufferInfo.sampleIdx = bufferInfo.sampleIdx + batchSampleSize;	// updated samples, sampleIdx+
@@ -464,7 +466,7 @@ BOOL VGMData::update()
 {
 	if (updateDataRequest)
 	{
-		while(bufferInfo.outputSampleBatchCount < 1)
+		while (bufferInfo.outputSampleBatchCount < 1)
 		{
 			UINT8 command;
 			read(&command, sizeof(command));
@@ -510,7 +512,7 @@ BOOL VGMData::update()
 
 			case WAIT_NNNN_SAMPLES:
 				read(&NNNN, sizeof(NNNN));
-				if (NNNN >= VGM_SAMPLE_COUNT*3/4 * VGM_OUTPUT_BUFFER_COUNT)
+				if (NNNN >= VGM_SAMPLE_COUNT * 3 / 4 * VGM_OUTPUT_BUFFER_COUNT)
 				{
 					int a = 1;
 				}
@@ -569,6 +571,7 @@ BOOL VGMData::update()
 				read(&dd, sizeof(dd));
 
 				NESAPU_WriteRegister(0, aa, dd);
+				NESFDSAPU_WriteRegister(0, aa, dd);
 				break;
 
 			default:

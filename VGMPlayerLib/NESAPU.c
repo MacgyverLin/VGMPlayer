@@ -451,7 +451,7 @@ void apu_regwrite(UINT8 chipID, UINT32 address, UINT8 value)
 		apu->APU.noi.regs[0] = value;
 		break;
 
-	case 0x400D:
+	case 0x0D:
 		/* unused */
 		apu->APU.noi.regs[1] = value;
 		break;
@@ -564,12 +564,12 @@ void apu_update(UINT8 chipID, INT32** buffer, UINT32 samples)
 		accum += apu_dpcm(chipID, &apu->APU.dpcm);
 
 #ifdef NO_CLAMP
-		accum <<= 10;
+		accum <<= 8;
 
 		buffer[0][i] = accum;
 		buffer[1][i] = accum;
 #else
-		accum <<= 10;
+		accum <<= 8;
 		if (accum > 32767)
 			accum = 32767;
 		else if (accum < -32768)
@@ -662,6 +662,9 @@ UINT8 apu_read(UINT8 chipID, UINT32 address)
 /* WRITE VALUE TO TEMP REGISTRY AND QUEUE EVENT */
 void apu_write(UINT8 chipID, UINT32 address, UINT8 value)
 {
+	if (address >= 0x17)
+		return;
+
 	NESAPU *apu = &nesapu[chipID];
 
 	apu->APU.regs[address] = value;
