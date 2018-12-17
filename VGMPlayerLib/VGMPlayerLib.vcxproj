@@ -163,7 +163,6 @@
     <ClInclude Include="VGMDef.h" />
     <ClInclude Include="k053260.h" />
     <ClInclude Include="SN76489.h" />
-    <ClInclude Include="pwm.h" />
     <ClInclude Include="AudioDevice.h" />
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="targetver.h" />
@@ -182,7 +181,6 @@
     <ClCompile Include="Obserable.cpp" />
     <ClCompile Include="Observer.cpp" />
     <ClCompile Include="SN76489.c" />
-    <ClCompile Include="pwm.c" />
     <ClCompile Include="AudioDevice.cpp" />
     <ClCompile Include="VGMAudioPlayer.cpp" />
     <ClCompile Include="VGMChannelViewer.cpp" />

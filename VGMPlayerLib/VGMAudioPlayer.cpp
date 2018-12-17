@@ -1,7 +1,7 @@
 #include "VGMAudioPlayer.h"
 
 VGMAudioPlayer::VGMAudioPlayer()
-: VGMDataObverser()
+	: VGMDataObverser()
 {
 }
 
@@ -67,19 +67,19 @@ void VGMAudioPlayer::onNotifyUpdate(Obserable& observable)
 	const VGMData::PlayInfo& playInfo = vgmData.getPlayInfo();
 	const VGMData::BufferInfo& bufferInfo = vgmData.getBufferInfo();
 
-	for (int batchIdx = 0; batchIdx < bufferInfo.outputSampleBatchCount; batchIdx++)
+	if (bufferInfo.needQueueOutputSamples)
 	{
-		if (!outputDevice.queue((void*)(&bufferInfo.outputSamples[batchIdx * VGM_SAMPLE_COUNT].l), 
-								VGM_SAMPLE_COUNT * sizeof(VGMData::OutputSample)))
-			break;
-	}
+		if (!outputDevice.queue((void*)(&bufferInfo.outputSamples[0].l),
+			VGM_SAMPLE_COUNT * sizeof(VGMData::OutputSample)))
+			return;
 
-	if (outputDevice.getDeviceState() != 3)
-	{
-		outputDevice.play();
+		if (outputDevice.getDeviceState() != 3)
+		{
+			outputDevice.play();
 
-		//outputDevice.setVolume(1.0);
-		//outputDevice.setPlayRate(1.0);
+			//outputDevice.setVolume(1.0);
+			//outputDevice.setPlayRate(1.0);
+		}
 	}
 
 	outputDevice.update();

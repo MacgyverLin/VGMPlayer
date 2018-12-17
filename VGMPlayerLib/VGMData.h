@@ -372,9 +372,9 @@ public:
 		UINT32 sampleIdx;
 		vector<INT32> samplesL;
 		vector<INT32> samplesR;
-
-		UINT32 outputSampleBatchCount;
 		vector<OutputSample> outputSamples;
+		
+		BOOL needQueueOutputSamples;
 	};
 	VGMData(INT32 channels_, INT32 bitPerSample_, INT32 sampleRate_);
 	virtual ~VGMData();
@@ -418,7 +418,8 @@ protected:
 protected:
 	void handleDataBlocks();
 	void handleK053260ROM(INT32 skipByte0x66, INT32 blockType, INT32 blockSize);
-	void handleWaitNNNNSample(unsigned short NNNN);
+	
+	UINT32 updateSamples(UINT32 updateSampleCounts);
 	void handleEndOfSound();
 
 	void fillOutputBuffer();

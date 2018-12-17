@@ -24,9 +24,9 @@ VGMData::VGMData(INT32 channels_, INT32 bitPerSample_, INT32 sampleRate_)
 	bufferInfo.sampleIdx = 0;
 	bufferInfo.samplesL.resize(VGM_SAMPLE_COUNT);
 	bufferInfo.samplesR.resize(VGM_SAMPLE_COUNT);
+	bufferInfo.outputSamples.resize(VGM_SAMPLE_COUNT);
 
-	bufferInfo.outputSampleBatchCount = 0;
-	bufferInfo.outputSamples.resize(VGM_SAMPLE_COUNT * VGM_OUTPUT_BUFFER_COUNT);
+	bufferInfo.needQueueOutputSamples = false;
 
 	updateDataRequest = false;
 }
@@ -155,8 +155,8 @@ BOOL VGMData::open()
 	if (header.NESAPUClock)
 	{
 		NESAPU_Initialize(0, header.NESAPUClock & 0x7fffffff, playInfo.sampleRate);
-		if (header.NESAPUClock & 0x80000000 != 0)
-			NESFDSAPU_Initialize(0, header.NESAPUClock & 0x7fffffff, playInfo.sampleRate);
+		if ((header.NESAPUClock & 0x80000000) != 0)
+			NESFDSAPU_Initialize(0, (header.NESAPUClock & 0x7fffffff), playInfo.sampleRate);
 	}
 
 	return true;
@@ -317,7 +317,7 @@ void VGMData::close()
 	if (header.NESAPUClock)
 	{
 		NESAPU_Shutdown();
-		if (header.NESAPUClock & 0x80000000 != 0)
+		if ((header.NESAPUClock & 0x80000000) != 0)
 			NESFDSAPU_Shutdown();
 	}
 
@@ -342,7 +342,7 @@ INT32 VGMData::seekCur(UINT32 size)
 void VGMData::fillOutputBuffer()
 {
 	int i, out_L, out_R;
-	short *dest = (short *)(&bufferInfo.outputSamples[bufferInfo.outputSampleBatchCount * VGM_SAMPLE_COUNT]);
+	short *dest = (short *)(&bufferInfo.outputSamples[0]);
 	INT32* l = &bufferInfo.samplesL[0];
 	INT32* r = &bufferInfo.samplesR[0];
 
@@ -372,52 +372,45 @@ void VGMData::fillOutputBuffer()
 		else
 			*dest++ = out_R;
 	}
-
-	bufferInfo.outputSampleBatchCount += 1;
-	if (bufferInfo.outputSampleBatchCount >= VGM_OUTPUT_BUFFER_COUNT)
-	{
-		int a = 1;
-	}
 }
 
-void VGMData::handleWaitNNNNSample(unsigned short NNNN)
+UINT32 VGMData::updateSamples(UINT32 updateSampleCounts)
 {
+	updateSampleCounts = VGMPlayer_MIN((VGM_SAMPLE_COUNT - bufferInfo.sampleIdx), updateSampleCounts); // never exceed bufferSize
+	if (updateSampleCounts == 0)
+		return 0;
+
 	INT32* sampleBuffers[2];
+	sampleBuffers[0] = &bufferInfo.samplesL[bufferInfo.sampleIdx];
+	sampleBuffers[1] = &bufferInfo.samplesR[bufferInfo.sampleIdx];
 
-	int samplesToUpdate = NNNN * playInfo.sampleRate / 44100;
-	while (samplesToUpdate > 0)
+	assert(bufferInfo.samplesL.size() == VGM_SAMPLE_COUNT);
+	if (header.YM2612Clock)
+		YM2612_Update(0, sampleBuffers, updateSampleCounts);
+	if (header.SN76489Clock)
+		SN76489_Update(0, sampleBuffers, updateSampleCounts);
+	if (header.YM2151Clock)
+		YM2151_Update(0, sampleBuffers, updateSampleCounts);
+	if (header.K053260Clock)
+		K053260_Update(0, sampleBuffers, updateSampleCounts);
+	if (header.NESAPUClock)
 	{
-		sampleBuffers[0] = &bufferInfo.samplesL[bufferInfo.sampleIdx];
-		sampleBuffers[1] = &bufferInfo.samplesR[bufferInfo.sampleIdx];
-
-		assert(bufferInfo.samplesL.size() == VGM_SAMPLE_COUNT);
-		INT32 batchSampleSize = VGMPlayer_MIN((VGM_SAMPLE_COUNT - bufferInfo.sampleIdx), samplesToUpdate); // never exceed bufferSize
-
-		if (header.YM2612Clock)
-			YM2612_Update(0, sampleBuffers, batchSampleSize);
-		if (header.SN76489Clock)
-			SN76489_Update(0, sampleBuffers, batchSampleSize);
-		if (header.YM2151Clock)
-			YM2151_Update(0, sampleBuffers, batchSampleSize);
-		if (header.K053260Clock)
-			K053260_Update(0, sampleBuffers, batchSampleSize);
-		if (header.NESAPUClock)
-		{
-			NESAPU_Update(0, sampleBuffers, batchSampleSize);
-			if (header.NESAPUClock & 0x80000000)
-				NESFDSAPU_Update(0, sampleBuffers, batchSampleSize);
-		}
-
-		samplesToUpdate -= batchSampleSize;								// updated samples, remain-
-		bufferInfo.sampleIdx = bufferInfo.sampleIdx + batchSampleSize;	// updated samples, sampleIdx+
-		assert(bufferInfo.sampleIdx <= VGM_SAMPLE_COUNT);
-		if (bufferInfo.sampleIdx == VGM_SAMPLE_COUNT)
-		{
-			bufferInfo.sampleIdx = 0;
-
-			fillOutputBuffer();
-		}
+		NESAPU_Update(0, sampleBuffers, updateSampleCounts);
+		if (header.NESAPUClock & 0x80000000)
+			NESFDSAPU_Update(0, sampleBuffers, updateSampleCounts);
 	}
+
+	bufferInfo.sampleIdx = bufferInfo.sampleIdx + updateSampleCounts;	// updated samples, sampleIdx+
+	assert(bufferInfo.sampleIdx <= VGM_SAMPLE_COUNT);
+	if (bufferInfo.sampleIdx == VGM_SAMPLE_COUNT)
+	{
+		bufferInfo.sampleIdx = 0;
+		bufferInfo.needQueueOutputSamples = true;
+
+		fillOutputBuffer();
+	}
+
+	return updateSampleCounts;
 }
 
 void VGMData::handleEndOfSound()
@@ -464,9 +457,14 @@ void VGMData::handleDataBlocks()
 
 BOOL VGMData::update()
 {
+	static INT32 updateSampleCounts = 0;
 	if (updateDataRequest)
 	{
-		while (bufferInfo.outputSampleBatchCount < 1)
+		if (updateSampleCounts > 0)
+		{
+			updateSampleCounts -= updateSamples(updateSampleCounts);
+		}
+		else
 		{
 			UINT8 command;
 			read(&command, sizeof(command));
@@ -510,51 +508,6 @@ BOOL VGMData::update()
 				SN76489_WriteRegister(0, -1, dd);
 				break;
 
-			case WAIT_NNNN_SAMPLES:
-				read(&NNNN, sizeof(NNNN));
-				if (NNNN >= VGM_SAMPLE_COUNT * 3 / 4 * VGM_OUTPUT_BUFFER_COUNT)
-				{
-					int a = 1;
-				}
-				else
-				{
-					handleWaitNNNNSample(NNNN);
-				}
-				break;
-
-			case WAIT_735_SAMPLES:
-				handleWaitNNNNSample(735);
-				break;
-
-			case WAIT_882_SAMPLES:
-				handleWaitNNNNSample(882);
-				break;
-
-			case WAIT_1_SAMPLES:
-			case WAIT_2_SAMPLES:
-			case WAIT_3_SAMPLES:
-			case WAIT_4_SAMPLES:
-			case WAIT_5_SAMPLES:
-			case WAIT_6_SAMPLES:
-			case WAIT_7_SAMPLES:
-			case WAIT_8_SAMPLES:
-			case WAIT_9_SAMPLES:
-			case WAIT_10_SAMPLES:
-			case WAIT_11_SAMPLES:
-			case WAIT_12_SAMPLES:
-			case WAIT_13_SAMPLES:
-			case WAIT_14_SAMPLES:
-			case WAIT_15_SAMPLES:
-			case WAIT_16_SAMPLES:
-				handleWaitNNNNSample((command & 0x0f) + 1);
-				break;
-
-			case END_OF_SOUND:
-				handleEndOfSound();
-				printf("END_OF_SOUND();\n");
-				return false;
-				break;
-
 			case DATA_BLOCKS:
 				handleDataBlocks();
 				break;
@@ -574,16 +527,55 @@ BOOL VGMData::update()
 				NESFDSAPU_WriteRegister(0, aa, dd);
 				break;
 
+			case WAIT_NNNN_SAMPLES:
+				read(&NNNN, sizeof(NNNN));
+				updateSampleCounts += NNNN;
+				break;
+
+			case WAIT_735_SAMPLES:
+				updateSampleCounts += 735;
+				break;
+
+			case WAIT_882_SAMPLES:
+				updateSampleCounts += 882;
+				break;
+
+			case WAIT_1_SAMPLES:
+			case WAIT_2_SAMPLES:
+			case WAIT_3_SAMPLES:
+			case WAIT_4_SAMPLES:
+			case WAIT_5_SAMPLES:
+			case WAIT_6_SAMPLES:
+			case WAIT_7_SAMPLES:
+			case WAIT_8_SAMPLES:
+			case WAIT_9_SAMPLES:
+			case WAIT_10_SAMPLES:
+			case WAIT_11_SAMPLES:
+			case WAIT_12_SAMPLES:
+			case WAIT_13_SAMPLES:
+			case WAIT_14_SAMPLES:
+			case WAIT_15_SAMPLES:
+			case WAIT_16_SAMPLES:
+				updateSampleCounts += ((command & 0x0f) + 1);
+
+				break;
+
+			case END_OF_SOUND:
+				handleEndOfSound();
+				printf("END_OF_SOUND();\n");
+				return false;
+				break;
+
 			default:
 				printf("UnHandled Command: 0x%02x\n", command);
 			};
 		}
 
 		updateDataRequest = false;
-	};
+	}
 
 	notifyUpdate();
-	bufferInfo.outputSampleBatchCount = 0;
+	bufferInfo.needQueueOutputSamples = false;
 
 	return true;
 }

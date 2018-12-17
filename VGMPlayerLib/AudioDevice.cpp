@@ -250,11 +250,6 @@ INT32 AudioDevice::queue(void* data_, int dataSize_)
 	if(WP>=sndBuffers.size())
 	{
 		WP = 0;
-		if (q == 16)
-		{
-			return -1;
-		}
-
 	}
 	//WP = (WP + 1) % sndBuffers.size();
 
