@@ -21,7 +21,7 @@ typedef double FLOAT64;
 
 #define vgm_log printf
 #define VGM_SAMPLE_COUNT		882 // NTSC FRAME
-#define VGM_OUTPUT_BUFFER_COUNT 64   // 64 Frames
+#define VGM_OUTPUT_BUFFER_COUNT 8   // 64 Frames
 #define NO_CLAMP
 
 #define VGMPlayer_MIN(a, b) ((a)<(b)) ? (a) : (b)

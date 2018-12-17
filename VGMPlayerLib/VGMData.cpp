@@ -529,15 +529,15 @@ BOOL VGMData::update()
 
 			case WAIT_NNNN_SAMPLES:
 				read(&NNNN, sizeof(NNNN));
-				updateSampleCounts += NNNN;
+				updateSampleCounts += (NNNN * playInfo.sampleRate / 44100);
 				break;
 
 			case WAIT_735_SAMPLES:
-				updateSampleCounts += 735;
+				updateSampleCounts += (735 * playInfo.sampleRate / 44100);
 				break;
 
 			case WAIT_882_SAMPLES:
-				updateSampleCounts += 882;
+				updateSampleCounts += (882 * playInfo.sampleRate / 44100);
 				break;
 
 			case WAIT_1_SAMPLES:
@@ -556,7 +556,7 @@ BOOL VGMData::update()
 			case WAIT_14_SAMPLES:
 			case WAIT_15_SAMPLES:
 			case WAIT_16_SAMPLES:
-				updateSampleCounts += ((command & 0x0f) + 1);
+				updateSampleCounts += (((command & 0x0f) + 1) * playInfo.sampleRate / 44100);
 
 				break;
 
