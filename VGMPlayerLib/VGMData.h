@@ -63,6 +63,7 @@ enum VGMCommand
 
 	K053260_WRITE = 0xBA,				// aa dd
 	NES_APU_WRITE = 0xB4, 				// aa dd
+	HUC6280_WRITE = 0xB9, 				// aa dd
 };
 
 

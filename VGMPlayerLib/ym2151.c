@@ -1125,7 +1125,7 @@ void YM2151_WriteRegister(UINT8 chipID, UINT32 r, UINT8 v)
 	}
 }
 
-UINT32 YM2151_ReadStatus(UINT8 chipID)
+UINT8 YM2151_ReadRegister(UINT8 chipID, UINT32 address)
 {
 	YM2151 *ic = &chips[chipID];
 

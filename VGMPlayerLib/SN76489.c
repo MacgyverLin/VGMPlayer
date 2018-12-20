@@ -173,7 +173,7 @@ void SN76489_WriteRegister(UINT8 chipID, UINT32 address, UINT8 data)
 	}
 }
 
-UINT32 SN76489_ReadStatus(UINT8 chipID)
+UINT8 SN76489_ReadRegister(UINT8 chipID, UINT32 address)
 {
 	return 0;
 }

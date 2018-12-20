@@ -152,6 +152,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="FFT.h" />
+    <ClInclude Include="HuC6280.h" />
     <ClInclude Include="NESAPU.h" />
     <ClInclude Include="NESFDSAPU.h" />
     <ClInclude Include="Obserable.h" />
@@ -176,6 +177,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="FFT.cpp" />
+    <ClCompile Include="HuC6280.c" />
     <ClCompile Include="K053260.c" />
     <ClCompile Include="NESAPU.c" />
     <ClCompile Include="NESFDSAPU.c" />

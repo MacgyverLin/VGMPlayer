@@ -10,6 +10,7 @@
 #include "K053260.h"
 #include "NESAPU.h"
 #include "NESFDSAPU.h"
+#include "HuC6280.h"
 using namespace std;
 
 VGMData::VGMData(INT32 channels_, INT32 bitPerSample_, INT32 sampleRate_)
@@ -157,7 +158,11 @@ BOOL VGMData::open()
 		if ((header.NESAPUClock & 0x80000000) != 0)
 			NESFDSAPU_Initialize(0, (header.NESAPUClock & 0x7fffffff), playInfo.sampleRate);
 	}
-
+	if (header.HuC6280Clock)
+	{
+		HUC6280_Initialize(0, header.HuC6280Clock, playInfo.sampleRate);
+	}
+	
 	return true;
 #if 0
 	if (read(&header, 256) != 256)
@@ -319,6 +324,10 @@ void VGMData::close()
 		if ((header.NESAPUClock & 0x80000000) != 0)
 			NESFDSAPU_Shutdown(0);
 	}
+	if (header.HuC6280Clock)
+	{
+		HUC6280_Shutdown(0);
+	}
 
 	onClose();
 }
@@ -398,6 +407,8 @@ UINT32 VGMData::updateSamples(UINT32 updateSampleCounts)
 		if (header.NESAPUClock & 0x80000000)
 			NESFDSAPU_Update(0, sampleBuffers, updateSampleCounts);
 	}
+	if (header.HuC6280Clock)
+		HUC6280_Update(0, sampleBuffers, updateSampleCounts);
 
 	bufferInfo.sampleIdx = bufferInfo.sampleIdx + updateSampleCounts;	// updated samples, sampleIdx+
 	assert(bufferInfo.sampleIdx <= VGM_SAMPLE_COUNT);
@@ -507,10 +518,6 @@ BOOL VGMData::update()
 				SN76489_WriteRegister(0, -1, dd);
 				break;
 
-			case DATA_BLOCKS:
-				handleDataBlocks();
-				break;
-
 			case K053260_WRITE:
 				read(&aa, sizeof(aa));
 				read(&dd, sizeof(dd));
@@ -524,6 +531,15 @@ BOOL VGMData::update()
 
 				NESAPU_WriteRegister(0, aa, dd);
 				NESFDSAPU_WriteRegister(0, aa, dd);
+				break;
+
+			case HUC6280_WRITE:
+				read(&dd, sizeof(dd));
+				HUC6280_WriteRegister(0, aa, dd);
+				break;
+
+			case DATA_BLOCKS:
+				handleDataBlocks();
 				break;
 
 			case WAIT_NNNN_SAMPLES:
@@ -556,7 +572,6 @@ BOOL VGMData::update()
 			case WAIT_15_SAMPLES:
 			case WAIT_16_SAMPLES:
 				updateSampleCounts += (((command & 0x0f) + 1) * playInfo.sampleRate / 44100);
-
 				break;
 
 			case END_OF_SOUND:

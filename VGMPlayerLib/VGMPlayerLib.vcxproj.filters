@@ -96,6 +96,9 @@
     <ClInclude Include="K053260.h">
       <Filter>Source Files\chips</Filter>
     </ClInclude>
+    <ClInclude Include="HuC6280.h">
+      <Filter>Source Files\chips</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="ym2151.c">
@@ -150,6 +153,9 @@
       <Filter>Source Files\Platform</Filter>
     </ClCompile>
     <ClCompile Include="K053260.c">
+      <Filter>Source Files\chips</Filter>
+    </ClCompile>
+    <ClCompile Include="HuC6280.c">
       <Filter>Source Files\chips</Filter>
     </ClCompile>
   </ItemGroup>
