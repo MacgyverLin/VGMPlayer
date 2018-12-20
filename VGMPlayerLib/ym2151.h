@@ -7,26 +7,12 @@
 extern "C" {
 #endif
 
-/*
-#define SAMPLE_BITS 32
-
-#if (SAMPLE_BITS==32)
-typedef INT32 SAMP;
-#endif
-#if (SAMPLE_BITS==16)
-typedef INT16 SAMP;
-#endif
-#if (SAMPLE_BITS==8)
-typedef INT8 SAMP;
-#endif
-*/
-
-INT32 YM2151_Initialize(UINT8 chipCount, UINT32 clock, UINT32 rate);
-void YM2151_Shutdown(void);
+INT32 YM2151_Initialize(UINT8 chipID, UINT32 clock, UINT32 sampleRate);
+void YM2151_Shutdown(UINT8 chipID);
 void YM2151_Reset(UINT8 chipID);
-void YM2151_Update(UINT8 chipID, INT32 **buffers, UINT32 length);
-void YM2151_WriteRegister(UINT8 chipID, UINT8 address, UINT8 data);
-UINT32 YM2151_ReadStatus(UINT8 chipID);
+void YM2151_WriteRegister(UINT8 chipID, UINT32 address, UINT8 data);
+UINT8 YM2151_ReadRegister(UINT8 chipID, UINT32 address);
+void YM2151_Update(UINT8 chipID, INT32** buffer, UINT32 length);
 
 #ifdef __cplusplus
 };

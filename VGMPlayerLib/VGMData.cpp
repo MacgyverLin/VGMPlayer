@@ -134,7 +134,7 @@ BOOL VGMData::open()
 			seekSet(0x34 + header.VGMDataOffset);		// point to 0x40
 		}
 	}
-	/*
+	
 	if (header.YM2612Clock)
 	{
 		YM2612_Initialize(0, header.YM2612Clock, playInfo.sampleRate);
@@ -143,7 +143,6 @@ BOOL VGMData::open()
 	{
 		SN76489_Initialize(0, header.SN76489Clock, playInfo.sampleRate);
 	}
-
 	if (header.YM2151Clock)
 	{
 		YM2151_Initialize(0, header.YM2151Clock, playInfo.sampleRate);
@@ -152,7 +151,6 @@ BOOL VGMData::open()
 	{
 		K053260_Initialize(0, header.K053260Clock, playInfo.sampleRate);
 	}
-	*/
 	if (header.NESAPUClock)
 	{
 		NESAPU_Initialize(0, header.NESAPUClock & 0x7fffffff, playInfo.sampleRate);
@@ -299,7 +297,6 @@ BOOL VGMData::open()
 
 void VGMData::close()
 {
-	/*
 	if (header.YM2612Clock)
 	{
 		YM2612_Shutdown(0);
@@ -310,13 +307,12 @@ void VGMData::close()
 	}
 	if (header.YM2151Clock)
 	{
-		YM2151_Shutdown();
+		YM2151_Shutdown(0);
 	}
 	if (header.K053260Clock)
 	{
-		K053260_Shutdown();
+		K053260_Shutdown(0);
 	}
-	*/
 	if (header.NESAPUClock)
 	{
 		NESAPU_Shutdown(0);
@@ -388,7 +384,6 @@ UINT32 VGMData::updateSamples(UINT32 updateSampleCounts)
 	sampleBuffers[1] = &bufferInfo.samplesR[bufferInfo.sampleIdx];
 
 	assert(bufferInfo.samplesL.size() == VGM_SAMPLE_COUNT);
-	/*
 	if (header.YM2612Clock)
 		YM2612_Update(0, sampleBuffers, updateSampleCounts);
 	if (header.SN76489Clock)
@@ -397,7 +392,6 @@ UINT32 VGMData::updateSamples(UINT32 updateSampleCounts)
 		YM2151_Update(0, sampleBuffers, updateSampleCounts);
 	if (header.K053260Clock)
 		K053260_Update(0, sampleBuffers, updateSampleCounts);
-	*/
 	if (header.NESAPUClock)
 	{
 		NESAPU_Update(0, sampleBuffers, updateSampleCounts);

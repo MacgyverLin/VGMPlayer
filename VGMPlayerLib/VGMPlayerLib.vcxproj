@@ -161,7 +161,7 @@
     <ClInclude Include="VGMData.h" />
     <ClInclude Include="VGMDataObverser.h" />
     <ClInclude Include="VGMDef.h" />
-    <ClInclude Include="k053260.h" />
+    <ClInclude Include="K053260.h" />
     <ClInclude Include="SN76489.h" />
     <ClInclude Include="AudioDevice.h" />
     <ClInclude Include="stdafx.h" />
@@ -176,7 +176,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="FFT.cpp" />
-    <ClCompile Include="k053260.c" />
+    <ClCompile Include="K053260.c" />
     <ClCompile Include="NESAPU.c" />
     <ClCompile Include="NESFDSAPU.c" />
     <ClCompile Include="Obserable.cpp" />

@@ -48,9 +48,6 @@
     <ClInclude Include="ym2612.h">
       <Filter>Source Files\chips</Filter>
     </ClInclude>
-    <ClInclude Include="k053260.h">
-      <Filter>Source Files\chips</Filter>
-    </ClInclude>
     <ClInclude Include="SN76489.h">
       <Filter>Source Files\chips</Filter>
     </ClInclude>
@@ -96,15 +93,15 @@
     <ClInclude Include="VideoDevice.h">
       <Filter>Source Files\Platform</Filter>
     </ClInclude>
+    <ClInclude Include="K053260.h">
+      <Filter>Source Files\chips</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="ym2151.c">
       <Filter>Source Files\chips</Filter>
     </ClCompile>
     <ClCompile Include="ym2612.c">
-      <Filter>Source Files\chips</Filter>
-    </ClCompile>
-    <ClCompile Include="k053260.c">
       <Filter>Source Files\chips</Filter>
     </ClCompile>
     <ClCompile Include="SN76489.c">
@@ -151,6 +148,9 @@
     </ClCompile>
     <ClCompile Include="VideoDevice.cpp">
       <Filter>Source Files\Platform</Filter>
+    </ClCompile>
+    <ClCompile Include="K053260.c">
+      <Filter>Source Files\chips</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

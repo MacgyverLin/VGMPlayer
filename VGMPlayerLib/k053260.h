@@ -1,26 +1,19 @@
-#ifndef _k053260_h_
-#define _k053260_h_
+#ifndef _K053260_h_
+#define _K053260_h_
 
 #include "vgmdef.h"
 
 #ifdef __cplusplus
 extern "C" {
 #endif
-	
-void K053260_Initialize(INT32 chip, INT32 clock, INT32 sampleRate);
-void K053260_Shutdown();
-void K053260_Reset(INT32 chip);
-void K053260_Update(INT32 chip, INT32 **buffer, INT32 length);
-void K053260_WriteRegister(INT32 chip, INT32 address, UINT8 data);
-UINT32 K053260_ReadStatus(INT32 chip, INT32 address);
-void K053260_SetROM(INT32 chip, INT32 totalROMSize, INT32 startAddress, UINT8 *rom, INT32 nLen);
 
-#define BURN_SND_K053260_ROUTE_1		0
-#define BURN_SND_K053260_ROUTE_2		1
-
-#define K053260PCMSetAllRoutes(i, v, d)						\
-	K053260SetRoute(i, BURN_SND_K053260_ROUTE_1, v, d);	\
-	K053260SetRoute(i, BURN_SND_K053260_ROUTE_2, v, d);
+INT32 K053260_Initialize(UINT8 chipID, UINT32 clock, UINT32 sampleRate);
+void K053260_Shutdown(UINT8 chipID);
+void K053260_Reset(UINT8 chipID);
+void K053260_WriteRegister(UINT8 chipID, UINT32 address, UINT8 data);
+UINT8 K053260_ReadRegister(UINT8 chipID, UINT32 address);
+void K053260_Update(UINT8 chipID, INT32** buffer, UINT32 length);
+void K053260_SetROM(UINT8 chipID, UINT32 totalROMSize, UINT32 startAddress, UINT8 *rom, UINT32 nLen);
 
 #ifdef __cplusplus
 };
