@@ -8,10 +8,6 @@
 
 #define  OUTPUT_BITS         16
 
-#ifndef PI
-#define PI 3.14159265358979323846
-#endif
-
 #define ATTACK    0
 #define DECAY     1
 #define SUBSTAIN  2
@@ -66,7 +62,6 @@
 #define S1             2
 #define S2             1
 #define S3             3
-
 
 typedef struct {
 	INT32 *DT;  // paramètre detune
@@ -178,11 +173,9 @@ typedef struct {
 	INT32 REG[2][0x100];
 }YM2612;
 
-
 //////////////////////////////////////////////////////////////
 #define YM2612_COUNT 2
-
-static YM2612 YM2612Chips[YM2612_COUNT];					// array of YM2612
+YM2612 YM2612Chips[YM2612_COUNT];					// array of YM2612
 INT32 YM2612_Enable_SSGEG = 0; // enable SSG-EG envelope (causes inacurate sound sometimes - rodrigo)
 
 void Update_Chan_Algo0(YM2612 *ym2612, Channel *CH, INT32 **buf, INT32 lenght);
