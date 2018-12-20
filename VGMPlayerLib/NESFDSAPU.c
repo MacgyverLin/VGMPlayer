@@ -1,40 +1,54 @@
 ﻿#include "NESFDSAPU.h"
 
-NESFDSAPU nesfdsapu[2];
-
-INT32 NESFDSAPU_Initialize(UINT8 chipID, UINT32 clock, UINT32 sampleRate)
+typedef struct
 {
-	memset(&nesfdsapu[chipID], 0, sizeof(nesfdsapu[chipID]));
-	nesfdsapu[chipID].sampling_rate = sampleRate;
+	UINT8	reg[0x80];
+	UINT8	volenv_mode;	// Volume Envelope
+	UINT8	volenv_gain;
+	UINT8	volenv_decay;
+	FLOAT32	volenv_phaseacc;
+	UINT8	swpenv_mode;	// Sweep Envelope
+	UINT8	swpenv_gain;
+	UINT8	swpenv_decay;
+	FLOAT32	swpenv_phaseacc;
+	// For envelope unit
+	UINT8	envelope_enable;	// $4083 bit6
+	UINT8	envelope_speed;	// $408A
+							// For $4089
+	UINT8	wave_setup;	// bit7
+	INT32	master_volume;	// bit1-0
+						// For Main unit
+	INT32	main_wavetable[64];
+	UINT8	main_enable;
+	INT32	main_frequency;
+	INT32	main_addr;
+	// For Effector(LFO) unit
+	UINT8	lfo_wavetable[64];
+	UINT8	lfo_enable;	// 0:Enable 1:Wavetable setup
+	INT32	lfo_frequency;
+	INT32	lfo_addr;
+	FLOAT32	lfo_phaseacc;
+	// For Sweep unit
+	INT32	sweep_bias;
+	// Misc
+	INT32	now_volume;
+	INT32	now_freq;
+	INT32	output;
 
-	nesfdsapu[chipID].channelEnabled = -1;
+	INT32	sampling_rate;
+	INT32	output_buf[8];
 
-	return -1;
-}
+	INT8 channelEnabled;
+}NESFDSAPU;
 
-void NESFDSAPU_Shutdown()
-{
-}
-
-void NESFDSAPU_Reset(UINT8 chipID)
-{
-	UINT32 sampleRate = nesfdsapu[chipID].sampling_rate;
-	memset(&nesfdsapu[chipID], 0, sizeof(nesfdsapu[chipID]));
-	nesfdsapu[chipID].sampling_rate = sampleRate;
-}
-
-void NESFDSAPU_WriteRegister(UINT8 chipID, UINT32 addr, UINT8 data)
-{
-	NESFDSAPU* apu = &nesfdsapu[chipID];
-
-	NESFDSAPU_WriteSub(chipID, addr, data, apu->sampling_rate);
-}
+#define MAX_NESFDSAPU 2
+NESFDSAPU nesfdsapu[MAX_NESFDSAPU];
 
 void NESFDSAPU_WriteSub(UINT8 chipID, UINT32 addr, UINT8 data, UINT32 rate)
 {
 	NESFDSAPU* apu = &nesfdsapu[chipID];
 
-	if(addr>=0x20 && addr<=0x3e)
+	if (addr >= 0x20 && addr <= 0x3e)
 		addr += 0x4060;
 	if (addr == 0x3f)
 		addr = 0x4023;
@@ -67,7 +81,7 @@ void NESFDSAPU_WriteSub(UINT8 chipID, UINT32 addr, UINT8 data, UINT32 rate)
 				}
 			}
 			apu->volenv_decay = data & 0x3F;
-			apu->volenv_phaseacc = apu->envelope_speed * (apu->volenv_decay + 1) * rate / (232.0 * 960.0);
+			apu->volenv_phaseacc = apu->envelope_speed * (apu->volenv_decay + 1) * rate / (232.0f * 960.0f);
 			break;
 
 		case	0x4082:	// Main Frequency(Low)
@@ -91,8 +105,7 @@ void NESFDSAPU_WriteSub(UINT8 chipID, UINT32 addr, UINT8 data, UINT32 rate)
 				apu->swpenv_gain = data & 0x3F;
 			}
 			apu->swpenv_decay = data & 0x3F;
-			apu->swpenv_phaseacc = apu->envelope_speed * (apu->swpenv_decay + 1) * rate / (232.0*960.0);
-			break;
+			apu->swpenv_phaseacc = apu->envelope_speed * (apu->swpenv_decay + 1) * rate / (232.0f*960.0f);			break;
 
 		case	0x4085:	// Sweep Bias
 			if (data & 0x40)
@@ -142,31 +155,61 @@ void NESFDSAPU_WriteSub(UINT8 chipID, UINT32 addr, UINT8 data, UINT32 rate)
 	}
 }
 
-UINT8 NESFDSAPU_ReadRegister(UINT8 chipID, UINT32 addr)
+INT32 NESFDSAPU_Initialize(UINT8 chipID, UINT32 clock, UINT32 sampleRate)
+{
+	memset(&nesfdsapu[chipID], 0, sizeof(NESFDSAPU));
+	nesfdsapu[chipID].sampling_rate = sampleRate;
+
+	nesfdsapu[chipID].channelEnabled = -1;
+
+	return -1;
+}
+
+void NESFDSAPU_Shutdown(UINT8 chipID)
+{
+	memset(&nesfdsapu[chipID], 0, sizeof(NESFDSAPU));
+}
+
+void NESFDSAPU_Reset(UINT8 chipID)
+{
+	UINT32 sampleRate = nesfdsapu[chipID].sampling_rate;
+	memset(&nesfdsapu[chipID], 0, sizeof(nesfdsapu[chipID]));
+	nesfdsapu[chipID].sampling_rate = sampleRate;
+}
+
+void NESFDSAPU_WriteRegister(UINT8 chipID, UINT32 address, UINT8 data)
 {
 	NESFDSAPU* apu = &nesfdsapu[chipID];
-	UINT8 data = addr >> 8;
 
-	if (addr >= 0x4040 && addr <= 0x407F)
+	NESFDSAPU_WriteSub(chipID, address, data, apu->sampling_rate);
+}
+
+UINT8 NESFDSAPU_ReadRegister(UINT8 chipID, UINT32 address)
+{
+	NESFDSAPU* apu = &nesfdsapu[chipID];
+	UINT8 data = address >> 8;
+
+	if (address >= 0x4040 && address <= 0x407F)
 	{
-		data = apu->main_wavetable[addr & 0x3F] | 0x40;
+		data = apu->main_wavetable[address & 0x3F] | 0x40;
 	}
-	else if (addr == 0x4090)
+	else if (address == 0x4090)
 	{
 		data = (apu->volenv_gain & 0x3F) | 0x40;
 	}
-	else if (addr == 0x4092)
+	else if (address == 0x4092)
 	{
 		data = (apu->swpenv_gain & 0x3F) | 0x40;
 	}
+
 	return data;
 }
 
-INT32 NESFDSAPU_Update(UINT8 chipID, INT32 **buffers, UINT32 length)
+void NESFDSAPU_Update(UINT8 chipID, INT32** buffer, UINT32 length)
 {
 	NESFDSAPU* apu = &nesfdsapu[chipID];
 
-	for (int i = 0; i < length; i++)
+	for(UINT32 i = 0; i < length; i++)
 	{
 		// Envelope unit
 		if (apu->envelope_enable && apu->envelope_speed)
@@ -174,7 +217,7 @@ INT32 NESFDSAPU_Update(UINT8 chipID, INT32 **buffers, UINT32 length)
 			// Volume envelope
 			if (apu->volenv_mode < 2)
 			{
-				double decay = (apu->envelope_speed * (apu->volenv_decay + 1) * apu->sampling_rate) / (232.0*960.0);
+				float decay = (apu->envelope_speed * (apu->volenv_decay + 1) * apu->sampling_rate) / (232.0f * 960.0f);
 				apu->volenv_phaseacc -= 1.0;
 				while (apu->volenv_phaseacc < 0.0)
 				{
@@ -195,7 +238,7 @@ INT32 NESFDSAPU_Update(UINT8 chipID, INT32 **buffers, UINT32 length)
 			// Sweep envelope
 			if (apu->swpenv_mode < 2)
 			{
-				double decay = (apu->envelope_speed * (apu->swpenv_decay + 1) * apu->sampling_rate) / (232.0*960.0);
+				float decay = (apu->envelope_speed * (apu->swpenv_decay + 1) * apu->sampling_rate) / (232.0f * 960.0f);
 				apu->swpenv_phaseacc -= 1.0;
 				while (apu->swpenv_phaseacc < 0.0)
 				{
@@ -219,7 +262,7 @@ INT32 NESFDSAPU_Update(UINT8 chipID, INT32 **buffers, UINT32 length)
 		if (apu->lfo_enable && apu->envelope_speed && apu->lfo_frequency)
 		{
 			static INT32 tbl[8] = { 0, 1, 2, 4, 0, -4, -2, -1 };
-			apu->lfo_phaseacc -= (1789772.5*(FLOAT32)(apu->lfo_frequency)) / 65536.0;
+			apu->lfo_phaseacc -= (1789772.5f*(FLOAT32)(apu->lfo_frequency)) / 65536.0f;
 			while (apu->lfo_phaseacc < 0.0)
 			{
 				apu->lfo_phaseacc += (FLOAT32)apu->sampling_rate;
@@ -259,7 +302,7 @@ INT32 NESFDSAPU_Update(UINT8 chipID, INT32 **buffers, UINT32 length)
 		{
 			INT32 freq;
 			INT32 main_addr_old = apu->main_addr;
-			freq = (apu->main_frequency + sub_freq) * 1789772.5 / 65536.0;
+			freq = (INT32)((apu->main_frequency + sub_freq) * 1789772.5f / 65536.0f);
 			apu->main_addr = (apu->main_addr + freq + 64 * apu->sampling_rate) % (64 * apu->sampling_rate);
 
 			if (main_addr_old > apu->main_addr)
@@ -290,31 +333,8 @@ INT32 NESFDSAPU_Update(UINT8 chipID, INT32 **buffers, UINT32 length)
 #endif
 		if(apu->channelEnabled)
 		{
-			buffers[0][i] += output;
-			buffers[1][i] += output;
+			buffer[0][i] += output;
+			buffer[1][i] += output;
 		}
 	}
-
-	return apu->output;
-}
-
-INT32 NESFDSAPU_GetFreq(UINT8 chipID)
-{
-	NESFDSAPU* apu = &nesfdsapu[chipID];
-
-	return apu->now_freq;
-}
-
-VOID NESFDSAPU_SetChannelEnabled(UINT8 chipID, INT8 enabled)
-{
-	NESFDSAPU* apu = &nesfdsapu[chipID];
-
-	apu->channelEnabled = enabled;
-}
-
-INT8 NESFDSAPU_IsEnabledChannel(UINT8 chipID)
-{
-	NESFDSAPU* apu = &nesfdsapu[chipID];
-
-	return apu->channelEnabled;
 }

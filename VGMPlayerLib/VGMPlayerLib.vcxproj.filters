@@ -19,6 +19,15 @@
     <Filter Include="Source Files\VGM">
       <UniqueIdentifier>{4ed98003-02f7-499a-8bfe-772b6c5f2cdb}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source Files\VGM\Model">
+      <UniqueIdentifier>{39929eed-54fe-4936-bd99-a8967fcdb483}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\VGM\Observer">
+      <UniqueIdentifier>{c4ac0809-838f-4022-897b-73d79ae48e02}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Platform">
+      <UniqueIdentifier>{1ee9c2fb-e2f3-4674-b0c7-169744791f24}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="stdafx.h">
@@ -48,44 +57,44 @@
     <ClInclude Include="NESAPU.h">
       <Filter>Source Files\chips</Filter>
     </ClInclude>
-    <ClInclude Include="Obserable.h">
-      <Filter>Source Files\VGM</Filter>
-    </ClInclude>
-    <ClInclude Include="Observer.h">
-      <Filter>Source Files\VGM</Filter>
-    </ClInclude>
-    <ClInclude Include="VGMAudioPlayer.h">
-      <Filter>Source Files\VGM</Filter>
-    </ClInclude>
-    <ClInclude Include="VGMData.h">
-      <Filter>Source Files\VGM</Filter>
-    </ClInclude>
-    <ClInclude Include="VGMDataObverser.h">
-      <Filter>Source Files\VGM</Filter>
-    </ClInclude>
-    <ClInclude Include="VGMFile.h">
-      <Filter>Source Files\VGM</Filter>
-    </ClInclude>
-    <ClInclude Include="VGMChannelViewer.h">
-      <Filter>Source Files\VGM</Filter>
-    </ClInclude>
-    <ClInclude Include="AudioDevice.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="VideoDevice.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
     <ClInclude Include="FFT.h">
-      <Filter>Source Files\VGM</Filter>
-    </ClInclude>
-    <ClInclude Include="VGMFrequencyViewer.h">
       <Filter>Source Files\VGM</Filter>
     </ClInclude>
     <ClInclude Include="NESFDSAPU.h">
       <Filter>Source Files\chips</Filter>
     </ClInclude>
+    <ClInclude Include="Obserable.h">
+      <Filter>Source Files\VGM\Model</Filter>
+    </ClInclude>
+    <ClInclude Include="VGMData.h">
+      <Filter>Source Files\VGM\Model</Filter>
+    </ClInclude>
+    <ClInclude Include="VGMFile.h">
+      <Filter>Source Files\VGM\Model</Filter>
+    </ClInclude>
+    <ClInclude Include="Observer.h">
+      <Filter>Source Files\VGM\Observer</Filter>
+    </ClInclude>
+    <ClInclude Include="VGMAudioPlayer.h">
+      <Filter>Source Files\VGM\Observer</Filter>
+    </ClInclude>
+    <ClInclude Include="VGMChannelViewer.h">
+      <Filter>Source Files\VGM\Observer</Filter>
+    </ClInclude>
+    <ClInclude Include="VGMDataObverser.h">
+      <Filter>Source Files\VGM\Observer</Filter>
+    </ClInclude>
+    <ClInclude Include="VGMFrequencyViewer.h">
+      <Filter>Source Files\VGM\Observer</Filter>
+    </ClInclude>
     <ClInclude Include="VGMHardwarePlayer.h">
-      <Filter>Source Files\VGM</Filter>
+      <Filter>Source Files\VGM\Observer</Filter>
+    </ClInclude>
+    <ClInclude Include="AudioDevice.h">
+      <Filter>Source Files\Platform</Filter>
+    </ClInclude>
+    <ClInclude Include="VideoDevice.h">
+      <Filter>Source Files\Platform</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -104,44 +113,44 @@
     <ClCompile Include="NESAPU.c">
       <Filter>Source Files\chips</Filter>
     </ClCompile>
-    <ClCompile Include="VGMAudioPlayer.cpp">
-      <Filter>Source Files\VGM</Filter>
-    </ClCompile>
-    <ClCompile Include="VGMData.cpp">
-      <Filter>Source Files\VGM</Filter>
-    </ClCompile>
-    <ClCompile Include="VGMDataObverser.cpp">
-      <Filter>Source Files\VGM</Filter>
-    </ClCompile>
-    <ClCompile Include="VGMFile.cpp">
-      <Filter>Source Files\VGM</Filter>
-    </ClCompile>
-    <ClCompile Include="Obserable.cpp">
-      <Filter>Source Files\VGM</Filter>
-    </ClCompile>
-    <ClCompile Include="Observer.cpp">
-      <Filter>Source Files\VGM</Filter>
-    </ClCompile>
-    <ClCompile Include="VGMChannelViewer.cpp">
-      <Filter>Source Files\VGM</Filter>
-    </ClCompile>
-    <ClCompile Include="AudioDevice.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="VideoDevice.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="FFT.cpp">
-      <Filter>Source Files\VGM</Filter>
-    </ClCompile>
-    <ClCompile Include="VGMFrequencyViewer.cpp">
       <Filter>Source Files\VGM</Filter>
     </ClCompile>
     <ClCompile Include="NESFDSAPU.c">
       <Filter>Source Files\chips</Filter>
     </ClCompile>
+    <ClCompile Include="Obserable.cpp">
+      <Filter>Source Files\VGM\Model</Filter>
+    </ClCompile>
+    <ClCompile Include="VGMData.cpp">
+      <Filter>Source Files\VGM\Model</Filter>
+    </ClCompile>
+    <ClCompile Include="VGMFile.cpp">
+      <Filter>Source Files\VGM\Model</Filter>
+    </ClCompile>
+    <ClCompile Include="Observer.cpp">
+      <Filter>Source Files\VGM\Observer</Filter>
+    </ClCompile>
+    <ClCompile Include="VGMAudioPlayer.cpp">
+      <Filter>Source Files\VGM\Observer</Filter>
+    </ClCompile>
+    <ClCompile Include="VGMChannelViewer.cpp">
+      <Filter>Source Files\VGM\Observer</Filter>
+    </ClCompile>
+    <ClCompile Include="VGMDataObverser.cpp">
+      <Filter>Source Files\VGM\Observer</Filter>
+    </ClCompile>
+    <ClCompile Include="VGMFrequencyViewer.cpp">
+      <Filter>Source Files\VGM\Observer</Filter>
+    </ClCompile>
     <ClCompile Include="VGMHardwarePlayer.cpp">
-      <Filter>Source Files\VGM</Filter>
+      <Filter>Source Files\VGM\Observer</Filter>
+    </ClCompile>
+    <ClCompile Include="AudioDevice.cpp">
+      <Filter>Source Files\Platform</Filter>
+    </ClCompile>
+    <ClCompile Include="VideoDevice.cpp">
+      <Filter>Source Files\Platform</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

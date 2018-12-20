@@ -31,13 +31,13 @@
 #endif
 
 /* REGULAR TYPE DEFINITIONS */
-typedef char          int8;
-typedef int           int16;
-typedef long          int32;
-typedef unsigned char uint8;
-typedef unsigned int  uint16;
-typedef unsigned long uint32;
-typedef char          boolean;
+// typedef char          int8;
+// typedef int           int16;
+// typedef long          int32;
+// typedef unsigned char uint8;
+// typedef unsigned int  uint16;
+// typedef unsigned long uint32;
+// typedef char          boolean;
 
 
 /* QUEUE TYPES */
@@ -84,59 +84,59 @@ typedef struct queue_s
 /* Square Wave */
 typedef struct square_s
 {
-	uint8 regs[4];
-	int vbl_length;
-	int freq;
-	float phaseacc;
-	float output_vol;
-	float env_phase;
-	float sweep_phase;
-	uint8 adder;
-	uint8 env_vol;
-	boolean enabled;
+	UINT8 regs[4];
+	INT32 vbl_length;
+	INT32 freq;
+	FLOAT32 phaseacc;
+	FLOAT32 output_vol;
+	FLOAT32 env_phase;
+	FLOAT32 sweep_phase;
+	UINT8 adder;
+	UINT8 env_vol;
+	UINT8 enabled;
 } square_t;
 
 /* Triangle Wave */
 typedef struct triangle_s
 {
-	uint8 regs[4]; /* regs[1] unused */
-	int linear_length;
-	int vbl_length;
-	int write_latency;
-	float phaseacc;
-	float output_vol;
-	uint8 adder;
-	boolean counter_started;
-	boolean enabled;
+	UINT8 regs[4]; /* regs[1] unused */
+	INT32 linear_length;
+	INT32 vbl_length;
+	INT32 write_latency;
+	FLOAT32 phaseacc;
+	FLOAT32 output_vol;
+	UINT8 adder;
+	UINT8 counter_started;
+	UINT8 enabled;
 } triangle_t;
 
 /* Noise Wave */
 typedef struct noise_s
 {
-	uint8 regs[4]; /* regs[1] unused */
-	int cur_pos;
-	int vbl_length;
-	float phaseacc;
-	float output_vol;
-	float env_phase;
-	uint8 env_vol;
-	boolean enabled;
+	UINT8 regs[4]; /* regs[1] unused */
+	INT32 cur_pos;
+	INT32 vbl_length;
+	FLOAT32 phaseacc;
+	FLOAT32 output_vol;
+	FLOAT32 env_phase;
+	UINT8 env_vol;
+	UINT8 enabled;
 } noise_t;
 
 /* DPCM Wave */
 typedef struct dpcm_s
 {
-	uint8 regs[4];
-	uint32 address;
-	uint32 length;
-	int bits_left;
-	float phaseacc;
-	float output_vol;
-	uint8 cur_byte;
-	boolean enabled;
-	boolean irq_occurred;
-	uint8 *cpu_mem;
-	signed char vol;
+	UINT8 regs[4];
+	UINT32 address;
+	UINT32 length;
+	INT32 bits_left;
+	FLOAT32 phaseacc;
+	FLOAT32 output_vol;
+	UINT8 cur_byte;
+	UINT8 enabled;
+	UINT8 irq_occurred;
+	UINT8 *cpu_mem;
+	INT8 vol;
 } dpcm_t;
 
 /* APU type */
@@ -149,55 +149,39 @@ typedef struct apu
 	dpcm_t     dpcm;
 
 	/* APU registers */
-	unsigned char regs[22];
-
-	/* Sound pointers */
-	void *buffer;
-
-#ifdef USE_QUEUE
-
-	/* Event queue */
-	queue_t queue[QUEUE_SIZE];
-	int head, tail;
-
-#else
-
-	int buf_pos;
-
-#endif
-
+	UINT8 regs[22];
 } apu_t;
 
 /* CONSTANTS */
 
 /* vblank length table used for squares, triangle, noise */
-static const uint8 vbl_length[32] =
+static const UINT8 vbl_length[32] =
 {
    5, 127, 10, 1, 19,  2, 40,  3, 80,  4, 30,  5, 7,  6, 13,  7,
    6,   8, 12, 9, 24, 10, 48, 11, 96, 12, 36, 13, 8, 14, 16, 15
 };
 
 /* frequency limit of square channels */
-static const int freq_limit[8] =
+static const INT32 freq_limit[8] =
 {
    0x3FF, 0x555, 0x666, 0x71C, 0x787, 0x7C1, 0x7E0, 0x7F0,
 };
 
 /* table of noise frequencies */
-static const int noise_freq[16] =
+static const INT32 noise_freq[16] =
 {
    4, 8, 16, 32, 64, 96, 128, 160, 202, 254, 380, 508, 762, 1016, 2034, 2046
 };
 
 /* dpcm transfer freqs */
-const int dpcm_clocks[16] =
+const INT32 dpcm_clocks[16] =
 {
    428, 380, 340, 320, 286, 254, 226, 214, 190, 160, 142, 128, 106, 85, 72, 54
 };
 
 /* ratios of pos/neg pulse for square waves */
 /* 2/16 = 12.5%, 4/16 = 25%, 8/16 = 50%, 12/16 = 75% */
-static const int duty_lut[4] =
+static const INT32 duty_lut[4] =
 {
    2, 4, 8, 12
 };
