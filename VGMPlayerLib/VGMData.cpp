@@ -534,6 +534,7 @@ BOOL VGMData::update()
 				break;
 
 			case HUC6280_WRITE:
+				read(&aa, sizeof(aa));
 				read(&dd, sizeof(dd));
 				HUC6280_WriteRegister(0, aa, dd);
 				break;
