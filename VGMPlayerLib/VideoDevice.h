@@ -13,7 +13,7 @@ using namespace std;
 class Vertex
 {
 public:
-	Vertex(FLOAT32 x_, FLOAT32 y_)
+	Vertex(FLOAT32 x_=0, FLOAT32 y_ = 0)
 	{
 		x = x_;
 		y = y_;
@@ -26,12 +26,33 @@ public:
 class Color
 {
 public:
-	Color(FLOAT32 r_, FLOAT32 g_, FLOAT32 b_, FLOAT32 a_)
+	Color(FLOAT32 r_=0.0f, FLOAT32 g_ = 0.0f, FLOAT32 b_ = 0.0f, FLOAT32 a_ = 0.0f)
 	{
 		r = r_;
 		g = g_;
 		b = b_;
 		a = a_;
+	}
+
+	friend Color operator * (const Color& c, FLOAT32 scale)
+	{
+		Color result;
+		
+		result.r = c.r * scale;
+		result.g = c.g * scale;
+		result.b = c.b * scale;
+		result.a = c.a * scale;
+
+		return result;
+	}
+
+	Color& operator *= (const FLOAT32& scale)
+	{
+		this->r *= scale;
+		this->g *= scale;
+		this->b *= scale;
+		this->a *= scale;
+		return *this;
 	}
 
 	FLOAT32 r;
@@ -70,8 +91,8 @@ public:
 	VOID drawSolidRectangle(const Vertex& v0, const Color& c0, const Vertex& v1, const Color& c1, const Vertex& v2, const Color& c2, const Vertex& v3, const Color& c3);
 	VOID drawSolidCircle(const Vertex& center, FLOAT32 radius, const Color& c);
 
-	VOID drawPrimitive(const Vertex* vertices, const Color& c, UINT32 count);
-	VOID drawPrimitive(const Vertex* vertices, const Color* colors, UINT32 count);
+	VOID drawPrimitive(UINT32 primitive, const Vertex* vertices, const Color& c, UINT32 count);
+	VOID drawPrimitive(UINT32 primitive, const Vertex* vertices, const Color* colors, UINT32 count);
 protected:
 private:
 ////////////////////////////////////////////////////////////////////////////

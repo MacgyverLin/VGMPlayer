@@ -90,6 +90,8 @@ void VGMChannelViewer::onNotifyUpdate(Obserable& observable)
 		glMatrixMode(GL_MODELVIEW);
 
 		glViewport(0, 0, width, height / 2);
+
+		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 		videoDevice.drawLine(Vertex(startX, 0), Vertex(endX, 0), skin.gridColor);
 		for (INT32 i=startX; i< endX; i += (endX - startX) / divX)
 		{
@@ -101,14 +103,17 @@ void VGMChannelViewer::onNotifyUpdate(Obserable& observable)
 		}
 		videoDevice.drawLine(Vertex(startX, 0), Vertex(endX, 0), skin.axisColor);
 
-		for (INT32 i = startX; i < endX - 1; i++)
+		glBlendFunc(GL_SRC_ALPHA, GL_ONE);
+		for (INT32 i = startX; i < endX - 3; i+=3)
 		{
 			INT32 y0 = bufferInfo.outputSamples[i + 0].l;
-			INT32 y1 = bufferInfo.outputSamples[i + 1].l;
-			videoDevice.drawLine(Vertex(i, y0), Vertex(i + 1, y1), skin.leftColor);
+			INT32 y1 = bufferInfo.outputSamples[i + 3].l;
+			videoDevice.drawLine(Vertex(i, y0), Vertex(i + 3, y1), skin.leftColor);
 		}
 
 		glViewport(0, height / 2, width, height / 2);
+
+		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 		videoDevice.drawLine(Vertex(startX, 0), Vertex(endX, 0), skin.gridColor);
 		for (INT32 i = startX; i < endX; i += (endX - startX) / divX)
 		{
@@ -120,11 +125,12 @@ void VGMChannelViewer::onNotifyUpdate(Obserable& observable)
 		}
 		videoDevice.drawLine(Vertex(startX, 0), Vertex(endX, 0), skin.axisColor);
 
-		for (INT32 i = startX; i < endX - 1; i++)
+		glBlendFunc(GL_SRC_ALPHA, GL_ONE);
+		for (INT32 i = startX; i < endX - 3; i+=3)
 		{
 			INT32 y0 = bufferInfo.outputSamples[i + 0].r;
-			INT32 y1 = bufferInfo.outputSamples[i + 1].r;
-			videoDevice.drawLine(Vertex(i, y0), Vertex(i + 1, y1), skin.rightColor);
+			INT32 y1 = bufferInfo.outputSamples[i + 3].r;
+			videoDevice.drawLine(Vertex(i, y0), Vertex(i + 3, y1), skin.rightColor);
 		}
 
 		videoDevice.flush();

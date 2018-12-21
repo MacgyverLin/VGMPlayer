@@ -10,6 +10,8 @@ VGMFrequencyViewer::VGMFrequencyViewer(const string& name_, UINT32 x_, UINT32 y_
 , height(height_)
 , skin(skin_)
 {
+	maxLeft.resize(skin.numColumns * 2);
+	maxRight.resize(skin.numColumns * 2);
 }
 
 VGMFrequencyViewer::~VGMFrequencyViewer()
@@ -77,11 +79,11 @@ void VGMFrequencyViewer::onNotifyUpdate(Obserable& observable)
 		int fftSampleCount = skin.numColumns * 2;
 		int startX = fftSampleCount / 2;
 		int endX = fftSampleCount; //sampleCount;
-		int divX = fftSampleCount / 2;
+		float stepX = ((float)(endX - startX)) / ((float)fftSampleCount / 2);
 
 		int startY = 0;
-		int endY = 65536 * 2;
-		int divY = fftSampleCount / 2;
+		int endY = 1;
+		float stepY = ((float)(endY - startY)) / 20;
 		
 		glMatrixMode(GL_PROJECTION);
 		glLoadIdentity();
@@ -126,44 +128,75 @@ void VGMFrequencyViewer::onNotifyUpdate(Obserable& observable)
 		fft(fftSampleCount, &left[0]);
 		fft(fftSampleCount, &right[0]);
 
+		for (int i = 0; i < fftSampleCount; i++)
+		{
+			FLOAT32 l = abs(left[i].real);
+			if(maxLeft[i] < l)
+				maxLeft[i] = l;
+			else
+				maxLeft[i] *= 0.96f;
+
+			FLOAT32 r = abs(right[i].real);
+			if (maxRight[i] < r)
+				maxRight[i] = r;
+			else
+				maxRight[i] *= 0.96f;
+		}
+
 		/////////////////////////////////////////////////////////////////////
 		glViewport(0, 0, width, height / 2);
+
+		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 		videoDevice.drawLine(Vertex(startX, 0), Vertex(endX, 0), skin.gridColor);
-		for (INT32 i = startX; i < endX; i += (endX - startX) / divX)
+		for (FLOAT32 i = startX; i < endX; i += stepX)
 		{
 			videoDevice.drawLine(Vertex(i, startY), Vertex(i, endY), skin.gridColor);
 		}
-		for (INT32 i = startY; i < endY; i += (endY - startY) / divY)
+		for (FLOAT32 i = startY; i < endY; i += stepY)
 		{
 			videoDevice.drawLine(Vertex(startX, i), Vertex(endX, i), skin.gridColor);
 		}
-		videoDevice.drawLine(Vertex(startX, 0), Vertex(endX, 0), skin.axisColor);
+		videoDevice.drawLine(Vertex(startX, 0.0f), Vertex(endX, 0.0f), skin.axisColor);
 
+		FLOAT32 bloom = 0.01f;
+		glBlendFunc(GL_SRC_ALPHA, GL_ONE);
+		Color leftColor(0.0f, 1.0f, 0.0f, 0.3f);
 		for (INT32 i = startX; i < endX; i++)
 		{
-			INT32 y0 = abs(left[i].real);
+			FLOAT32 y0 = abs(left[i].real) / (65536);
+			videoDevice.drawSolidRectangle(Vertex(i + 0.1f, y0        ), Vertex(i + 0.9f, y0        ), Vertex(i + 0.9f, 0), Vertex(i + 0.1f, 0), skin.leftColor);
+			videoDevice.drawSolidRectangle(Vertex(i + 0.2f, y0 - bloom), Vertex(i + 0.8f, y0 - bloom), Vertex(i + 0.8f, 0), Vertex(i + 0.2f, 0), leftColor);
 
-			videoDevice.drawSolidRectangle(Vertex(i + 0.1f, y0), Vertex(i + 0.9f, y0), Vertex(i + 0.9f, 0), Vertex(i + 0.1f, 0), skin.leftColor);
+			y0 = abs(maxLeft[i]) / (65536);
+			videoDevice.drawSolidRectangle(Vertex(i + 0.1f, y0 - bloom), Vertex(i + 0.9f, y0 - bloom), Vertex(i + 0.9f, y0 + bloom), Vertex(i + 0.1f, y0 + bloom), skin.leftColor);
+			videoDevice.drawSolidRectangle(Vertex(i + 0.2f, y0 - bloom), Vertex(i + 0.8f, y0 - bloom), Vertex(i + 0.8f, y0 + bloom), Vertex(i + 0.2f, y0 + bloom), leftColor);
 		}
 
 		/////////////////////////////////////////////////////////////////////
 		glViewport(0, height / 2, width, height / 2);
+		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 		videoDevice.drawLine(Vertex(startX, 0), Vertex(endX, 0), skin.gridColor);
-		for (INT32 i = startX; i < endX; i += (endX - startX) / divX)
+		for (FLOAT32 i = startX; i < endX; i += stepX)
 		{
 			videoDevice.drawLine(Vertex(i, startY), Vertex(i, endY), skin.gridColor);
 		}
-		for (INT32 i = startY; i < endY; i += (endY - startY) / divY)
+		for (FLOAT32 i = startY; i < endY; i += stepY)
 		{
 			videoDevice.drawLine(Vertex(startX, i), Vertex(endX, i), skin.gridColor);
 		}
-		videoDevice.drawLine(Vertex(startX, 0), Vertex(endX, 0), skin.axisColor);
+		videoDevice.drawLine(Vertex(startX, 0.0f), Vertex(endX, 0.0f), skin.axisColor);
 
+		glBlendFunc(GL_SRC_ALPHA, GL_ONE);
+		Color rightColor(0.0f, 1.0f, 1.0f, 0.3f);
 		for (INT32 i = startX; i < endX; i++)
 		{
-			INT32 y0 = abs(right[i].real);
+			FLOAT32 y0 = abs(right[i].real) / (65536);
+			videoDevice.drawSolidRectangle(Vertex(i + 0.1f, y0        ), Vertex(i + 0.9f, y0        ), Vertex(i + 0.9f, 0), Vertex(i + 0.1f, 0), skin.rightColor);
+			videoDevice.drawSolidRectangle(Vertex(i + 0.2f, y0 - bloom), Vertex(i + 0.8f, y0 - bloom), Vertex(i + 0.8f, 0), Vertex(i + 0.2f, 0), rightColor);
 
-			videoDevice.drawSolidRectangle(Vertex(i + 0.1f, y0), Vertex(i + 0.9f, y0), Vertex(i + 0.9f, 0), Vertex(i + 0.1f, 0), skin.rightColor);
+			y0 = abs(maxRight[i]) / (65536);
+			videoDevice.drawSolidRectangle(Vertex(i + 0.1f, y0 - bloom), Vertex(i + 0.9f, y0 - bloom), Vertex(i + 0.9f, y0 + bloom), Vertex(i + 0.1f, y0 + bloom), skin.rightColor);
+			videoDevice.drawSolidRectangle(Vertex(i + 0.2f, y0 - bloom), Vertex(i + 0.8f, y0 - bloom), Vertex(i + 0.8f, y0 + bloom), Vertex(i + 0.2f, y0 + bloom), rightColor);
 		}
 
 		videoDevice.flush();

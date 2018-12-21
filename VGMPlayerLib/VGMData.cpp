@@ -136,6 +136,7 @@ BOOL VGMData::open()
 		}
 	}
 	
+	/*
 	if (header.YM2612Clock)
 	{
 		YM2612_Initialize(0, header.YM2612Clock, playInfo.sampleRate);
@@ -152,18 +153,17 @@ BOOL VGMData::open()
 	{
 		K053260_Initialize(0, header.K053260Clock, playInfo.sampleRate);
 	}
-	/*
 	if (header.NESAPUClock)
 	{
 		NESAPU_Initialize(0, header.NESAPUClock & 0x7fffffff, playInfo.sampleRate);
 		if ((header.NESAPUClock & 0x80000000) != 0)
 			NESFDSAPU_Initialize(0, (header.NESAPUClock & 0x7fffffff), playInfo.sampleRate);
 	}
+	*/
 	if (header.HuC6280Clock)
 	{
 		HUC6280_Initialize(0, header.HuC6280Clock, playInfo.sampleRate);
 	}
-	*/
 	
 	return true;
 #if 0
@@ -304,6 +304,7 @@ BOOL VGMData::open()
 
 void VGMData::close()
 {
+	/*
 	if (header.YM2612Clock)
 	{
 		YM2612_Shutdown(0);
@@ -320,18 +321,17 @@ void VGMData::close()
 	{
 		K053260_Shutdown(0);
 	}
-	/*
 	if (header.NESAPUClock)
 	{
 		NESAPU_Shutdown(0);
 		if ((header.NESAPUClock & 0x80000000) != 0)
 			NESFDSAPU_Shutdown(0);
 	}
+	*/
 	if (header.HuC6280Clock)
 	{
 		HUC6280_Shutdown(0);
 	}
-	*/
 
 	onClose();
 }
@@ -410,6 +410,7 @@ UINT32 VGMData::updateSamples(UINT32 updateSampleCounts)
 	sampleBuffers[1] = &bufferInfo.samplesR[bufferInfo.sampleIdx];
 
 	assert(bufferInfo.samplesL.size() == VGM_SAMPLE_COUNT);
+	/*
 	if (header.YM2612Clock)
 		YM2612_Update(0, sampleBuffers, updateSampleCounts);
 	if (header.SN76489Clock)
@@ -418,16 +419,15 @@ UINT32 VGMData::updateSamples(UINT32 updateSampleCounts)
 		YM2151_Update(0, sampleBuffers, updateSampleCounts);
 	if (header.K053260Clock)
 		K053260_Update(0, sampleBuffers, updateSampleCounts);
-	/*
 	if (header.NESAPUClock)
 	{
 		NESAPU_Update(0, sampleBuffers, updateSampleCounts);
 		if (header.NESAPUClock & 0x80000000)
 			NESFDSAPU_Update(0, sampleBuffers, updateSampleCounts);
 	}
+	*/
 	if (header.HuC6280Clock)
 		HUC6280_Update(0, sampleBuffers, updateSampleCounts);
-	*/
 
 	bufferInfo.sampleIdx = bufferInfo.sampleIdx + updateSampleCounts;	// updated samples, sampleIdx+
 	assert(bufferInfo.sampleIdx <= VGM_SAMPLE_COUNT);

@@ -54,6 +54,7 @@ private:
 	UINT32 width;
 	UINT32 height;
 	Skin skin;
+	vector<FLOAT32> max;
 };
 
 #endif

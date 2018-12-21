@@ -71,8 +71,8 @@ static void c6280_stream_update(UINT8 chipID, INT32 **buffer, UINT32 length)
 			if(vlr > 0x1F)
 				vlr = 0x1F;
 
-			vll = ic->volume_table[vll];
-			vlr = ic->volume_table[vlr];
+			vll = ic->volume_table[vll] << 2;
+			vlr = ic->volume_table[vlr] << 2;
 			
 			/* Check channel mode */
 			if((ch >= 4) && (ic->channel[ch].noise_control & 0x80))

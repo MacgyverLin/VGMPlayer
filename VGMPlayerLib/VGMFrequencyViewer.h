@@ -11,10 +11,10 @@ public:
 	class Skin
 	{
 	public:
-		Skin(UINT8 numColumns_ = 32,
+		Skin(UINT8 numColumns_ = 16,
 			 UINT8 numChannels_ = 2,
-			const Color& bgColor_ = Color(0.0f, 0.0f, 0.0f, 1.0f), const Color& gridColor_ = Color(0.0f, 0.2f, 0.2f, 1.0f), const Color& axisColor_ = Color(0.0f, 0.5f, 0.5f, 1.0f),
-			const Color& leftColor_ = Color(0.0f, 0.5f, 0.0f, 1.0f), const Color& rightColor_ = Color(0.0f, 0.5f, 0.5f, 1.0f))
+			const Color& bgColor_ = Color(0.0f, 0.0f, 0.0f, 1.0f), const Color& gridColor_ = Color(0.0f, 0.2f, 0.2f, 1.0f), const Color& axisColor_ = Color(0.9f, 0.9f, 0.9f, 1.0f),
+			const Color& leftColor_ = Color(0.3f, 1.0f, 0.3f, 0.7f), const Color& rightColor_ = Color(0.3f, 1.0f, 1.0f, 0.7f))
 			: numColumns(numColumns_)
 			, numChannels(numChannels_)
 			, bgColor(bgColor_)
@@ -57,6 +57,9 @@ private:
 	UINT32 width;
 	UINT32 height;
 	Skin skin;
+
+	vector<FLOAT32> maxLeft;
+	vector<FLOAT32> maxRight;
 };
 
 #endif

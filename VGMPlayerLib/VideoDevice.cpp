@@ -31,6 +31,9 @@ BOOL VideoDevice::open(const string& name_, UINT32 x_, UINT32 y_, UINT32 width_,
 
 	SDL_GL_SetSwapInterval(1);
 
+	glEnable(GL_BLEND);
+	glBlendFunc(GL_SRC_ALPHA, GL_ONE);
+
 	//glViewport(x_, y_, width_, height_);
 
 	return true;
@@ -239,10 +242,17 @@ VOID VideoDevice::drawSolidCircle(const Vertex& center, FLOAT32 radius, const Co
 {
 }
 
-VOID VideoDevice::drawPrimitive(const Vertex* vertices, const Color& c, UINT32 count)
+VOID VideoDevice::drawPrimitive(UINT32 primitive, const Vertex* vertices, const Color& c, UINT32 count)
 {
+	glVertexPointer(2, GL_FLOAT, 0, vertices);
+
+	glDrawArrays(primitive, 0, count);
 }
 
-VOID VideoDevice::drawPrimitive(const Vertex* vertices, const Color* colors, UINT32 count)
+VOID VideoDevice::drawPrimitive(UINT32 primitive, const Vertex* vertices, const Color* colors, UINT32 count)
 {
+	glVertexPointer(2, GL_FLOAT, 0, vertices);
+	glColorPointer(4, GL_FLOAT, 0, colors);
+
+	glDrawArrays(primitive, 0, count);
 }
