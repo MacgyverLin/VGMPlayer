@@ -1,9 +1,3 @@
-/*****************************************************************************
-*
-*	Yamaha YM2151 driver (version 2.150 final beta)
-*
-******************************************************************************/
-
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -844,379 +838,6 @@ void refresh_EG(YM2151Operator * op)
 	op->eg_sel_rr = eg_rate_select[op->rr + v];
 }
 
-void YM2151_WriteRegister(UINT8 chipID, UINT32 r, UINT8 v)
-{
-	YM2151 *ic = &chips[chipID];
-	YM2151Operator *op = &ic->oper[(r & 0x07) * 4 + ((r & 0x18) >> 3)];
-
-	/* adjust bus to 8 bits */
-	r &= 0xff;
-	v &= 0xff;
-
-	switch (r & 0xe0) {
-	case 0x00:
-		switch (r) {
-		case 0x01:	/* LFO reset(bit 1), Test Register (other bits) */
-			ic->test = v;
-			if (v & 2)
-				ic->lfo_phase = 0;
-			break;
-
-		case 0x08:
-			envelope_KONKOFF(ic, &ic->oper[(v & 7) * 4], v);
-			break;
-
-		case 0x0f:	/* noise mode enable, noise period */
-			ic->noise = v;
-			ic->noise_f = ic->noise_tab[v & 0x1f];
-			break;
-
-		case 0x10:	/* timer A hi */
-			ic->timer_A_index = (ic->timer_A_index & 0x003) | (v << 2);
-			break;
-
-		case 0x11:	/* timer A low */
-			ic->timer_A_index = (ic->timer_A_index & 0x3fc) | (v & 3);
-			break;
-
-		case 0x12:	/* timer B */
-			ic->timer_B_index = v;
-			break;
-
-		case 0x14:	/* CSM, irq flag reset, irq enable, timer start/stop */
-
-			ic->irq_enable = v;	/* bit 3-timer B, bit 2-timer A, bit 7 - CSM */
-
-			if (v & 0x20)	/* reset timer B irq flag */
-			{
-				int oldstate = ic->status & 3;
-				ic->status &= 0xfd;
-				/*
-				if ((oldstate == 2) && (chip->irqhandler))
-					(*chip->irqhandler)(0);
-				*/
-			}
-
-			if (v & 0x10)	/* reset timer A irq flag */
-			{
-				int oldstate = ic->status & 3;
-				ic->status &= 0xfe;
-				/*
-				if ((oldstate == 1) && (chip->irqhandler))
-					(*chip->irqhandler)(0);
-				*/
-			}
-
-			if (v & 0x02) {	/* load and start timer B */
-				if (!ic->tim_B)
-				{
-					ic->tim_B = 1;
-					ic->tim_B_val = ic->tim_B_tab[ic->timer_B_index];
-				}
-			}
-			else
-			{
-				/* stop timer B */
-				ic->tim_B = 0;
-			}
-
-			if (v & 0x01)
-			{
-				/* load and start timer A */
-				if (!ic->tim_A)
-				{
-					ic->tim_A = 1;
-					ic->tim_A_val = ic->tim_A_tab[ic->timer_A_index];
-				}
-			}
-			else
-			{
-				/* stop timer A */
-				ic->tim_A = 0;
-			}
-			break;
-
-		case 0x18:	/* LFO frequency */
-		{
-			ic->lfo_overflow = (1 << ((15 - (v >> 4)) + 3)) * (1 << LFO_SH);
-			ic->lfo_counter_add = 0x10 + (v & 0x0f);
-		}
-		break;
-
-		case 0x19:	/* PMD (bit 7==1) or AMD (bit 7==0) */
-			if (v & 0x80)
-				ic->pmd = v & 0x7f;
-			else
-				ic->amd = v & 0x7f;
-			break;
-
-		case 0x1b:	/* CT2, CT1, LFO waveform */
-			ic->ct = v >> 6;
-			ic->lfo_wsel = v & 3;
-			/*
-			if (chip->porthandler)
-				(*chip->porthandler)(0, chip->ct);
-			*/
-			break;
-
-		default:
-			//logerror("YM2151 Write %02x to undocumented register #%02x\n", v, r);
-			break;
-		}
-		break;
-
-	case 0x20:
-		op = &ic->oper[(r & 7) * 4];
-		switch (r & 0x18)
-		{
-		case 0x00:	/* RL enable, Feedback, Connection */
-			op->fb_shift = ((v >> 3) & 7) ? ((v >> 3) & 7) + 6 : 0;
-			ic->pan[(r & 7) * 2] = (v & 0x40) ? ~0 : 0;
-			ic->pan[(r & 7) * 2 + 1] = (v & 0x80) ? ~0 : 0;
-			ic->connect[r & 7] = v & 7;
-			set_connect(op, r & 7, v & 7);
-			break;
-
-		case 0x08:	/* Key Code */
-			v &= 0x7f;
-			if (v != op->kc)
-			{
-				UINT32 kc, kc_channel;
-
-				kc_channel = (v - (v >> 2)) * 64;
-				kc_channel += 768;
-				kc_channel |= (op->kc_i & 63);
-
-				(op + 0)->kc = v;
-				(op + 0)->kc_i = kc_channel;
-				(op + 1)->kc = v;
-				(op + 1)->kc_i = kc_channel;
-				(op + 2)->kc = v;
-				(op + 2)->kc_i = kc_channel;
-				(op + 3)->kc = v;
-				(op + 3)->kc_i = kc_channel;
-
-				kc = v >> 2;
-
-				(op + 0)->dt1 = ic->dt1_freq[(op + 0)->dt1_i + kc];
-				(op + 0)->freq = ((ic->freq[kc_channel + (op + 0)->dt2] + (op + 0)->dt1) * (op + 0)->mul) >> 1;
-
-				(op + 1)->dt1 = ic->dt1_freq[(op + 1)->dt1_i + kc];
-				(op + 1)->freq = ((ic->freq[kc_channel + (op + 1)->dt2] + (op + 1)->dt1) * (op + 1)->mul) >> 1;
-
-				(op + 2)->dt1 = ic->dt1_freq[(op + 2)->dt1_i + kc];
-				(op + 2)->freq = ((ic->freq[kc_channel + (op + 2)->dt2] + (op + 2)->dt1) * (op + 2)->mul) >> 1;
-
-				(op + 3)->dt1 = ic->dt1_freq[(op + 3)->dt1_i + kc];
-				(op + 3)->freq = ((ic->freq[kc_channel + (op + 3)->dt2] + (op + 3)->dt1) * (op + 3)->mul) >> 1;
-
-				refresh_EG(op);
-			}
-			break;
-
-		case 0x10:	/* Key Fraction */
-			v >>= 2;
-			if (v != (op->kc_i & 63))
-			{
-				UINT32 kc_channel;
-
-				kc_channel = v;
-				kc_channel |= (op->kc_i & ~63);
-
-				(op + 0)->kc_i = kc_channel;
-				(op + 1)->kc_i = kc_channel;
-				(op + 2)->kc_i = kc_channel;
-				(op + 3)->kc_i = kc_channel;
-
-				(op + 0)->freq = ((ic->freq[kc_channel + (op + 0)->dt2] + (op + 0)->dt1) * (op + 0)->mul) >> 1;
-				(op + 1)->freq = ((ic->freq[kc_channel + (op + 1)->dt2] + (op + 1)->dt1) * (op + 1)->mul) >> 1;
-				(op + 2)->freq = ((ic->freq[kc_channel + (op + 2)->dt2] + (op + 2)->dt1) * (op + 2)->mul) >> 1;
-				(op + 3)->freq = ((ic->freq[kc_channel + (op + 3)->dt2] + (op + 3)->dt1) * (op + 3)->mul) >> 1;
-			}
-			break;
-
-		case 0x18:	/* PMS, AMS */
-			op->pms = (v >> 4) & 7;
-			op->ams = (v & 3);
-			break;
-		}
-		break;
-
-	case 0x40:		/* DT1, MUL */
-	{
-		UINT32 olddt1_i = op->dt1_i;
-		UINT32 oldmul = op->mul;
-
-		op->dt1_i = (v & 0x70) << 1;
-		op->mul = (v & 0x0f) ? (v & 0x0f) << 1 : 1;
-
-		if (olddt1_i != op->dt1_i)
-			op->dt1 = ic->dt1_freq[op->dt1_i + (op->kc >> 2)];
-
-		if ((olddt1_i != op->dt1_i) || (oldmul != op->mul))
-			op->freq = ((ic->freq[op->kc_i + op->dt2] + op->dt1) * op->mul) >> 1;
-	}
-	break;
-
-	case 0x60:		/* TL */
-		op->tl = (v & 0x7f) << (ENV_BITS - 7); /* 7bit TL */
-		break;
-
-	case 0x80:		/* KS, AR */
-	{
-		UINT32 oldks = op->ks;
-		UINT32 oldar = op->ar;
-
-		op->ks = 5 - (v >> 6);
-		op->ar = (v & 0x1f) ? 32 + ((v & 0x1f) << 1) : 0;
-
-		if ((op->ar != oldar) || (op->ks != oldks))
-		{
-			if ((op->ar + (op->kc >> op->ks)) < 32 + 62)
-			{
-				op->eg_sh_ar = eg_rate_shift[op->ar + (op->kc >> op->ks)];
-				op->eg_sel_ar = eg_rate_select[op->ar + (op->kc >> op->ks)];
-			}
-			else
-			{
-				op->eg_sh_ar = 0;
-				op->eg_sel_ar = 17 * RATE_STEPS;
-			}
-		}
-
-		if (op->ks != oldks)
-		{
-			op->eg_sh_d1r = eg_rate_shift[op->d1r + (op->kc >> op->ks)];
-			op->eg_sel_d1r = eg_rate_select[op->d1r + (op->kc >> op->ks)];
-			op->eg_sh_d2r = eg_rate_shift[op->d2r + (op->kc >> op->ks)];
-			op->eg_sel_d2r = eg_rate_select[op->d2r + (op->kc >> op->ks)];
-			op->eg_sh_rr = eg_rate_shift[op->rr + (op->kc >> op->ks)];
-			op->eg_sel_rr = eg_rate_select[op->rr + (op->kc >> op->ks)];
-		}
-	}
-	break;
-
-	case 0xa0:		/* LFO AM enable, D1R */
-		op->AMmask = (v & 0x80) ? ~0 : 0;
-		op->d1r = (v & 0x1f) ? 32 + ((v & 0x1f) << 1) : 0;
-		op->eg_sh_d1r = eg_rate_shift[op->d1r + (op->kc >> op->ks)];
-		op->eg_sel_d1r = eg_rate_select[op->d1r + (op->kc >> op->ks)];
-		break;
-
-	case 0xc0:		/* DT2, D2R */
-	{
-		UINT32 olddt2 = op->dt2;
-		op->dt2 = dt2_tab[v >> 6];
-		if (op->dt2 != olddt2)
-			op->freq = ((ic->freq[op->kc_i + op->dt2] + op->dt1) * op->mul) >> 1;
-	}
-	op->d2r = (v & 0x1f) ? 32 + ((v & 0x1f) << 1) : 0;
-	op->eg_sh_d2r = eg_rate_shift[op->d2r + (op->kc >> op->ks)];
-	op->eg_sel_d2r = eg_rate_select[op->d2r + (op->kc >> op->ks)];
-	break;
-
-	case 0xe0:		/* D1L, RR */
-		op->d1l = d1l_tab[v >> 4];
-		op->rr = 34 + ((v & 0x0f) << 2);
-		op->eg_sh_rr = eg_rate_shift[op->rr + (op->kc >> op->ks)];
-		op->eg_sel_rr = eg_rate_select[op->rr + (op->kc >> op->ks)];
-		break;
-	}
-}
-
-UINT32 YM2151_ReadStatus(UINT8 chipID)
-{
-	YM2151 *ic = &chips[chipID];
-
-	return ic->status;
-}
-
-INT32 YM2151_Initialize(UINT8 chipID, UINT32 clock, UINT32 rate)
-{
-	YM2151 *ic = &chips[chipID];
-	memset(ic, 0, sizeof(YM2151));
-
-	init_tables();
-
-	ic->clock = clock;
-	/*rate = clock/64;*/
-	ic->sampfreq = rate ? rate : 44100;	/* avoid division by 0 in init_chip_tables() */
-	//YMPSG[i].irqhandler = NULL;					/* interrupt handler  */
-	//YMPSG[i].porthandler = NULL;				/* port write handler */
-	init_chip_tables(ic);
-
-	ic->lfo_timer_add = (1 << LFO_SH) * (clock / 64.0) / ic->sampfreq;
-
-	ic->eg_timer_add = (1 << EG_SH)  * (clock / 64.0) / ic->sampfreq;
-	ic->eg_timer_overflow = (3) * (1 << EG_SH);
-	ic->tim_A = 0;
-	ic->tim_B = 0;
-
-	YM2151_Reset(chipID);
-
-	return -1;
-}
-
-void YM2151_Shutdown(UINT8 chipID)
-{
-	YM2151 *ic = &chips[chipID];
-}
-
-void YM2151_Reset(UINT8 chipID)
-{
-	YM2151 *ic = &chips[chipID];
-	INT32 i;
-
-	/* initialize hardware registers */
-	for (i = 0; i < 32; i++)
-	{
-		memset(&ic->oper[i], '\0', sizeof(YM2151Operator));
-		ic->oper[i].volume = MAX_ATT_INDEX;
-		ic->oper[i].kc_i = 768; /* min kc_i value */
-	}
-
-	ic->eg_timer = 0;
-	ic->eg_cnt = 0;
-
-	ic->lfo_timer = 0;
-	ic->lfo_counter = 0;
-	ic->lfo_phase = 0;
-	ic->lfo_wsel = 0;
-	ic->pmd = 0;
-	ic->amd = 0;
-	ic->lfa = 0;
-	ic->lfp = 0;
-
-	ic->test = 0;
-
-	ic->irq_enable = 0;
-
-	ic->tim_A = 0;
-	ic->tim_B = 0;
-	ic->tim_A_val = 0;
-	ic->tim_B_val = 0;
-
-	ic->timer_A_index = 0;
-	ic->timer_B_index = 0;
-	ic->timer_A_index_old = 0;
-	ic->timer_B_index_old = 0;
-
-	ic->noise = 0;
-	ic->noise_rng = 0;
-	ic->noise_p = 0;
-	ic->noise_f = ic->noise_tab[0];
-
-	ic->csm_req = 0;
-	ic->status = 0;
-
-	YM2151_WriteRegister(chipID, 0x1b, 0);	/* only because of CT1, CT2 output pins */
-	YM2151_WriteRegister(chipID, 0x18, 0);	/* set LFO frequency */
-	for (i = 0x20; i < 0x100; i++)		/* set the operators */
-	{
-		YM2151_WriteRegister(chipID, i, 0);
-	}
-}
-
 INT32 op_calc(YM2151Operator * OP, unsigned int env, signed int pm)
 {
 	UINT32 p;
@@ -1800,6 +1421,379 @@ void advance(YM2151* ic)
 
 #define SAVE_SINGLE_CHANNEL(j)
 #define SAVE_ALL_CHANNELS()
+
+INT32 YM2151_Initialize(UINT8 chipID, UINT32 clock, UINT32 sampleRate)
+{
+	YM2151 *ic = &chips[chipID];
+	memset(ic, 0, sizeof(YM2151));
+
+	init_tables();
+
+	ic->clock = clock;
+	/*rate = clock/64;*/
+	ic->sampfreq = sampleRate ? sampleRate : 44100;	/* avoid division by 0 in init_chip_tables() */
+	//YMPSG[i].irqhandler = NULL;					/* interrupt handler  */
+	//YMPSG[i].porthandler = NULL;				/* port write handler */
+	init_chip_tables(ic);
+
+	ic->lfo_timer_add = (1 << LFO_SH) * (clock / 64.0) / ic->sampfreq;
+
+	ic->eg_timer_add = (1 << EG_SH)  * (clock / 64.0) / ic->sampfreq;
+	ic->eg_timer_overflow = (3) * (1 << EG_SH);
+	ic->tim_A = 0;
+	ic->tim_B = 0;
+
+	YM2151_Reset(chipID);
+
+	return -1;
+}
+
+void YM2151_Shutdown(UINT8 chipID)
+{
+	YM2151 *ic = &chips[chipID];
+}
+
+void YM2151_Reset(UINT8 chipID)
+{
+	YM2151 *ic = &chips[chipID];
+	INT32 i;
+
+	/* initialize hardware registers */
+	for (i = 0; i < 32; i++)
+	{
+		memset(&ic->oper[i], '\0', sizeof(YM2151Operator));
+		ic->oper[i].volume = MAX_ATT_INDEX;
+		ic->oper[i].kc_i = 768; /* min kc_i value */
+	}
+
+	ic->eg_timer = 0;
+	ic->eg_cnt = 0;
+
+	ic->lfo_timer = 0;
+	ic->lfo_counter = 0;
+	ic->lfo_phase = 0;
+	ic->lfo_wsel = 0;
+	ic->pmd = 0;
+	ic->amd = 0;
+	ic->lfa = 0;
+	ic->lfp = 0;
+
+	ic->test = 0;
+
+	ic->irq_enable = 0;
+
+	ic->tim_A = 0;
+	ic->tim_B = 0;
+	ic->tim_A_val = 0;
+	ic->tim_B_val = 0;
+
+	ic->timer_A_index = 0;
+	ic->timer_B_index = 0;
+	ic->timer_A_index_old = 0;
+	ic->timer_B_index_old = 0;
+
+	ic->noise = 0;
+	ic->noise_rng = 0;
+	ic->noise_p = 0;
+	ic->noise_f = ic->noise_tab[0];
+
+	ic->csm_req = 0;
+	ic->status = 0;
+
+	YM2151_WriteRegister(chipID, 0x1b, 0);	/* only because of CT1, CT2 output pins */
+	YM2151_WriteRegister(chipID, 0x18, 0);	/* set LFO frequency */
+	for (i = 0x20; i < 0x100; i++)		/* set the operators */
+	{
+		YM2151_WriteRegister(chipID, i, 0);
+	}
+}
+
+void YM2151_WriteRegister(UINT8 chipID, UINT32 r, UINT8 v)
+{
+	YM2151 *ic = &chips[chipID];
+	YM2151Operator *op = &ic->oper[(r & 0x07) * 4 + ((r & 0x18) >> 3)];
+
+	/* adjust bus to 8 bits */
+	r &= 0xff;
+	v &= 0xff;
+
+	switch (r & 0xe0) {
+	case 0x00:
+		switch (r) {
+		case 0x01:	/* LFO reset(bit 1), Test Register (other bits) */
+			ic->test = v;
+			if (v & 2)
+				ic->lfo_phase = 0;
+			break;
+
+		case 0x08:
+			envelope_KONKOFF(ic, &ic->oper[(v & 7) * 4], v);
+			break;
+
+		case 0x0f:	/* noise mode enable, noise period */
+			ic->noise = v;
+			ic->noise_f = ic->noise_tab[v & 0x1f];
+			break;
+
+		case 0x10:	/* timer A hi */
+			ic->timer_A_index = (ic->timer_A_index & 0x003) | (v << 2);
+			break;
+
+		case 0x11:	/* timer A low */
+			ic->timer_A_index = (ic->timer_A_index & 0x3fc) | (v & 3);
+			break;
+
+		case 0x12:	/* timer B */
+			ic->timer_B_index = v;
+			break;
+
+		case 0x14:	/* CSM, irq flag reset, irq enable, timer start/stop */
+
+			ic->irq_enable = v;	/* bit 3-timer B, bit 2-timer A, bit 7 - CSM */
+
+			if (v & 0x20)	/* reset timer B irq flag */
+			{
+				int oldstate = ic->status & 3;
+				ic->status &= 0xfd;
+				/*
+				if ((oldstate == 2) && (chip->irqhandler))
+					(*chip->irqhandler)(0);
+				*/
+			}
+
+			if (v & 0x10)	/* reset timer A irq flag */
+			{
+				int oldstate = ic->status & 3;
+				ic->status &= 0xfe;
+				/*
+				if ((oldstate == 1) && (chip->irqhandler))
+					(*chip->irqhandler)(0);
+				*/
+			}
+
+			if (v & 0x02) {	/* load and start timer B */
+				if (!ic->tim_B)
+				{
+					ic->tim_B = 1;
+					ic->tim_B_val = ic->tim_B_tab[ic->timer_B_index];
+				}
+			}
+			else
+			{
+				/* stop timer B */
+				ic->tim_B = 0;
+			}
+
+			if (v & 0x01)
+			{
+				/* load and start timer A */
+				if (!ic->tim_A)
+				{
+					ic->tim_A = 1;
+					ic->tim_A_val = ic->tim_A_tab[ic->timer_A_index];
+				}
+			}
+			else
+			{
+				/* stop timer A */
+				ic->tim_A = 0;
+			}
+			break;
+
+		case 0x18:	/* LFO frequency */
+		{
+			ic->lfo_overflow = (1 << ((15 - (v >> 4)) + 3)) * (1 << LFO_SH);
+			ic->lfo_counter_add = 0x10 + (v & 0x0f);
+		}
+		break;
+
+		case 0x19:	/* PMD (bit 7==1) or AMD (bit 7==0) */
+			if (v & 0x80)
+				ic->pmd = v & 0x7f;
+			else
+				ic->amd = v & 0x7f;
+			break;
+
+		case 0x1b:	/* CT2, CT1, LFO waveform */
+			ic->ct = v >> 6;
+			ic->lfo_wsel = v & 3;
+			/*
+			if (chip->porthandler)
+				(*chip->porthandler)(0, chip->ct);
+			*/
+			break;
+
+		default:
+			//logerror("YM2151 Write %02x to undocumented register #%02x\n", v, r);
+			break;
+		}
+		break;
+
+	case 0x20:
+		op = &ic->oper[(r & 7) * 4];
+		switch (r & 0x18)
+		{
+		case 0x00:	/* RL enable, Feedback, Connection */
+			op->fb_shift = ((v >> 3) & 7) ? ((v >> 3) & 7) + 6 : 0;
+			ic->pan[(r & 7) * 2] = (v & 0x40) ? ~0 : 0;
+			ic->pan[(r & 7) * 2 + 1] = (v & 0x80) ? ~0 : 0;
+			ic->connect[r & 7] = v & 7;
+			set_connect(op, r & 7, v & 7);
+			break;
+
+		case 0x08:	/* Key Code */
+			v &= 0x7f;
+			if (v != op->kc)
+			{
+				UINT32 kc, kc_channel;
+
+				kc_channel = (v - (v >> 2)) * 64;
+				kc_channel += 768;
+				kc_channel |= (op->kc_i & 63);
+
+				(op + 0)->kc = v;
+				(op + 0)->kc_i = kc_channel;
+				(op + 1)->kc = v;
+				(op + 1)->kc_i = kc_channel;
+				(op + 2)->kc = v;
+				(op + 2)->kc_i = kc_channel;
+				(op + 3)->kc = v;
+				(op + 3)->kc_i = kc_channel;
+
+				kc = v >> 2;
+
+				(op + 0)->dt1 = ic->dt1_freq[(op + 0)->dt1_i + kc];
+				(op + 0)->freq = ((ic->freq[kc_channel + (op + 0)->dt2] + (op + 0)->dt1) * (op + 0)->mul) >> 1;
+
+				(op + 1)->dt1 = ic->dt1_freq[(op + 1)->dt1_i + kc];
+				(op + 1)->freq = ((ic->freq[kc_channel + (op + 1)->dt2] + (op + 1)->dt1) * (op + 1)->mul) >> 1;
+
+				(op + 2)->dt1 = ic->dt1_freq[(op + 2)->dt1_i + kc];
+				(op + 2)->freq = ((ic->freq[kc_channel + (op + 2)->dt2] + (op + 2)->dt1) * (op + 2)->mul) >> 1;
+
+				(op + 3)->dt1 = ic->dt1_freq[(op + 3)->dt1_i + kc];
+				(op + 3)->freq = ((ic->freq[kc_channel + (op + 3)->dt2] + (op + 3)->dt1) * (op + 3)->mul) >> 1;
+
+				refresh_EG(op);
+			}
+			break;
+
+		case 0x10:	/* Key Fraction */
+			v >>= 2;
+			if (v != (op->kc_i & 63))
+			{
+				UINT32 kc_channel;
+
+				kc_channel = v;
+				kc_channel |= (op->kc_i & ~63);
+
+				(op + 0)->kc_i = kc_channel;
+				(op + 1)->kc_i = kc_channel;
+				(op + 2)->kc_i = kc_channel;
+				(op + 3)->kc_i = kc_channel;
+
+				(op + 0)->freq = ((ic->freq[kc_channel + (op + 0)->dt2] + (op + 0)->dt1) * (op + 0)->mul) >> 1;
+				(op + 1)->freq = ((ic->freq[kc_channel + (op + 1)->dt2] + (op + 1)->dt1) * (op + 1)->mul) >> 1;
+				(op + 2)->freq = ((ic->freq[kc_channel + (op + 2)->dt2] + (op + 2)->dt1) * (op + 2)->mul) >> 1;
+				(op + 3)->freq = ((ic->freq[kc_channel + (op + 3)->dt2] + (op + 3)->dt1) * (op + 3)->mul) >> 1;
+			}
+			break;
+
+		case 0x18:	/* PMS, AMS */
+			op->pms = (v >> 4) & 7;
+			op->ams = (v & 3);
+			break;
+		}
+		break;
+
+	case 0x40:		/* DT1, MUL */
+	{
+		UINT32 olddt1_i = op->dt1_i;
+		UINT32 oldmul = op->mul;
+
+		op->dt1_i = (v & 0x70) << 1;
+		op->mul = (v & 0x0f) ? (v & 0x0f) << 1 : 1;
+
+		if (olddt1_i != op->dt1_i)
+			op->dt1 = ic->dt1_freq[op->dt1_i + (op->kc >> 2)];
+
+		if ((olddt1_i != op->dt1_i) || (oldmul != op->mul))
+			op->freq = ((ic->freq[op->kc_i + op->dt2] + op->dt1) * op->mul) >> 1;
+	}
+	break;
+
+	case 0x60:		/* TL */
+		op->tl = (v & 0x7f) << (ENV_BITS - 7); /* 7bit TL */
+		break;
+
+	case 0x80:		/* KS, AR */
+	{
+		UINT32 oldks = op->ks;
+		UINT32 oldar = op->ar;
+
+		op->ks = 5 - (v >> 6);
+		op->ar = (v & 0x1f) ? 32 + ((v & 0x1f) << 1) : 0;
+
+		if ((op->ar != oldar) || (op->ks != oldks))
+		{
+			if ((op->ar + (op->kc >> op->ks)) < 32 + 62)
+			{
+				op->eg_sh_ar = eg_rate_shift[op->ar + (op->kc >> op->ks)];
+				op->eg_sel_ar = eg_rate_select[op->ar + (op->kc >> op->ks)];
+			}
+			else
+			{
+				op->eg_sh_ar = 0;
+				op->eg_sel_ar = 17 * RATE_STEPS;
+			}
+		}
+
+		if (op->ks != oldks)
+		{
+			op->eg_sh_d1r = eg_rate_shift[op->d1r + (op->kc >> op->ks)];
+			op->eg_sel_d1r = eg_rate_select[op->d1r + (op->kc >> op->ks)];
+			op->eg_sh_d2r = eg_rate_shift[op->d2r + (op->kc >> op->ks)];
+			op->eg_sel_d2r = eg_rate_select[op->d2r + (op->kc >> op->ks)];
+			op->eg_sh_rr = eg_rate_shift[op->rr + (op->kc >> op->ks)];
+			op->eg_sel_rr = eg_rate_select[op->rr + (op->kc >> op->ks)];
+		}
+	}
+	break;
+
+	case 0xa0:		/* LFO AM enable, D1R */
+		op->AMmask = (v & 0x80) ? ~0 : 0;
+		op->d1r = (v & 0x1f) ? 32 + ((v & 0x1f) << 1) : 0;
+		op->eg_sh_d1r = eg_rate_shift[op->d1r + (op->kc >> op->ks)];
+		op->eg_sel_d1r = eg_rate_select[op->d1r + (op->kc >> op->ks)];
+		break;
+
+	case 0xc0:		/* DT2, D2R */
+	{
+		UINT32 olddt2 = op->dt2;
+		op->dt2 = dt2_tab[v >> 6];
+		if (op->dt2 != olddt2)
+			op->freq = ((ic->freq[op->kc_i + op->dt2] + op->dt1) * op->mul) >> 1;
+	}
+	op->d2r = (v & 0x1f) ? 32 + ((v & 0x1f) << 1) : 0;
+	op->eg_sh_d2r = eg_rate_shift[op->d2r + (op->kc >> op->ks)];
+	op->eg_sel_d2r = eg_rate_select[op->d2r + (op->kc >> op->ks)];
+	break;
+
+	case 0xe0:		/* D1L, RR */
+		op->d1l = d1l_tab[v >> 4];
+		op->rr = 34 + ((v & 0x0f) << 2);
+		op->eg_sh_rr = eg_rate_shift[op->rr + (op->kc >> op->ks)];
+		op->eg_sel_rr = eg_rate_select[op->rr + (op->kc >> op->ks)];
+		break;
+	}
+}
+
+UINT8 YM2151_ReadRegister(UINT8 chipID, UINT32 address)
+{
+	YM2151 *ic = &chips[chipID];
+
+	return ic->status;
+}
 
 void YM2151_Update(UINT8 chipID, INT32 **buffers, UINT32 length)
 {
