@@ -1,14 +1,14 @@
 #include "VGMFrequencyViewer.h"
 #include "FFT.h"
 
-VGMFrequencyViewer::VGMFrequencyViewer(const string& name_, UINT32 x_, UINT32 y_, UINT32 width_, UINT32 height_, const Color& bg_)
-	: VGMDataObverser()
-	, name(name_)
-	, x(x_)
-	, y(y_)
-	, width(width_)
-	, height(height_)
-	, bg(bg_)
+VGMFrequencyViewer::VGMFrequencyViewer(const string& name_, UINT32 x_, UINT32 y_, UINT32 width_, UINT32 height_, const Skin& skin_)
+: VGMDataObverser()
+, name(name_)
+, x(x_)
+, y(y_)
+, width(width_)
+, height(height_)
+, skin(skin_)
 {
 }
 
@@ -71,76 +71,99 @@ void VGMFrequencyViewer::onNotifyUpdate(Obserable& observable)
 
 	if (bufferInfo.needQueueOutputSamples)
 	{
-
-		Color gridColor(0.0f, 0.2f, 0.2f, 1.0f);
-		Color axisColor(0.0f, 0.5f, 0.5f, 1.0f);
-		Color leftColor(0.0f, 0.5f, 0.0f, 1.0f);
-		Color rightColor(0.0f, 0.5f, 0.5f, 1.0f);
-
 		videoDevice.makeCurrent();
-		videoDevice.clear(bg);
+		videoDevice.clear(skin.bgColor);
 
-		int sampleCount = 64;
+		int fftSampleCount = skin.numColumns * 2;
+		int startX = fftSampleCount / 2;
+		int endX = fftSampleCount; //sampleCount;
+		int divX = fftSampleCount / 2;
+
+		int startY = 0;
+		int endY = 65536 * 2;
+		int divY = fftSampleCount / 2;
+		
 		glMatrixMode(GL_PROJECTION);
 		glLoadIdentity();
 		glPushMatrix();
-		gluOrtho2D(sampleCount / 2, sampleCount, 0, 32767);
+		gluOrtho2D(endX, startX, startY, endY);
 		glMatrixMode(GL_MODELVIEW);
 
-		complex left[VGM_SAMPLE_COUNT];
-		float step = ((float)sampleCount / VGM_SAMPLE_COUNT);
-		for (float i = 0; i < VGM_SAMPLE_COUNT; i += step)
+		float step = VGM_SAMPLE_COUNT / fftSampleCount;
+
+		vector<complex> left;
+		left.resize(fftSampleCount);
+		float leftIdx = 0;
+		for (int i = 0; i < fftSampleCount; i++)
 		{
-			left[(int)i].real = bufferInfo.outputSamples[i + 0].l;
-			left[(int)i].imag = 0;
+			left[i].real = 0;
+			left[i].imag = 0;
+			for (int j = 0; j < step; j++)
+			{
+				left[i].real += bufferInfo.outputSamples[(int)leftIdx + j].l;
+			}
+			left[i].real /= step;
+
+			leftIdx += step;
 		}
 
-		complex right[VGM_SAMPLE_COUNT];
-		for (float i = 0; i < VGM_SAMPLE_COUNT; i += step)
+		vector<complex> right;
+		right.resize(fftSampleCount);
+		float rightIdx = 0;
+		for (int i = 0; i < fftSampleCount; i++)
 		{
-			right[(int)i].real = bufferInfo.outputSamples[i + 0].r;
-			right[(int)i].imag = 0;
+			right[i].real = 0;
+			right[i].imag = 0;
+			for (int j = 0; j < step; j++)
+			{
+				right[i].real += bufferInfo.outputSamples[(int)rightIdx + j].r;
+			}
+			right[i].real /= step;
+
+			rightIdx += step;
 		}
 
-		fft(sampleCount, left);
-		fft(sampleCount, right);
+		fft(fftSampleCount, &left[0]);
+		fft(fftSampleCount, &right[0]);
 
 		/////////////////////////////////////////////////////////////////////
 		glViewport(0, 0, width, height / 2);
-		videoDevice.drawLine(Vertex(0, 0), Vertex(sampleCount, 0), gridColor);
-		for (INT32 i = sampleCount / 2; i < sampleCount; i += sampleCount / 10)
+		videoDevice.drawLine(Vertex(startX, 0), Vertex(endX, 0), skin.gridColor);
+		for (INT32 i = startX; i < endX; i += (endX - startX) / divX)
 		{
-			videoDevice.drawLine(Vertex(i, -32767), Vertex(i, 32767), gridColor);
+			videoDevice.drawLine(Vertex(i, startY), Vertex(i, endY), skin.gridColor);
 		}
-		for (INT32 i = 0; i < 32767; i += 32768 / 10)
+		for (INT32 i = startY; i < endY; i += (endY - startY) / divY)
 		{
-			videoDevice.drawLine(Vertex(sampleCount / 2, i), Vertex(sampleCount, i), gridColor);
+			videoDevice.drawLine(Vertex(startX, i), Vertex(endX, i), skin.gridColor);
 		}
-		videoDevice.drawLine(Vertex(0, 0), Vertex(sampleCount, 0), axisColor);
-		for (INT32 i = sampleCount / 2; i < sampleCount; i++)
+		videoDevice.drawLine(Vertex(startX, 0), Vertex(endX, 0), skin.axisColor);
+
+		for (INT32 i = startX; i < endX; i++)
 		{
 			INT32 y0 = abs(left[i].real);
 
-			videoDevice.drawSolidRectangle(Vertex(i + 0.1f, y0), Vertex(i + 0.9f, y0), Vertex(i + 0.9f, 0), Vertex(i + 0.1f, 0), leftColor);
+			videoDevice.drawSolidRectangle(Vertex(i + 0.1f, y0), Vertex(i + 0.9f, y0), Vertex(i + 0.9f, 0), Vertex(i + 0.1f, 0), skin.leftColor);
 		}
 
 		/////////////////////////////////////////////////////////////////////
 		glViewport(0, height / 2, width, height / 2);
-		videoDevice.drawLine(Vertex(0, 0), Vertex(sampleCount, 0), gridColor);
-		for (INT32 i = sampleCount / 2; i < sampleCount; i += sampleCount / 10)
+		videoDevice.drawLine(Vertex(startX, 0), Vertex(endX, 0), skin.gridColor);
+		for (INT32 i = startX; i < endX; i += (endX - startX) / divX)
 		{
-			videoDevice.drawLine(Vertex(i, -32767), Vertex(i, 32767), gridColor);
+			videoDevice.drawLine(Vertex(i, startY), Vertex(i, endY), skin.gridColor);
 		}
-		for (INT32 i = 0; i < 32767; i += 32768 / 10)
+		for (INT32 i = startY; i < endY; i += (endY - startY) / divY)
 		{
-			videoDevice.drawLine(Vertex(sampleCount / 2, i), Vertex(sampleCount, i), gridColor);
+			videoDevice.drawLine(Vertex(startX, i), Vertex(endX, i), skin.gridColor);
 		}
-		videoDevice.drawLine(Vertex(0, 0), Vertex(sampleCount, 0), axisColor);
-		for (INT32 i = sampleCount / 2; i < sampleCount; i++)
+		videoDevice.drawLine(Vertex(startX, 0), Vertex(endX, 0), skin.axisColor);
+
+		for (INT32 i = startX; i < endX; i++)
 		{
 			INT32 y0 = abs(right[i].real);
 
-			videoDevice.drawSolidRectangle(Vertex(i + 0.1f, y0), Vertex(i + 0.9f, y0), Vertex(i + 0.9f, 0), Vertex(i + 0.1f, 0), rightColor);
+			videoDevice.drawSolidRectangle(Vertex(i + 0.1f, y0), Vertex(i + 0.9f, y0), Vertex(i + 0.9f, 0), Vertex(i + 0.1f, 0), skin.rightColor);
 		}
 
 		videoDevice.flush();

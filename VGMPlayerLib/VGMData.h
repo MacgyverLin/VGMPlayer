@@ -373,6 +373,14 @@ public:
 	public:
 		INT16 l;
 		INT16 r;
+
+		INT16 get(UINT8 idx)
+		{
+			if(idx==0)
+				return l;
+			else
+				return r;
+		}
 	};
 #pragma pack (pop)
 	class BufferInfo

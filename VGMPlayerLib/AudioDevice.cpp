@@ -9,7 +9,7 @@ AudioDevice::~AudioDevice()
 {
 }
 
-BOOL AudioDevice::open(int channels_, int bitsPerSample_, int sampleRate_, int bufferCount_)
+BOOL AudioDevice::open(INT32 channels_, INT32 bitsPerSample_, INT32 sampleRate_, INT32 bufferCount_)
 {
 	ALuint error = 0;
 

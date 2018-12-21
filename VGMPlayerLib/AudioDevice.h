@@ -13,7 +13,7 @@ public:
 	AudioDevice();
 	~AudioDevice();
 
-	BOOL open(int channels, int bitsPerSample, int sampleRate, int bufferCount);
+	BOOL open(INT32 channels, INT32 bitsPerSample, INT32 sampleRate, INT32 bufferCount);
 	VOID close();
 
 	INT32 play();
@@ -21,10 +21,10 @@ public:
 	INT32 update();
 	INT32 queue(void* data_, int dataSize_);
 	INT32 getQueued();
-	void setVolume(float volume_);
-	float getVolume();
-	void setPlayRate(float playRate_);
-	float getPlayRate();
+	VOID setVolume(FLOAT32 volume_);
+	FLOAT32 getVolume();
+	VOID setPlayRate(FLOAT32 playRate_);
+	FLOAT32 getPlayRate();
 
 	INT32 getDeviceState();
 protected:

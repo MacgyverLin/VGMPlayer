@@ -8,7 +8,33 @@
 class VGMFrequencyViewer : public VGMDataObverser
 {
 public:
-	VGMFrequencyViewer(const string& name_, UINT32 x_, UINT32 y_, UINT32 width_, UINT32 height_, const Color& bg_);
+	class Skin
+	{
+	public:
+		Skin(UINT8 numColumns_ = 32,
+			 UINT8 numChannels_ = 2,
+			const Color& bgColor_ = Color(0.0f, 0.0f, 0.0f, 1.0f), const Color& gridColor_ = Color(0.0f, 0.2f, 0.2f, 1.0f), const Color& axisColor_ = Color(0.0f, 0.5f, 0.5f, 1.0f),
+			const Color& leftColor_ = Color(0.0f, 0.5f, 0.0f, 1.0f), const Color& rightColor_ = Color(0.0f, 0.5f, 0.5f, 1.0f))
+			: numColumns(numColumns_)
+			, numChannels(numChannels_)
+			, bgColor(bgColor_)
+			, gridColor(gridColor_)
+			, axisColor(axisColor_)
+			, leftColor(leftColor_)
+			, rightColor(rightColor_)
+		{
+		}
+
+		UINT8 numColumns;
+		UINT8 numChannels;
+		Color bgColor;
+		Color gridColor;
+		Color axisColor;
+		Color leftColor;
+		Color rightColor;
+	};
+	VGMFrequencyViewer(const string& name_, UINT32 x_, UINT32 y_, UINT32 width_, UINT32 height_, 
+					   const Skin& skin_);
 	virtual ~VGMFrequencyViewer();
 protected:
 	virtual void onNotifySomething(Obserable& vgmData);
@@ -30,7 +56,7 @@ private:
 	UINT32 y;
 	UINT32 width;
 	UINT32 height;
-	Color bg;
+	Skin skin;
 };
 
 #endif

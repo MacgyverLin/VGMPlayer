@@ -351,6 +351,9 @@ INT32 VGMData::seekCur(UINT32 size)
 	return onSeekCur(size);
 }
 
+static int sample = 0;
+static float frequency = 220.0f;
+
 void VGMData::fillOutputBuffer()
 {
 	int i, out_L, out_R;
@@ -360,10 +363,20 @@ void VGMData::fillOutputBuffer()
 
 	for (i = 0; i < VGM_SAMPLE_COUNT; i++) // always fill by fix size VGM_SAMPLE_COUNT
 	{
-		//out_L = 1000 * sin(((float)i) * 4000.0 * 2.0f * 3.1415f); //l[i];
-		//out_R = 1000 * sin(((float)i) * 4000.0 * 2.0f * 3.1415f); //r[i];
 		out_L = l[i];
 		out_R = r[i];
+		/*
+		out_L = 32000 * sin(((float)sample) * frequency / playInfo.sampleRate * 2.0f * 3.1415f); //l[i];
+		out_R = 32000 * sin(((float)sample) * frequency / playInfo.sampleRate * 2.0f * 3.1415f); //r[i];
+		sample++;
+		if(sample>44100*5)
+		{
+			sample = 0;
+			frequency *= 2;
+			printf("%f\n", frequency);
+		}
+		*/
+
 		r[i] = 0;
 		l[i] = 0;
 
