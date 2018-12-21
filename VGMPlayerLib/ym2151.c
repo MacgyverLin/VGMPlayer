@@ -19,10 +19,10 @@ typedef struct {
 	UINT32		dt1_i;					/* DT1 index * 32 */
 	UINT32		dt2;					/* current DT2 (detune 2) value */
 
-	INT32		*connect;				/* operator output 'direction' */
+	signed int *connect;				/* operator output 'direction' */
 
 										/* only M1 (operator 0) is filled with this data: */
-	INT32		*mem_connect;			/* where to put the delayed sample (MEM) */
+	signed int *mem_connect;			/* where to put the delayed sample (MEM) */
 	INT32		mem_value;				/* delayed sample (MEM) value */
 
 										/* channel specific data; note: each operator number 0 contains channel specific data */
@@ -135,15 +135,11 @@ typedef struct
 
 	UINT32		noise_tab[32];			/* 17bit Noise Generator periods */
 
-	UINT32		clock;					/* chip clock in Hz (passed from 2151intf.c) */
-	UINT32		sampfreq;				/* sampling frequency in Hz (passed from 2151intf.c) */
-
-	INT32		chanout[8];
-	INT32		m2, c1, c2;				/* Phase Modulation input for operators 2,3,4 */
-	INT32		mem;					/* one sample delay memory */
-
 	// void(*irqhandler)(int irq);		/* IRQ function handler */
 	// write8_handler porthandler;		/* port write function handler */
+
+	unsigned int clock;					/* chip clock in Hz (passed from 2151intf.c) */
+	unsigned int sampfreq;				/* sampling frequency in Hz (passed from 2151intf.c) */
 }YM2151;
 
 #define FREQ_SH			16  /* 16.16 fixed point (frequency calculations) */
@@ -434,9 +430,12 @@ static UINT8 lfo_noise_waveform[256] = {
 	0xE2,0x4D,0x8A,0xA6,0x46,0x95,0x0F,0x8F,0xF5,0x15,0x97,0x32,0xD4,0x28,0x1E,0x55
 };
 
-#define YM2151_COUNT 2
-YM2151 chips[YM2151_COUNT];			/* array of YM2151's */
+#define MAX_YM2151 2
+static YM2151 chips[MAX_YM2151];	/* array of YM2151's */
 									/* these variables stay here for speedup purposes only */
+static signed int chanout[8];
+static signed int m2, c1, c2;		/* Phase Modulation input for operators 2,3,4 */
+static signed int mem;				/* one sample delay memory */
 
 static void init_tables(void)
 {
@@ -664,7 +663,7 @@ void envelope_KONKOFF(YM2151* ic, YM2151Operator * op, int v)
 					KEY_OFF(op + 3, ~1)
 }
 
-void set_connect(YM2151* ic, YM2151Operator *om1, int cha, int v)
+void set_connect(YM2151Operator *om1, int cha, int v)
 {
 	YM2151Operator *om2 = om1 + 1;
 	YM2151Operator *oc1 = om1 + 2;
@@ -677,47 +676,47 @@ void set_connect(YM2151* ic, YM2151Operator *om1, int cha, int v)
 	{
 	case 0:
 		/* M1---C1---MEM---M2---C2---OUT */
-		om1->connect = &ic->c1;
-		oc1->connect = &ic->mem;
-		om2->connect = &ic->c2;
-		om1->mem_connect = &ic->m2;
+		om1->connect = &c1;
+		oc1->connect = &mem;
+		om2->connect = &c2;
+		om1->mem_connect = &m2;
 		break;
 
 	case 1:
 		/* M1------+-MEM---M2---C2---OUT */
 		/*      C1-+                     */
-		om1->connect = &ic->mem;
-		oc1->connect = &ic->mem;
-		om2->connect = &ic->c2;
-		om1->mem_connect = &ic->m2;
+		om1->connect = &mem;
+		oc1->connect = &mem;
+		om2->connect = &c2;
+		om1->mem_connect = &m2;
 		break;
 
 	case 2:
 		/* M1-----------------+-C2---OUT */
 		/*      C1---MEM---M2-+          */
-		om1->connect = &ic->c2;
-		oc1->connect = &ic->mem;
-		om2->connect = &ic->c2;
-		om1->mem_connect = &ic->m2;
+		om1->connect = &c2;
+		oc1->connect = &mem;
+		om2->connect = &c2;
+		om1->mem_connect = &m2;
 		break;
 
 	case 3:
 		/* M1---C1---MEM------+-C2---OUT */
 		/*                 M2-+          */
-		om1->connect = &ic->c1;
-		oc1->connect = &ic->mem;
-		om2->connect = &ic->c2;
-		om1->mem_connect = &ic->c2;
+		om1->connect = &c1;
+		oc1->connect = &mem;
+		om2->connect = &c2;
+		om1->mem_connect = &c2;
 		break;
 
 	case 4:
 		/* M1---C1-+-OUT */
 		/* M2---C2-+     */
 		/* MEM: not used */
-		om1->connect = &ic->c1;
-		oc1->connect = &ic->chanout[cha];
-		om2->connect = &ic->c2;
-		om1->mem_connect = &ic->mem;	/* store it anywhere where it will not be used */
+		om1->connect = &c1;
+		oc1->connect = &chanout[cha];
+		om2->connect = &c2;
+		om1->mem_connect = &mem;	/* store it anywhere where it will not be used */
 		break;
 
 	case 5:
@@ -725,9 +724,9 @@ void set_connect(YM2151* ic, YM2151Operator *om1, int cha, int v)
 		/* M1-+-MEM---M2-+-OUT */
 		/*    +----C2----+     */
 		om1->connect = 0;	/* special mark */
-		oc1->connect = &ic->chanout[cha];
-		om2->connect = &ic->chanout[cha];
-		om1->mem_connect = &ic->m2;
+		oc1->connect = &chanout[cha];
+		om2->connect = &chanout[cha];
+		om1->mem_connect = &m2;
 		break;
 
 	case 6:
@@ -735,10 +734,10 @@ void set_connect(YM2151* ic, YM2151Operator *om1, int cha, int v)
 		/*      M2-+-OUT */
 		/*      C2-+     */
 		/* MEM: not used */
-		om1->connect = &ic->c1;
-		oc1->connect = &ic->chanout[cha];
-		om2->connect = &ic->chanout[cha];
-		om1->mem_connect = &ic->mem;	/* store it anywhere where it will not be used */
+		om1->connect = &c1;
+		oc1->connect = &chanout[cha];
+		om2->connect = &chanout[cha];
+		om1->mem_connect = &mem;	/* store it anywhere where it will not be used */
 		break;
 
 	case 7:
@@ -747,10 +746,10 @@ void set_connect(YM2151* ic, YM2151Operator *om1, int cha, int v)
 		/* M2-+     */
 		/* C2-+     */
 		/* MEM: not used*/
-		om1->connect = &ic->chanout[cha];
-		oc1->connect = &ic->chanout[cha];
-		om2->connect = &ic->chanout[cha];
-		om1->mem_connect = &ic->mem;	/* store it anywhere where it will not be used */
+		om1->connect = &chanout[cha];
+		oc1->connect = &chanout[cha];
+		om2->connect = &chanout[cha];
+		om1->mem_connect = &mem;	/* store it anywhere where it will not be used */
 		break;
 	}
 }
@@ -975,7 +974,7 @@ void YM2151_WriteRegister(UINT8 chipID, UINT32 r, UINT8 v)
 			ic->pan[(r & 7) * 2] = (v & 0x40) ? ~0 : 0;
 			ic->pan[(r & 7) * 2 + 1] = (v & 0x80) ? ~0 : 0;
 			ic->connect[r & 7] = v & 7;
-			set_connect(ic, op, r & 7, v & 7);
+			set_connect(op, r & 7, v & 7);
 			break;
 
 		case 0x08:	/* Key Code */
@@ -1125,7 +1124,7 @@ void YM2151_WriteRegister(UINT8 chipID, UINT32 r, UINT8 v)
 	}
 }
 
-UINT8 YM2151_ReadRegister(UINT8 chipID, UINT32 address)
+UINT32 YM2151_ReadStatus(UINT8 chipID)
 {
 	YM2151 *ic = &chips[chipID];
 
@@ -1257,7 +1256,7 @@ void chan_calc(YM2151* ic, UINT32 chan)
 	UINT32 env;
 	UINT32 AM = 0;
 
-	ic->m2 = ic->c1 = ic->c2 = ic->mem = 0;
+	m2 = c1 = c2 = mem = 0;
 	op = &ic->oper[chan * 4];	/* M1 */
 
 	*op->mem_connect = op->mem_value;	/* restore delayed sample (MEM) value to m2 or c2 */
@@ -1271,7 +1270,7 @@ void chan_calc(YM2151* ic, UINT32 chan)
 
 		if (!op->connect)
 			/* algorithm 5 */
-			ic->mem = ic->c1 = ic->c2 = op->fb_out_prev;
+			mem = c1 = c2 = op->fb_out_prev;
 		else
 			/* other algorithms */
 			*op->connect = op->fb_out_prev;
@@ -1287,18 +1286,18 @@ void chan_calc(YM2151* ic, UINT32 chan)
 
 	env = volume_calc(op + 1);	/* M2 */
 	if (env < ENV_QUIET)
-		*(op + 1)->connect += op_calc(op + 1, env, ic->m2);
+		*(op + 1)->connect += op_calc(op + 1, env, m2);
 
 	env = volume_calc(op + 2);	/* C1 */
 	if (env < ENV_QUIET)
-		*(op + 2)->connect += op_calc(op + 2, env, ic->c1);
+		*(op + 2)->connect += op_calc(op + 2, env, c1);
 
 	env = volume_calc(op + 3);	/* C2 */
 	if (env < ENV_QUIET)
-		ic->chanout[chan] += op_calc(op + 3, env, ic->c2);
+		chanout[chan] += op_calc(op + 3, env, c2);
 
 	/* M1 */
-	op->mem_value = ic->mem;
+	op->mem_value = mem;
 }
 
 void chan7_calc(YM2151* ic)
@@ -1307,7 +1306,7 @@ void chan7_calc(YM2151* ic)
 	unsigned int env;
 	UINT32 AM = 0;
 
-	ic->m2 = ic->c1 = ic->c2 = ic->mem = 0;
+	m2 = c1 = c2 = mem = 0;
 	op = &ic->oper[7 * 4];		/* M1 */
 
 	*op->mem_connect = op->mem_value;	/* restore delayed sample (MEM) value to m2 or c2 */
@@ -1321,7 +1320,7 @@ void chan7_calc(YM2151* ic)
 
 		if (!op->connect)
 			/* algorithm 5 */
-			ic->mem = ic->c1 = ic->c2 = op->fb_out_prev;
+			mem = c1 = c2 = op->fb_out_prev;
 		else
 			/* other algorithms */
 			*op->connect = op->fb_out_prev;
@@ -1337,11 +1336,11 @@ void chan7_calc(YM2151* ic)
 
 	env = volume_calc(op + 1);	/* M2 */
 	if (env < ENV_QUIET)
-		*(op + 1)->connect += op_calc(op + 1, env, ic->m2);
+		*(op + 1)->connect += op_calc(op + 1, env, m2);
 
 	env = volume_calc(op + 2);	/* C1 */
 	if (env < ENV_QUIET)
-		*(op + 2)->connect += op_calc(op + 2, env, ic->c1);
+		*(op + 2)->connect += op_calc(op + 2, env, c1);
 
 	env = volume_calc(op + 3);	/* C2 */
 	if (ic->noise & 0x80)
@@ -1351,15 +1350,15 @@ void chan7_calc(YM2151* ic)
 		noiseout = 0;
 		if (env < 0x3ff)
 			noiseout = (env ^ 0x3ff) * 2;	/* range of the YM2151 noise output is -2044 to 2040 */
-		ic->chanout[7] += ((ic->noise_rng & 0x10000) ? noiseout : -noiseout); /* bit 16 -> output */
+		chanout[7] += ((ic->noise_rng & 0x10000) ? noiseout : -noiseout); /* bit 16 -> output */
 	}
 	else
 	{
 		if (env < ENV_QUIET)
-			ic->chanout[7] += op_calc(op + 3, env, ic->c2);
+			chanout[7] += op_calc(op + 3, env, c2);
 	}
 	/* M1 */
-	op->mem_value = ic->mem;
+	op->mem_value = mem;
 }
 
 /*
@@ -1834,15 +1833,15 @@ void YM2151_Update(UINT8 chipID, INT32 **buffers, UINT32 length)
 	{
 		advance_eg(ic);
 
-		ic->chanout[0] = 0;
-		ic->chanout[1] = 0;
-		ic->chanout[2] = 0;
-		ic->chanout[3] = 0;
-		ic->chanout[4] = 0;
-		ic->chanout[5] = 0;
-		ic->chanout[6] = 0;
-		ic->chanout[7] = 0;
-		
+		chanout[0] = 0;
+		chanout[1] = 0;
+		chanout[2] = 0;
+		chanout[3] = 0;
+		chanout[4] = 0;
+		chanout[5] = 0;
+		chanout[6] = 0;
+		chanout[7] = 0;
+
 		chan_calc(ic, 0);
 		SAVE_SINGLE_CHANNEL(0)
 			chan_calc(ic, 1);
@@ -1860,22 +1859,22 @@ void YM2151_Update(UINT8 chipID, INT32 **buffers, UINT32 length)
 			chan7_calc(ic);
 		SAVE_SINGLE_CHANNEL(7)
 
-		outl =  (ic->chanout[0] & ic->pan[0]);
-		outr =  (ic->chanout[0] & ic->pan[1]);
-		outl += (ic->chanout[1] & ic->pan[2]);
-		outr += (ic->chanout[1] & ic->pan[3]);
-		outl += (ic->chanout[2] & ic->pan[4]);
-		outr += (ic->chanout[2] & ic->pan[5]);
-		outl += (ic->chanout[3] & ic->pan[6]);
-		outr += (ic->chanout[3] & ic->pan[7]);
-		outl += (ic->chanout[4] & ic->pan[8]);
-		outr += (ic->chanout[4] & ic->pan[9]);
-		outl += (ic->chanout[5] & ic->pan[10]);
-		outr += (ic->chanout[5] & ic->pan[11]);
-		outl += (ic->chanout[6] & ic->pan[12]);
-		outr += (ic->chanout[6] & ic->pan[13]);
-		outl += (ic->chanout[7] & ic->pan[14]);
-		outr += (ic->chanout[7] & ic->pan[15]);
+			outl = chanout[0] & ic->pan[0];
+		outr = chanout[0] & ic->pan[1];
+		outl += (chanout[1] & ic->pan[2]);
+		outr += (chanout[1] & ic->pan[3]);
+		outl += (chanout[2] & ic->pan[4]);
+		outr += (chanout[2] & ic->pan[5]);
+		outl += (chanout[3] & ic->pan[6]);
+		outr += (chanout[3] & ic->pan[7]);
+		outl += (chanout[4] & ic->pan[8]);
+		outr += (chanout[4] & ic->pan[9]);
+		outl += (chanout[5] & ic->pan[10]);
+		outr += (chanout[5] & ic->pan[11]);
+		outl += (chanout[6] & ic->pan[12]);
+		outr += (chanout[6] & ic->pan[13]);
+		outl += (chanout[7] & ic->pan[14]);
+		outr += (chanout[7] & ic->pan[15]);
 
 #ifdef NO_CLAMP
 		bufL[i] += outl;
