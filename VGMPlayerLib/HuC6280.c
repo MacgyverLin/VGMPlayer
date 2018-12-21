@@ -25,8 +25,8 @@ typedef struct {
 	UINT32 wave_freq_tab[4096];
 }HUC6280;
 
-#define HUC6280_COUNT 2
-static HUC6280 chips[HUC6280_COUNT];
+#define HUC6280_CHIPS_COUNT 2
+static HUC6280 chips[HUC6280_CHIPS_COUNT];
 
 static void c6280_stream_update(UINT8 chipID, INT32 **buffer, UINT32 length)
 {

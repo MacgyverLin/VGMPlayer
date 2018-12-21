@@ -8,7 +8,7 @@
 
 static UINT32 nUpdateStep;
 
-struct k053260_channel_def {
+typedef struct{
 	UINT32		rate;
 	UINT32		size;
 	UINT32		start;
@@ -20,18 +20,19 @@ struct k053260_channel_def {
 	INT32		loop;
 	INT32		ppcm; /* packed PCM ( 4 bit signed ) */
 	INT32		ppcm_data;
-};
+}Channel;
 
-struct k053260_chip_def {
+typedef struct {
 	INT32		mode;
 	INT32		regs[0x30];
 	UINT8		*rom;
 	INT32		rom_size;
 	UINT32		*delta_table;
-	struct k053260_channel_def channels[4];
-};
+	Channel		channels[4];
+}K053260;
 
-static struct k053260_chip_def chips[2];
+#define K053260_CHIPS_COUNT 2
+K053260 k053260Chips[K053260_CHIPS_COUNT];
 
 INT32 limit(INT32 val, INT32 max, INT32 min) {
 	if (val > max)
@@ -47,7 +48,7 @@ static void InitDeltaTable(UINT8 chipID, INT32 rate, INT32 clock) {
 	double	base = (double)rate;
 	double	max = (double)(clock); /* Hz */
 	UINT32 val;
-	struct k053260_chip_def* ic = &chips[chipID];
+	K053260* ic = &k053260Chips[chipID];
 
 	for (i = 0; i < 0x1000; i++) {
 		double v = (double)(0x1000 - i);
@@ -69,7 +70,7 @@ static void InitDeltaTable(UINT8 chipID, INT32 rate, INT32 clock) {
 
 void check_bounds(UINT8 chipID, INT32 channel)
 {
-	struct k053260_chip_def* ic = &chips[chipID];
+	K053260* ic = &k053260Chips[chipID];
 
 	INT32 channel_start = (ic->channels[channel].bank << 16) + ic->channels[channel].start;
 	INT32 channel_end = channel_start + ic->channels[channel].size - 1;
@@ -87,8 +88,8 @@ void check_bounds(UINT8 chipID, INT32 channel)
 
 INT32 K053260_Initialize(UINT8 chipID, UINT32 clock, UINT32 sampleRate)
 {
-	struct k053260_chip_def* ic = &chips[chipID];
-	memset(ic, 0, sizeof(struct k053260_chip_def));
+	K053260* ic = &k053260Chips[chipID];
+	memset(ic, 0, sizeof(K053260));
 
 	INT32 rate = clock / 32;
 	INT32 i;
@@ -117,7 +118,7 @@ INT32 K053260_Initialize(UINT8 chipID, UINT32 clock, UINT32 sampleRate)
 
 void K053260_Shutdown(UINT8 chipID)
 {
-	struct k053260_chip_def* ic = &chips[chipID];
+	K053260* ic = &k053260Chips[chipID];
 
 	if (ic->delta_table)
 	{
@@ -136,7 +137,7 @@ void K053260_Shutdown(UINT8 chipID)
 
 void K053260_Reset(UINT8 chipID)
 {
-	struct k053260_chip_def* ic = &chips[chipID];
+	K053260* ic = &k053260Chips[chipID];
 
 	for (INT32 i = 0; i < 4; i++)
 	{
@@ -159,7 +160,7 @@ void K053260_WriteRegister(UINT8 chipID, UINT32 address, UINT8 data)
 	INT32 i, t;
 	INT32 r = address;
 	INT32 v = data;
-	struct k053260_chip_def* ic = &chips[chipID];
+	K053260* ic = &k053260Chips[chipID];
 
 	if (r > 0x2f) {
 		return;
@@ -270,7 +271,7 @@ void K053260_WriteRegister(UINT8 chipID, UINT32 address, UINT8 data)
 
 UINT8 K053260_ReadRegister(UINT8 chipID, UINT32 address)
 {
-	struct k053260_chip_def* ic = &chips[chipID];
+	K053260* ic = &k053260Chips[chipID];
 
 	switch (address) {
 	case 0x29: /* channel status */
@@ -313,7 +314,7 @@ void K053260_Update(UINT8 chipID, INT32** buffer, UINT32 length)
 	INT32 dataL, dataR;
 	INT8 ppcm_data[4];
 	INT8 d;
-	struct k053260_chip_def* ic = &chips[chipID];
+	K053260* ic = &k053260Chips[chipID];
 
 	/* precache some values */
 	for (int i = 0; i < 4; i++) {
@@ -429,7 +430,7 @@ void K053260_Update(UINT8 chipID, INT32** buffer, UINT32 length)
 
 void K053260_SetROM(UINT8 chipID, UINT32 totalROMSize, UINT32 startAddress, UINT8 *rom, UINT32 nLen)
 {
-	struct k053260_chip_def* ic = &chips[chipID];
+	K053260* ic = &k053260Chips[chipID];
 
 	if (ic->rom_size != totalROMSize)
 	{

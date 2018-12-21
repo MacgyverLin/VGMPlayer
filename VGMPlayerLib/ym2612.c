@@ -174,8 +174,8 @@ typedef struct {
 }YM2612;
 
 //////////////////////////////////////////////////////////////
-#define YM2612_COUNT 2
-YM2612 YM2612Chips[YM2612_COUNT];					// array of YM2612
+#define YM2612_CHIPS_COUNT 2
+YM2612 ym2612Chips[YM2612_CHIPS_COUNT];					// array of YM2612
 INT32 YM2612_Enable_SSGEG = 0; // enable SSG-EG envelope (causes inacurate sound sometimes - rodrigo)
 
 void Update_Chan_Algo0(YM2612 *ym2612, Channel *CH, INT32 **buf, INT32 lenght);
@@ -1740,7 +1740,7 @@ INT32 YM2612_Initialize(UINT8 chipID, UINT32 clock, UINT32 sampleRate)
 {
 	INT32 i, j;
 	FLOAT32 x;
-	YM2612 *ym2612 = &YM2612Chips[chipID];
+	YM2612 *ym2612 = &ym2612Chips[chipID];
 
 	if ((sampleRate == 0) || (clock == 0))
 		return 0;
@@ -1948,7 +1948,7 @@ INT32 YM2612_Initialize(UINT8 chipID, UINT32 clock, UINT32 sampleRate)
 
 void YM2612_Shutdown(UINT8 chipID)
 {
-	YM2612 *ym2612 = &YM2612Chips[chipID];
+	YM2612 *ym2612 = &ym2612Chips[chipID];
 
 	memset(ym2612, 0, sizeof(YM2612));
 }
@@ -1956,7 +1956,7 @@ void YM2612_Shutdown(UINT8 chipID)
 void YM2612_Reset(UINT8 chipID)
 {
 	INT32 i, j;
-	YM2612 *ym2612 = &YM2612Chips[chipID];
+	YM2612 *ym2612 = &ym2612Chips[chipID];
 
 	ym2612->LFOcnt = 0;
 	ym2612->TimerA = 0;
@@ -2031,7 +2031,7 @@ void YM2612_Reset(UINT8 chipID)
 
 UINT8 YM2612_ReadStatus(UINT8 chipID)
 {
-	YM2612 *ym2612 = &YM2612Chips[chipID];
+	YM2612 *ym2612 = &ym2612Chips[chipID];
 
 	return ym2612->Status;
 }
@@ -2039,7 +2039,7 @@ UINT8 YM2612_ReadStatus(UINT8 chipID)
 void YM2612_WriteRegister(UINT8 chipID, UINT32 address, UINT8 data)
 {
 	INT32 d;
-	YM2612 *ym2612 = &YM2612Chips[chipID];
+	YM2612 *ym2612 = &ym2612Chips[chipID];
 
 	data &= 0xFF;
 	address &= 0x03;
@@ -2117,7 +2117,7 @@ void YM2612_WriteRegister(UINT8 chipID, UINT32 address, UINT8 data)
 void YM2612_Update(UINT8 chipID, INT32 **buffers, UINT32 length)
 {
 	INT32 i, j, algo_type;
-	YM2612 *ym2612 = &YM2612Chips[chipID];
+	YM2612 *ym2612 = &ym2612Chips[chipID];
 
 	if (ym2612->CHANNEL[0].SLOT[0].Finc == -1)
 		CALC_FINC_CH(ym2612, &ym2612->CHANNEL[0]);

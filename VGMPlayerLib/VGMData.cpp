@@ -152,6 +152,7 @@ BOOL VGMData::open()
 	{
 		K053260_Initialize(0, header.K053260Clock, playInfo.sampleRate);
 	}
+	/*
 	if (header.NESAPUClock)
 	{
 		NESAPU_Initialize(0, header.NESAPUClock & 0x7fffffff, playInfo.sampleRate);
@@ -162,6 +163,7 @@ BOOL VGMData::open()
 	{
 		HUC6280_Initialize(0, header.HuC6280Clock, playInfo.sampleRate);
 	}
+	*/
 	
 	return true;
 #if 0
@@ -318,6 +320,7 @@ void VGMData::close()
 	{
 		K053260_Shutdown(0);
 	}
+	/*
 	if (header.NESAPUClock)
 	{
 		NESAPU_Shutdown(0);
@@ -328,6 +331,7 @@ void VGMData::close()
 	{
 		HUC6280_Shutdown(0);
 	}
+	*/
 
 	onClose();
 }
@@ -401,6 +405,7 @@ UINT32 VGMData::updateSamples(UINT32 updateSampleCounts)
 		YM2151_Update(0, sampleBuffers, updateSampleCounts);
 	if (header.K053260Clock)
 		K053260_Update(0, sampleBuffers, updateSampleCounts);
+	/*
 	if (header.NESAPUClock)
 	{
 		NESAPU_Update(0, sampleBuffers, updateSampleCounts);
@@ -409,6 +414,7 @@ UINT32 VGMData::updateSamples(UINT32 updateSampleCounts)
 	}
 	if (header.HuC6280Clock)
 		HUC6280_Update(0, sampleBuffers, updateSampleCounts);
+	*/
 
 	bufferInfo.sampleIdx = bufferInfo.sampleIdx + updateSampleCounts;	// updated samples, sampleIdx+
 	assert(bufferInfo.sampleIdx <= VGM_SAMPLE_COUNT);
@@ -482,6 +488,20 @@ BOOL VGMData::update()
 			UINT8 aa;
 			UINT8 dd;
 			UINT16 NNNN;
+
+			UINT8 ss;
+			UINT8 tt;
+			UINT8 pp;
+			UINT8 cc;
+			UINT8 ll;
+			UINT8 bb;
+			UINT32 ffffffff;
+			UINT32 aaaaaaaa;
+			UINT8 mm;
+			UINT32 llllllll;
+			UINT16 bbbb;
+			UINT8 ff;
+
 			switch (command)
 			{
 			case YM2612_PORT0_WRITE:
@@ -533,6 +553,13 @@ BOOL VGMData::update()
 				NESFDSAPU_WriteRegister(0, aa, dd);
 				break;
 
+			case OKIM6258_WRITE:
+				read(&aa, sizeof(aa));
+				read(&dd, sizeof(dd));
+
+				// OKIM6258_WriteRegister(0, aa, dd);
+				break;
+
 			case HUC6280_WRITE:
 				read(&aa, sizeof(aa));
 				read(&dd, sizeof(dd));
@@ -573,6 +600,43 @@ BOOL VGMData::update()
 			case WAIT_15_SAMPLES:
 			case WAIT_16_SAMPLES:
 				updateSampleCounts += (((command & 0x0f) + 1) * playInfo.sampleRate / 44100);
+				break;
+
+			case DAC_SETUP_STREAM_CONTROL:
+				read(&ss, sizeof(ss));
+				read(&tt, sizeof(tt));
+				read(&pp, sizeof(pp));
+				read(&cc, sizeof(cc));
+				//DACSetUpStreamControl(ss, tt, pp, cc);
+				break;
+			case DAC_SET_STREAM_DATA:
+				read(&ss, sizeof(ss));
+				read(&dd, sizeof(dd));
+				read(&ll, sizeof(ll));
+				read(&bb, sizeof(bb));
+				//DACSetStreamData(ss, dd, ll, bb);
+				break;
+			case DAC_SET_STREAM_FREQUENCY:
+				read(&ss, sizeof(ss));
+				read(&ffffffff, sizeof(ffffffff));
+				//DACSetStreamFrequency(ss, ffffffff);
+				break;
+			case DAC_START_STREAM:
+				read(&ss, sizeof(ss));
+				read(&aaaaaaaa, sizeof(aaaaaaaa));
+				read(&mm, sizeof(mm));
+				read(&llllllll, sizeof(llllllll));
+				//DACStartStream(ss, aaaaaaaa, mm, llllllll);
+				break;
+			case DAC_STOP_STREAM:
+				read(&ss, sizeof(ss));
+				//DACStopStream(ss);
+				break;
+			case DAC_START_STEAM_FAST:
+				read(&ss, sizeof(ss));
+				read(&bbbb, sizeof(bbbb));
+				read(&ff, sizeof(ff));
+				//DACStartStreamFast(ss, bbbb, ff);
 				break;
 
 			case END_OF_SOUND:

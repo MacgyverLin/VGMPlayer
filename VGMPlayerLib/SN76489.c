@@ -24,12 +24,12 @@ typedef struct
 #define P_NOISE 0x08000
 #define NOISE_DEF 0x4000
 
-#define MAX_SN76489 2
-SN76489 chips[MAX_SN76489];
+#define SN76489_CHIPS_COUNT 2
+SN76489 sn76489Chips[SN76489_CHIPS_COUNT];
 
 INT32 SN76489_Initialize(UINT8 chipID, UINT32 clock, UINT32 sampleRate)
 {
-	SN76489* ic = &chips[chipID];
+	SN76489* ic = &sn76489Chips[chipID];
 	INT32 i, j;
 	FLOAT32 out;
 
@@ -109,7 +109,7 @@ void SN76489_Shutdown(void)
 
 void SN76489_WriteRegister(UINT8 chipID, UINT32 address, UINT8 data)
 {
-	SN76489* ic = &chips[chipID];
+	SN76489* ic = &sn76489Chips[chipID];
 
 	if (data & 0x80)
 	{
@@ -180,7 +180,7 @@ UINT8 SN76489_ReadRegister(UINT8 chipID, UINT32 address)
 
 void SN76489_Update_Sin(UINT8 chipID, INT32 **buffers, UINT32 length)
 {
-	SN76489* ic = &chips[chipID];
+	SN76489* ic = &sn76489Chips[chipID];
 
 	int i, j, out;
 	int cur_cnt, cur_step, cur_vol;
@@ -246,7 +246,7 @@ void SN76489_Update(UINT8 chipID, INT32 **buffers, UINT32 length)
 {
 	int i, j;
 	int cur_cnt, cur_step, cur_vol;
-	SN76489* ic = &chips[chipID];
+	SN76489* ic = &sn76489Chips[chipID];
 
 	for (j = 2; j >= 0; j--)
 	{

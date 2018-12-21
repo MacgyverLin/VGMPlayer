@@ -3,50 +3,52 @@
 typedef struct
 {
 	UINT8	reg[0x80];
-	UINT8	volenv_mode;	// Volume Envelope
+	UINT8	volenv_mode;		// Volume Envelope
 	UINT8	volenv_gain;
 	UINT8	volenv_decay;
 	FLOAT32	volenv_phaseacc;
-	UINT8	swpenv_mode;	// Sweep Envelope
+
+	UINT8	swpenv_mode;		// Sweep Envelope
 	UINT8	swpenv_gain;
 	UINT8	swpenv_decay;
 	FLOAT32	swpenv_phaseacc;
+
 	// For envelope unit
 	UINT8	envelope_enable;	// $4083 bit6
-	UINT8	envelope_speed;	// $408A
-							// For $4089
-	UINT8	wave_setup;	// bit7
-	INT32	master_volume;	// bit1-0
-						// For Main unit
+	UINT8	envelope_speed;		// $408A
+								// For $4089
+	UINT8	wave_setup;			// bit7
+	INT32	master_volume;		// bit1-0
+								// For Main unit
+
 	INT32	main_wavetable[64];
 	UINT8	main_enable;
 	INT32	main_frequency;
 	INT32	main_addr;
+	
 	// For Effector(LFO) unit
 	UINT8	lfo_wavetable[64];
-	UINT8	lfo_enable;	// 0:Enable 1:Wavetable setup
+	UINT8	lfo_enable;			// 0:Enable 1:Wavetable setup
 	INT32	lfo_frequency;
 	INT32	lfo_addr;
 	FLOAT32	lfo_phaseacc;
+	
 	// For Sweep unit
 	INT32	sweep_bias;
+	
 	// Misc
-	INT32	now_volume;
-	INT32	now_freq;
-	INT32	output;
+	INT32	volume;
+	INT32	freq;
 
-	INT32	sampling_rate;
-	INT32	output_buf[8];
-
-	INT8 channelEnabled;
+	UINT32	samplingRate;
 }NESFDSAPU;
 
-#define MAX_NESFDSAPU 2
-NESFDSAPU chips[MAX_NESFDSAPU];
+#define NESFDSAPU_CHIPS_COUNT 2
+NESFDSAPU nesfdsapuChips[NESFDSAPU_CHIPS_COUNT];
 
 void NESFDSAPU_WriteSub(UINT8 chipID, UINT32 addr, UINT8 data, UINT32 rate)
 {
-	NESFDSAPU* ic = &chips[chipID];
+	NESFDSAPU* ic = &nesfdsapuChips[chipID];
 
 	if (addr >= 0x20 && addr <= 0x3e)
 		addr += 0x4060;
@@ -77,7 +79,7 @@ void NESFDSAPU_WriteSub(UINT8 chipID, UINT32 addr, UINT8 data, UINT32 rate)
 				ic->volenv_gain = data & 0x3F;
 				if (!ic->main_addr)
 				{
-					ic->now_volume = (ic->volenv_gain < 0x21) ? ic->volenv_gain : 0x20;
+					ic->volume = (ic->volenv_gain < 0x21) ? ic->volenv_gain : 0x20;
 				}
 			}
 			ic->volenv_decay = data & 0x3F;
@@ -94,7 +96,7 @@ void NESFDSAPU_WriteSub(UINT8 chipID, UINT32 addr, UINT8 data, UINT32 rate)
 			if (!ic->main_enable)
 			{
 				ic->main_addr = 0;
-				ic->now_volume = (ic->volenv_gain < 0x21) ? ic->volenv_gain : 0x20;
+				ic->volume = (ic->volenv_gain < 0x21) ? ic->volenv_gain : 0x20;
 			}
 			ic->main_frequency = (ic->main_frequency & 0x00FF) | (((INT32)data & 0x0F) << 8);
 			break;
@@ -157,41 +159,40 @@ void NESFDSAPU_WriteSub(UINT8 chipID, UINT32 addr, UINT8 data, UINT32 rate)
 
 INT32 NESFDSAPU_Initialize(UINT8 chipID, UINT32 clock, UINT32 sampleRate)
 {
-	NESFDSAPU* ic = &chips[chipID];
+	NESFDSAPU* ic = &nesfdsapuChips[chipID];
 
 	memset(ic, 0, sizeof(NESFDSAPU));
-	ic->sampling_rate = sampleRate;
-	ic->channelEnabled = -1;
+	ic->samplingRate = sampleRate;
 
 	return -1;
 }
 
 void NESFDSAPU_Shutdown(UINT8 chipID)
 {
-	NESFDSAPU* ic = &chips[chipID];
+	NESFDSAPU* ic = &nesfdsapuChips[chipID];
 
 	memset(ic, 0, sizeof(NESFDSAPU));
 }
 
 void NESFDSAPU_Reset(UINT8 chipID)
 {
-	NESFDSAPU* ic = &chips[chipID];
+	NESFDSAPU* ic = &nesfdsapuChips[chipID];
 
-	UINT32 sampleRate = ic->sampling_rate;
+	UINT32 sampleRate = ic->samplingRate;
 	memset(ic, 0, sizeof(NESFDSAPU));
-	ic->sampling_rate = sampleRate;
+	ic->samplingRate = sampleRate;
 }
 
 void NESFDSAPU_WriteRegister(UINT8 chipID, UINT32 address, UINT8 data)
 {
-	NESFDSAPU* ic = &chips[chipID];
+	NESFDSAPU* ic = &nesfdsapuChips[chipID];
 
-	NESFDSAPU_WriteSub(chipID, address, data, ic->sampling_rate);
+	NESFDSAPU_WriteSub(chipID, address, data, ic->samplingRate);
 }
 
 UINT8 NESFDSAPU_ReadRegister(UINT8 chipID, UINT32 address)
 {
-	NESFDSAPU* ic = &chips[chipID];
+	NESFDSAPU* ic = &nesfdsapuChips[chipID];
 
 	UINT8 data = address >> 8;
 
@@ -213,7 +214,7 @@ UINT8 NESFDSAPU_ReadRegister(UINT8 chipID, UINT32 address)
 
 void NESFDSAPU_Update(UINT8 chipID, INT32** buffer, UINT32 length)
 {
-	NESFDSAPU* ic = &chips[chipID];
+	NESFDSAPU* ic = &nesfdsapuChips[chipID];
 
 	for(UINT32 i = 0; i < length; i++)
 	{
@@ -223,7 +224,7 @@ void NESFDSAPU_Update(UINT8 chipID, INT32** buffer, UINT32 length)
 			// Volume envelope
 			if (ic->volenv_mode < 2)
 			{
-				float decay = (ic->envelope_speed * (ic->volenv_decay + 1) * ic->sampling_rate) / (232.0f * 960.0f);
+				float decay = (ic->envelope_speed * (ic->volenv_decay + 1) * ic->samplingRate) / (232.0f * 960.0f);
 				ic->volenv_phaseacc -= 1.0;
 				while (ic->volenv_phaseacc < 0.0)
 				{
@@ -244,7 +245,7 @@ void NESFDSAPU_Update(UINT8 chipID, INT32** buffer, UINT32 length)
 			// Sweep envelope
 			if (ic->swpenv_mode < 2)
 			{
-				float decay = (ic->envelope_speed * (ic->swpenv_decay + 1) * ic->sampling_rate) / (232.0f * 960.0f);
+				float decay = (ic->envelope_speed * (ic->swpenv_decay + 1) * ic->samplingRate) / (232.0f * 960.0f);
 				ic->swpenv_phaseacc -= 1.0;
 				while (ic->swpenv_phaseacc < 0.0)
 				{
@@ -271,7 +272,7 @@ void NESFDSAPU_Update(UINT8 chipID, INT32** buffer, UINT32 length)
 			ic->lfo_phaseacc -= (1789772.5f*(FLOAT32)(ic->lfo_frequency)) / 65536.0f;
 			while (ic->lfo_phaseacc < 0.0)
 			{
-				ic->lfo_phaseacc += (FLOAT32)ic->sampling_rate;
+				ic->lfo_phaseacc += (FLOAT32)ic->samplingRate;
 				if (ic->lfo_wavetable[ic->lfo_addr] == 4)
 					ic->sweep_bias = 0;
 				else
@@ -309,38 +310,24 @@ void NESFDSAPU_Update(UINT8 chipID, INT32** buffer, UINT32 length)
 			INT32 freq;
 			INT32 main_addr_old = ic->main_addr;
 			freq = (INT32)((ic->main_frequency + sub_freq) * 1789772.5f / 65536.0f);
-			ic->main_addr = (ic->main_addr + freq + 64 * ic->sampling_rate) % (64 * ic->sampling_rate);
+			ic->main_addr = (ic->main_addr + freq + 64 * ic->samplingRate) % (64 * ic->samplingRate);
 
 			if (main_addr_old > ic->main_addr)
-				ic->now_volume = (ic->volenv_gain < 0x21) ? ic->volenv_gain : 0x20;
+				ic->volume = (ic->volenv_gain < 0x21) ? ic->volenv_gain : 0x20;
 
-			output = ic->main_wavetable[(ic->main_addr / ic->sampling_rate) & 0x3f] * 8 * ic->now_volume * ic->master_volume / 30;
-			if (ic->now_volume)
-				ic->now_freq = freq * 4;
+			output = ic->main_wavetable[(ic->main_addr / ic->samplingRate) & 0x3f] * 8 * ic->volume * ic->master_volume / 30;
+			if (ic->volume)
+				ic->freq = freq * 4;
 			else
-				ic->now_freq = 0;
+				ic->freq = 0;
 		}
 		else
 		{
-			ic->now_freq = 0;
+			ic->freq = 0;
 			output = 0;
 		}
 
-		// LPF
-#if 0
-#if	0
-		output = (ic->output_buf[0] * 2 + output) / 3;
-		ic->output_buf[0] = output;
-#else
-		output = (ic->output_buf[0] + ic->output_buf[1] + output) / 3;
-		ic->output_buf[0] = ic->output_buf[1];
-		ic->output_buf[1] = output;
-#endif
-#endif
-		if(ic->channelEnabled)
-		{
-			buffer[0][i] += output;
-			buffer[1][i] += output;
-		}
+		buffer[0][i] += output;
+		buffer[1][i] += output;
 	}
 }

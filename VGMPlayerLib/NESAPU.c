@@ -22,8 +22,8 @@ typedef struct
 	INT32		channel;
 }NESAPU;
 
-#define MAX_NESAPU 2
-NESAPU chips[MAX_NESAPU];
+#define NESAPU_CHIPS_COUNT 2
+NESAPU nesapuChips[NESAPU_CHIPS_COUNT];
 
 /* INTERNAL FUNCTIONS */
 /* INITIALIZE NOISE LOOKUP TABLE */
@@ -79,7 +79,7 @@ INT8 apu_square(UINT8 chipID, square_t *chan)
 	INT32 env_delay;
 	INT32 sweep_delay;
 	INT8 output;
-	NESAPU *apu = &chips[chipID];
+	NESAPU *apu = &nesapuChips[chipID];
 
 	/* reg0: 0-3=volume, 4=envelope, 5=hold, 6-7=duty cycle
 	** reg1: 0-2=sweep shifts, 3=sweep inc/dec, 4-6=sweep length, 7=sweep on
@@ -154,7 +154,7 @@ INT8 apu_triangle(UINT8 chipID, triangle_t *chan)
 {
 	INT32 freq;
 	INT8 output;
-	NESAPU *apu = &chips[chipID];
+	NESAPU *apu = &nesapuChips[chipID];
 	/* reg0: 7=holdnote, 6-0=linear length counter
 	** reg2: low 8 bits of frequency
 	** reg3: 7-3=length counter, 2-0=high 3 bits of frequency
@@ -214,7 +214,7 @@ INT8 apu_noise(UINT8 chipID, noise_t *chan)
 	INT32 freq, env_delay;
 	UINT8 outvol;
 	UINT8 output;
-	NESAPU *apu = &chips[chipID];
+	NESAPU *apu = &nesapuChips[chipID];
 
 	/* reg0: 0-3=volume, 4=envelope, 5=hold
 	** reg2: 7=small(93 byte) sample,3-0=freq lookup
@@ -292,7 +292,7 @@ void apu_dpcmreset(dpcm_t *chan)
 INT8 apu_dpcm(UINT8 chipID, dpcm_t *chan)
 {
 	INT32 freq, bit_pos;
-	NESAPU *apu = &chips[chipID];
+	NESAPU *apu = &nesapuChips[chipID];
 
 	/* reg0: 7=irq gen, 6=looping, 3-0=pointer to clock table
 	** reg1: output dc level, 7 bits unsigned
@@ -356,7 +356,7 @@ INT8 apu_dpcm(UINT8 chipID, dpcm_t *chan)
 /* WRITE REGISTER VALUE */
 void apu_regwrite(UINT8 chipID, UINT32 address, UINT8 value)
 {
-	NESAPU *apu = &chips[chipID];
+	NESAPU *apu = &nesapuChips[chipID];
 	INT32 chan = (address & 4) ? 1 : 0;
 
 	switch (address)
@@ -548,7 +548,7 @@ void apu_regwrite(UINT8 chipID, UINT32 address, UINT8 value)
 /* UPDATE SOUND BUFFER USING CURRENT DATA */
 void apu_update(UINT8 chipID, INT32** buffer, UINT32 samples)
 {
-	NESAPU *apu = &chips[chipID];
+	NESAPU *apu = &nesapuChips[chipID];
 
 	INT32 accum;
 	for (UINT32 i = 0; i < samples; i++)
@@ -580,7 +580,7 @@ void apu_update(UINT8 chipID, INT32** buffer, UINT32 samples)
 /* READ VALUES FROM REGISTERS */
 UINT8 apu_read(UINT8 chipID, UINT32 address)
 {
-	NESAPU *apu = &chips[chipID];
+	NESAPU *apu = &nesapuChips[chipID];
 
 	if (address == 0x0f) /*FIXED* Address $4015 has different behaviour*/
 	{
@@ -608,7 +608,7 @@ void apu_write(UINT8 chipID, UINT32 address, UINT8 value)
 	if (address >= 0x17)
 		return;
 
-	NESAPU *apu = &chips[chipID];
+	NESAPU *apu = &nesapuChips[chipID];
 
 	apu->APU.regs[address] = value;
 	apu_regwrite(chipID, address, value);
@@ -616,7 +616,7 @@ void apu_write(UINT8 chipID, UINT32 address, UINT8 value)
 
 INT32 NESAPU_Initialize(UINT8 chipID, UINT32 clock, UINT32 sampleRate)
 {
-	NESAPU* apu = &chips[chipID];
+	NESAPU* apu = &nesapuChips[chipID];
 	memset(apu, 0, sizeof(NESAPU));
 
 	/* Initialize global variables */
@@ -640,7 +640,7 @@ INT32 NESAPU_Initialize(UINT8 chipID, UINT32 clock, UINT32 sampleRate)
 	/* Adjust buffer size if 16 bits */
 	apu->buffer_size += apu->samps_per_sync;
 
-	/* Initialize individual chips */
+	/* Initialize individual nesapuChips */
 	/* Check for buffer allocation failure and bail out if necessary */
 	//apu->APU.buffer = malloc(apu->buffer_size);
 	//if (!apu->APU.buffer)
@@ -657,7 +657,7 @@ INT32 NESAPU_Initialize(UINT8 chipID, UINT32 clock, UINT32 sampleRate)
 
 void NESAPU_Shutdown(UINT8 chipID)
 {
-	NESAPU* apu = &chips[chipID];
+	NESAPU* apu = &nesapuChips[chipID];
 
 	//if (apu->APU.buffer)
 	//{
@@ -674,7 +674,7 @@ void NESAPU_Reset(UINT8 chipID)
 
 void NESAPU_Update(UINT8 chipID, INT32** buffer, UINT32 length)
 {
-	NESAPU* apu = &chips[chipID];
+	NESAPU* apu = &nesapuChips[chipID];
 
 	if (apu->real_rate == 0)
 		return;
