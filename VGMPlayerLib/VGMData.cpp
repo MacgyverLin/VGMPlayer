@@ -519,7 +519,7 @@ BOOL VGMData::update()
 				{
 					seekSet(header.loopOffset - 0x1c);
 					printf("Loop();\n");
-					return false;
+					//return false;
 				}
 				else
 				{
