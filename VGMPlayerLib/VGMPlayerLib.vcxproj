@@ -158,6 +158,7 @@
     <ClInclude Include="Obserable.h" />
     <ClInclude Include="Observer.h" />
     <ClInclude Include="VGMAudioPlayer.h" />
+    <ClInclude Include="VGMFireSpectrumViewer.h" />
     <ClInclude Include="VGMWaveFormViewer.h" />
     <ClInclude Include="VGMData.h" />
     <ClInclude Include="VGMDataObverser.h" />
@@ -186,6 +187,7 @@
     <ClCompile Include="SN76489.c" />
     <ClCompile Include="AudioDevice.cpp" />
     <ClCompile Include="VGMAudioPlayer.cpp" />
+    <ClCompile Include="VGMFireSpectrumViewer.cpp" />
     <ClCompile Include="VGMWaveFormViewer.cpp" />
     <ClCompile Include="VGMData.cpp" />
     <ClCompile Include="VGMDataObverser.cpp" />

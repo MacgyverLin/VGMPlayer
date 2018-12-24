@@ -99,6 +99,9 @@
     <ClInclude Include="VGMWaveFormViewer.h">
       <Filter>Source Files\VGM\Observer</Filter>
     </ClInclude>
+    <ClInclude Include="VGMFireSpectrumViewer.h">
+      <Filter>Source Files\VGM\Observer</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="ym2151.c">
@@ -156,6 +159,9 @@
       <Filter>Source Files\VGM\Observer</Filter>
     </ClCompile>
     <ClCompile Include="VGMWaveFormViewer.cpp">
+      <Filter>Source Files\VGM\Observer</Filter>
+    </ClCompile>
+    <ClCompile Include="VGMFireSpectrumViewer.cpp">
       <Filter>Source Files\VGM\Observer</Filter>
     </ClCompile>
   </ItemGroup>
