@@ -158,7 +158,7 @@
     <ClInclude Include="Obserable.h" />
     <ClInclude Include="Observer.h" />
     <ClInclude Include="VGMAudioPlayer.h" />
-    <ClInclude Include="VGMChannelViewer.h" />
+    <ClInclude Include="VGMWaveFormViewer.h" />
     <ClInclude Include="VGMData.h" />
     <ClInclude Include="VGMDataObverser.h" />
     <ClInclude Include="VGMDef.h" />
@@ -168,7 +168,7 @@
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="targetver.h" />
     <ClInclude Include="VGMFile.h" />
-    <ClInclude Include="VGMFrequencyViewer.h" />
+    <ClInclude Include="VGMSpectrumViewer.h" />
     <ClInclude Include="VGMHardwarePlayer.h" />
     <ClInclude Include="VGMPlayerLib.h" />
     <ClInclude Include="VideoDevice.h" />
@@ -186,11 +186,11 @@
     <ClCompile Include="SN76489.c" />
     <ClCompile Include="AudioDevice.cpp" />
     <ClCompile Include="VGMAudioPlayer.cpp" />
-    <ClCompile Include="VGMChannelViewer.cpp" />
+    <ClCompile Include="VGMWaveFormViewer.cpp" />
     <ClCompile Include="VGMData.cpp" />
     <ClCompile Include="VGMDataObverser.cpp" />
     <ClCompile Include="VGMFile.cpp" />
-    <ClCompile Include="VGMFrequencyViewer.cpp" />
+    <ClCompile Include="VGMSpectrumViewer.cpp" />
     <ClCompile Include="VGMHardwarePlayer.cpp" />
     <ClCompile Include="VideoDevice.cpp" />
     <ClCompile Include="ym2151.c" />

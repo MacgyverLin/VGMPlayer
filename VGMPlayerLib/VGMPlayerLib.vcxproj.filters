@@ -75,13 +75,7 @@
     <ClInclude Include="VGMAudioPlayer.h">
       <Filter>Source Files\VGM\Observer</Filter>
     </ClInclude>
-    <ClInclude Include="VGMChannelViewer.h">
-      <Filter>Source Files\VGM\Observer</Filter>
-    </ClInclude>
     <ClInclude Include="VGMDataObverser.h">
-      <Filter>Source Files\VGM\Observer</Filter>
-    </ClInclude>
-    <ClInclude Include="VGMFrequencyViewer.h">
       <Filter>Source Files\VGM\Observer</Filter>
     </ClInclude>
     <ClInclude Include="VGMHardwarePlayer.h">
@@ -98,6 +92,12 @@
     </ClInclude>
     <ClInclude Include="HuC6280.h">
       <Filter>Source Files\chips</Filter>
+    </ClInclude>
+    <ClInclude Include="VGMSpectrumViewer.h">
+      <Filter>Source Files\VGM\Observer</Filter>
+    </ClInclude>
+    <ClInclude Include="VGMWaveFormViewer.h">
+      <Filter>Source Files\VGM\Observer</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -134,13 +134,7 @@
     <ClCompile Include="VGMAudioPlayer.cpp">
       <Filter>Source Files\VGM\Observer</Filter>
     </ClCompile>
-    <ClCompile Include="VGMChannelViewer.cpp">
-      <Filter>Source Files\VGM\Observer</Filter>
-    </ClCompile>
     <ClCompile Include="VGMDataObverser.cpp">
-      <Filter>Source Files\VGM\Observer</Filter>
-    </ClCompile>
-    <ClCompile Include="VGMFrequencyViewer.cpp">
       <Filter>Source Files\VGM\Observer</Filter>
     </ClCompile>
     <ClCompile Include="VGMHardwarePlayer.cpp">
@@ -157,6 +151,12 @@
     </ClCompile>
     <ClCompile Include="HuC6280.c">
       <Filter>Source Files\chips</Filter>
+    </ClCompile>
+    <ClCompile Include="VGMSpectrumViewer.cpp">
+      <Filter>Source Files\VGM\Observer</Filter>
+    </ClCompile>
+    <ClCompile Include="VGMWaveFormViewer.cpp">
+      <Filter>Source Files\VGM\Observer</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>
