@@ -388,8 +388,8 @@ void K053260_Update(UINT8 chipID, INT32** buffer, UINT32 length)
 		}
 
 #ifdef NO_CLAMP
-		buffer[0][j] += dataL + dataR;
-		buffer[1][j] += dataL + dataR;
+		buffer[0][j] += (dataL + dataR) >> 1;
+		buffer[1][j] += (dataL + dataR) >> 1;
 #else
 		dataL = limit(dataL, MAXOUT, MINOUT);
 		dataR = limit(dataR, MAXOUT, MINOUT);

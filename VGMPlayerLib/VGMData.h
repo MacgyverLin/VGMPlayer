@@ -86,7 +86,7 @@ public:
 	UINT32 YM2413Clock;							// Input clock rate in Hz for the YM2413 chip. A typical value is 3579545.
 												// It should be 0 if there is no YM2413 chip used.
 	UINT32 GD3Offset;							// Relative offset to GD3 tag. 0 if no GD3 tag.GD3 tags are descriptive tags similar in use to ID3 tags in MP3 files.See the GD3 specification for more details.The GD3 tag is usually stored immediately after the VGM data.
-	UINT32 totalWaitSamples;					// Total of all wait values in the file.
+	UINT32 totalSamples;						// Total of all wait values in the file.
 	UINT32 loopOffset;							// Relative offset to loop point, or 0 if no loop.For example, if the data for the one - off intro to a song was in bytes 0x0040 - 0x3FFF of the file, but the main looping section started at 0x4000, this would contain the value 0x4000 - 0x1C = 0x00003FE4.
 	UINT32 loopSamples;							// Number of samples in one loop, or 0 if there is no loop.Total of all wait values between the loop point and the end of the file.
 

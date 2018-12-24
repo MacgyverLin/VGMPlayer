@@ -103,8 +103,8 @@ BOOL VGMData::open()
 {
 	onOpen();
 
-	int s = sizeof(header);
-	if (read(&header, 256) != 256)
+	memset(&header, 0, sizeof(header));
+	if (read(&header, 0x38) != 0x38)
 	{
 		return false;
 	}
@@ -120,23 +120,21 @@ BOOL VGMData::open()
 	}
 
 	// seek to first data
-	if (header.version < 0x150)
+	UINT32 dataStart;
+	if( ((header.VGMDataOffset == 0x0c) && (header.version >= 0x150)) || (header.version < 0x150))
 	{
-		//assert(vgmData->header.VGMDataOffset == 0);
+		dataStart = 0x40;
 	}
-	else if (header.version >= 0x150)
+	else
 	{
-		if (header.VGMDataOffset == 0x0c)
-		{
-			seekSet(0x40);		// point to 0x40
-		}
-		else
-		{
-			seekSet(0x34 + header.VGMDataOffset);		// point to 0x40
-		}
+		dataStart = 0x34 + header.VGMDataOffset;
 	}
-	
-	/*
+
+	UINT32 byteRemained = dataStart - 0x38;
+	if (byteRemained>=0)
+		read((UINT8*)(&header)+0x38, byteRemained);
+
+
 	if (header.YM2612Clock)
 	{
 		YM2612_Initialize(0, header.YM2612Clock, playInfo.sampleRate);
@@ -159,152 +157,16 @@ BOOL VGMData::open()
 		if ((header.NESAPUClock & 0x80000000) != 0)
 			NESFDSAPU_Initialize(0, (header.NESAPUClock & 0x7fffffff), playInfo.sampleRate);
 	}
-	*/
 	if (header.HuC6280Clock)
 	{
 		HUC6280_Initialize(0, header.HuC6280Clock, playInfo.sampleRate);
 	}
-	
+
 	return true;
-#if 0
-	if (read(&header, 256) != 256)
-	{
-		return false;
-	}
-
-	if (header.ID[0] != 'V' ||
-		header.ID[1] != 'g' ||
-		header.ID[2] != 'm' ||
-		header.ID[3] != ' ')
-	{
-		vgm_log("Data is not a .vgm format");
-
-		return false;
-	}
-
-	if (header.Rate == 0)
-		header.Rate = 60;
-
-	// seek to first data
-	if (header.version < 0x150)
-	{
-		assert(header.VGMDataOffset == 0);
-	}
-	else if (header.version == 0x150)
-	{
-		if (header.VGMDataOffset == 0x0c)
-		{
-			seekSet(0x40);		// point to 0x40
-		}
-		else
-		{
-			seekSet(0x34 + header.VGMDataOffset);		// point to 0x40
-		}
-	}
-	else if (header.version == 0x151)
-	{
-		assert(false && "1.51 not tested yet");
-
-		int remain = offsetof(VGMHeader, SegaPCMclock) - offsetof(VGMHeader, GameBoyDMGClock);
-		if (read(&header.SegaPCMclock, remain) != remain)
-		{
-			return false;
-		}
-		header.VolumeModifier = 0;
-		header.reserved0 = 0;
-
-		if (header.VGMDataOffset == 0x0c)
-		{
-			seekSet(0x40);		// point to 0x40
-		}
-		else
-		{
-			seekSet(0x34 + header.VGMDataOffset);		// point to 0x40
-		}
-	}
-	else if (header.version == 0x160)
-	{
-		assert(false && "1.60 not tested yet");
-
-		int remain = offsetof(VGMHeader, SegaPCMclock) - offsetof(VGMHeader, GameBoyDMGClock);
-		if (read(&header.SegaPCMclock, remain) != remain)
-		{
-			return false;
-		}
-
-		if (header.VGMDataOffset == 0x0c)
-		{
-			seekSet(0x40);		// point to 0x40
-		}
-		else
-		{
-			seekSet(0x34 + header.VGMDataOffset);		// point to 0x40
-		}
-	}
-	else if (header.version == 0x161)
-	{
-		assert(false && "1.61 not tested yet");
-
-		int remain = offsetof(VGMHeader, SegaPCMclock) - offsetof(VGMHeader, SCSPClock);
-		if (read(&header.SegaPCMclock, remain) != remain)
-		{
-			return false;
-		}
-
-		if (header.VGMDataOffset == 0x0c)
-		{
-			seekSet(0x40);		// point to 0x40
-		}
-		else
-		{
-			seekSet(0x34 + header.VGMDataOffset);		// point to 0x40
-		}
-	}
-	else if (header.version == 0x170)
-	{
-		assert(false && "1.70 not tested yet");
-
-		int remain = offsetof(VGMHeader, SegaPCMclock) - offsetof(VGMHeader, WonderSwanClock);
-		if (read(&header.SegaPCMclock, remain) != remain)
-		{
-			return false;
-		}
-		header.SCSPClock = 0;
-
-		if (header.VGMDataOffset == 0x0c)
-		{
-			seekSet(0x40);		// point to 0x40
-		}
-		else
-		{
-			seekSet(0x34 + header.VGMDataOffset);		// point to 0x40
-		}
-	}
-	else if (header.version == 0x171)
-	{
-		assert(false && "1.71 not tested yet");
-
-		int remain = offsetof(VGMHeader, SegaPCMclock) - offsetof(VGMHeader, reserved9);
-		if (read(&header.SegaPCMclock, remain) != remain)
-		{
-			return false;
-		}
-
-		if (header.VGMDataOffset == 0x0c)
-		{
-			seekSet(0x40);		// point to 0x40
-		}
-		else
-		{
-			seekSet(0x34 + header.VGMDataOffset);		// point to 0x40
-		}
-	}
-#endif
 }
 
 void VGMData::close()
 {
-	/*
 	if (header.YM2612Clock)
 	{
 		YM2612_Shutdown(0);
@@ -327,7 +189,6 @@ void VGMData::close()
 		if ((header.NESAPUClock & 0x80000000) != 0)
 			NESFDSAPU_Shutdown(0);
 	}
-	*/
 	if (header.HuC6280Clock)
 	{
 		HUC6280_Shutdown(0);
@@ -410,7 +271,6 @@ UINT32 VGMData::updateSamples(UINT32 updateSampleCounts)
 	sampleBuffers[1] = &bufferInfo.samplesR[bufferInfo.sampleIdx];
 
 	assert(bufferInfo.samplesL.size() == VGM_SAMPLE_COUNT);
-	/*
 	if (header.YM2612Clock)
 		YM2612_Update(0, sampleBuffers, updateSampleCounts);
 	if (header.SN76489Clock)
@@ -425,7 +285,6 @@ UINT32 VGMData::updateSamples(UINT32 updateSampleCounts)
 		if (header.NESAPUClock & 0x80000000)
 			NESFDSAPU_Update(0, sampleBuffers, updateSampleCounts);
 	}
-	*/
 	if (header.HuC6280Clock)
 		HUC6280_Update(0, sampleBuffers, updateSampleCounts);
 
@@ -486,6 +345,7 @@ void VGMData::handleDataBlocks()
 
 BOOL VGMData::update()
 {
+	static INT32 samplePlayed = 0;
 	static INT32 updateSampleCounts = 0;
 	if (updateDataRequest)
 	{
@@ -654,8 +514,18 @@ BOOL VGMData::update()
 
 			case END_OF_SOUND:
 				handleEndOfSound();
-				printf("END_OF_SOUND();\n");
-				return false;
+
+				if(header.loopOffset)
+				{
+					seekSet(header.loopOffset - 0x1c);
+					printf("Loop();\n");
+					return false;
+				}
+				else
+				{
+					printf("END_OF_SOUND();\n");
+					return false;
+				}
 				break;
 
 			default:
