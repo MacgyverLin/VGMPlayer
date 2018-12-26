@@ -28,6 +28,9 @@
     <Filter Include="Source Files\Platform">
       <UniqueIdentifier>{1ee9c2fb-e2f3-4674-b0c7-169744791f24}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source Files\TODO">
+      <UniqueIdentifier>{e99622aa-c481-42d3-8675-0a358d6f1dc8}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="stdafx.h">

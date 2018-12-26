@@ -76,7 +76,7 @@ typedef struct queue_s
 
 #define  APU_SMASK   0x15
 
-#define  NOISE_LONG     0x4000
+#define  NOISE_LONG     0x1000
 #define  NOISE_SHORT    93
 
 /* CHANNEL TYPE DEFINITIONS */

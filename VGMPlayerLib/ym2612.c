@@ -1745,6 +1745,8 @@ INT32 YM2612_Initialize(UINT8 chipID, UINT32 clock, UINT32 sampleRate)
 	if ((sampleRate == 0) || (clock == 0))
 		return 0;
 
+	int a = sizeof(YM2612);
+
 	memset(ym2612, 0, sizeof(YM2612));
 	ym2612->Clock = clock;
 	ym2612->Rate = sampleRate;

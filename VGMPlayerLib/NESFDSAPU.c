@@ -46,7 +46,35 @@ typedef struct
 #define NESFDSAPU_CHIPS_COUNT 2
 NESFDSAPU nesfdsapuChips[NESFDSAPU_CHIPS_COUNT];
 
-void NESFDSAPU_WriteSub(UINT8 chipID, UINT32 addr, UINT8 data, UINT32 rate)
+INT32 NESFDSAPU_Initialize(UINT8 chipID, UINT32 clock, UINT32 sampleRate)
+{
+	NESFDSAPU* ic = &nesfdsapuChips[chipID];
+
+	int a = sizeof(NESFDSAPU);
+
+	memset(ic, 0, sizeof(NESFDSAPU));
+	ic->samplingRate = sampleRate;
+
+	return -1;
+}
+
+void NESFDSAPU_Shutdown(UINT8 chipID)
+{
+	NESFDSAPU* ic = &nesfdsapuChips[chipID];
+
+	memset(ic, 0, sizeof(NESFDSAPU));
+}
+
+void NESFDSAPU_Reset(UINT8 chipID)
+{
+	NESFDSAPU* ic = &nesfdsapuChips[chipID];
+
+	UINT32 sampleRate = ic->samplingRate;
+	memset(ic, 0, sizeof(NESFDSAPU));
+	ic->samplingRate = sampleRate;
+}
+
+void NESFDSAPU_WriteRegister(UINT8 chipID, UINT32 addr, UINT8 data)
 {
 	NESFDSAPU* ic = &nesfdsapuChips[chipID];
 
@@ -83,7 +111,7 @@ void NESFDSAPU_WriteSub(UINT8 chipID, UINT32 addr, UINT8 data, UINT32 rate)
 				}
 			}
 			ic->volenv_decay = data & 0x3F;
-			ic->volenv_phaseacc = ic->envelope_speed * (ic->volenv_decay + 1) * rate / (232.0f * 960.0f);
+			ic->volenv_phaseacc = ic->envelope_speed * (ic->volenv_decay + 1) * ic->samplingRate / (232.0f * 960.0f);
 			break;
 
 		case	0x4082:	// Main Frequency(Low)
@@ -107,7 +135,7 @@ void NESFDSAPU_WriteSub(UINT8 chipID, UINT32 addr, UINT8 data, UINT32 rate)
 				ic->swpenv_gain = data & 0x3F;
 			}
 			ic->swpenv_decay = data & 0x3F;
-			ic->swpenv_phaseacc = ic->envelope_speed * (ic->swpenv_decay + 1) * rate / (232.0f*960.0f);			break;
+			ic->swpenv_phaseacc = ic->envelope_speed * (ic->swpenv_decay + 1) * ic->samplingRate / (232.0f*960.0f);			break;
 
 		case	0x4085:	// Sweep Bias
 			if (data & 0x40)
@@ -155,39 +183,6 @@ void NESFDSAPU_WriteSub(UINT8 chipID, UINT32 addr, UINT8 data, UINT32 rate)
 			break;
 		}
 	}
-}
-
-INT32 NESFDSAPU_Initialize(UINT8 chipID, UINT32 clock, UINT32 sampleRate)
-{
-	NESFDSAPU* ic = &nesfdsapuChips[chipID];
-
-	memset(ic, 0, sizeof(NESFDSAPU));
-	ic->samplingRate = sampleRate;
-
-	return -1;
-}
-
-void NESFDSAPU_Shutdown(UINT8 chipID)
-{
-	NESFDSAPU* ic = &nesfdsapuChips[chipID];
-
-	memset(ic, 0, sizeof(NESFDSAPU));
-}
-
-void NESFDSAPU_Reset(UINT8 chipID)
-{
-	NESFDSAPU* ic = &nesfdsapuChips[chipID];
-
-	UINT32 sampleRate = ic->samplingRate;
-	memset(ic, 0, sizeof(NESFDSAPU));
-	ic->samplingRate = sampleRate;
-}
-
-void NESFDSAPU_WriteRegister(UINT8 chipID, UINT32 address, UINT8 data)
-{
-	NESFDSAPU* ic = &nesfdsapuChips[chipID];
-
-	NESFDSAPU_WriteSub(chipID, address, data, ic->samplingRate);
 }
 
 UINT8 NESFDSAPU_ReadRegister(UINT8 chipID, UINT32 address)

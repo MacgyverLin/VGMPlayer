@@ -12,9 +12,9 @@ typedef struct
 {
 	apu_t		APU;							/* Actual APUs */
 	FLOAT32		apu_incsize;					/* Adjustment increment */
-	UINT16		samps_per_sync;					/* Number of samples per vsync */
-	UINT16		buffer_size;					/* Actual buffer size in bytes */
-	UINT16		real_rate;						/* Actual playback rate */
+	//UINT16		samps_per_sync;					/* Number of samples per vsync */
+	//UINT16		buffer_size;					/* Actual buffer size in bytes */
+	//UINT16		real_rate;						/* Actual playback rate */
 	UINT8		noise_lut[NOISE_LONG];			/* Noise sample lookup table */
 	UINT16		vbl_times[0x20];				/* VBL durations in samples */
 	UINT32		sync_times1[SYNCS_MAX1];		/* Samples per sync table */
@@ -616,15 +616,17 @@ void apu_write(UINT8 chipID, UINT32 address, UINT8 value)
 
 INT32 NESAPU_Initialize(UINT8 chipID, UINT32 clock, UINT32 sampleRate)
 {
+	int a = sizeof(NESAPU);
+
 	NESAPU* apu = &nesapuChips[chipID];
 	memset(apu, 0, sizeof(NESAPU));
 
 	/* Initialize global variables */
 	int fps = 60;
-	apu->samps_per_sync = sampleRate / fps;
-	apu->buffer_size = apu->samps_per_sync;
-	apu->real_rate = apu->samps_per_sync * fps;
-	apu->apu_incsize = (float)(clock / (float)apu->real_rate);
+	UINT16 samps_per_sync = sampleRate / fps;
+	//apu->buffer_size = apu->samps_per_sync;
+	UINT16 real_rate = samps_per_sync * fps;
+	apu->apu_incsize = (float)(clock / (float)real_rate);
 
 	apu->APU.squ[0].enabled = TRUE;
 	apu->APU.squ[1].enabled = TRUE;
@@ -634,11 +636,11 @@ INT32 NESAPU_Initialize(UINT8 chipID, UINT32 clock, UINT32 sampleRate)
 
 	/* Use initializer calls */
 	create_noise(apu->noise_lut, 13, NOISE_LONG);
-	create_vbltimes(apu->vbl_times, vbl_length, apu->samps_per_sync);
-	create_syncs(apu->sync_times1, apu->sync_times2, apu->samps_per_sync);
+	create_vbltimes(apu->vbl_times, vbl_length, samps_per_sync);
+	create_syncs(apu->sync_times1, apu->sync_times2, samps_per_sync);
 
 	/* Adjust buffer size if 16 bits */
-	apu->buffer_size += apu->samps_per_sync;
+	//apu->buffer_size += apu->samps_per_sync;
 
 	/* Initialize individual nesapuChips */
 	/* Check for buffer allocation failure and bail out if necessary */
@@ -676,8 +678,8 @@ void NESAPU_Update(UINT8 chipID, INT32** buffer, UINT32 length)
 {
 	NESAPU* apu = &nesapuChips[chipID];
 
-	if (apu->real_rate == 0)
-		return;
+	//if (apu->real_rate == 0)
+		//return;
 
 	apu_update(chipID, buffer, length);
 }

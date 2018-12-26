@@ -68,9 +68,12 @@ enum VGMCommand
 	DAC_STOP_STREAM = 0x94,
 	DAC_START_STEAM_FAST = 0x95,
 
+	
+	UNKNOWN_CHIP_A5_WRITE = 0xA5,
 	K053260_WRITE = 0xBA,				// aa dd
 	NES_APU_WRITE = 0xB4, 				// aa dd
 	OKIM6258_WRITE = 0xB7,				// aa dd
+	OKIM6295_WRITE = 0xB8,				// aa dd
 	HUC6280_WRITE = 0xB9, 				// aa dd
 };
 

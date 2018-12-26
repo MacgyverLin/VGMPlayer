@@ -121,7 +121,7 @@ BOOL VGMData::open()
 
 	// seek to first data
 	UINT32 dataStart;
-	if( ((header.VGMDataOffset == 0x0c) && (header.version >= 0x150)) || (header.version < 0x150))
+	if (((header.VGMDataOffset == 0x0c) && (header.version >= 0x150)) || (header.version < 0x150))
 	{
 		dataStart = 0x40;
 	}
@@ -131,8 +131,8 @@ BOOL VGMData::open()
 	}
 
 	UINT32 byteRemained = dataStart - 0x38;
-	if (byteRemained>=0)
-		read((UINT8*)(&header)+0x38, byteRemained);
+	if (byteRemained >= 0)
+		read((UINT8*)(&header) + 0x38, byteRemained);
 
 
 	if (header.YM2612Clock)
@@ -400,6 +400,13 @@ BOOL VGMData::update()
 
 				break;
 
+			case YM2203_WRITE:
+				read(&aa, sizeof(aa));
+				read(&dd, sizeof(dd));
+				//YM2203_WriteRegister(0, aa, dd);
+
+				break;
+
 			case GAME_GEAR_PSG_PORT6_WRITE:
 				read(&dd, sizeof(dd));
 				SN76489_WriteRegister(0, -1, dd);
@@ -409,6 +416,13 @@ BOOL VGMData::update()
 			case SN76489_WRITE:
 				read(&dd, sizeof(dd));
 				SN76489_WriteRegister(0, -1, dd);
+				break;
+
+			case UNKNOWN_CHIP_A5_WRITE:
+				read(&aa, sizeof(aa));
+				read(&dd, sizeof(dd));
+
+				//UNKNOWN_CHIP_A5_WRITE_WriteRegister(0, aa, dd);
 				break;
 
 			case K053260_WRITE:
@@ -431,6 +445,13 @@ BOOL VGMData::update()
 				read(&dd, sizeof(dd));
 
 				// OKIM6258_WriteRegister(0, aa, dd);
+				break;
+
+			case OKIM6295_WRITE:
+				read(&aa, sizeof(aa));
+				read(&dd, sizeof(dd));
+
+				// OKIM6295_WriteRegister(0, aa, dd);
 				break;
 
 			case HUC6280_WRITE:
@@ -515,11 +536,11 @@ BOOL VGMData::update()
 			case END_OF_SOUND:
 				handleEndOfSound();
 
-				if(header.loopOffset)
+				if (header.loopOffset)
 				{
 					seekSet(header.loopOffset + 0x1c);
 					printf("Loop();\n");
-					//return false;
+					return false;
 				}
 				else
 				{
