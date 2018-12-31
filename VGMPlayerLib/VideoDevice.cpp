@@ -43,7 +43,7 @@ VOID VideoDevice::close()
 {
 	if(window)
 	{
-		// SDL_GL_DestroyContext(glContext);
+		SDL_GL_DeleteContext(glContext);
 		glContext = NULL;
 
 		SDL_DestroyWindow(window);

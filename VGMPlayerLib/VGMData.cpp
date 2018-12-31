@@ -13,6 +13,18 @@
 #include "HuC6280.h"
 using namespace std;
 
+//#define DUMP_YM2612
+#define DUMP_SN76489
+#define DUMP_COUNT 7000
+#ifdef DUMP_YM2612
+FILE *dumpYM2612 = 0;
+int dataYM2612 = 0;
+#endif
+#ifdef DUMP_SN76489
+FILE *dumpSN76489 = 0;
+int dataSN76489 = 0;
+#endif
+
 VGMData::VGMData(INT32 channels_, INT32 bitPerSample_, INT32 sampleRate_)
 	: Obserable()
 {
@@ -137,10 +149,26 @@ BOOL VGMData::open()
 
 	if (header.YM2612Clock)
 	{
+#ifdef DUMP_YM2612
+		dataYM2612 = 0;
+
+		dumpYM2612 = fopen("YM2612MusicDump.h", "wt");
+		fprintf(dumpYM2612, "#ifndef _YM2612MUSICDUMP_h_\n");
+		fprintf(dumpYM2612, "#define _YM2612MUSICDUMP_h_\n");
+		fprintf(dumpYM2612, "code const char musicDump[] = {\n");
+#endif
 		YM2612_Initialize(0, header.YM2612Clock, playInfo.sampleRate);
 	}
 	if (header.SN76489Clock)
 	{
+#ifdef DUMP_SN76489
+		dataSN76489 = 0;
+
+		dumpSN76489 = fopen("SN76489MusicDump.h", "wt");
+		fprintf(dumpSN76489, "#ifndef _SN76489MusicDump_h_\n");
+		fprintf(dumpSN76489, "#define _SN76489MusicDump_h_\n");
+		fprintf(dumpSN76489, "code const char musicDump[] = {\n");
+#endif
 		SN76489_Initialize(0, header.SN76489Clock, playInfo.sampleRate);
 	}
 	if (header.YM2151Clock)
@@ -169,10 +197,20 @@ void VGMData::close()
 {
 	if (header.YM2612Clock)
 	{
+#ifdef DUMP_YM2612
+		fprintf(dumpYM2612, "};\n");
+		fprintf(dumpYM2612, "#endif\n");
+		fclose(dumpYM2612);
+#endif
 		YM2612_Shutdown(0);
 	}
 	if (header.SN76489Clock)
 	{
+#ifdef DUMP_SN76489
+		fprintf(dumpSN76489, "};\n");
+		fprintf(dumpSN76489, "#endif\n");
+		fclose(dumpSN76489);
+#endif
 		SN76489_Shutdown();
 	}
 	if (header.YM2151Clock)
@@ -211,9 +249,6 @@ INT32 VGMData::seekCur(UINT32 size)
 {
 	return onSeekCur(size);
 }
-
-static int sample = 0;
-static float frequency = 220.0f;
 
 void VGMData::fillOutputBuffer()
 {
@@ -345,13 +380,59 @@ void VGMData::handleDataBlocks()
 
 BOOL VGMData::update()
 {
-	static INT32 samplePlayed = 0;
 	static INT32 updateSampleCounts = 0;
+
 	if (updateDataRequest)
 	{
 		if (updateSampleCounts > 0)
 		{
-			updateSampleCounts -= updateSamples(updateSampleCounts);
+			INT32 nnnn = updateSamples(updateSampleCounts);
+			updateSampleCounts -= nnnn;
+
+#ifdef DUMP_YM2612
+			if (nnnn >= 256)
+			{
+				fprintf(dumpYM2612, "0x05, 0x%02x, 0x%02x,\n", (nnnn & 0xff), (nnnn >> 8) & 0xff);
+				dataYM2612 += 3;
+				if (dataYM2612 > DUMP_COUNT)
+				{
+					fprintf(dumpYM2612, "0x00\n");
+					return false;
+				}
+			}
+			else if (nnnn >= 0)
+			{
+				fprintf(dumpYM2612, "0x04, 0x%02x,\n", (nnnn & 0xff));
+				dataYM2612 += 2;
+				if (dataYM2612 > DUMP_COUNT)
+				{
+					fprintf(dumpYM2612, "0x00\n");
+					return false;
+				}
+			}
+#endif
+#ifdef DUMP_SN76489
+			if (nnnn >= 256)
+			{
+				fprintf(dumpSN76489, "0x05, 0x%02x, 0x%02x,\n", (nnnn & 0xff), (nnnn >> 8) & 0xff);
+				dataSN76489 += 3;
+				if (dataSN76489 > DUMP_COUNT)
+				{
+					fprintf(dumpSN76489, "0x00\n");
+					return false;
+				}
+			}
+			else if (nnnn >= 0)
+			{
+				fprintf(dumpSN76489, "0x04, 0x%02x,\n", (nnnn & 0xff));
+				dataSN76489 += 2;
+				if (dataSN76489 > DUMP_COUNT)
+				{
+					fprintf(dumpSN76489, "0x00\n");
+					return false;
+				}
+			}
+#endif
 		}
 		else
 		{
@@ -383,6 +464,16 @@ BOOL VGMData::update()
 
 				read(&dd, sizeof(dd));
 				YM2612_WriteRegister(0, 1, dd);
+
+#ifdef DUMP_YM2612
+				fprintf(dumpYM2612, "0x01, 0x%02x, 0x%02x, \n", aa, dd);
+				dataYM2612 += 3;
+				if (dataYM2612 > DUMP_COUNT)
+				{
+					fprintf(dumpYM2612, "0x00\n");
+					return false;
+				}
+#endif
 				break;
 
 			case YM2612_PORT1_WRITE:
@@ -391,6 +482,16 @@ BOOL VGMData::update()
 
 				read(&dd, sizeof(dd));
 				YM2612_WriteRegister(0, 3, dd);
+
+#ifdef DUMP_YM2612
+				fprintf(dumpYM2612, "0x02, 0x%02x, 0x%02x, \n", aa, dd);
+				dataYM2612 += 3;
+				if (dataYM2612 > DUMP_COUNT)
+				{
+					fprintf(dumpYM2612, "0x00\n");
+					return false;
+				}
+#endif
 				break;
 
 			case YM2151_WRITE:
@@ -416,6 +517,15 @@ BOOL VGMData::update()
 			case SN76489_WRITE:
 				read(&dd, sizeof(dd));
 				SN76489_WriteRegister(0, -1, dd);
+#ifdef DUMP_SN76489
+				fprintf(dumpSN76489, "0x03, 0x%02x, \n", dd);
+				dataSN76489 += 2;
+				if (dataSN76489 > DUMP_COUNT)
+				{
+					fprintf(dumpSN76489, "0x00\n");
+					return false;
+				}
+#endif
 				break;
 
 			case UNKNOWN_CHIP_A5_WRITE:
@@ -534,6 +644,12 @@ BOOL VGMData::update()
 				break;
 
 			case END_OF_SOUND:
+#ifdef DUMP_YM2612
+				fprintf(dumpYM2612, "0x00\n");
+#endif
+#ifdef DUMP_SN76489
+				fprintf(dumpSN76489, "0x00\n");
+#endif
 				handleEndOfSound();
 
 				if (header.loopOffset)
