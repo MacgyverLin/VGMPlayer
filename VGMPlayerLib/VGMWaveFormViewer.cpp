@@ -1,5 +1,7 @@
 #include "VGMWaveFormViewer.h"
 #include "FFT.h"
+#include <GL/glu.h>
+#include <GL/gl.h>
 
 VGMWaveFormViewer::VGMWaveFormViewer(const string& name_, UINT32 x_, UINT32 y_, UINT32 width_, UINT32 height_, const Skin& skin_)
 : VGMDataObverser()

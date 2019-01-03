@@ -2,13 +2,17 @@
 #define _VideoDevice_h_
 
 #include "vgmdef.h"
-#include <SDL_main.h>
-#include <SDL.h>
-#include <SDL_opengl.h>
-#include <GL/glu.h>
-#include <GL/gl.h>
 #include <string>
+#include <algorithm>
 using namespace std;
+
+class Platform
+{
+public:
+	static bool initialize();
+	static bool update();
+	static void terminate();
+};
 
 class Vertex
 {
@@ -61,6 +65,8 @@ public:
 	FLOAT32 a;
 };
 
+class VideoDeviceImpl;
+
 class VideoDevice
 {
 public:
@@ -99,8 +105,7 @@ private:
 public:
 protected:
 private:
-	SDL_Window* window;
-	SDL_GLContext glContext;
+	VideoDeviceImpl* impl;
 };
 
 #endif

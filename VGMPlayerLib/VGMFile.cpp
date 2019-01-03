@@ -4,25 +4,42 @@
 #include <string.h>
 #include <string>
 #include "VGMFile.h"
+#include <zlib.h>
 using namespace std;
+
+class VGMFileImpl
+{
+public:
+	string path;
+	FILE *file;
+	gzFile gzFile;
+};
 
 /////////////////////////////////////////////////////////
 VGMFile::VGMFile(const string& path_, INT32 channels_, INT32 bitPerSample_, INT32 sampleRate_)
 : VGMData(channels_, bitPerSample_, sampleRate_)
-, path(path_)
-, file(0)
-, gzFile(0)
+, impl(0)
 {
+	impl = new VGMFileImpl();
+
+	impl->path = path_;
+	impl->gzFile = 0;
+	impl->file = 0;
 }
 
 VGMFile::~VGMFile()
 {
+	if (impl)
+	{
+		delete impl;
+		impl = 0;
+	}
 }
 
 BOOL VGMFile::onOpen()
 {
-	bool isvgz = (path.find(".vgz") != -1);
-	bool isvgm = (path.find(".vgm") != -1);
+	bool isvgz = (impl->path.find(".vgz") != -1);
+	bool isvgm = (impl->path.find(".vgm") != -1);
 
 	if (!isvgz && !isvgm)
 	{
@@ -31,14 +48,14 @@ BOOL VGMFile::onOpen()
 
 	if (isvgz)
 	{
-		gzFile = gzopen(path.c_str(), "r");
-		if (!gzFile)
+		impl->gzFile = gzopen(impl->path.c_str(), "r");
+		if (!impl->gzFile)
 			return false;
 	}
 	else if (isvgm)
 	{
-		file = fopen(path.c_str(), "rb");
-		if (!file)
+		impl->file = fopen(impl->path.c_str(), "rb");
+		if(!impl->file)
 			return false;
 	}
 
@@ -55,15 +72,15 @@ void VGMFile::onClose()
 	const VGMData::PlayInfo& playInfo = getPlayInfo();
 	const VGMData::BufferInfo& bufferInfo = getBufferInfo();
 
-	if (gzFile)
+	if(impl->gzFile)
 	{
-		gzclose(gzFile);
-		gzFile = 0;
+		gzclose(impl->gzFile);
+		impl->gzFile = 0;
 	}
-	else if (file)
+	else if (impl->file)
 	{
-		fclose(file);
-		file = 0;
+		fclose(impl->file);
+		impl->file = 0;
 	}
 }
 
@@ -90,13 +107,13 @@ BOOL VGMFile::onUpdate()
 
 INT32 VGMFile::onRead(VOID *buffer, UINT32 size)
 {
-	if (gzFile)
+	if(impl->gzFile)
 	{
-		return gzread(gzFile, buffer, size);
+		return gzread(impl->gzFile, buffer, size);
 	}
-	else if (file)
+	else if (impl->file)
 	{
-		return fread(buffer, 1, size, file);
+		return fread(buffer, 1, size, impl->file);
 	}
 	else
 	{
@@ -106,13 +123,13 @@ INT32 VGMFile::onRead(VOID *buffer, UINT32 size)
 
 INT32 VGMFile::onSeekSet(UINT32 offset)
 {
-	if (gzFile)
+	if(impl->gzFile)
 	{
-		return gzseek(gzFile, offset, SEEK_SET);
+		return gzseek(impl->gzFile, offset, SEEK_SET);
 	}
-	else if (file)
+	else if (impl->file)
 	{
-		return fseek(file, offset, SEEK_SET);
+		return fseek(impl->file, offset, SEEK_SET);
 	}
 	else
 	{
@@ -122,13 +139,13 @@ INT32 VGMFile::onSeekSet(UINT32 offset)
 
 INT32 VGMFile::onSeekCur(UINT32 offset)
 {
-	if (gzFile)
+	if (impl->gzFile)
 	{
-		return gzseek(gzFile, offset, SEEK_CUR);
+		return gzseek(impl->gzFile, offset, SEEK_CUR);
 	}
-	else if (file)
+	else if (impl->file)
 	{
-		return fseek(file, offset, SEEK_CUR);
+		return fseek(impl->file, offset, SEEK_CUR);
 	}
 	else
 	{
