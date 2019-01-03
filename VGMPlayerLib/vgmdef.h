@@ -3,8 +3,26 @@
 
 #include <windows.h>
 
-#ifdef WIN32
-//typedef char BOOL;
+//#define RASPBERRY_PI
+
+#ifdef RASPBERRY_PI
+//typedef bool BOOL;
+typedef char CHAR;
+//typedef void VOID;
+typedef signed long long INT64;
+typedef signed int INT32;
+typedef signed short INT16;
+typedef signed char INT8;
+typedef unsigned int UINT32;
+typedef unsigned short UINT16;
+typedef unsigned char UINT8;
+typedef unsigned long long UINT64;
+typedef float FLOAT32;
+typedef double FLOAT64;
+//#define TRUE true
+//#define FALSE false
+#else
+//typedef bool BOOL;
 typedef char CHAR;
 //typedef void VOID;
 typedef signed long long INT64;
@@ -19,22 +37,6 @@ typedef float FLOAT32;
 typedef double FLOAT64;
 //#define TRUE -1
 //#define FALSE 0
-#else
-typedef bool BOOL;
-typedef char CHAR;
-typedef void VOID;
-typedef signed long long INT64;
-typedef signed int INT32;
-typedef signed short INT16;
-typedef signed char INT8;
-typedef unsigned int UINT32;
-typedef unsigned short UINT16;
-typedef unsigned char UINT8;
-typedef unsigned long long UINT64;
-typedef float FLOAT32;
-typedef double FLOAT64;
-#define TRUE true
-#define FALSE false
 #endif
 
 #define vgm_log printf

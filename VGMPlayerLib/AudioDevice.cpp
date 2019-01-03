@@ -5,6 +5,101 @@
 #include <vector>
 using namespace std;
 
+#ifdef RASPBERRY_PI
+
+class AudioDeviceImpl
+{
+public:
+	BOOL			playing;
+	
+	FLOAT32			volume;
+	FLOAT32			playRate;
+};
+
+AudioDevice::AudioDevice()
+{
+	impl = new AudioDeviceImpl();
+
+	impl->playing = FALSE;
+
+	impl->playRate = 1.0;
+	impl->volume = 1.0;
+}
+
+AudioDevice::~AudioDevice()
+{
+	if (impl)
+	{
+		delete impl;
+		impl = 0;
+	}
+}
+
+BOOL AudioDevice::open(INT32 channels_, INT32 bitsPerSample_, INT32 sampleRate_, INT32 bufferCount_)
+{
+	return true;
+}
+
+VOID AudioDevice::close()
+{
+}
+
+INT32 AudioDevice::play()
+{
+	impl->playing = true;
+
+	return -1;
+}
+
+INT32 AudioDevice::stop()
+{
+	impl->playing = false;
+
+	return -1;
+}
+
+INT32 AudioDevice::getDeviceState()
+{
+	return -1;
+}
+
+INT32 AudioDevice::update()
+{
+	return -1;
+}
+
+INT32 AudioDevice::queue(void* data_, int dataSize_)
+{
+	return -1;
+}
+
+INT32 AudioDevice::getQueued()
+{
+	return -1;
+}
+
+VOID AudioDevice::setVolume(FLOAT32 volume_)
+{
+	impl->volume = volume_;
+}
+
+FLOAT32 AudioDevice::getVolume()
+{
+	return impl->volume;
+}
+
+VOID AudioDevice::setPlayRate(FLOAT32 playRate_)
+{
+	impl->playRate = playRate_;
+}
+
+FLOAT32 AudioDevice::getPlayRate()
+{
+	return impl->playRate;
+}
+
+#else
+
 class AudioDeviceImpl
 {
 public:
@@ -314,3 +409,4 @@ FLOAT32 AudioDevice::getPlayRate()
 {
 	return impl->playRate;
 }
+#endif

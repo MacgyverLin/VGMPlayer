@@ -170,7 +170,6 @@
     <ClInclude Include="targetver.h" />
     <ClInclude Include="VGMFile.h" />
     <ClInclude Include="VGMSpectrumViewer.h" />
-    <ClInclude Include="VGMHardwarePlayer.h" />
     <ClInclude Include="VGMPlayerLib.h" />
     <ClInclude Include="VideoDevice.h" />
     <ClInclude Include="ym2151.h" />
@@ -193,7 +192,6 @@
     <ClCompile Include="VGMDataObverser.cpp" />
     <ClCompile Include="VGMFile.cpp" />
     <ClCompile Include="VGMSpectrumViewer.cpp" />
-    <ClCompile Include="VGMHardwarePlayer.cpp" />
     <ClCompile Include="VideoDevice.cpp" />
     <ClCompile Include="ym2151.c" />
     <ClCompile Include="ym2612.c" />

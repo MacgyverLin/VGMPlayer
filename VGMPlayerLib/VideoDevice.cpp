@@ -5,9 +5,27 @@
 #include <SDL_opengl.h>
 #include <GL/glu.h>
 #include <GL/gl.h>
+#ifdef RASPBERRY_PI
+#include <wiringPi.h>
+#endif
 
 bool Platform::initialize()
 {
+#ifdef RASPBERRY_PI
+	if (wiringPiSetup() == -1)
+	{
+		printf("GPIO setup error!\n");
+		return false;
+	}
+
+	pwmSetMode(PWM_MODE_BAL);
+	//pwmSetMode(PWM_MODE_MS);
+	pwmSetRange(1024);
+	pwmSetClock(32);
+
+	pinMode(1, PWM_OUTPUT);
+#endif
+
 	//Use OpenGL 3.1 core
 	SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 3);
 	SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 1);

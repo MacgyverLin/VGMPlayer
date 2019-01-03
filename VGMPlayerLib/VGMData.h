@@ -451,6 +451,7 @@ protected:
 	BufferInfo bufferInfo;
 
 	BOOL updateDataRequest;
+	UINT32 updateSampleCounts;
 private:
 };
 

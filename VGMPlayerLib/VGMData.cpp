@@ -42,6 +42,7 @@ VGMData::VGMData(INT32 channels_, INT32 bitPerSample_, INT32 sampleRate_)
 	bufferInfo.needQueueOutputSamples = false;
 
 	updateDataRequest = false;
+	updateSampleCounts = 0;
 }
 
 VGMData::~VGMData()
@@ -380,8 +381,6 @@ void VGMData::handleDataBlocks()
 
 BOOL VGMData::update()
 {
-	static INT32 updateSampleCounts = 0;
-
 	if (updateDataRequest)
 	{
 		if (updateSampleCounts > 0)
@@ -394,21 +393,11 @@ BOOL VGMData::update()
 			{
 				fprintf(dumpYM2612, "0x05, 0x%02x, 0x%02x,\n", (nnnn & 0xff), (nnnn >> 8) & 0xff);
 				dataYM2612 += 3;
-				if (dataYM2612 > DUMP_COUNT)
-				{
-					fprintf(dumpYM2612, "0x00\n");
-					return false;
-				}
 			}
 			else if (nnnn >= 0)
 			{
 				fprintf(dumpYM2612, "0x04, 0x%02x,\n", (nnnn & 0xff));
 				dataYM2612 += 2;
-				if (dataYM2612 > DUMP_COUNT)
-				{
-					fprintf(dumpYM2612, "0x00\n");
-					return false;
-				}
 			}
 #endif
 #ifdef DUMP_SN76489
@@ -416,21 +405,11 @@ BOOL VGMData::update()
 			{
 				fprintf(dumpSN76489, "0x05, 0x%02x, 0x%02x,\n", (nnnn & 0xff), (nnnn >> 8) & 0xff);
 				dataSN76489 += 3;
-				if (dataSN76489 > DUMP_COUNT)
-				{
-					fprintf(dumpSN76489, "0x00\n");
-					return false;
-				}
 			}
 			else if (nnnn >= 0)
 			{
 				fprintf(dumpSN76489, "0x04, 0x%02x,\n", (nnnn & 0xff));
 				dataSN76489 += 2;
-				if (dataSN76489 > DUMP_COUNT)
-				{
-					fprintf(dumpSN76489, "0x00\n");
-					return false;
-				}
 			}
 #endif
 		}
@@ -468,11 +447,6 @@ BOOL VGMData::update()
 #ifdef DUMP_YM2612
 				fprintf(dumpYM2612, "0x01, 0x%02x, 0x%02x, \n", aa, dd);
 				dataYM2612 += 3;
-				if (dataYM2612 > DUMP_COUNT)
-				{
-					fprintf(dumpYM2612, "0x00\n");
-					return false;
-				}
 #endif
 				break;
 
@@ -486,11 +460,6 @@ BOOL VGMData::update()
 #ifdef DUMP_YM2612
 				fprintf(dumpYM2612, "0x02, 0x%02x, 0x%02x, \n", aa, dd);
 				dataYM2612 += 3;
-				if (dataYM2612 > DUMP_COUNT)
-				{
-					fprintf(dumpYM2612, "0x00\n");
-					return false;
-				}
 #endif
 				break;
 
@@ -520,11 +489,6 @@ BOOL VGMData::update()
 #ifdef DUMP_SN76489
 				fprintf(dumpSN76489, "0x03, 0x%02x, \n", dd);
 				dataSN76489 += 2;
-				if (dataSN76489 > DUMP_COUNT)
-				{
-					fprintf(dumpSN76489, "0x00\n");
-					return false;
-				}
 #endif
 				break;
 
