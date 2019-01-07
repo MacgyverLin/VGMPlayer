@@ -1,52 +1,177 @@
 ﻿#include "AudioDevice.h"
 #include "assert.h"
+#include <AL/al.h>
+#include <AL/alc.h>
+#include <vector>
+using namespace std;
+
+#ifdef RASPBERRY_PI
+
+class AudioDeviceImpl
+{
+public:
+	BOOL			playing;
+	
+	FLOAT32			volume;
+	FLOAT32			playRate;
+};
 
 AudioDevice::AudioDevice()
 {
+	impl = new AudioDeviceImpl();
+
+	impl->playing = FALSE;
+
+	impl->playRate = 1.0;
+	impl->volume = 1.0;
 }
 
 AudioDevice::~AudioDevice()
 {
+	if (impl)
+	{
+		delete impl;
+		impl = 0;
+	}
+}
+
+BOOL AudioDevice::open(INT32 channels_, INT32 bitsPerSample_, INT32 sampleRate_, INT32 bufferCount_)
+{
+	return true;
+}
+
+VOID AudioDevice::close()
+{
+}
+
+INT32 AudioDevice::play()
+{
+	impl->playing = true;
+
+	return -1;
+}
+
+INT32 AudioDevice::stop()
+{
+	impl->playing = false;
+
+	return -1;
+}
+
+INT32 AudioDevice::getDeviceState()
+{
+	return -1;
+}
+
+INT32 AudioDevice::update()
+{
+	return -1;
+}
+
+INT32 AudioDevice::queue(void* data_, int dataSize_)
+{
+	return -1;
+}
+
+INT32 AudioDevice::getQueued()
+{
+	return -1;
+}
+
+VOID AudioDevice::setVolume(FLOAT32 volume_)
+{
+	impl->volume = volume_;
+}
+
+FLOAT32 AudioDevice::getVolume()
+{
+	return impl->volume;
+}
+
+VOID AudioDevice::setPlayRate(FLOAT32 playRate_)
+{
+	impl->playRate = playRate_;
+}
+
+FLOAT32 AudioDevice::getPlayRate()
+{
+	return impl->playRate;
+}
+
+#else
+
+class AudioDeviceImpl
+{
+public:
+	ALCcontext*		context;
+	ALCdevice*		device;
+	ALuint			outSource;
+	ALint			processedBuffer;
+	ALint			queuedBuffer;
+
+	vector<ALuint>	sndBuffers;
+	INT32			channels;
+	INT32			bitsPerSample;
+	INT32			sampleRate;
+
+	FLOAT32			volume;
+	FLOAT32			playRate;
+
+	INT32			WP;
+};
+
+AudioDevice::AudioDevice()
+{
+	impl = new AudioDeviceImpl();
+}
+
+AudioDevice::~AudioDevice()
+{
+	if (impl)
+	{
+		delete impl;
+		impl = 0;
+	}
 }
 
 BOOL AudioDevice::open(INT32 channels_, INT32 bitsPerSample_, INT32 sampleRate_, INT32 bufferCount_)
 {
 	ALuint error = 0;
 
-	context = 0;
-	device = 0;
-	outSource = 0;
-	processedBuffer = 0;
-	queuedBuffer = 0;
-	channels = channels_;
-	bitsPerSample = bitsPerSample_;
-	sampleRate = sampleRate_;
-	playRate = 1.0;
-	volume = 1.0;
+	impl->context = 0;
+	impl->device = 0;
+	impl->outSource = 0;
+	impl->processedBuffer = 0;
+	impl->queuedBuffer = 0;
+	impl->channels = channels_;
+	impl->bitsPerSample = bitsPerSample_;
+	impl->sampleRate = sampleRate_;
+	impl->playRate = 1.0;
+	impl->volume = 1.0;
 
-	WP = 0;
+	impl->WP = 0;
 
 	// device
-	device = alcOpenDevice(NULL);
-	if (!device)
+	impl->device = alcOpenDevice(NULL);
+	if (!impl->device)
 		return false;
 
 	// context
-	context = alcCreateContext(device, NULL);
-	alcMakeContextCurrent(context);
+	impl->context = alcCreateContext(impl->device, NULL);
+	alcMakeContextCurrent(impl->context);
 
 	// sources
-	alGenSources(1, &outSource);
+	alGenSources(1, &impl->outSource);
 	alSpeedOfSound(1.0);
 	alDopplerVelocity(1.0);
 	alDopplerFactor(1.0);
-	alSourcei(outSource, AL_LOOPING, AL_FALSE);
-	alSourcef(outSource, AL_PITCH, playRate);
-	alSourcef(outSource, AL_GAIN, volume);
+	alSourcei(impl->outSource, AL_LOOPING, AL_FALSE);
+	alSourcef(impl->outSource, AL_PITCH, impl->playRate);
+	alSourcef(impl->outSource, AL_GAIN, impl->volume);
 
 	// create 32 buffers
-	sndBuffers.resize(bufferCount_);
-	alGenBuffers(sndBuffers.size(), &sndBuffers[0]);
+	impl->sndBuffers.resize(bufferCount_);
+	alGenBuffers(impl->sndBuffers.size(), &impl->sndBuffers[0]);
 	error = alGetError();
 	if (error != AL_NO_ERROR)
 	{
@@ -64,35 +189,35 @@ BOOL AudioDevice::open(INT32 channels_, INT32 bitsPerSample_, INT32 sampleRate_,
 
 VOID AudioDevice::close()
 {
-	if (sndBuffers.size() != 0)
+	if (impl->sndBuffers.size() != 0)
 	{
-		alDeleteBuffers(sndBuffers.size(), &sndBuffers[0]);
+		alDeleteBuffers(impl->sndBuffers.size(), &impl->sndBuffers[0]);
 	}
 
-	if (outSource)
+	if(impl->outSource)
 	{
-		alDeleteSources(1, &outSource);
-		outSource = 0;
+		alDeleteSources(1, &impl->outSource);
+		impl->outSource = 0;
 	}
 
-	if (device)
+	if(impl->device)
 	{
-		alcCloseDevice(device);
-		device = NULL;
+		alcCloseDevice(impl->device);
+		impl->device = NULL;
 	}
 
-	if (context)
+	if(impl->context)
 	{
 		alcMakeContextCurrent(NULL);
 
-		alcDestroyContext(context);
-		context = NULL;
+		alcDestroyContext(impl->context);
+		impl->context = NULL;
 	}
 }
 
 INT32 AudioDevice::play()
 {
-	alSourcePlay(outSource);
+	alSourcePlay(impl->outSource);
 
 	ALuint error;
 	error = alGetError();
@@ -107,7 +232,7 @@ INT32 AudioDevice::play()
 
 INT32 AudioDevice::stop()
 {
-	alSourceStop(outSource);
+	alSourceStop(impl->outSource);
 
 	ALuint error;
 	error = alGetError();
@@ -123,7 +248,7 @@ INT32 AudioDevice::stop()
 INT32 AudioDevice::getDeviceState()
 {
 	int sourceState;
-	alGetSourcei(outSource, AL_SOURCE_STATE, &sourceState);
+	alGetSourcei(impl->outSource, AL_SOURCE_STATE, &sourceState);
 
 	switch (sourceState)
 	{
@@ -146,9 +271,9 @@ INT32 AudioDevice::getDeviceState()
 INT32 AudioDevice::update()
 {
 	int processed;
-	alGetSourcei(outSource, AL_BUFFERS_PROCESSED, &processed);
-	alGetSourcei(outSource, AL_BUFFERS_QUEUED, &queuedBuffer);
-	processedBuffer += processed;
+	alGetSourcei(impl->outSource, AL_BUFFERS_PROCESSED, &processed);
+	alGetSourcei(impl->outSource, AL_BUFFERS_QUEUED, &impl->queuedBuffer);
+	impl->processedBuffer += processed;
 	//printf("processedBuffer: %d, processed: %d, queuedBuffer: %d\n", processedBuffer, processed, queuedBuffer);
 
 	while (processed--)
@@ -156,7 +281,7 @@ INT32 AudioDevice::update()
 		ALuint buff;
 
 		// unqueue process buffer
-		alSourceUnqueueBuffers(outSource, 1, &buff);
+		alSourceUnqueueBuffers(impl->outSource, 1, &buff);
 
 		ALuint error;
 		error = alGetError();
@@ -179,13 +304,13 @@ INT32 AudioDevice::queue(void* data_, int dataSize_)
 	ALenum format = 0;
 	ALuint error = 0;
 
-	if (bitsPerSample == 8)
+	if (impl->bitsPerSample == 8)
 	{
-		if (channels == 1)
+		if (impl->channels == 1)
 		{
 			format = AL_FORMAT_MONO8;
 		}
-		else if (channels == 2)
+		else if (impl->channels == 2)
 		{
 			format = AL_FORMAT_STEREO8;
 		}
@@ -195,13 +320,13 @@ INT32 AudioDevice::queue(void* data_, int dataSize_)
 			return 0;
 		}
 	}
-	else if (bitsPerSample == 16)
+	else if (impl->bitsPerSample == 16)
 	{
-		if (channels == 1)
+		if (impl->channels == 1)
 		{
 			format = AL_FORMAT_MONO16;
 		}
-		else if (channels == 2)
+		else if (impl->channels == 2)
 		{
 			format = AL_FORMAT_STEREO16;
 		}
@@ -219,16 +344,16 @@ INT32 AudioDevice::queue(void* data_, int dataSize_)
 
 	// fill data
 	// printf("soundDevice->WP %d\n", WP);
-	ALuint buffer = sndBuffers[WP];
-	alBufferData(buffer, format, data_, dataSize_, sampleRate);
+	ALuint buffer = impl->sndBuffers[impl->WP];
+	alBufferData(buffer, format, data_, dataSize_, impl->sampleRate);
 	error = alGetError();
 	int p=0, q = 0;
 	if (error != AL_NO_ERROR)
 	{
-		alGetSourcei(outSource, AL_BUFFERS_PROCESSED, &p);
-		alGetSourcei(outSource, AL_BUFFERS_QUEUED, &q);
+		alGetSourcei(impl->outSource, AL_BUFFERS_PROCESSED, &p);
+		alGetSourcei(impl->outSource, AL_BUFFERS_QUEUED, &q);
 		printf("alGetError %x: WP=%d, processed: %d, queued: %d, alBufferData(%x, %x, %p, %d, %d)\n",
-			error, WP, p, q, buffer, format, data_, dataSize_, sampleRate);
+			error, impl->WP, p, q, buffer, format, data_, dataSize_, impl->sampleRate);
 		//AL_ILLEGAL_ENUM
 		//AL_INVALID_VALUE
 		//#define AL_ILLEGAL_COMMAND                        0xA004
@@ -237,7 +362,7 @@ INT32 AudioDevice::queue(void* data_, int dataSize_)
 	}
 
 	// queue a buffer
-	alSourceQueueBuffers(outSource, 1, &buffer);
+	alSourceQueueBuffers(impl->outSource, 1, &buffer);
 	error = alGetError();
 	if (error != AL_NO_ERROR)
 	{
@@ -246,10 +371,10 @@ INT32 AudioDevice::queue(void* data_, int dataSize_)
 		return 0;
 	}
 
-	WP = WP + 1;
-	if(WP>=sndBuffers.size())
+	impl->WP = impl->WP + 1;
+	if(impl->WP>= impl->sndBuffers.size())
 	{
-		WP = 0;
+		impl->WP = 0;
 	}
 	//WP = (WP + 1) % sndBuffers.size();
 
@@ -258,29 +383,30 @@ INT32 AudioDevice::queue(void* data_, int dataSize_)
 
 INT32 AudioDevice::getQueued()
 {
-	return queuedBuffer;
+	return impl->queuedBuffer;
 }
 
 VOID AudioDevice::setVolume(FLOAT32 volume_)
 {
-	volume = volume_;
+	impl->volume = volume_;
 
-	alSourcef(outSource, AL_GAIN, volume);
+	alSourcef(impl->outSource, AL_GAIN, impl->volume);
 }
 
 FLOAT32 AudioDevice::getVolume()
 {
-	return volume;
+	return impl->volume;
 }
 
 VOID AudioDevice::setPlayRate(FLOAT32 playRate_)
 {
-	playRate = playRate_;
+	impl->playRate = playRate_;
 
-	alSourcef(outSource, AL_PITCH, playRate);
+	alSourcef(impl->outSource, AL_PITCH, impl->playRate);
 }
 
 FLOAT32 AudioDevice::getPlayRate()
 {
-	return playRate;
+	return impl->playRate;
 }
+#endif

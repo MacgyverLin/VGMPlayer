@@ -1,19 +1,94 @@
-﻿#include <stdio.h>
-#include "VideoDevice.h"
+﻿#include "VideoDevice.h"
+#include <stdio.h>
+#include <SDL_main.h>
+#include <SDL.h>
+#include <SDL_opengl.h>
+#include <GL/glu.h>
+#include <GL/gl.h>
+#ifdef RASPBERRY_PI
+#include <wiringPi.h>
+#endif
+
+bool Platform::initialize()
+{
+#ifdef RASPBERRY_PI
+	if (wiringPiSetup() == -1)
+	{
+		printf("GPIO setup error!\n");
+		return false;
+	}
+
+	pwmSetMode(PWM_MODE_BAL);
+	//pwmSetMode(PWM_MODE_MS);
+	pwmSetRange(1024);
+	pwmSetClock(32);
+
+	pinMode(1, PWM_OUTPUT);
+#endif
+
+	//Use OpenGL 3.1 core
+	SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 3);
+	SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 1);
+	SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_CORE);
+
+	// Initialize video subsystem
+	if (SDL_Init(SDL_INIT_VIDEO) < 0)
+	{
+		// Display error message
+		printf("SDL could not initialize! SDL_Error: %s\n", SDL_GetError());
+		return false;
+	}
+
+	return true;
+}
+
+bool Platform::update()
+{
+	SDL_Event sdlEvent;
+
+	while (SDL_PollEvent(&sdlEvent) != 0)
+	{
+		// Esc button is pressed
+		if (sdlEvent.type == SDL_QUIT)
+		{
+			return false;
+		}
+	}
+
+	return true;
+}
+
+void Platform::terminate()
+{
+	SDL_Quit();
+}
+
+class VideoDeviceImpl
+{
+public:
+	SDL_Window* window;
+	SDL_GLContext glContext;
+};
 
 VideoDevice::VideoDevice()
 {
+	impl = new VideoDeviceImpl();
 }
 
 VideoDevice::~VideoDevice()
 {
+	if (impl)
+	{
+		delete impl;
+		impl = 0;
+	}
 }
 
 BOOL VideoDevice::open(const string& name_, UINT32 x_, UINT32 y_, UINT32 width_, UINT32 height_)
 {
-	// Create window
-	window = SDL_CreateWindow(name_.c_str(), x_, y_, width_, height_, SDL_WINDOW_OPENGL | SDL_WINDOW_SHOWN);
-	if (window == NULL)
+	// Create impl->window
+	impl->window = SDL_CreateWindow(name_.c_str(), x_, y_, width_, height_, SDL_WINDOW_OPENGL | SDL_WINDOW_SHOWN);
+	if (impl->window == NULL)
 	{
 		// Display error message
 		//	printf("Window could not be created! SDL_Error: %s\n", SDL_GetError());
@@ -21,8 +96,8 @@ BOOL VideoDevice::open(const string& name_, UINT32 x_, UINT32 y_, UINT32 width_,
 	}
 
 	// Create OpenGL context
-	glContext = SDL_GL_CreateContext(window);
-	if (glContext == NULL)
+	impl->glContext = SDL_GL_CreateContext(impl->window);
+	if (impl->glContext == NULL)
 	{
 		// Display error message
 		//printf("OpenGL context could not be created! SDL Error: %s\n", SDL_GetError());
@@ -41,31 +116,31 @@ BOOL VideoDevice::open(const string& name_, UINT32 x_, UINT32 y_, UINT32 width_,
 
 VOID VideoDevice::close()
 {
-	if(window)
+	if (impl->window)
 	{
-		SDL_GL_DeleteContext(glContext);
-		glContext = NULL;
+		SDL_GL_DeleteContext(impl->glContext);
+		impl->glContext = NULL;
 
-		SDL_DestroyWindow(window);
-		window = NULL;
+		SDL_DestroyWindow(impl->window);
+		impl->window = NULL;
 	}
 }
 
 void VideoDevice::makeCurrent()
 {
-	SDL_GL_MakeCurrent(window, glContext);
+	SDL_GL_MakeCurrent(impl->window, impl->glContext);
 }
 
 BOOL VideoDevice::isCurrent()
 {
 	SDL_GLContext currentGLContext = SDL_GL_GetCurrentContext();
 
-	return currentGLContext== glContext;
+	return currentGLContext == impl->glContext;
 }
 
 void VideoDevice::flush()
 {
-	SDL_GL_SwapWindow(window);
+	SDL_GL_SwapWindow(impl->window);
 }
 
 VOID VideoDevice::clear(const Color& c)
@@ -78,7 +153,7 @@ VOID VideoDevice::drawPoint(const Vertex& v, const Color& c)
 {
 	glColor4f(c.r, c.g, c.b, c.a);
 	glBegin(GL_POINTS);
-		glVertex2fv((FLOAT32*)&v);
+	glVertex2fv((FLOAT32*)&v);
 	glEnd();
 }
 
@@ -90,20 +165,20 @@ VOID VideoDevice::drawLine(const Vertex& v0, const Vertex& v1, const Color& c)
 
 	glVertex2fv((FLOAT32*)&v0);
 	glVertex2fv((FLOAT32*)&v1);
-	
+
 	glEnd();
 }
 
 VOID VideoDevice::drawLine(const Vertex& v0, const Color& c0, const Vertex& v1, const Color& c1)
 {
 	glBegin(GL_LINES);
-	
+
 	glColor4fv((FLOAT32*)&c0);
 	glVertex2fv((FLOAT32*)&v0);
 
 	glColor4fv((FLOAT32*)&c1);
 	glVertex2fv((FLOAT32*)&v1);
-	
+
 	glEnd();
 }
 
@@ -129,7 +204,7 @@ VOID VideoDevice::drawWireTriangle(const Vertex& v0, const Color& c0, const Vert
 
 	glColor4fv((FLOAT32*)&c1);
 	glVertex2fv((FLOAT32*)&v1);
-	
+
 	glColor4fv((FLOAT32*)&c2);
 	glVertex2fv((FLOAT32*)&v2);
 
@@ -182,7 +257,7 @@ VOID VideoDevice::drawSolidTriangle(const Vertex& v0, const Vertex& v1, const Ve
 
 	glColor4fv((FLOAT32*)&c);
 	glVertex2fv((FLOAT32*)&v1);
-	
+
 	glColor4fv((FLOAT32*)&c);
 	glVertex2fv((FLOAT32*)&v2);
 
@@ -198,7 +273,7 @@ VOID VideoDevice::drawSolidTriangle(const Vertex& v0, const Color& c0, const Ver
 
 	glColor4fv((FLOAT32*)&c1);
 	glVertex2fv((FLOAT32*)&v1);
-	
+
 	glColor4fv((FLOAT32*)&c2);
 	glVertex2fv((FLOAT32*)&v2);
 
@@ -225,7 +300,7 @@ VOID VideoDevice::drawSolidRectangle(const Vertex& v0, const Color& c0, const Ve
 
 	glColor4fv((FLOAT32*)&c0);
 	glVertex2fv((FLOAT32*)&v0);
-	
+
 	glColor4fv((FLOAT32*)&c1);
 	glVertex2fv((FLOAT32*)&v1);
 

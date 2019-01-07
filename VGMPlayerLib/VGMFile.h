@@ -1,8 +1,9 @@
 #ifndef _VGMFile_h_
 #define _VGMFile_h_
 
-#include <zlib.h>
 #include "VGMData.h"
+
+class VGMFileImpl;
 
 class VGMFile : public VGMData
 {
@@ -25,9 +26,7 @@ private:
 public:
 protected:
 private:
-	string path;
-	FILE *file;
-	gzFile gzFile;
+	VGMFileImpl* impl;
 };
 
 #endif

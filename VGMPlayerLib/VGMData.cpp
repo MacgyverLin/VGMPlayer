@@ -38,6 +38,7 @@ VGMData::VGMData(INT32 channels_, INT32 bitPerSample_, INT32 sampleRate_)
 	bufferInfo.needQueueOutputSamples = false;
 
 	updateDataRequest = false;
+	updateSampleCounts = 0;
 }
 
 VGMData::~VGMData()
@@ -365,8 +366,6 @@ void VGMData::handleDataBlocks()
 
 BOOL VGMData::update()
 {
-	static INT32 updateSampleCounts = 0;
-
 	if (updateDataRequest)
 	{
 		if (updateSampleCounts > 0)

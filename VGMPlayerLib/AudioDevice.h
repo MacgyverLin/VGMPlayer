@@ -2,10 +2,8 @@
 #define _SoundDevice_h_
 
 #include "vgmdef.h"
-#include <AL/al.h>
-#include <AL/alc.h>
-#include <vector>
-using namespace std;
+
+class AudioDeviceImpl;
 
 class AudioDevice
 {
@@ -29,21 +27,7 @@ public:
 	INT32 getDeviceState();
 protected:
 private:
-	ALCcontext*		context;
-	ALCdevice*		device;
-	ALuint			outSource;
-	ALint			processedBuffer;
-	ALint			queuedBuffer;
-
-	vector<ALuint>	sndBuffers;
-	INT32			channels;
-	INT32			bitsPerSample;
-	INT32			sampleRate;
-
-	FLOAT32			volume;
-	FLOAT32			playRate;
-
-	INT32			WP;
+	AudioDeviceImpl*	impl;
 };
 
 #endif
