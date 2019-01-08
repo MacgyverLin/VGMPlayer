@@ -1198,17 +1198,17 @@ Wire Wire Line
 $Comp
 L VGMPlayer-rescue:OLED_128_64_I2C-VGM U18
 U 1 1 5CED1BF2
-P 12700 1350
-F 0 "U18" H 12969 1817 50  0000 C CNN
-F 1 "OLED_128_64_I2C" H 12969 1726 50  0000 C CNN
-F 2 "Connector_PinSocket_2.54mm:PinSocket_1x04_P2.54mm_Vertical" H 12450 1700 50  0001 C CNN
-F 3 "" H 12450 1700 50  0001 C CNN
-	1    12700 1350
+P 12650 1350
+F 0 "U18" H 12919 1817 50  0000 C CNN
+F 1 "OLED_128_64_I2C" H 12919 1726 50  0000 C CNN
+F 2 "Connector_PinSocket_2.54mm:PinSocket_1x04_P2.54mm_Vertical" H 12400 1700 50  0001 C CNN
+F 3 "" H 12400 1700 50  0001 C CNN
+	1    12650 1350
 	1    0    0    -1  
 $EndComp
-Text GLabel 12050 1250 0    50   Input ~ 0
+Text GLabel 12000 1250 0    50   Input ~ 0
 I2C_SCK
-Text GLabel 12050 1350 0    50   Input ~ 0
+Text GLabel 12000 1350 0    50   Input ~ 0
 I2C_SDA
 $Comp
 L power:GND #PWR060
@@ -1249,22 +1249,22 @@ Wire Wire Line
 $Comp
 L power:GND #PWR058
 U 1 1 5D82D0B3
-P 12100 1450
-F 0 "#PWR058" H 12100 1200 50  0001 C CNN
-F 1 "GND" H 11950 1400 50  0000 C CNN
-F 2 "" H 12100 1450 50  0001 C CNN
-F 3 "" H 12100 1450 50  0001 C CNN
-	1    12100 1450
+P 12050 1450
+F 0 "#PWR058" H 12050 1200 50  0001 C CNN
+F 1 "GND" H 11900 1400 50  0000 C CNN
+F 2 "" H 12050 1450 50  0001 C CNN
+F 3 "" H 12050 1450 50  0001 C CNN
+	1    12050 1450
 	1    0    0    -1  
 $EndComp
 Wire Wire Line
-	12050 1350 12200 1350
+	12000 1350 12150 1350
 Wire Wire Line
-	12050 1250 12200 1250
+	12000 1250 12150 1250
 Wire Wire Line
-	12100 1150 12200 1150
+	12050 1150 12150 1150
 Wire Wire Line
-	12200 1450 12100 1450
+	12150 1450 12050 1450
 $Comp
 L Connector:USB_B_Micro J4
 U 1 1 5DE133F5
@@ -1446,12 +1446,12 @@ $EndComp
 $Comp
 L power:VDD #PWR057
 U 1 1 60FF5476
-P 12100 1150
-F 0 "#PWR057" H 12100 1000 50  0001 C CNN
-F 1 "VDD" H 12100 1300 50  0000 C CNN
-F 2 "" H 12100 1150 50  0001 C CNN
-F 3 "" H 12100 1150 50  0001 C CNN
-	1    12100 1150
+P 12050 1150
+F 0 "#PWR057" H 12050 1000 50  0001 C CNN
+F 1 "VDD" H 12050 1300 50  0000 C CNN
+F 2 "" H 12050 1150 50  0001 C CNN
+F 3 "" H 12050 1150 50  0001 C CNN
+	1    12050 1150
 	1    0    0    -1  
 $EndComp
 $Comp
@@ -2006,7 +2006,7 @@ YM_A0
 Text GLabel 2050 2350 0    50   Input ~ 0
 YM_A1
 Text GLabel 2850 1350 2    50   Input ~ 0
-SN_WR
+SPI_MISO
 Text GLabel 2850 1150 2    50   Input ~ 0
 SPI_CLK
 Text GLabel 2850 1250 2    50   Input ~ 0
@@ -2425,9 +2425,9 @@ Wire Wire Line
 	2900 2150 2700 2150
 Wire Wire Line
 	2700 2250 2900 2250
-Text GLabel 2850 1750 2    50   Output ~ 0
+Text GLabel 2900 2450 2    50   Output ~ 0
 I2C_DAT
-Text GLabel 2850 1650 2    50   Input ~ 0
+Text GLabel 2900 2350 2    50   Input ~ 0
 I2C_CLK
 Wire Wire Line
 	2850 1650 2700 1650
@@ -2445,155 +2445,6 @@ Wire Wire Line
 	2700 1950 2850 1950
 Wire Wire Line
 	2850 2050 2700 2050
-$Comp
-L 74xx:74HCT595 U21
-U 1 1 5E70876C
-P 15550 1350
-F 0 "U21" H 15300 1900 50  0000 C CNN
-F 1 "74HCT595" H 15750 1900 50  0000 C CNN
-F 2 "Package_DIP:DIP-16_W7.62mm" H 15550 1350 50  0001 C CNN
-F 3 "https://assets.nexperia.com/documents/data-sheet/74HC_HCT595.pdf" H 15550 1350 50  0001 C CNN
-	1    15550 1350
-	0    -1   -1   0   
-$EndComp
-Text GLabel 15150 2250 3    50   Input ~ 0
-PP_DAT1
-Text GLabel 15350 2250 3    50   Input ~ 0
-PP_CLK1
-Text GLabel 15650 2250 3    50   Input ~ 0
-PP_LATCH1
-Wire Wire Line
-	15150 2250 15150 1750
-Wire Wire Line
-	15650 2250 15650 2200
-Wire Wire Line
-	14900 1350 14900 2000
-Wire Wire Line
-	14900 2000 15450 2000
-$Comp
-L 74xx:74HCT595 U22
-U 1 1 5EA8FE9E
-P 17250 1350
-F 0 "U22" H 17000 1900 50  0000 C CNN
-F 1 "74HCT595" H 17450 1900 50  0000 C CNN
-F 2 "Package_DIP:DIP-16_W7.62mm" H 17250 1350 50  0001 C CNN
-F 3 "https://assets.nexperia.com/documents/data-sheet/74HC_HCT595.pdf" H 17250 1350 50  0001 C CNN
-	1    17250 1350
-	0    -1   -1   0   
-$EndComp
-Wire Wire Line
-	16050 950  16450 950 
-Wire Wire Line
-	16450 950  16450 1800
-Wire Wire Line
-	14800 1350 14900 1350
-Wire Wire Line
-	16600 1350 16650 1350
-Wire Wire Line
-	16250 1350 16300 1350
-Wire Wire Line
-	17950 1350 18000 1350
-Wire Wire Line
-	16450 1800 16850 1800
-Wire Wire Line
-	15350 2250 15350 2100
-Wire Wire Line
-	15350 2100 17050 2100
-Wire Wire Line
-	17050 2100 17050 1750
-Wire Wire Line
-	15450 1750 15450 2000
-Wire Wire Line
-	14900 1350 14950 1350
-Connection ~ 14900 1350
-Connection ~ 15350 2100
-Wire Wire Line
-	15350 2100 15350 1750
-Wire Wire Line
-	16850 1800 16850 1750
-Wire Wire Line
-	15450 2000 17150 2000
-Wire Wire Line
-	17150 2000 17150 1750
-Connection ~ 15450 2000
-Wire Wire Line
-	15650 2200 17350 2200
-Wire Wire Line
-	17350 2200 17350 1750
-Connection ~ 15650 2200
-Wire Wire Line
-	15650 2200 15650 1750
-Wire Wire Line
-	15750 1750 15750 1800
-Wire Wire Line
-	15750 1800 16250 1800
-Wire Wire Line
-	16250 1800 16250 1350
-Connection ~ 16250 1350
-Wire Wire Line
-	17450 1750 17450 1800
-Wire Wire Line
-	17450 1800 18000 1800
-Wire Wire Line
-	18000 1800 18000 1350
-Connection ~ 18000 1350
-Wire Wire Line
-	18000 1350 18050 1350
-$Comp
-L 74xx:74HCT595 U23
-U 1 1 5FE8E030
-P 19000 1350
-F 0 "U23" H 18750 1900 50  0000 C CNN
-F 1 "74HCT595" H 19200 1900 50  0000 C CNN
-F 2 "Package_DIP:DIP-16_W7.62mm" H 19000 1350 50  0001 C CNN
-F 3 "https://assets.nexperia.com/documents/data-sheet/74HC_HCT595.pdf" H 19000 1350 50  0001 C CNN
-	1    19000 1350
-	0    -1   -1   0   
-$EndComp
-Wire Wire Line
-	17750 950  18200 950 
-Wire Wire Line
-	18200 950  18200 1800
-Wire Wire Line
-	18350 1350 18400 1350
-Wire Wire Line
-	19700 1350 19750 1350
-Wire Wire Line
-	18200 1800 18600 1800
-Wire Wire Line
-	17050 2100 18800 2100
-Wire Wire Line
-	18800 2100 18800 1750
-Wire Wire Line
-	18600 1800 18600 1750
-Wire Wire Line
-	17150 2000 18900 2000
-Wire Wire Line
-	18900 2000 18900 1750
-Wire Wire Line
-	17350 2200 19100 2200
-Wire Wire Line
-	19100 2200 19100 1750
-Wire Wire Line
-	19200 1750 19200 1800
-Wire Wire Line
-	19200 1800 19750 1800
-Wire Wire Line
-	19750 1800 19750 1350
-Connection ~ 19750 1350
-Wire Wire Line
-	19750 1350 19800 1350
-Connection ~ 17150 2000
-Connection ~ 17050 2100
-Connection ~ 17350 2200
-Wire Notes Line
-	14500 600  19950 600 
-Wire Notes Line
-	19950 600  19950 2950
-Wire Notes Line
-	14500 2950 14500 600 
-Wire Notes Line
-	14500 2950 19950 2950
 $Comp
 L Device:CP1 C32
 U 1 1 6057A0A9
@@ -2682,177 +2533,177 @@ Text GLabel 3150 7950 2    50   Input ~ 0
 Wire Wire Line
 	7550 7950 7500 7950
 Connection ~ 7500 7950
-Text GLabel 9300 8200 2    50   Input ~ 0
+Text GLabel 9250 8200 2    50   Input ~ 0
 +5V_8051
 Wire Wire Line
-	9150 8100 9250 8100
+	9100 8100 9200 8100
 Wire Wire Line
-	9250 8100 9250 10000
+	9200 8100 9200 10000
 Wire Wire Line
-	9250 10000 8550 10000
+	9200 10000 8500 10000
 Wire Wire Line
-	8650 9800 8550 9800
+	8600 9800 8500 9800
 Wire Wire Line
-	8550 9800 8550 9900
+	8500 9800 8500 9900
 Wire Wire Line
-	8550 9900 8650 9900
+	8500 9900 8600 9900
 Wire Wire Line
-	8550 9900 8550 10000
-Connection ~ 8550 9900
+	8500 9900 8500 10000
+Connection ~ 8500 9900
 $Comp
 L Connector_Generic:Conn_02x20_Counter_Clockwise J2
 U 1 1 6429344A
-P 8850 8900
-F 0 "J2" H 9200 9850 50  0000 C CNN
-F 1 "Conn_02x20_Counter_Clockwise" H 8900 9926 50  0001 C CNN
-F 2 "Package_DIP:DIP-40_W15.24mm_Socket" H 8850 8900 50  0001 C CNN
-F 3 "~" H 8850 8900 50  0001 C CNN
-	1    8850 8900
+P 8800 8900
+F 0 "J2" H 9150 9850 50  0000 C CNN
+F 1 "Conn_02x20_Counter_Clockwise" H 8850 9926 50  0001 C CNN
+F 2 "Package_DIP:DIP-40_W15.24mm_Socket" H 8800 8900 50  0001 C CNN
+F 3 "~" H 8800 8900 50  0001 C CNN
+	1    8800 8900
 	1    0    0    -1  
 $EndComp
 Wire Wire Line
-	9300 8300 9150 8300
+	9250 8300 9100 8300
 Wire Wire Line
-	9300 8400 9150 8400
+	9250 8400 9100 8400
 Wire Wire Line
-	9300 8500 9150 8500
+	9250 8500 9100 8500
 Wire Wire Line
-	9300 8600 9150 8600
+	9250 8600 9100 8600
 Wire Wire Line
-	9300 8700 9150 8700
+	9250 8700 9100 8700
 Wire Wire Line
-	8650 9100 8500 9100
+	8600 9100 8450 9100
 Wire Wire Line
-	8650 9200 8500 9200
+	8600 9200 8450 9200
 Wire Wire Line
-	8500 9300 8650 9300
+	8450 9300 8600 9300
 Wire Wire Line
-	8650 9400 8500 9400
+	8600 9400 8450 9400
 Wire Wire Line
-	8500 9500 8650 9500
+	8450 9500 8600 9500
 Wire Wire Line
-	9150 9900 9300 9900
+	9100 9900 9250 9900
 Wire Wire Line
-	9300 8800 9150 8800
+	9250 8800 9100 8800
 Wire Wire Line
-	9300 8900 9150 8900
+	9250 8900 9100 8900
 Wire Wire Line
-	9300 9000 9150 9000
+	9250 9000 9100 9000
 Wire Wire Line
-	9150 9100 9300 9100
+	9100 9100 9250 9100
 Wire Wire Line
-	9300 9200 9150 9200
-Text GLabel 9300 8000 2    50   Input ~ 0
+	9250 9200 9100 9200
+Text GLabel 9250 8000 2    50   Input ~ 0
 +3V_8051
 Wire Wire Line
-	9300 8200 9150 8200
+	9250 8200 9100 8200
 Wire Wire Line
-	9300 8000 9150 8000
-Text GLabel 8500 9700 0    50   Input ~ 0
+	9250 8000 9100 8000
+Text GLabel 8450 9700 0    50   Input ~ 0
 +3V_8051
 Wire Wire Line
-	8500 9700 8650 9700
-Text GLabel 8450 10000 0    50   Input ~ 0
+	8450 9700 8600 9700
+Text GLabel 8400 10000 0    50   Input ~ 0
 GND_8051
 Wire Wire Line
-	8550 10000 8450 10000
-Connection ~ 8550 10000
+	8500 10000 8400 10000
+Connection ~ 8500 10000
 Wire Wire Line
-	8650 9000 8500 9000
+	8600 9000 8450 9000
 Wire Wire Line
-	8650 8900 8500 8900
+	8600 8900 8450 8900
 Wire Wire Line
-	8650 8800 8500 8800
+	8600 8800 8450 8800
 Wire Wire Line
-	8650 8700 8500 8700
+	8600 8700 8450 8700
 Wire Wire Line
-	8650 8600 8500 8600
+	8600 8600 8450 8600
 Wire Wire Line
-	8650 8500 8500 8500
+	8600 8500 8450 8500
 Wire Wire Line
-	8650 8400 8500 8400
+	8600 8400 8450 8400
 Wire Wire Line
-	9300 9300 9150 9300
+	9250 9300 9100 9300
 Wire Wire Line
-	9150 9400 9300 9400
+	9100 9400 9250 9400
 Wire Wire Line
-	9300 9800 9150 9800
+	9250 9800 9100 9800
 Wire Wire Line
-	9300 9500 9150 9500
+	9250 9500 9100 9500
 Wire Wire Line
-	9150 9600 9300 9600
+	9100 9600 9250 9600
 Wire Wire Line
-	9300 9700 9150 9700
+	9250 9700 9100 9700
 Wire Wire Line
-	8650 8100 8500 8100
+	8600 8100 8450 8100
 Wire Wire Line
-	8500 8200 8650 8200
-Text GLabel 8500 8600 0    50   Input ~ 0
+	8450 8200 8600 8200
+Text GLabel 8450 8600 0    50   Input ~ 0
 P0.2
-Text GLabel 8500 8400 0    50   Input ~ 0
+Text GLabel 8450 8400 0    50   Input ~ 0
 P0.0
-Text GLabel 8500 8500 0    50   Input ~ 0
+Text GLabel 8450 8500 0    50   Input ~ 0
 P0.1
-Text GLabel 8500 8700 0    50   Input ~ 0
+Text GLabel 8450 8700 0    50   Input ~ 0
 P0.3
-Text GLabel 8500 8800 0    50   Input ~ 0
+Text GLabel 8450 8800 0    50   Input ~ 0
 P0.4
-Text GLabel 8500 8900 0    50   Input ~ 0
+Text GLabel 8450 8900 0    50   Input ~ 0
 P0.5
-Text GLabel 8500 9000 0    50   Input ~ 0
+Text GLabel 8450 9000 0    50   Input ~ 0
 P0.6
-Text GLabel 8500 9100 0    50   Input ~ 0
+Text GLabel 8450 9100 0    50   Input ~ 0
 P0.7
-Text GLabel 8500 9500 0    50   Input ~ 0
+Text GLabel 8450 9500 0    50   Input ~ 0
 P3.3
-Text GLabel 8500 9400 0    50   Input ~ 0
+Text GLabel 8450 9400 0    50   Input ~ 0
 P3.2
-Text GLabel 8500 9200 0    50   Input ~ 0
+Text GLabel 8450 9200 0    50   Input ~ 0
 P2.0
-Text GLabel 8500 9300 0    50   Input ~ 0
+Text GLabel 8450 9300 0    50   Input ~ 0
 P2.1
-Text GLabel 9300 9700 2    50   Input ~ 0
+Text GLabel 9250 9700 2    50   Input ~ 0
 P3.6
-Text GLabel 9300 9800 2    50   Input ~ 0
+Text GLabel 9250 9800 2    50   Input ~ 0
 P3.5
-Text GLabel 9300 9900 2    50   Input ~ 0
+Text GLabel 9250 9900 2    50   Input ~ 0
 P3.4
-Text GLabel 9300 9600 2    50   Input ~ 0
+Text GLabel 9250 9600 2    50   Input ~ 0
 P3.7
-Text GLabel 9300 9500 2    50   Input ~ 0
+Text GLabel 9250 9500 2    50   Input ~ 0
 P1.0
-Text GLabel 9300 9400 2    50   Input ~ 0
+Text GLabel 9250 9400 2    50   Input ~ 0
 P1.1
-Text GLabel 9300 9300 2    50   Input ~ 0
+Text GLabel 9250 9300 2    50   Input ~ 0
 P1.2
-Text GLabel 9300 9200 2    50   Input ~ 0
+Text GLabel 9250 9200 2    50   Input ~ 0
 P1.3
-Text GLabel 9300 9100 2    50   Input ~ 0
+Text GLabel 9250 9100 2    50   Input ~ 0
 P1.4
-Text GLabel 9300 9000 2    50   Input ~ 0
+Text GLabel 9250 9000 2    50   Input ~ 0
 P1.7
-Text GLabel 9300 8900 2    50   Input ~ 0
+Text GLabel 9250 8900 2    50   Input ~ 0
 P2.3
-Text GLabel 9300 8800 2    50   Input ~ 0
+Text GLabel 9250 8800 2    50   Input ~ 0
 P2.4
-Text GLabel 9300 8700 2    50   Input ~ 0
+Text GLabel 9250 8700 2    50   Input ~ 0
 P2.5
-Text GLabel 9300 8600 2    50   Input ~ 0
+Text GLabel 9250 8600 2    50   Input ~ 0
 P2.6
-Text GLabel 9300 8500 2    50   Input ~ 0
+Text GLabel 9250 8500 2    50   Input ~ 0
 P2.7
-Text GLabel 9300 8300 2    50   Input ~ 0
+Text GLabel 9250 8300 2    50   Input ~ 0
 P3.1
-Text GLabel 9300 8400 2    50   Input ~ 0
+Text GLabel 9250 8400 2    50   Input ~ 0
 P3.0
-Text GLabel 8500 8100 0    50   Input ~ 0
+Text GLabel 8450 8100 0    50   Input ~ 0
 P2.2
-Text GLabel 8500 8200 0    50   Input ~ 0
+Text GLabel 8450 8200 0    50   Input ~ 0
 P1.5
-Text GLabel 8500 8300 0    50   Input ~ 0
+Text GLabel 8450 8300 0    50   Input ~ 0
 P1.6
 Wire Wire Line
-	8650 8300 8500 8300
+	8600 8300 8450 8300
 $Comp
 L Amplifier_Operational:LM324 U14
 U 1 1 5C38CEC7
@@ -2942,4 +2793,16 @@ Wire Wire Line
 	7300 4200 7300 4300
 Wire Wire Line
 	7300 4300 7250 4300
+Text GLabel 2850 1650 2    50   Input ~ 0
+SD_CS
+Text GLabel 2850 1750 2    50   Input ~ 0
+TBD_CS
+Text GLabel 2900 2650 2    50   Input ~ 0
+SN_WR
+Wire Wire Line
+	2900 2650 2700 2650
+Wire Wire Line
+	2900 2350 2700 2350
+Wire Wire Line
+	2900 2450 2700 2450
 $EndSCHEMATC
