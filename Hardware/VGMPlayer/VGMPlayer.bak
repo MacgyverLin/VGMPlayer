@@ -2284,7 +2284,7 @@ U 1 1 61733348
 P 18050 1400
 F 0 "SW1" H 18050 1685 50  0000 C CNN
 F 1 "Play/Suffle" H 18050 1594 50  0000 C CNN
-F 2 "Button_Switch_Keyboard:SW_Cherry_MX1A_1.00u_PCB" H 18050 1600 50  0001 C CNN
+F 2 "Button_Switch_THT:SW_Tactile_Straight_KSA0Axx1LFTR" H 18050 1600 50  0001 C CNN
 F 3 "" H 18050 1600 50  0001 C CNN
 	1    18050 1400
 	1    0    0    -1  
@@ -2295,7 +2295,7 @@ U 1 1 6173380B
 P 18050 1800
 F 0 "SW2" H 18050 2085 50  0000 C CNN
 F 1 "Stop" H 18050 1994 50  0000 C CNN
-F 2 "Button_Switch_Keyboard:SW_Cherry_MX1A_1.00u_PCB" H 18050 2000 50  0001 C CNN
+F 2 "Button_Switch_THT:SW_Tactile_Straight_KSA0Axx1LFTR" H 18050 2000 50  0001 C CNN
 F 3 "" H 18050 2000 50  0001 C CNN
 	1    18050 1800
 	1    0    0    -1  
@@ -2306,7 +2306,7 @@ U 1 1 6175E922
 P 18050 2200
 F 0 "SW3" H 18050 2485 50  0000 C CNN
 F 1 "Next/Pause" H 18050 2394 50  0000 C CNN
-F 2 "Button_Switch_Keyboard:SW_Cherry_MX1A_1.00u_PCB" H 18050 2400 50  0001 C CNN
+F 2 "Button_Switch_THT:SW_Tactile_Straight_KSA0Axx1LFTR" H 18050 2400 50  0001 C CNN
 F 3 "" H 18050 2400 50  0001 C CNN
 	1    18050 2200
 	1    0    0    -1  
@@ -2317,7 +2317,7 @@ U 1 1 617B4DFB
 P 18050 2600
 F 0 "SW4" H 18050 2885 50  0000 C CNN
 F 1 "Prev/Resume" H 18050 2794 50  0000 C CNN
-F 2 "Button_Switch_Keyboard:SW_Cherry_MX1A_1.00u_PCB" H 18050 2800 50  0001 C CNN
+F 2 "Button_Switch_THT:SW_Tactile_Straight_KSA0Axx1LFTR" H 18050 2800 50  0001 C CNN
 F 3 "" H 18050 2800 50  0001 C CNN
 	1    18050 2600
 	1    0    0    -1  
@@ -2353,13 +2353,13 @@ Wire Wire Line
 	18400 1400 18400 1800
 Connection ~ 18400 1800
 Text GLabel 17750 1400 0    50   Input ~ 0
-Play
+PLAY
 Text GLabel 17750 1800 0    50   Input ~ 0
-Stop
+STOP
 Text GLabel 17750 2200 0    50   Input ~ 0
-Next_Pause
+NEXT_PAUSE
 Text GLabel 17750 2600 0    50   Input ~ 0
-Prev_Resume
+PREV_RESUME
 Wire Wire Line
 	17850 1400 17750 1400
 Wire Wire Line
@@ -2369,13 +2369,13 @@ Wire Wire Line
 Wire Wire Line
 	17850 2600 17750 2600
 Text GLabel 4050 2250 2    50   Input ~ 0
-Play
+PLAY
 Text GLabel 4050 1750 2    50   Input ~ 0
-Stop
+STOP
 Text GLabel 4050 1850 2    50   Input ~ 0
-Next_Pause
+NEXT_PAUSE
 Text GLabel 4050 1950 2    50   Input ~ 0
-Prev_Resume
+PREV_RESUME
 Wire Wire Line
 	3850 2450 4050 2450
 $Comp

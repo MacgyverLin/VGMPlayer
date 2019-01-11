@@ -2353,13 +2353,13 @@ Wire Wire Line
 	18400 1400 18400 1800
 Connection ~ 18400 1800
 Text GLabel 17750 1400 0    50   Input ~ 0
-Play
+PLAY
 Text GLabel 17750 1800 0    50   Input ~ 0
-Stop
+STOP
 Text GLabel 17750 2200 0    50   Input ~ 0
-Next_Pause
+NEXT_PAUSE
 Text GLabel 17750 2600 0    50   Input ~ 0
-Prev_Resume
+PREV_RESUME
 Wire Wire Line
 	17850 1400 17750 1400
 Wire Wire Line
@@ -2369,13 +2369,13 @@ Wire Wire Line
 Wire Wire Line
 	17850 2600 17750 2600
 Text GLabel 4050 2250 2    50   Input ~ 0
-Play
+PLAY
 Text GLabel 4050 1750 2    50   Input ~ 0
-Stop
+STOP
 Text GLabel 4050 1850 2    50   Input ~ 0
-Next_Pause
+NEXT_PAUSE
 Text GLabel 4050 1950 2    50   Input ~ 0
-Prev_Resume
+PREV_RESUME
 Wire Wire Line
 	3850 2450 4050 2450
 $Comp
@@ -2568,4 +2568,6 @@ $EndComp
 Connection ~ 14000 1700
 Wire Wire Line
 	14000 1000 14000 1700
+Text GLabel 4050 1650 2    50   Input ~ 0
+TBD0
 $EndSCHEMATC
