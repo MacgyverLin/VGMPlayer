@@ -87,7 +87,7 @@ s8 apu_square(u8 chipID, square_t *chan)
 	** reg3: 0-2=high freq, 7-4=vbl length counter
 	*/
 
-	if (FALSE == chan->enabled)
+	if (False == chan->enabled)
 		return 0;
 
 	/* enveloping */
@@ -160,15 +160,15 @@ s8 apu_triangle(u8 chipID, triangle_t *chan)
 	** reg3: 7-3=length counter, 2-0=high 3 bits of frequency
 	*/
 
-	if (FALSE == chan->enabled)
+	if (False == chan->enabled)
 		return 0;
 
-	if (FALSE == chan->counter_started && 0 == (chan->regs[0] & 0x80))
+	if (False == chan->counter_started && 0 == (chan->regs[0] & 0x80))
 	{
 		if (chan->write_latency)
 			chan->write_latency--;
 		if (0 == chan->write_latency)
-			chan->counter_started = TRUE;
+			chan->counter_started = True;
 	}
 
 	if (chan->counter_started)
@@ -221,7 +221,7 @@ s8 apu_noise(u8 chipID, noise_t *chan)
 	** reg3: 7-4=vbl length counter
 	*/
 
-	if (FALSE == chan->enabled)
+	if (False == chan->enabled)
 		return 0;
 
 	/* enveloping */
@@ -282,8 +282,8 @@ void apu_dpcmreset(dpcm_t *chan)
 	chan->address = 0xC000 + (u16)(chan->regs[2] << 6);
 	chan->length = (u16)(chan->regs[3] << 4) + 1;
 	chan->bits_left = chan->length << 3;
-	chan->irq_occurred = FALSE;
-	chan->enabled = TRUE; /* Fixed * Proper DPCM channel ENABLE/DISABLE flag behaviour*/
+	chan->irq_occurred = False;
+	chan->enabled = True; /* Fixed * Proper DPCM channel ENABLE/DISABLE flag behaviour*/
 	chan->vol = 0; /* Fixed * DPCM DAC resets itself when restarted */
 }
 
@@ -311,7 +311,7 @@ s8 apu_dpcm(u8 chipID, dpcm_t *chan)
 
 			if (0 == chan->length)
 			{
-				chan->enabled = FALSE; /* Fixed * Proper DPCM channel ENABLE/DISABLE flag behaviour*/
+				chan->enabled = False; /* Fixed * Proper DPCM channel ENABLE/DISABLE flag behaviour*/
 				chan->vol = 0; /* Fixed * DPCM DAC resets itself when restarted */
 				if (chan->regs[0] & 0x40)
 					apu_dpcmreset(chan);
@@ -319,7 +319,7 @@ s8 apu_dpcm(u8 chipID, dpcm_t *chan)
 				{
 					if (chan->regs[0] & 0x80) /* IRQ Generator */
 					{
-						chan->irq_occurred = TRUE;
+						chan->irq_occurred = True;
 						//n2a03_irq();
 					}
 					break;
@@ -398,7 +398,7 @@ void apu_regwrite(u8 chipID, u32 address, u8 value)
 
 		if (apu->APU.tri.enabled)
 		{                                          /* ??? */
-			if (FALSE == apu->APU.tri.counter_started)
+			if (False == apu->APU.tri.counter_started)
 				apu->APU.tri.linear_length = apu->sync_times2[value & 0x7F];
 		}
 
@@ -435,7 +435,7 @@ void apu_regwrite(u8 chipID, u32 address, u8 value)
 
 		if (apu->APU.tri.enabled)
 		{
-			apu->APU.tri.counter_started = FALSE;
+			apu->APU.tri.counter_started = False;
 			apu->APU.tri.vbl_length = apu->vbl_times[value >> 3];
 			apu->APU.tri.linear_length = apu->sync_times2[apu->APU.tri.regs[0] & 0x7F];
 		}
@@ -470,7 +470,7 @@ void apu_regwrite(u8 chipID, u32 address, u8 value)
 	case APU_WRE0:
 		apu->APU.dpcm.regs[0] = value;
 		if (0 == (value & 0x80))
-			apu->APU.dpcm.irq_occurred = FALSE;
+			apu->APU.dpcm.irq_occurred = False;
 		break;
 
 	case APU_WRE1: /* 7-bit DAC */
@@ -491,53 +491,53 @@ void apu_regwrite(u8 chipID, u32 address, u8 value)
 
 	case APU_SMASK:
 		if (value & 0x01)
-			apu->APU.squ[0].enabled = TRUE;
+			apu->APU.squ[0].enabled = True;
 		else
 		{
-			apu->APU.squ[0].enabled = FALSE;
+			apu->APU.squ[0].enabled = False;
 			apu->APU.squ[0].vbl_length = 0;
 		}
 
 		if (value & 0x02)
-			apu->APU.squ[1].enabled = TRUE;
+			apu->APU.squ[1].enabled = True;
 		else
 		{
-			apu->APU.squ[1].enabled = FALSE;
+			apu->APU.squ[1].enabled = False;
 			apu->APU.squ[1].vbl_length = 0;
 		}
 
 		if (value & 0x04)
-			apu->APU.tri.enabled = TRUE;
+			apu->APU.tri.enabled = True;
 		else
 		{
-			apu->APU.tri.enabled = FALSE;
+			apu->APU.tri.enabled = False;
 			apu->APU.tri.vbl_length = 0;
 			apu->APU.tri.linear_length = 0;
-			apu->APU.tri.counter_started = FALSE;
+			apu->APU.tri.counter_started = False;
 			apu->APU.tri.write_latency = 0;
 		}
 
 		if (value & 0x08)
-			apu->APU.noi.enabled = TRUE;
+			apu->APU.noi.enabled = True;
 		else
 		{
-			apu->APU.noi.enabled = FALSE;
+			apu->APU.noi.enabled = False;
 			apu->APU.noi.vbl_length = 0;
 		}
 
 		if (value & 0x10)
 		{
 			/* only reset dpcm values if DMA is finished */
-			if (FALSE == apu->APU.dpcm.enabled)
+			if (False == apu->APU.dpcm.enabled)
 			{
-				apu->APU.dpcm.enabled = TRUE;
+				apu->APU.dpcm.enabled = True;
 				apu_dpcmreset(&apu->APU.dpcm);
 			}
 		}
 		else
-			apu->APU.dpcm.enabled = FALSE;
+			apu->APU.dpcm.enabled = False;
 
-		apu->APU.dpcm.irq_occurred = FALSE;
+		apu->APU.dpcm.irq_occurred = False;
 
 		break;
 	default:
@@ -585,12 +585,12 @@ u8 apu_read(u8 chipID, u32 address)
 	if (address == 0x0f) /*FIXED* Address $4015 has different behaviour*/
 	{
 		s32 readval = 0;
-		if (apu->APU.dpcm.enabled == TRUE)
+		if (apu->APU.dpcm.enabled == True)
 		{
 			readval |= 0x10;
 		}
 
-		if (apu->APU.dpcm.irq_occurred == TRUE)
+		if (apu->APU.dpcm.irq_occurred == True)
 		{
 			readval |= 0x80;
 		}
@@ -628,11 +628,11 @@ s32 NESAPU_Initialize(u8 chipID, u32 clock, u32 sampleRate)
 	u16 real_rate = samps_per_sync * fps;
 	apu->apu_incsize = (f32)(clock / (f32)real_rate);
 
-	apu->APU.squ[0].enabled = TRUE;
-	apu->APU.squ[1].enabled = TRUE;
-	apu->APU.tri.enabled = TRUE;
-	apu->APU.noi.enabled = TRUE;
-	apu->APU.dpcm.enabled = TRUE;
+	apu->APU.squ[0].enabled = True;
+	apu->APU.squ[1].enabled = True;
+	apu->APU.tri.enabled = True;
+	apu->APU.noi.enabled = True;
+	apu->APU.dpcm.enabled = True;
 
 	/* Use initializer calls */
 	create_noise(apu->noise_lut, 13, NOISE_LONG);

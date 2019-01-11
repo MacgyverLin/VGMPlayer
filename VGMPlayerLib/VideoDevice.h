@@ -73,32 +73,32 @@ public:
 	VideoDevice();
 	~VideoDevice();
 
-	BOOL open(const string& name_, u32 x_, u32 y_, u32 width_, u32 height_);
-	VOID close();
+	boolean open(const string& name_, u32 x_, u32 y_, u32 width_, u32 height_);
+	void close();
 
 	void makeCurrent();
-	BOOL isCurrent();
+	boolean isCurrent();
 	void flush();
 
-	VOID clear(const Color& c);
+	void clear(const Color& c);
 
-	VOID drawPoint(const Vertex& v, const Color& c);
-	VOID drawLine(const Vertex& v0, const Vertex& v1, const Color& c);
-	VOID drawLine(const Vertex& v0, const Color& c0, const Vertex& v1, const Color& c1);
-	VOID drawWireTriangle(const Vertex& v0, const Vertex& v1, const Vertex& v2, const Color& c);
-	VOID drawWireTriangle(const Vertex& v0, const Color& c0, const Vertex& v1, const Color& c1, const Vertex& v2, const Color& c2);
-	VOID drawWireRectangle(const Vertex& v0, const Vertex& v1, const Vertex& v2, const Vertex& v3, const Color& c);
-	VOID drawWireRectangle(const Vertex& v0, const Color& c0, const Vertex& v1, const Color& c1, const Vertex& v2, const Color& c2, const Vertex& v3, const Color& c3);
-	VOID drawWireCircle(const Vertex& center, f32 radius, const Color& c);
+	void drawPoint(const Vertex& v, const Color& c);
+	void drawLine(const Vertex& v0, const Vertex& v1, const Color& c);
+	void drawLine(const Vertex& v0, const Color& c0, const Vertex& v1, const Color& c1);
+	void drawWireTriangle(const Vertex& v0, const Vertex& v1, const Vertex& v2, const Color& c);
+	void drawWireTriangle(const Vertex& v0, const Color& c0, const Vertex& v1, const Color& c1, const Vertex& v2, const Color& c2);
+	void drawWireRectangle(const Vertex& v0, const Vertex& v1, const Vertex& v2, const Vertex& v3, const Color& c);
+	void drawWireRectangle(const Vertex& v0, const Color& c0, const Vertex& v1, const Color& c1, const Vertex& v2, const Color& c2, const Vertex& v3, const Color& c3);
+	void drawWireCircle(const Vertex& center, f32 radius, const Color& c);
 
-	VOID drawSolidTriangle(const Vertex& v0, const Vertex& v1, const Vertex& v2, const Color& c);
-	VOID drawSolidTriangle(const Vertex& v0, const Color& c0, const Vertex& v1, const Color& c1, const Vertex& v2, const Color& c2);
-	VOID drawSolidRectangle(const Vertex& v0, const Vertex& v1, const Vertex& v2, const Vertex& v3, const Color& c);
-	VOID drawSolidRectangle(const Vertex& v0, const Color& c0, const Vertex& v1, const Color& c1, const Vertex& v2, const Color& c2, const Vertex& v3, const Color& c3);
-	VOID drawSolidCircle(const Vertex& center, f32 radius, const Color& c);
+	void drawSolidTriangle(const Vertex& v0, const Vertex& v1, const Vertex& v2, const Color& c);
+	void drawSolidTriangle(const Vertex& v0, const Color& c0, const Vertex& v1, const Color& c1, const Vertex& v2, const Color& c2);
+	void drawSolidRectangle(const Vertex& v0, const Vertex& v1, const Vertex& v2, const Vertex& v3, const Color& c);
+	void drawSolidRectangle(const Vertex& v0, const Color& c0, const Vertex& v1, const Color& c1, const Vertex& v2, const Color& c2, const Vertex& v3, const Color& c3);
+	void drawSolidCircle(const Vertex& center, f32 radius, const Color& c);
 
-	VOID drawPrimitive(u32 primitive, const Vertex* vertices, const Color& c, u32 count);
-	VOID drawPrimitive(u32 primitive, const Vertex* vertices, const Color* colors, u32 count);
+	void drawPrimitive(u32 primitive, const Vertex* vertices, const Color& c, u32 count);
+	void drawPrimitive(u32 primitive, const Vertex* vertices, const Color* colors, u32 count);
 protected:
 private:
 ////////////////////////////////////////////////////////////////////////////

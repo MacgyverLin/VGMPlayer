@@ -78,12 +78,12 @@ void VGMData::resume()
 	notifyResume();
 }
 
-BOOL VGMData::isPlaying()
+boolean VGMData::isPlaying()
 {
 	return playInfo.playing;
 }
 
-BOOL VGMData::isPaused()
+boolean VGMData::isPaused()
 {
 	return playInfo.paused;
 }
@@ -108,7 +108,7 @@ const VGMData::BufferInfo& VGMData::getBufferInfo() const
 	return bufferInfo;
 }
 
-BOOL VGMData::open()
+boolean VGMData::open()
 {
 	onOpen();
 
@@ -221,7 +221,7 @@ void VGMData::close()
 	onClose();
 }
 
-s32 VGMData::read(VOID *buffer, u32 size)
+s32 VGMData::read(void *buffer, u32 size)
 {
 	return onRead(buffer, size);
 }
@@ -364,7 +364,7 @@ void VGMData::handleDataBlocks()
 	}
 }
 
-BOOL VGMData::update()
+boolean VGMData::update()
 {
 	if (updateDataRequest)
 	{

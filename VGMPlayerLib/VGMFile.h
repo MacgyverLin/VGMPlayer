@@ -11,14 +11,14 @@ public:
 	VGMFile(const string& path, s32 channels_, s32 bitPerSample_, s32 sampleRate_);
 	virtual ~VGMFile();
 protected:
-	virtual BOOL onOpen();
+	virtual boolean onOpen();
 	virtual void onClose();
 	virtual void onPlay();
 	virtual void onStop();
 	virtual void onPause();
 	virtual void onResume();
-	virtual BOOL onUpdate();
-	virtual s32 onRead(VOID *buffer, u32 size);
+	virtual boolean onUpdate();
+	virtual s32 onRead(void *buffer, u32 size);
 	virtual s32 onSeekSet(u32 size);
 	virtual s32 onSeekCur(u32 size);
 private:

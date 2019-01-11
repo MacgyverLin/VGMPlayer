@@ -10,7 +10,7 @@ using namespace std;
 class AudioDeviceImpl
 {
 public:
-	BOOL			playing;
+	boolean			playing;
 	
 	f32			volume;
 	f32			playRate;
@@ -35,12 +35,12 @@ AudioDevice::~AudioDevice()
 	}
 }
 
-BOOL AudioDevice::open(s32 channels_, s32 bitsPerSample_, s32 sampleRate_, s32 bufferCount_)
+boolean AudioDevice::open(s32 channels_, s32 bitsPerSample_, s32 sampleRate_, s32 bufferCount_)
 {
 	return true;
 }
 
-VOID AudioDevice::close()
+void AudioDevice::close()
 {
 }
 
@@ -78,7 +78,7 @@ s32 AudioDevice::getQueued()
 	return -1;
 }
 
-VOID AudioDevice::setVolume(f32 volume_)
+void AudioDevice::setVolume(f32 volume_)
 {
 	impl->volume = volume_;
 }
@@ -88,7 +88,7 @@ f32 AudioDevice::getVolume()
 	return impl->volume;
 }
 
-VOID AudioDevice::setPlayRate(f32 playRate_)
+void AudioDevice::setPlayRate(f32 playRate_)
 {
 	impl->playRate = playRate_;
 }
@@ -134,7 +134,7 @@ AudioDevice::~AudioDevice()
 	}
 }
 
-BOOL AudioDevice::open(s32 channels_, s32 bitsPerSample_, s32 sampleRate_, s32 bufferCount_)
+boolean AudioDevice::open(s32 channels_, s32 bitsPerSample_, s32 sampleRate_, s32 bufferCount_)
 {
 	ALuint error = 0;
 
@@ -187,7 +187,7 @@ BOOL AudioDevice::open(s32 channels_, s32 bitsPerSample_, s32 sampleRate_, s32 b
 	return true;
 }
 
-VOID AudioDevice::close()
+void AudioDevice::close()
 {
 	if (impl->sndBuffers.size() != 0)
 	{
@@ -386,7 +386,7 @@ s32 AudioDevice::getQueued()
 	return impl->queuedBuffer;
 }
 
-VOID AudioDevice::setVolume(f32 volume_)
+void AudioDevice::setVolume(f32 volume_)
 {
 	impl->volume = volume_;
 
@@ -398,7 +398,7 @@ f32 AudioDevice::getVolume()
 	return impl->volume;
 }
 
-VOID AudioDevice::setPlayRate(f32 playRate_)
+void AudioDevice::setPlayRate(f32 playRate_)
 {
 	impl->playRate = playRate_;
 

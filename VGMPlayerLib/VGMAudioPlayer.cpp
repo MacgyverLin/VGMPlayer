@@ -27,7 +27,7 @@ void VGMAudioPlayer::onNotifyOpen(Obserable& observable)
 	const VGMData::PlayInfo& playInfo = vgmData.getPlayInfo();
 	const VGMData::BufferInfo& bufferInfo = vgmData.getBufferInfo();
 
-	BOOL rval = outputDevice.open(playInfo.channels, playInfo.bitPerSamples, playInfo.sampleRate, VGM_OUTPUT_BUFFER_COUNT);
+	boolean rval = outputDevice.open(playInfo.channels, playInfo.bitPerSamples, playInfo.sampleRate, VGM_OUTPUT_BUFFER_COUNT);
 }
 
 void VGMAudioPlayer::onNotifyClose(Obserable& observable)

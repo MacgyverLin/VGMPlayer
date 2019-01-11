@@ -84,7 +84,7 @@ VideoDevice::~VideoDevice()
 	}
 }
 
-BOOL VideoDevice::open(const string& name_, u32 x_, u32 y_, u32 width_, u32 height_)
+boolean VideoDevice::open(const string& name_, u32 x_, u32 y_, u32 width_, u32 height_)
 {
 	// Create impl->window
 	impl->window = SDL_CreateWindow(name_.c_str(), x_, y_, width_, height_, SDL_WINDOW_OPENGL | SDL_WINDOW_SHOWN);
@@ -114,7 +114,7 @@ BOOL VideoDevice::open(const string& name_, u32 x_, u32 y_, u32 width_, u32 heig
 	return true;
 }
 
-VOID VideoDevice::close()
+void VideoDevice::close()
 {
 	if (impl->window)
 	{
@@ -131,7 +131,7 @@ void VideoDevice::makeCurrent()
 	SDL_GL_MakeCurrent(impl->window, impl->glContext);
 }
 
-BOOL VideoDevice::isCurrent()
+boolean VideoDevice::isCurrent()
 {
 	SDL_GLContext currentGLContext = SDL_GL_GetCurrentContext();
 
@@ -143,13 +143,13 @@ void VideoDevice::flush()
 	SDL_GL_SwapWindow(impl->window);
 }
 
-VOID VideoDevice::clear(const Color& c)
+void VideoDevice::clear(const Color& c)
 {
 	glClearColor(c.r, c.g, c.b, c.a);
 	glClear(GL_COLOR_BUFFER_BIT);
 }
 
-VOID VideoDevice::drawPoint(const Vertex& v, const Color& c)
+void VideoDevice::drawPoint(const Vertex& v, const Color& c)
 {
 	glColor4f(c.r, c.g, c.b, c.a);
 	glBegin(GL_POINTS);
@@ -157,7 +157,7 @@ VOID VideoDevice::drawPoint(const Vertex& v, const Color& c)
 	glEnd();
 }
 
-VOID VideoDevice::drawLine(const Vertex& v0, const Vertex& v1, const Color& c)
+void VideoDevice::drawLine(const Vertex& v0, const Vertex& v1, const Color& c)
 {
 	glBegin(GL_LINES);
 
@@ -169,7 +169,7 @@ VOID VideoDevice::drawLine(const Vertex& v0, const Vertex& v1, const Color& c)
 	glEnd();
 }
 
-VOID VideoDevice::drawLine(const Vertex& v0, const Color& c0, const Vertex& v1, const Color& c1)
+void VideoDevice::drawLine(const Vertex& v0, const Color& c0, const Vertex& v1, const Color& c1)
 {
 	glBegin(GL_LINES);
 
@@ -182,7 +182,7 @@ VOID VideoDevice::drawLine(const Vertex& v0, const Color& c0, const Vertex& v1, 
 	glEnd();
 }
 
-VOID VideoDevice::drawWireTriangle(const Vertex& v0, const Vertex& v1, const Vertex& v2, const Color& c)
+void VideoDevice::drawWireTriangle(const Vertex& v0, const Vertex& v1, const Vertex& v2, const Color& c)
 {
 	glBegin(GL_LINE_LOOP);
 
@@ -195,7 +195,7 @@ VOID VideoDevice::drawWireTriangle(const Vertex& v0, const Vertex& v1, const Ver
 	glEnd();
 }
 
-VOID VideoDevice::drawWireTriangle(const Vertex& v0, const Color& c0, const Vertex& v1, const Color& c1, const Vertex& v2, const Color& c2)
+void VideoDevice::drawWireTriangle(const Vertex& v0, const Color& c0, const Vertex& v1, const Color& c1, const Vertex& v2, const Color& c2)
 {
 	glBegin(GL_LINE_LOOP);
 
@@ -211,7 +211,7 @@ VOID VideoDevice::drawWireTriangle(const Vertex& v0, const Color& c0, const Vert
 	glEnd();
 }
 
-VOID VideoDevice::drawWireRectangle(const Vertex& v0, const Vertex& v1, const Vertex& v2, const Vertex& v3, const Color& c)
+void VideoDevice::drawWireRectangle(const Vertex& v0, const Vertex& v1, const Vertex& v2, const Vertex& v3, const Color& c)
 {
 	glBegin(GL_LINE);
 
@@ -225,7 +225,7 @@ VOID VideoDevice::drawWireRectangle(const Vertex& v0, const Vertex& v1, const Ve
 	glEnd();
 }
 
-VOID VideoDevice::drawWireRectangle(const Vertex& v0, const Color& c0, const Vertex& v1, const Color& c1, const Vertex& v2, const Color& c2, const Vertex& v3, const Color& c3)
+void VideoDevice::drawWireRectangle(const Vertex& v0, const Color& c0, const Vertex& v1, const Color& c1, const Vertex& v2, const Color& c2, const Vertex& v3, const Color& c3)
 {
 	glBegin(GL_LINES);
 
@@ -244,11 +244,11 @@ VOID VideoDevice::drawWireRectangle(const Vertex& v0, const Color& c0, const Ver
 	glEnd();
 }
 
-VOID VideoDevice::drawWireCircle(const Vertex& center, f32 radius, const Color& c)
+void VideoDevice::drawWireCircle(const Vertex& center, f32 radius, const Color& c)
 {
 }
 
-VOID VideoDevice::drawSolidTriangle(const Vertex& v0, const Vertex& v1, const Vertex& v2, const Color& c)
+void VideoDevice::drawSolidTriangle(const Vertex& v0, const Vertex& v1, const Vertex& v2, const Color& c)
 {
 	glBegin(GL_TRIANGLES);
 
@@ -264,7 +264,7 @@ VOID VideoDevice::drawSolidTriangle(const Vertex& v0, const Vertex& v1, const Ve
 	glEnd();
 }
 
-VOID VideoDevice::drawSolidTriangle(const Vertex& v0, const Color& c0, const Vertex& v1, const Color& c1, const Vertex& v2, const Color& c2)
+void VideoDevice::drawSolidTriangle(const Vertex& v0, const Color& c0, const Vertex& v1, const Color& c1, const Vertex& v2, const Color& c2)
 {
 	glBegin(GL_TRIANGLES);
 
@@ -280,7 +280,7 @@ VOID VideoDevice::drawSolidTriangle(const Vertex& v0, const Color& c0, const Ver
 	glEnd();
 }
 
-VOID VideoDevice::drawSolidRectangle(const Vertex& v0, const Vertex& v1, const Vertex& v2, const Vertex& v3, const Color& c)
+void VideoDevice::drawSolidRectangle(const Vertex& v0, const Vertex& v1, const Vertex& v2, const Vertex& v3, const Color& c)
 {
 	glBegin(GL_QUADS);
 
@@ -294,7 +294,7 @@ VOID VideoDevice::drawSolidRectangle(const Vertex& v0, const Vertex& v1, const V
 	glEnd();
 }
 
-VOID VideoDevice::drawSolidRectangle(const Vertex& v0, const Color& c0, const Vertex& v1, const Color& c1, const Vertex& v2, const Color& c2, const Vertex& v3, const Color& c3)
+void VideoDevice::drawSolidRectangle(const Vertex& v0, const Color& c0, const Vertex& v1, const Color& c1, const Vertex& v2, const Color& c2, const Vertex& v3, const Color& c3)
 {
 	glBegin(GL_QUADS);
 
@@ -313,18 +313,18 @@ VOID VideoDevice::drawSolidRectangle(const Vertex& v0, const Color& c0, const Ve
 	glEnd();
 }
 
-VOID VideoDevice::drawSolidCircle(const Vertex& center, f32 radius, const Color& c)
+void VideoDevice::drawSolidCircle(const Vertex& center, f32 radius, const Color& c)
 {
 }
 
-VOID VideoDevice::drawPrimitive(u32 primitive, const Vertex* vertices, const Color& c, u32 count)
+void VideoDevice::drawPrimitive(u32 primitive, const Vertex* vertices, const Color& c, u32 count)
 {
 	glVertexPointer(2, GL_FLOAT, 0, vertices);
 
 	glDrawArrays(primitive, 0, count);
 }
 
-VOID VideoDevice::drawPrimitive(u32 primitive, const Vertex* vertices, const Color* colors, u32 count)
+void VideoDevice::drawPrimitive(u32 primitive, const Vertex* vertices, const Color* colors, u32 count)
 {
 	glVertexPointer(2, GL_FLOAT, 0, vertices);
 	glColorPointer(4, GL_FLOAT, 0, colors);

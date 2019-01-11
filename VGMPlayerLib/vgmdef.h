@@ -3,8 +3,7 @@
 
 #include <windows.h>
 
-//typedef char boolean;
-//typedef void VOID;
+//typedef unsigned char boolean;
 typedef signed long long s64;
 typedef signed int s32;
 typedef signed short s16;
@@ -15,7 +14,7 @@ typedef unsigned short u16;
 typedef unsigned char u8;
 typedef float f32;
 typedef double f64;
-#define True -1
+#define True 1
 #define False 0
 
 #define vgm_log printf

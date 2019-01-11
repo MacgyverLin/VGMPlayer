@@ -36,7 +36,7 @@ VGMFile::~VGMFile()
 	}
 }
 
-BOOL VGMFile::onOpen()
+boolean VGMFile::onOpen()
 {
 	bool isvgz = (impl->path.find(".vgz") != -1);
 	bool isvgm = (impl->path.find(".vgm") != -1);
@@ -100,12 +100,12 @@ void VGMFile::onResume()
 {
 }
 
-BOOL VGMFile::onUpdate()
+boolean VGMFile::onUpdate()
 {
 	return true;
 }
 
-s32 VGMFile::onRead(VOID *buffer, u32 size)
+s32 VGMFile::onRead(void *buffer, u32 size)
 {
 	if(impl->gzFile)
 	{

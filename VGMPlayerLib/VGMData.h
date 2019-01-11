@@ -81,29 +81,29 @@ enum VGMCommand
 class VGMHeader
 {
 public:
-	CHAR ID[4];									// file identification (0x56 0x67 0x6d 0x20)
+	s8 ID[4];								// file identification (0x56 0x67 0x6d 0x20)
 	u32 EOFOffset;							// Relative offset to end of file (i.e. file length - 4). This is mainly used to find the next track when concatenating player stubs and multiple files.
-	u32 version;								// Version number in BCD-Code. e.g. Version 1.70 is stored as 0x00000171. This is used for backwards compatibility in players, and defines which header values are valid.
+	u32 version;							// Version number in BCD-Code. e.g. Version 1.70 is stored as 0x00000171. This is used for backwards compatibility in players, and defines which header values are valid.
 	u32 SN76489Clock;						// Input clock rate in Hz for the SN76489 PSG chip.A typical value is 3579545. It should be 0 if there is no PSG chip used.
-												// Note: Bit 31 (0x80000000) is used on combination with the dual-chip-bit to indicate that this is a T6W28. (PSG variant used in Neo Geo Pocket)
-	u32 YM2413Clock;							// Input clock rate in Hz for the YM2413 chip. A typical value is 3579545.
-												// It should be 0 if there is no YM2413 chip used.
+											// Note: Bit 31 (0x80000000) is used on combination with the dual-chip-bit to indicate that this is a T6W28. (PSG variant used in Neo Geo Pocket)
+	u32 YM2413Clock;						// Input clock rate in Hz for the YM2413 chip. A typical value is 3579545.
+											// It should be 0 if there is no YM2413 chip used.
 	u32 GD3Offset;							// Relative offset to GD3 tag. 0 if no GD3 tag.GD3 tags are descriptive tags similar in use to ID3 tags in MP3 files.See the GD3 specification for more details.The GD3 tag is usually stored immediately after the VGM data.
 	u32 totalSamples;						// Total of all wait values in the file.
 	u32 loopOffset;							// Relative offset to loop point, or 0 if no loop.For example, if the data for the one - off intro to a song was in bytes 0x0040 - 0x3FFF of the file, but the main looping section started at 0x4000, this would contain the value 0x4000 - 0x1C = 0x00003FE4.
-	u32 loopSamples;							// Number of samples in one loop, or 0 if there is no loop.Total of all wait values between the loop point and the end of the file.
+	u32 loopSamples;						// Number of samples in one loop, or 0 if there is no loop.Total of all wait values between the loop point and the end of the file.
 
 	// VGM 1.01 additions:
 	u32 Rate;								// Rate of recording in Hz, used for rate scaling on playback.
-												// It is typically 50 for PAL systems and 60 for NTSC systems.
-												// It should be set to zero if rate scaling is not appropriate - for example, if the game adjusts its music engine for the system's speed. VGM 1.00 files will have a value of 0.
+											// It is typically 50 for PAL systems and 60 for NTSC systems.
+											// It should be set to zero if rate scaling is not appropriate - for example, if the game adjusts its music engine for the system's speed. VGM 1.00 files will have a value of 0.
 
 	// VGM 1.10 additions:
-	u16 SN76489Feedback;						// The white noise feedback pattern for the SN76489 PSG.Known values are :
-												// 0x0009	Sega Master System 2 / Game Gear / Mega Drive(SN76489 / SN76496 integrated into Sega VDP chip)
-												// 0x0003	Sega Computer 3000H, BBC Micro(SN76489AN)
-												// 0x0006	SN76494, SN76496
-												// For version 1.01 and earlier files, the feedback pattern should be assumed to be 0x0009. If the PSG is not used then this may be omitted(left at zero).
+	u16 SN76489Feedback;					// The white noise feedback pattern for the SN76489 PSG.Known values are :
+											// 0x0009	Sega Master System 2 / Game Gear / Mega Drive(SN76489 / SN76496 integrated into Sega VDP chip)
+											// 0x0003	Sega Computer 3000H, BBC Micro(SN76489AN)
+											// 0x0006	SN76494, SN76496
+											// For version 1.01 and earlier files, the feedback pattern should be assumed to be 0x0009. If the PSG is not used then this may be omitted(left at zero).
 
 	u8 SN76489ShiftRegisterWidth;			// SN76489 shift register width
 												// The noise feedback shift register width, in bits.Known values are :
@@ -364,8 +364,8 @@ public:
 	class PlayInfo
 	{
 	public:
-		BOOL paused;
-		BOOL playing;
+		boolean paused;
+		boolean playing;
 		s32 channels;
 		s32 bitPerSamples;
 		s32 sampleRate;
@@ -394,23 +394,23 @@ public:
 		vector<s32> samplesR;
 		vector<OutputSample> outputSamples;
 		
-		BOOL needQueueOutputSamples;
+		boolean needQueueOutputSamples;
 	};
 	VGMData(s32 channels_, s32 bitPerSample_, s32 sampleRate_);
 	virtual ~VGMData();
 
 	u32 getVersion();
 
-	BOOL open();
+	boolean open();
 	void close();
 	void play();
 	void stop();
 	void pause();
 	void resume();
-	BOOL update();
+	boolean update();
 
-	BOOL isPlaying();
-	BOOL isPaused();
+	boolean isPlaying();
+	boolean isPaused();
 
 	void requestUpdateData();
 
@@ -418,18 +418,18 @@ public:
 	const VGMData::PlayInfo& getPlayInfo() const;
 	const VGMData::BufferInfo& getBufferInfo() const;
 protected:
-	virtual s32 read(VOID *buffer, u32 size);
+	virtual s32 read(void *buffer, u32 size);
 	virtual s32 seekSet(u32 size);
 	virtual s32 seekCur(u32 size);
 
-	virtual BOOL onOpen() = 0;
+	virtual boolean onOpen() = 0;
 	virtual void onClose() = 0;
 	virtual void onPlay() = 0;
 	virtual void onStop() = 0;
 	virtual void onPause() = 0;
 	virtual void onResume() = 0;
-	virtual BOOL onUpdate() = 0;
-	virtual s32 onRead(VOID *buffer, u32 size) = 0;
+	virtual boolean onUpdate() = 0;
+	virtual s32 onRead(void *buffer, u32 size) = 0;
 	virtual s32 onSeekSet(u32 size) = 0;
 	virtual s32 onSeekCur(u32 size) = 0;
 
@@ -450,7 +450,7 @@ protected:
 	PlayInfo playInfo;
 	BufferInfo bufferInfo;
 
-	BOOL updateDataRequest;
+	boolean updateDataRequest;
 	u32 updateSampleCounts;
 private:
 };
