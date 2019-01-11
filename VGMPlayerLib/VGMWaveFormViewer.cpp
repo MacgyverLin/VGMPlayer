@@ -1,7 +1,9 @@
 #include "VGMWaveFormViewer.h"
-#include "FFT.h"
+#ifdef STM32
+#else
 #include <GL/glu.h>
 #include <GL/gl.h>
+#endif
 
 VGMWaveFormViewer::VGMWaveFormViewer(const string& name_, u32 x_, u32 y_, u32 width_, u32 height_, const Skin& skin_)
 : VGMDataObverser()
@@ -77,6 +79,8 @@ void VGMWaveFormViewer::onNotifyUpdate(Obserable& observable)
 
 		videoDevice.clear(skin.bgColor);
 
+#ifdef STM32
+#else
 		int startX = 0;
 		int endX = VGM_SAMPLE_COUNT; //sampleCount;
 		int divX = 10;
@@ -84,13 +88,16 @@ void VGMWaveFormViewer::onNotifyUpdate(Obserable& observable)
 		int startY = -32767; //sampleCount/2;
 		int endY = 32768; //sampleCount;
 		int divY = 10;
-
+		
 		glMatrixMode(GL_PROJECTION);
 		glLoadIdentity();
 		glPushMatrix();
 		gluOrtho2D(startX, endX, startY, endY);
 		glMatrixMode(GL_MODELVIEW);
-
+#endif
+		
+#ifdef STM32
+#else
 		glViewport(0, 0, width, height / 2);
 
 		glBlendFunc(GL_ONE, GL_ONE);
@@ -111,7 +118,10 @@ void VGMWaveFormViewer::onNotifyUpdate(Obserable& observable)
 			s32 y1 = bufferInfo.outputSamples[i + 3].l;
 			videoDevice.drawLine(Vertex(i, y0), Vertex(i + 3, y1), skin.leftColor);
 		}
-
+#endif
+		
+#ifdef STM32
+#else
 		glViewport(0, height / 2, width, height / 2);
 
 		videoDevice.drawLine(Vertex(startX, 0), Vertex(endX, 0), skin.gridColor);
@@ -131,8 +141,12 @@ void VGMWaveFormViewer::onNotifyUpdate(Obserable& observable)
 			s32 y1 = bufferInfo.outputSamples[i + 3].r;
 			videoDevice.drawLine(Vertex(i, y0), Vertex(i + 3, y1), skin.rightColor);
 		}
+#endif		
 
+#ifdef STM32
+#else
 		videoDevice.flush();
 		glPopMatrix();
+#endif
 	}
 }

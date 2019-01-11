@@ -1,108 +1,17 @@
-﻿#include "AudioDevice.h"
-#include "assert.h"
+#include "AudioDevice.h"
+#ifdef STM32
+#else		
 #include <AL/al.h>
 #include <AL/alc.h>
 #include <vector>
+#endif
 using namespace std;
 
-#ifdef RASPBERRY_PI
-
 class AudioDeviceImpl
 {
 public:
-	boolean			playing;
-	
-	f32			volume;
-	f32			playRate;
-};
-
-AudioDevice::AudioDevice()
-{
-	impl = new AudioDeviceImpl();
-
-	impl->playing = FALSE;
-
-	impl->playRate = 1.0;
-	impl->volume = 1.0;
-}
-
-AudioDevice::~AudioDevice()
-{
-	if (impl)
-	{
-		delete impl;
-		impl = 0;
-	}
-}
-
-boolean AudioDevice::open(s32 channels_, s32 bitsPerSample_, s32 sampleRate_, s32 bufferCount_)
-{
-	return true;
-}
-
-void AudioDevice::close()
-{
-}
-
-s32 AudioDevice::play()
-{
-	impl->playing = true;
-
-	return -1;
-}
-
-s32 AudioDevice::stop()
-{
-	impl->playing = false;
-
-	return -1;
-}
-
-s32 AudioDevice::getDeviceState()
-{
-	return -1;
-}
-
-s32 AudioDevice::update()
-{
-	return -1;
-}
-
-s32 AudioDevice::queue(void* data_, int dataSize_)
-{
-	return -1;
-}
-
-s32 AudioDevice::getQueued()
-{
-	return -1;
-}
-
-void AudioDevice::setVolume(f32 volume_)
-{
-	impl->volume = volume_;
-}
-
-f32 AudioDevice::getVolume()
-{
-	return impl->volume;
-}
-
-void AudioDevice::setPlayRate(f32 playRate_)
-{
-	impl->playRate = playRate_;
-}
-
-f32 AudioDevice::getPlayRate()
-{
-	return impl->playRate;
-}
-
-#else
-
-class AudioDeviceImpl
-{
-public:
+#ifdef STM32
+#else			
 	ALCcontext*		context;
 	ALCdevice*		device;
 	ALuint			outSource;
@@ -110,6 +19,7 @@ public:
 	ALint			queuedBuffer;
 
 	vector<ALuint>	sndBuffers;
+#endif
 	s32			channels;
 	s32			bitsPerSample;
 	s32			sampleRate;
@@ -136,6 +46,9 @@ AudioDevice::~AudioDevice()
 
 boolean AudioDevice::open(s32 channels_, s32 bitsPerSample_, s32 sampleRate_, s32 bufferCount_)
 {
+#ifdef STM32
+	return true;
+#else		
 	ALuint error = 0;
 
 	impl->context = 0;
@@ -176,19 +89,17 @@ boolean AudioDevice::open(s32 channels_, s32 bitsPerSample_, s32 sampleRate_, s3
 	if (error != AL_NO_ERROR)
 	{
 		printf("error alGenBuffers %x \n", error);
-		// printf("error alGenBuffers %x : %s\n", ret,alutGetErrorString (ret));
-		//AL_ILLEGAL_ENUM
-		//AL_INVALID_VALUE
-		//#define AL_ILLEGAL_COMMAND                        0xA004
-		//#define AL_INVALID_OPERATION                      0xA004
 		return false;
 	}
 
 	return true;
+#endif
 }
 
 void AudioDevice::close()
 {
+#ifdef STM32
+#else	
 	if (impl->sndBuffers.size() != 0)
 	{
 		alDeleteBuffers(impl->sndBuffers.size(), &impl->sndBuffers[0]);
@@ -213,10 +124,14 @@ void AudioDevice::close()
 		alcDestroyContext(impl->context);
 		impl->context = NULL;
 	}
+#endif
 }
 
 s32 AudioDevice::play()
 {
+#ifdef STM32
+	return -1;
+#else	
 	alSourcePlay(impl->outSource);
 
 	ALuint error;
@@ -228,10 +143,14 @@ s32 AudioDevice::play()
 	}
 
 	return -1;
+#endif
 }
 
 s32 AudioDevice::stop()
 {
+#ifdef STM32
+	return -1;
+#else	
 	alSourceStop(impl->outSource);
 
 	ALuint error;
@@ -243,10 +162,14 @@ s32 AudioDevice::stop()
 	}
 
 	return -1;
+#endif	
 }
 
 s32 AudioDevice::getDeviceState()
 {
+#ifdef STM32
+	return 3;
+#else	
 	int sourceState;
 	alGetSourcei(impl->outSource, AL_SOURCE_STATE, &sourceState);
 
@@ -266,10 +189,14 @@ s32 AudioDevice::getDeviceState()
 		return 3;
 		break;
 	};
+#endif
 }
 
 s32 AudioDevice::update()
 {
+#ifdef STM32
+	return -1;
+#else
 	int processed;
 	alGetSourcei(impl->outSource, AL_BUFFERS_PROCESSED, &processed);
 	alGetSourcei(impl->outSource, AL_BUFFERS_QUEUED, &impl->queuedBuffer);
@@ -297,10 +224,14 @@ s32 AudioDevice::update()
 	}
 
 	return -1;
+#endif
 }
 
 s32 AudioDevice::queue(void* data_, int dataSize_)
 {
+#ifdef STM32
+	return -1;
+#else	
 	ALenum format = 0;
 	ALuint error = 0;
 
@@ -379,18 +310,25 @@ s32 AudioDevice::queue(void* data_, int dataSize_)
 	//WP = (WP + 1) % sndBuffers.size();
 
 	return -1;
+#endif
 }
 
 s32 AudioDevice::getQueued()
 {
+#ifdef STM32
+	return 0;
+#else	
 	return impl->queuedBuffer;
+#endif
 }
 
 void AudioDevice::setVolume(f32 volume_)
 {
 	impl->volume = volume_;
-
+#ifdef STM32
+#else	
 	alSourcef(impl->outSource, AL_GAIN, impl->volume);
+#endif
 }
 
 f32 AudioDevice::getVolume()
@@ -401,12 +339,13 @@ f32 AudioDevice::getVolume()
 void AudioDevice::setPlayRate(f32 playRate_)
 {
 	impl->playRate = playRate_;
-
+#ifdef STM32
+#else	
 	alSourcef(impl->outSource, AL_PITCH, impl->playRate);
+#endif
 }
 
 f32 AudioDevice::getPlayRate()
 {
 	return impl->playRate;
 }
-#endif

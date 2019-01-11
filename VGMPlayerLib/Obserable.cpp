@@ -21,64 +21,72 @@ void Obserable::detach(Observer& observer)
 
 void Obserable::notifySomething()
 {
-	for (Observer *o : observers)
+	list<Observer *>::iterator itr;
+	for(itr=observers.begin(); itr!=observers.end(); itr++)
 	{
-		o->onNotifySomething(*this);
+		(*itr)->onNotifySomething(*this);
 	}
 }
 
 void Obserable::notifyOpen()
 {
-	for (Observer *o : observers)
+	list<Observer *>::iterator itr;
+	for(itr=observers.begin(); itr!=observers.end(); itr++)
 	{
-		o->onNotifyOpen(*this);
+		(*itr)->onNotifyOpen(*this);
 	}
 }
 
 void Obserable::notifyClose()
 {
-	for (Observer *o : observers)
+	list<Observer *>::iterator itr;
+	for(itr=observers.begin(); itr!=observers.end(); itr++)
 	{
-		o->onNotifyClose(*this);
+		(*itr)->onNotifyClose(*this);
 	}
 }
 
 void Obserable::notifyPlay()
 {
-	for (Observer *o : observers)
+	list<Observer *>::iterator itr;
+	for(itr=observers.begin(); itr!=observers.end(); itr++)
 	{
-		o->onNotifyPlay(*this);
+		(*itr)->onNotifyPlay(*this);
 	}
 }
 
 void Obserable::notifyStop()
 {
-	for (Observer *o : observers)
+	list<Observer *>::iterator itr;
+	for(itr=observers.begin(); itr!=observers.end(); itr++)
 	{
-		o->onNotifyStop(*this);
+		(*itr)->onNotifyStop(*this);
 	}
 }
 
 void Obserable::notifyPause()
 {
-	for (Observer *o : observers)
+	list<Observer *>::iterator itr;
+	for(itr=observers.begin(); itr!=observers.end(); itr++)
 	{
-		o->onNotifyPause(*this);
+		(*itr)->onNotifyPause(*this);
 	}
 }
 
 void Obserable::notifyResume()
 {
-	for (Observer *o : observers)
+	list<Observer *>::iterator itr;
+	for(itr=observers.begin(); itr!=observers.end(); itr++)
 	{
-		o->onNotifyResume(*this);
+		(*itr)->onNotifyResume(*this);
 	}
 }
 
 void Obserable::notifyUpdate()
 {
-	for (Observer *o : observers)
+	list<Observer *>::iterator itr;
+	for(itr=observers.begin(); itr!=observers.end(); itr++)
 	{
-		o->onNotifyUpdate(*this);
+		(*itr)->onNotifyUpdate(*this);
 	}
 }

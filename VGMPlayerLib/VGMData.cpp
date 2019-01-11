@@ -1,9 +1,6 @@
-#include <assert.h>
-#include <stdlib.h>
-#include <stdio.h>
-#include <string.h>
-#include <string>
 #include "VGMData.h"
+#ifdef STM32
+#else
 #include "SN76489.h"
 #include "YM2612.h"
 #include "YM2151.h"
@@ -11,15 +8,8 @@
 #include "NESAPU.h"
 #include "NESFDSAPU.h"
 #include "HuC6280.h"
-using namespace std;
-
-#define DUMP_YM2612
-#define DUMP_SN76489
-#define DUMP_COUNT 700000
-#if defined(DUMP_YM2612) || defined(DUMP_SN76489)
-FILE *fptr = 0;
-int length = 0;
 #endif
+using namespace std;
 
 VGMData::VGMData(s32 channels_, s32 bitPerSample_, s32 sampleRate_)
 	: Obserable()
@@ -140,17 +130,11 @@ boolean VGMData::open()
 	}
 
 	u32 byteRemained = dataStart - 0x38;
-	if (byteRemained >= 0)
+	if (byteRemained > 0)
 		read((u8*)(&header) + 0x38, byteRemained);
 
-#if defined(DUMP_YM2612) || defined(DUMP_SN76489)
-	length = 0;
-
-	fptr = fopen("MusicDump.h", "wt");
-	fprintf(fptr, "#ifndef _MUSICDUMP_h_\n");
-	fprintf(fptr, "#define _MUSICDUMP_h_\n");
-	fprintf(fptr, "const char musicDump[] = {\n");
-#endif
+#ifdef STM32
+#else	
 	if (header.YM2612Clock)
 	{
 		YM2612_Initialize(0, header.YM2612Clock, playInfo.sampleRate);
@@ -177,26 +161,21 @@ boolean VGMData::open()
 	{
 		HUC6280_Initialize(0, header.HuC6280Clock, playInfo.sampleRate);
 	}
+#endif
 
 	return true;
 }
 
 void VGMData::close()
 {
-#if defined(DUMP_YM2612) || defined(DUMP_SN76489)
-	fprintf(fptr, "};\n");
-	fprintf(fptr, "#endif\n");
-	fclose(fptr);
-	fptr = 0;
-#endif
-
+#ifdef STM32
+#else	
 	if (header.YM2612Clock)
 	{
 		YM2612_Shutdown(0);
 	}
 	if (header.SN76489Clock)
 	{
-
 		SN76489_Shutdown();
 	}
 	if (header.YM2151Clock)
@@ -217,7 +196,7 @@ void VGMData::close()
 	{
 		HUC6280_Shutdown(0);
 	}
-
+#endif
 	onClose();
 }
 
@@ -292,6 +271,8 @@ u32 VGMData::updateSamples(u32 updateSampleCounts)
 	sampleBuffers[1] = &bufferInfo.samplesR[bufferInfo.sampleIdx];
 
 	assert(bufferInfo.samplesL.size() == VGM_SAMPLE_COUNT);
+#ifdef STM32
+#else
 	if (header.YM2612Clock)
 		YM2612_Update(0, sampleBuffers, updateSampleCounts);
 	if (header.SN76489Clock)
@@ -308,7 +289,7 @@ u32 VGMData::updateSamples(u32 updateSampleCounts)
 	}
 	if (header.HuC6280Clock)
 		HUC6280_Update(0, sampleBuffers, updateSampleCounts);
-
+#endif
 	bufferInfo.sampleIdx = bufferInfo.sampleIdx + updateSampleCounts;	// updated samples, sampleIdx+
 	assert(bufferInfo.sampleIdx <= VGM_SAMPLE_COUNT);
 	if (bufferInfo.sampleIdx == VGM_SAMPLE_COUNT)
@@ -328,6 +309,8 @@ void VGMData::handleEndOfSound()
 
 void VGMData::handleK053260ROM(s32 skipByte0x66, s32 blockType, s32 blockSize)
 {
+#ifdef STM32
+#else	
 	unsigned int entireRomSize;
 	read(&entireRomSize, sizeof(entireRomSize));
 
@@ -340,6 +323,7 @@ void VGMData::handleK053260ROM(s32 skipByte0x66, s32 blockType, s32 blockSize)
 
 	// k053260_write_rom(0, entireRomSize, startAddress, blockSize - 8, romData);
 	K053260_SetROM(0, entireRomSize, startAddress, &romData[0], blockSize - 8);
+#endif
 }
 
 void VGMData::handleDataBlocks()
@@ -372,29 +356,6 @@ boolean VGMData::update()
 		{
 			s32 nnnn = updateSamples(updateSampleCounts);
 			updateSampleCounts -= nnnn;
-
-#if defined(DUMP_YM2612) || defined(DUMP_SN76489)
-			if (nnnn >= 256)
-			{
-				fprintf(fptr, "0x05, 0x%02x, 0x%02x,\n", (nnnn & 0xff), (nnnn >> 8) & 0xff);
-				length += 3;
-				if (length > DUMP_COUNT)
-				{
-					fprintf(fptr, "0x00\n");
-					return false;
-				}
-			}
-			else if (nnnn >= 0)
-			{
-				fprintf(fptr, "0x04, 0x%02x,\n", (nnnn & 0xff));
-				length += 2;
-				if (length > DUMP_COUNT)
-				{
-					fprintf(fptr, "0x00\n");
-					return false;
-				}
-			}
-#endif
 		}
 		else
 		{
@@ -422,45 +383,31 @@ boolean VGMData::update()
 			{
 			case YM2612_PORT0_WRITE:
 				read(&aa, sizeof(aa));
+				read(&dd, sizeof(dd));			
+#ifdef STM32
+#else			
 				YM2612_WriteRegister(0, 0, aa);
-
-				read(&dd, sizeof(dd));
 				YM2612_WriteRegister(0, 1, dd);
-
-#if defined(DUMP_YM2612)
-				fprintf(fptr, "0x01, 0x%02x, 0x%02x, \n", aa, dd);
-				length += 3;
-				if (length > DUMP_COUNT)
-				{
-					fprintf(fptr, "0x00\n");
-					return false;
-				}
 #endif
 				break;
 
 			case YM2612_PORT1_WRITE:
 				read(&aa, sizeof(aa));
-				YM2612_WriteRegister(0, 2, aa);
-
 				read(&dd, sizeof(dd));
+#ifdef STM32
+#else						
+				YM2612_WriteRegister(0, 2, aa);
 				YM2612_WriteRegister(0, 3, dd);
-
-#if defined(DUMP_YM2612)
-				fprintf(fptr, "0x02, 0x%02x, 0x%02x, \n", aa, dd);
-				length += 3;
-				if (length > DUMP_COUNT)
-				{
-					fprintf(fptr, "0x00\n");
-					return false;
-				}
 #endif
 				break;
 
 			case YM2151_WRITE:
 				read(&aa, sizeof(aa));
 				read(&dd, sizeof(dd));
+#ifdef STM32
+#else				
 				YM2151_WriteRegister(0, aa, dd);
-
+#endif
 				break;
 
 			case YM2203_WRITE:
@@ -472,64 +419,73 @@ boolean VGMData::update()
 
 			case GAME_GEAR_PSG_PORT6_WRITE:
 				read(&dd, sizeof(dd));
+#ifdef STM32
+#else				
 				SN76489_WriteRegister(0, -1, dd);
-
+#endif
 				break;
 
 			case SN76489_WRITE:
 				read(&dd, sizeof(dd));
+#ifdef STM32
+#else	
 				SN76489_WriteRegister(0, -1, dd);
-#ifdef DUMP_SN76489
-				fprintf(fptr, "0x03, 0x%02x, \n", dd);
-				length += 2;
-				if (length > DUMP_COUNT)
-				{
-					fprintf(fptr, "0x00\n");
-					return false;
-				}
 #endif
 				break;
 
 			case UNKNOWN_CHIP_A5_WRITE:
 				read(&aa, sizeof(aa));
 				read(&dd, sizeof(dd));
-
+#ifdef STM32
+#else	
 				//UNKNOWN_CHIP_A5_WRITE_WriteRegister(0, aa, dd);
+#endif
 				break;
 
 			case K053260_WRITE:
 				read(&aa, sizeof(aa));
 				read(&dd, sizeof(dd));
-
+#ifdef STM32
+#else	
 				K053260_WriteRegister(0, aa, dd);
+#endif
 				break;
 
 			case NES_APU_WRITE:
 				read(&aa, sizeof(aa));
 				read(&dd, sizeof(dd));
-
+#ifdef STM32
+#else	
 				NESAPU_WriteRegister(0, aa, dd);
 				NESFDSAPU_WriteRegister(0, aa, dd);
+#endif
 				break;
 
 			case OKIM6258_WRITE:
 				read(&aa, sizeof(aa));
 				read(&dd, sizeof(dd));
-
+#ifdef STM32
+#else	
 				// OKIM6258_WriteRegister(0, aa, dd);
+#endif
 				break;
 
 			case OKIM6295_WRITE:
 				read(&aa, sizeof(aa));
 				read(&dd, sizeof(dd));
-
+#ifdef STM32
+#else	
 				// OKIM6295_WriteRegister(0, aa, dd);
+#endif
 				break;
 
 			case HUC6280_WRITE:
 				read(&aa, sizeof(aa));
 				read(&dd, sizeof(dd));
+#ifdef STM32
+#else				
 				HUC6280_WriteRegister(0, aa, dd);
+#endif
 				break;
 
 			case DATA_BLOCKS:
@@ -573,42 +529,57 @@ boolean VGMData::update()
 				read(&tt, sizeof(tt));
 				read(&pp, sizeof(pp));
 				read(&cc, sizeof(cc));
+#ifdef STM32
+#else				
 				//DACSetUpStreamControl(ss, tt, pp, cc);
+#endif
 				break;
 			case DAC_SET_STREAM_DATA:
 				read(&ss, sizeof(ss));
 				read(&dd, sizeof(dd));
 				read(&ll, sizeof(ll));
 				read(&bb, sizeof(bb));
+#ifdef STM32
+#else				
 				//DACSetStreamData(ss, dd, ll, bb);
+#endif
 				break;
 			case DAC_SET_STREAM_FREQUENCY:
 				read(&ss, sizeof(ss));
 				read(&ffffffff, sizeof(ffffffff));
+#ifdef STM32
+#else				
 				//DACSetStreamFrequency(ss, ffffffff);
+#endif
 				break;
 			case DAC_START_STREAM:
 				read(&ss, sizeof(ss));
 				read(&aaaaaaaa, sizeof(aaaaaaaa));
 				read(&mm, sizeof(mm));
 				read(&llllllll, sizeof(llllllll));
+#ifdef STM32
+#else				
 				//DACStartStream(ss, aaaaaaaa, mm, llllllll);
+#endif
 				break;
 			case DAC_STOP_STREAM:
 				read(&ss, sizeof(ss));
+#ifdef STM32
+#else				
 				//DACStopStream(ss);
+#endif
 				break;
 			case DAC_START_STEAM_FAST:
 				read(&ss, sizeof(ss));
 				read(&bbbb, sizeof(bbbb));
 				read(&ff, sizeof(ff));
+#ifdef STM32
+#else				
 				//DACStartStreamFast(ss, bbbb, ff);
+#endif
 				break;
 
 			case END_OF_SOUND:
-#if defined(DUMP_YM2612) || defined(DUMP_SN76489)
-				fprintf(fptr, "0x00\n");
-#endif
 				handleEndOfSound();
 
 				if (header.loopOffset)
