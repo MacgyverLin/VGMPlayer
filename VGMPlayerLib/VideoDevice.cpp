@@ -84,7 +84,7 @@ VideoDevice::~VideoDevice()
 	}
 }
 
-BOOL VideoDevice::open(const string& name_, UINT32 x_, UINT32 y_, UINT32 width_, UINT32 height_)
+BOOL VideoDevice::open(const string& name_, u32 x_, u32 y_, u32 width_, u32 height_)
 {
 	// Create impl->window
 	impl->window = SDL_CreateWindow(name_.c_str(), x_, y_, width_, height_, SDL_WINDOW_OPENGL | SDL_WINDOW_SHOWN);
@@ -153,7 +153,7 @@ VOID VideoDevice::drawPoint(const Vertex& v, const Color& c)
 {
 	glColor4f(c.r, c.g, c.b, c.a);
 	glBegin(GL_POINTS);
-	glVertex2fv((FLOAT32*)&v);
+	glVertex2fv((f32*)&v);
 	glEnd();
 }
 
@@ -161,10 +161,10 @@ VOID VideoDevice::drawLine(const Vertex& v0, const Vertex& v1, const Color& c)
 {
 	glBegin(GL_LINES);
 
-	glColor4fv((FLOAT32*)&c);
+	glColor4fv((f32*)&c);
 
-	glVertex2fv((FLOAT32*)&v0);
-	glVertex2fv((FLOAT32*)&v1);
+	glVertex2fv((f32*)&v0);
+	glVertex2fv((f32*)&v1);
 
 	glEnd();
 }
@@ -173,11 +173,11 @@ VOID VideoDevice::drawLine(const Vertex& v0, const Color& c0, const Vertex& v1, 
 {
 	glBegin(GL_LINES);
 
-	glColor4fv((FLOAT32*)&c0);
-	glVertex2fv((FLOAT32*)&v0);
+	glColor4fv((f32*)&c0);
+	glVertex2fv((f32*)&v0);
 
-	glColor4fv((FLOAT32*)&c1);
-	glVertex2fv((FLOAT32*)&v1);
+	glColor4fv((f32*)&c1);
+	glVertex2fv((f32*)&v1);
 
 	glEnd();
 }
@@ -186,11 +186,11 @@ VOID VideoDevice::drawWireTriangle(const Vertex& v0, const Vertex& v1, const Ver
 {
 	glBegin(GL_LINE_LOOP);
 
-	glColor4fv((FLOAT32*)&c);
+	glColor4fv((f32*)&c);
 
-	glVertex2fv((FLOAT32*)&v0);
-	glVertex2fv((FLOAT32*)&v1);
-	glVertex2fv((FLOAT32*)&v2);
+	glVertex2fv((f32*)&v0);
+	glVertex2fv((f32*)&v1);
+	glVertex2fv((f32*)&v2);
 
 	glEnd();
 }
@@ -199,14 +199,14 @@ VOID VideoDevice::drawWireTriangle(const Vertex& v0, const Color& c0, const Vert
 {
 	glBegin(GL_LINE_LOOP);
 
-	glColor4fv((FLOAT32*)&c0);
-	glVertex2fv((FLOAT32*)&v0);
+	glColor4fv((f32*)&c0);
+	glVertex2fv((f32*)&v0);
 
-	glColor4fv((FLOAT32*)&c1);
-	glVertex2fv((FLOAT32*)&v1);
+	glColor4fv((f32*)&c1);
+	glVertex2fv((f32*)&v1);
 
-	glColor4fv((FLOAT32*)&c2);
-	glVertex2fv((FLOAT32*)&v2);
+	glColor4fv((f32*)&c2);
+	glVertex2fv((f32*)&v2);
 
 	glEnd();
 }
@@ -215,12 +215,12 @@ VOID VideoDevice::drawWireRectangle(const Vertex& v0, const Vertex& v1, const Ve
 {
 	glBegin(GL_LINE);
 
-	glColor4fv((FLOAT32*)&c);
+	glColor4fv((f32*)&c);
 
-	glVertex2fv((FLOAT32*)&v0);
-	glVertex2fv((FLOAT32*)&v1);
-	glVertex2fv((FLOAT32*)&v2);
-	glVertex2fv((FLOAT32*)&v3);
+	glVertex2fv((f32*)&v0);
+	glVertex2fv((f32*)&v1);
+	glVertex2fv((f32*)&v2);
+	glVertex2fv((f32*)&v3);
 
 	glEnd();
 }
@@ -229,22 +229,22 @@ VOID VideoDevice::drawWireRectangle(const Vertex& v0, const Color& c0, const Ver
 {
 	glBegin(GL_LINES);
 
-	glColor4fv((FLOAT32*)&c0);
-	glVertex2fv((FLOAT32*)&v0);
+	glColor4fv((f32*)&c0);
+	glVertex2fv((f32*)&v0);
 
-	glColor4fv((FLOAT32*)&c1);
-	glVertex2fv((FLOAT32*)&v1);
+	glColor4fv((f32*)&c1);
+	glVertex2fv((f32*)&v1);
 
-	glColor4fv((FLOAT32*)&c2);
-	glVertex2fv((FLOAT32*)&v2);
+	glColor4fv((f32*)&c2);
+	glVertex2fv((f32*)&v2);
 
-	glColor4fv((FLOAT32*)&c3);
-	glVertex2fv((FLOAT32*)&v3);
+	glColor4fv((f32*)&c3);
+	glVertex2fv((f32*)&v3);
 
 	glEnd();
 }
 
-VOID VideoDevice::drawWireCircle(const Vertex& center, FLOAT32 radius, const Color& c)
+VOID VideoDevice::drawWireCircle(const Vertex& center, f32 radius, const Color& c)
 {
 }
 
@@ -252,14 +252,14 @@ VOID VideoDevice::drawSolidTriangle(const Vertex& v0, const Vertex& v1, const Ve
 {
 	glBegin(GL_TRIANGLES);
 
-	glColor4fv((FLOAT32*)&c);
-	glVertex2fv((FLOAT32*)&v0);
+	glColor4fv((f32*)&c);
+	glVertex2fv((f32*)&v0);
 
-	glColor4fv((FLOAT32*)&c);
-	glVertex2fv((FLOAT32*)&v1);
+	glColor4fv((f32*)&c);
+	glVertex2fv((f32*)&v1);
 
-	glColor4fv((FLOAT32*)&c);
-	glVertex2fv((FLOAT32*)&v2);
+	glColor4fv((f32*)&c);
+	glVertex2fv((f32*)&v2);
 
 	glEnd();
 }
@@ -268,14 +268,14 @@ VOID VideoDevice::drawSolidTriangle(const Vertex& v0, const Color& c0, const Ver
 {
 	glBegin(GL_TRIANGLES);
 
-	glColor4fv((FLOAT32*)&c0);
-	glVertex2fv((FLOAT32*)&v0);
+	glColor4fv((f32*)&c0);
+	glVertex2fv((f32*)&v0);
 
-	glColor4fv((FLOAT32*)&c1);
-	glVertex2fv((FLOAT32*)&v1);
+	glColor4fv((f32*)&c1);
+	glVertex2fv((f32*)&v1);
 
-	glColor4fv((FLOAT32*)&c2);
-	glVertex2fv((FLOAT32*)&v2);
+	glColor4fv((f32*)&c2);
+	glVertex2fv((f32*)&v2);
 
 	glEnd();
 }
@@ -284,12 +284,12 @@ VOID VideoDevice::drawSolidRectangle(const Vertex& v0, const Vertex& v1, const V
 {
 	glBegin(GL_QUADS);
 
-	glColor4fv((FLOAT32*)&c);
+	glColor4fv((f32*)&c);
 
-	glVertex2fv((FLOAT32*)&v0);
-	glVertex2fv((FLOAT32*)&v1);
-	glVertex2fv((FLOAT32*)&v2);
-	glVertex2fv((FLOAT32*)&v3);
+	glVertex2fv((f32*)&v0);
+	glVertex2fv((f32*)&v1);
+	glVertex2fv((f32*)&v2);
+	glVertex2fv((f32*)&v3);
 
 	glEnd();
 }
@@ -298,33 +298,33 @@ VOID VideoDevice::drawSolidRectangle(const Vertex& v0, const Color& c0, const Ve
 {
 	glBegin(GL_QUADS);
 
-	glColor4fv((FLOAT32*)&c0);
-	glVertex2fv((FLOAT32*)&v0);
+	glColor4fv((f32*)&c0);
+	glVertex2fv((f32*)&v0);
 
-	glColor4fv((FLOAT32*)&c1);
-	glVertex2fv((FLOAT32*)&v1);
+	glColor4fv((f32*)&c1);
+	glVertex2fv((f32*)&v1);
 
-	glColor4fv((FLOAT32*)&c2);
-	glVertex2fv((FLOAT32*)&v2);
+	glColor4fv((f32*)&c2);
+	glVertex2fv((f32*)&v2);
 
-	glColor4fv((FLOAT32*)&c3);
-	glVertex2fv((FLOAT32*)&v3);
+	glColor4fv((f32*)&c3);
+	glVertex2fv((f32*)&v3);
 
 	glEnd();
 }
 
-VOID VideoDevice::drawSolidCircle(const Vertex& center, FLOAT32 radius, const Color& c)
+VOID VideoDevice::drawSolidCircle(const Vertex& center, f32 radius, const Color& c)
 {
 }
 
-VOID VideoDevice::drawPrimitive(UINT32 primitive, const Vertex* vertices, const Color& c, UINT32 count)
+VOID VideoDevice::drawPrimitive(u32 primitive, const Vertex* vertices, const Color& c, u32 count)
 {
 	glVertexPointer(2, GL_FLOAT, 0, vertices);
 
 	glDrawArrays(primitive, 0, count);
 }
 
-VOID VideoDevice::drawPrimitive(UINT32 primitive, const Vertex* vertices, const Color* colors, UINT32 count)
+VOID VideoDevice::drawPrimitive(u32 primitive, const Vertex* vertices, const Color* colors, u32 count)
 {
 	glVertexPointer(2, GL_FLOAT, 0, vertices);
 	glColorPointer(4, GL_FLOAT, 0, colors);

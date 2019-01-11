@@ -6,35 +6,35 @@
 #define MAXOUT 0x7fff
 #define MINOUT -0x8000
 
-static UINT32 nUpdateStep;
+static u32 nUpdateStep;
 
 typedef struct{
-	UINT32		rate;
-	UINT32		size;
-	UINT32		start;
-	UINT32		bank;
-	UINT32		volume;
-	INT32		play;
-	UINT32		pan;
-	UINT32		pos;
-	INT32		loop;
-	INT32		ppcm; /* packed PCM ( 4 bit signed ) */
-	INT32		ppcm_data;
+	u32		rate;
+	u32		size;
+	u32		start;
+	u32		bank;
+	u32		volume;
+	s32		play;
+	u32		pan;
+	u32		pos;
+	s32		loop;
+	s32		ppcm; /* packed PCM ( 4 bit signed ) */
+	s32		ppcm_data;
 }Channel;
 
 typedef struct {
-	INT32		mode;
-	INT32		regs[0x30];
-	UINT8		*rom;
-	INT32		rom_size;
-	UINT32		*delta_table;
+	s32		mode;
+	s32		regs[0x30];
+	u8		*rom;
+	s32		rom_size;
+	u32		*delta_table;
 	Channel		channels[4];
 }K053260;
 
 #define K053260_CHIPS_COUNT 2
 K053260 k053260Chips[K053260_CHIPS_COUNT];
 
-INT32 limit(INT32 val, INT32 max, INT32 min) {
+s32 limit(s32 val, s32 max, s32 min) {
 	if (val > max)
 		val = max;
 	else if (val < min)
@@ -43,21 +43,21 @@ INT32 limit(INT32 val, INT32 max, INT32 min) {
 	return val;
 }
 
-static void InitDeltaTable(UINT8 chipID, INT32 rate, INT32 clock) {
-	INT32		i;
-	double	base = (double)rate;
-	double	max = (double)(clock); /* Hz */
-	UINT32 val;
+static void InitDeltaTable(u8 chipID, s32 rate, s32 clock) {
+	s32		i;
+	f64	base = (f64)rate;
+	f64	max = (f64)(clock); /* Hz */
+	u32 val;
 	K053260* ic = &k053260Chips[chipID];
 
 	for (i = 0; i < 0x1000; i++) {
-		double v = (double)(0x1000 - i);
-		double target = (max) / v;
-		double fixed = (double)(1 << BASE_SHIFT);
+		f64 v = (f64)(0x1000 - i);
+		f64 target = (max) / v;
+		f64 fixed = (f64)(1 << BASE_SHIFT);
 
 		if (target && base) {
 			target = fixed / (base / target);
-			val = (UINT32)target;
+			val = (u32)target;
 			if (val == 0)
 				val = 1;
 		}
@@ -68,12 +68,12 @@ static void InitDeltaTable(UINT8 chipID, INT32 rate, INT32 clock) {
 	}
 }
 
-void check_bounds(UINT8 chipID, INT32 channel)
+void check_bounds(u8 chipID, s32 channel)
 {
 	K053260* ic = &k053260Chips[chipID];
 
-	INT32 channel_start = (ic->channels[channel].bank << 16) + ic->channels[channel].start;
-	INT32 channel_end = channel_start + ic->channels[channel].size - 1;
+	s32 channel_start = (ic->channels[channel].bank << 16) + ic->channels[channel].start;
+	s32 channel_end = channel_start + ic->channels[channel].size - 1;
 
 	if (channel_start > ic->rom_size) {
 		ic->channels[channel].play = 0;
@@ -86,15 +86,15 @@ void check_bounds(UINT8 chipID, INT32 channel)
 	}
 }
 
-INT32 K053260_Initialize(UINT8 chipID, UINT32 clock, UINT32 sampleRate)
+s32 K053260_Initialize(u8 chipID, u32 clock, u32 sampleRate)
 {
 	K053260* ic = &k053260Chips[chipID];
 	memset(ic, 0, sizeof(K053260));
 
-	INT32 rate = clock / 32;
-	INT32 i;
+	s32 rate = clock / 32;
+	s32 i;
 
-	nUpdateStep = (INT32)(((float)rate / sampleRate) * 32768);
+	nUpdateStep = (s32)(((f32)rate / sampleRate) * 32768);
 
 	ic->mode = 0;
 	ic->rom = 0;
@@ -105,7 +105,7 @@ INT32 K053260_Initialize(UINT8 chipID, UINT32 clock, UINT32 sampleRate)
 	for (i = 0; i < 0x30; i++)
 		ic->regs[i] = 0;
 
-	ic->delta_table = (UINT32*)malloc(0x1000 * sizeof(UINT32));
+	ic->delta_table = (u32*)malloc(0x1000 * sizeof(u32));
 
 	InitDeltaTable(chipID, rate, clock);
 
@@ -116,7 +116,7 @@ INT32 K053260_Initialize(UINT8 chipID, UINT32 clock, UINT32 sampleRate)
 	return -1;
 }
 
-void K053260_Shutdown(UINT8 chipID)
+void K053260_Shutdown(u8 chipID)
 {
 	K053260* ic = &k053260Chips[chipID];
 
@@ -135,11 +135,11 @@ void K053260_Shutdown(UINT8 chipID)
 	nUpdateStep = 0;
 }
 
-void K053260_Reset(UINT8 chipID)
+void K053260_Reset(u8 chipID)
 {
 	K053260* ic = &k053260Chips[chipID];
 
-	for (INT32 i = 0; i < 4; i++)
+	for (s32 i = 0; i < 4; i++)
 	{
 		ic->channels[i].rate = 0;
 		ic->channels[i].size = 0;
@@ -155,11 +155,11 @@ void K053260_Reset(UINT8 chipID)
 	}
 }
 
-void K053260_WriteRegister(UINT8 chipID, UINT32 address, UINT8 data)
+void K053260_WriteRegister(u8 chipID, u32 address, u8 data)
 {
-	INT32 i, t;
-	INT32 r = address;
-	INT32 v = data;
+	s32 i, t;
+	s32 r = address;
+	s32 v = data;
 	K053260* ic = &k053260Chips[chipID];
 
 	if (r > 0x2f) {
@@ -196,7 +196,7 @@ void K053260_WriteRegister(UINT8 chipID, UINT32 address, UINT8 data)
 
 	/* channel setup */
 	if (r < 0x28) {
-		INT32 channel = (r - 8) / 8;
+		s32 channel = (r - 8) / 8;
 
 		switch ((r - 8) & 0x07) {
 		case 0: /* sample rate low */
@@ -269,14 +269,14 @@ void K053260_WriteRegister(UINT8 chipID, UINT32 address, UINT8 data)
 	}
 }
 
-UINT8 K053260_ReadRegister(UINT8 chipID, UINT32 address)
+u8 K053260_ReadRegister(u8 chipID, u32 address)
 {
 	K053260* ic = &k053260Chips[chipID];
 
 	switch (address) {
 	case 0x29: /* channel status */
 	{
-		INT32 i, status = 0;
+		s32 i, status = 0;
 
 		for (i = 0; i < 4; i++)
 			status |= ic->channels[i].play << i;
@@ -287,11 +287,11 @@ UINT8 K053260_ReadRegister(UINT8 chipID, UINT32 address)
 
 	case 0x2e: /* read rom */
 		if (ic->mode & 1) {
-			UINT32 offs = ic->channels[0].start + (ic->channels[0].pos >> BASE_SHIFT) + (ic->channels[0].bank << 16);
+			u32 offs = ic->channels[0].start + (ic->channels[0].pos >> BASE_SHIFT) + (ic->channels[0].bank << 16);
 
 			ic->channels[0].pos += (1 << 16);
 
-			if (offs > (UINT32)ic->rom_size) {
+			if (offs > (u32)ic->rom_size) {
 
 				return 0;
 			}
@@ -304,16 +304,16 @@ UINT8 K053260_ReadRegister(UINT8 chipID, UINT32 address)
 	return ic->regs[address];
 }
 
-void K053260_Update(UINT8 chipID, INT32** buffer, UINT32 length)
+void K053260_Update(u8 chipID, s32** buffer, u32 length)
 {
-	static const INT8 dpcmcnv[] = { 0,1,2,4,8,16,32,64, -128, -64, -32, -16, -8, -4, -2, -1 };
+	static const s8 dpcmcnv[] = { 0,1,2,4,8,16,32,64, -128, -64, -32, -16, -8, -4, -2, -1 };
 
-	INT32 lvol[4], rvol[4], play[4], loop[4], ppcm[4];
-	UINT8 *rom[4];
-	UINT32 delta[4], end[4], pos[4];
-	INT32 dataL, dataR;
-	INT8 ppcm_data[4];
-	INT8 d;
+	s32 lvol[4], rvol[4], play[4], loop[4], ppcm[4];
+	u8 *rom[4];
+	u32 delta[4], end[4], pos[4];
+	s32 dataL, dataR;
+	s8 ppcm_data[4];
+	s8 d;
 	K053260* ic = &k053260Chips[chipID];
 
 	/* precache some values */
@@ -333,7 +333,7 @@ void K053260_Update(UINT8 chipID, INT32** buffer, UINT32 length)
 			delta[i] /= 2;
 	}
 
-	for (UINT32 j = 0; j < length; j++) {
+	for (u32 j = 0; j < length; j++) {
 
 		dataL = dataR = 0;
 
@@ -358,7 +358,7 @@ void K053260_Update(UINT8 chipID, INT32** buffer, UINT32 length)
 					if (pos[i] == 0 || ((pos[i] ^ (pos[i] - delta[i])) & 0x8000) == 0x8000)
 
 					{
-						INT32 newdata;
+						s32 newdata;
 						if (pos[i] & 0x8000) {
 
 							newdata = ((rom[i][pos[i] >> BASE_SHIFT]) >> 4) & 0x0f; /*high nybble*/
@@ -394,20 +394,20 @@ void K053260_Update(UINT8 chipID, INT32** buffer, UINT32 length)
 		dataL = limit(dataL, MAXOUT, MINOUT);
 		dataR = limit(dataR, MAXOUT, MINOUT);
 
-		INT32 nLeftSample = 0, nRightSample = 0;
+		s32 nLeftSample = 0, nRightSample = 0;
 
 		if ((ic->output_dir[BURN_SND_K053260_ROUTE_1] & BURN_SND_ROUTE_LEFT) == BURN_SND_ROUTE_LEFT) {
-			nLeftSample += (INT32)(dataL * ic->gain[BURN_SND_K053260_ROUTE_1]);
+			nLeftSample += (s32)(dataL * ic->gain[BURN_SND_K053260_ROUTE_1]);
 		}
 		if ((ic->output_dir[BURN_SND_K053260_ROUTE_1] & BURN_SND_ROUTE_RIGHT) == BURN_SND_ROUTE_RIGHT) {
-			nRightSample += (INT32)(dataL * ic->gain[BURN_SND_K053260_ROUTE_1]);
+			nRightSample += (s32)(dataL * ic->gain[BURN_SND_K053260_ROUTE_1]);
 		}
 
 		if ((ic->output_dir[BURN_SND_K053260_ROUTE_2] & BURN_SND_ROUTE_LEFT) == BURN_SND_ROUTE_LEFT) {
-			nLeftSample += (INT32)(dataR * ic->gain[BURN_SND_K053260_ROUTE_2]);
+			nLeftSample += (s32)(dataR * ic->gain[BURN_SND_K053260_ROUTE_2]);
 		}
 		if ((ic->output_dir[BURN_SND_K053260_ROUTE_2] & BURN_SND_ROUTE_RIGHT) == BURN_SND_ROUTE_RIGHT) {
-			nRightSample += (INT32)(dataR * ic->gain[BURN_SND_K053260_ROUTE_2]);
+			nRightSample += (s32)(dataR * ic->gain[BURN_SND_K053260_ROUTE_2]);
 		}
 
 		nLeftSample = BURN_SND_CLIP(nLeftSample);
@@ -428,7 +428,7 @@ void K053260_Update(UINT8 chipID, INT32** buffer, UINT32 length)
 	}
 }
 
-void K053260_SetROM(UINT8 chipID, UINT32 totalROMSize, UINT32 startAddress, UINT8 *rom, UINT32 nLen)
+void K053260_SetROM(u8 chipID, u32 totalROMSize, u32 startAddress, u8 *rom, u32 nLen)
 {
 	K053260* ic = &k053260Chips[chipID];
 
@@ -436,7 +436,7 @@ void K053260_SetROM(UINT8 chipID, UINT32 totalROMSize, UINT32 startAddress, UINT
 	{
 		if (ic->rom)
 		{
-			UINT8* newRom = malloc(totalROMSize);
+			u8* newRom = malloc(totalROMSize);
 
 			memcpy(newRom, ic->rom, totalROMSize);
 			free(ic->rom);

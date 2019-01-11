@@ -8,7 +8,7 @@ class VGMFileImpl;
 class VGMFile : public VGMData
 {
 public:
-	VGMFile(const string& path, INT32 channels_, INT32 bitPerSample_, INT32 sampleRate_);
+	VGMFile(const string& path, s32 channels_, s32 bitPerSample_, s32 sampleRate_);
 	virtual ~VGMFile();
 protected:
 	virtual BOOL onOpen();
@@ -18,9 +18,9 @@ protected:
 	virtual void onPause();
 	virtual void onResume();
 	virtual BOOL onUpdate();
-	virtual INT32 onRead(VOID *buffer, UINT32 size);
-	virtual INT32 onSeekSet(UINT32 size);
-	virtual INT32 onSeekCur(UINT32 size);
+	virtual s32 onRead(VOID *buffer, u32 size);
+	virtual s32 onSeekSet(u32 size);
+	virtual s32 onSeekCur(u32 size);
 private:
 
 public:

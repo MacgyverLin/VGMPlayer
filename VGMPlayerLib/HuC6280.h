@@ -7,12 +7,12 @@
 extern "C" {
 #endif
 
-INT32 HUC6280_Initialize(UINT8 chipID, UINT32 clock, UINT32 sampleRate);
-void HUC6280_Shutdown(UINT8 chipID);
-void HUC6280_Reset(UINT8 chipID);
-void HUC6280_Update(UINT8 chipID, INT32 **buffer, UINT32 length);
-void HUC6280_WriteRegister(UINT8 chipID, UINT32 address, UINT8 data);
-UINT8 HUC6280_ReadRegister(UINT8 chipID, UINT32 address);
+s32 HUC6280_Initialize(u8 chipID, u32 clock, u32 sampleRate);
+void HUC6280_Shutdown(u8 chipID);
+void HUC6280_Reset(u8 chipID);
+void HUC6280_Update(u8 chipID, s32 **buffer, u32 length);
+void HUC6280_WriteRegister(u8 chipID, u32 address, u8 data);
+u8 HUC6280_ReadRegister(u8 chipID, u32 address);
 
 #ifdef __cplusplus
 };

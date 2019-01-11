@@ -9,7 +9,7 @@ VGMAudioPlayer::~VGMAudioPlayer()
 {
 }
 
-UINT32 VGMAudioPlayer::getQueued()
+u32 VGMAudioPlayer::getQueued()
 {
 	return outputDevice.getQueued();
 }

@@ -4,19 +4,19 @@
 
 typedef struct
 {
-	INT32 Current_Channel;
-	INT32 Current_Register;
-	INT32 Register[8];
-	UINT32 Counter[4];
-	UINT32 CntStep[4];
-	INT32 Volume[4];
-	UINT32 Noise_Type;
-	UINT32 Noise;
-	UINT32 PSG_SIN_Table[16][512];
-	UINT32 PSG_Step_Table[1024];
-	UINT32 PSG_Volume_Table[16];
-	UINT32 PSG_Noise_Step_Table[4];
-	UINT32 PSG_Save[8];
+	s32 Current_Channel;
+	s32 Current_Register;
+	s32 Register[8];
+	u32 Counter[4];
+	u32 CntStep[4];
+	s32 Volume[4];
+	u32 Noise_Type;
+	u32 Noise;
+	u32 PSG_SIN_Table[16][512];
+	u32 PSG_Step_Table[1024];
+	u32 PSG_Volume_Table[16];
+	u32 PSG_Noise_Step_Table[4];
+	u32 PSG_Save[8];
 }SN76489;
 
 #define MAX_OUTPUT 0x4FFF
@@ -27,18 +27,18 @@ typedef struct
 #define SN76489_CHIPS_COUNT 2
 SN76489 sn76489Chips[SN76489_CHIPS_COUNT];
 
-INT32 SN76489_Initialize(UINT8 chipID, UINT32 clock, UINT32 sampleRate)
+s32 SN76489_Initialize(u8 chipID, u32 clock, u32 sampleRate)
 {
 	SN76489* ic = &sn76489Chips[chipID];
-	INT32 i, j;
-	FLOAT32 out;
+	s32 i, j;
+	f32 out;
 
 	for (i = 1; i < 1024; i++)
 	{
 		// Step calculation
 
-		out = (double)(clock) / (double)(i << 4);		// out = frequency
-		out /= (double)(sampleRate);
+		out = (f64)(clock) / (f64)(i << 4);		// out = frequency
+		out /= (f64)(sampleRate);
 		out *= 65536.0;
 
 		ic->PSG_Step_Table[i] = (unsigned int)out;
@@ -48,8 +48,8 @@ INT32 SN76489_Initialize(UINT8 chipID, UINT32 clock, UINT32 sampleRate)
 
 	for (i = 0; i < 3; i++)
 	{
-		out = (double)(clock) / (double)(1 << (9 + i));
-		out /= (double)(sampleRate);
+		out = (f64)(clock) / (f64)(1 << (9 + i));
+		out /= (f64)(sampleRate);
 		out *= 65536.0;
 
 		ic->PSG_Noise_Step_Table[i] = (unsigned int)out;
@@ -57,7 +57,7 @@ INT32 SN76489_Initialize(UINT8 chipID, UINT32 clock, UINT32 sampleRate)
 
 	ic->PSG_Noise_Step_Table[3] = 0;
 
-	out = (double)MAX_OUTPUT / 3.0;
+	out = (f64)MAX_OUTPUT / 3.0;
 
 	for (i = 0; i < 15; i++)
 	{
@@ -69,12 +69,12 @@ INT32 SN76489_Initialize(UINT8 chipID, UINT32 clock, UINT32 sampleRate)
 
 	for (i = 0; i < 512; i++)
 	{
-		out = sin((2.0 * PI) * ((double)(i) / 512));
-		out = sin((2.0 * PI) * ((double)(i) / 512));
+		out = sin((2.0 * PI) * ((f64)(i) / 512));
+		out = sin((2.0 * PI) * ((f64)(i) / 512));
 
 		for (j = 0; j < 16; j++)
 		{
-			ic->PSG_SIN_Table[j][i] = (unsigned int)(out * (double)ic->PSG_Volume_Table[j]);
+			ic->PSG_SIN_Table[j][i] = (unsigned int)(out * (f64)ic->PSG_Volume_Table[j]);
 		}
 	}
 
@@ -99,7 +99,7 @@ INT32 SN76489_Initialize(UINT8 chipID, UINT32 clock, UINT32 sampleRate)
 	return -1;
 }
 
-void SN76489_Reset(UINT8 chipID)
+void SN76489_Reset(u8 chipID)
 {
 }
 
@@ -107,7 +107,7 @@ void SN76489_Shutdown(void)
 {
 }
 
-void SN76489_WriteRegister(UINT8 chipID, UINT32 address, UINT8 data)
+void SN76489_WriteRegister(u8 chipID, u32 address, u8 data)
 {
 	SN76489* ic = &sn76489Chips[chipID];
 
@@ -173,12 +173,12 @@ void SN76489_WriteRegister(UINT8 chipID, UINT32 address, UINT8 data)
 	}
 }
 
-UINT8 SN76489_ReadRegister(UINT8 chipID, UINT32 address)
+u8 SN76489_ReadRegister(u8 chipID, u32 address)
 {
 	return 0;
 }
 
-void SN76489_Update_Sin(UINT8 chipID, INT32 **buffers, UINT32 length)
+void SN76489_Update_Sin(u8 chipID, s32 **buffers, u32 length)
 {
 	SN76489* ic = &sn76489Chips[chipID];
 
@@ -242,7 +242,7 @@ void SN76489_Update_Sin(UINT8 chipID, INT32 **buffers, UINT32 length)
 		ic->Counter[3] += ic->CntStep[3] * length;
 }
 
-void SN76489_Update(UINT8 chipID, INT32 **buffers, UINT32 length)
+void SN76489_Update(u8 chipID, s32 **buffers, u32 length)
 {
 	int i, j;
 	int cur_cnt, cur_step, cur_vol;

@@ -1,7 +1,6 @@
 #include <math.h>
+#include "vgmdef.h"
 #include "fft.h"
-
-#define PI 3.1415926
 
 /*******************************************************************************
 * 功能: 共轭复数
@@ -24,10 +23,10 @@ void conjugate_complex(int n, complex in[], complex out[])
 * 返回: 无
 * 说明:
 *******************************************************************************/
-void c_abs(complex f[], float out[], int n)
+void c_abs(complex f[], f32 out[], int n)
 {
 	int i = 0;
-	float t;
+	f32 t;
 	for (i = 0; i < n; i++)
 	{
 		t = f[i].real * f[i].real + f[i].imag * f[i].imag;

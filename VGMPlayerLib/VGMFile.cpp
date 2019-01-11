@@ -16,7 +16,7 @@ public:
 };
 
 /////////////////////////////////////////////////////////
-VGMFile::VGMFile(const string& path_, INT32 channels_, INT32 bitPerSample_, INT32 sampleRate_)
+VGMFile::VGMFile(const string& path_, s32 channels_, s32 bitPerSample_, s32 sampleRate_)
 : VGMData(channels_, bitPerSample_, sampleRate_)
 , impl(0)
 {
@@ -105,7 +105,7 @@ BOOL VGMFile::onUpdate()
 	return true;
 }
 
-INT32 VGMFile::onRead(VOID *buffer, UINT32 size)
+s32 VGMFile::onRead(VOID *buffer, u32 size)
 {
 	if(impl->gzFile)
 	{
@@ -121,7 +121,7 @@ INT32 VGMFile::onRead(VOID *buffer, UINT32 size)
 	}
 }
 
-INT32 VGMFile::onSeekSet(UINT32 offset)
+s32 VGMFile::onSeekSet(u32 offset)
 {
 	if(impl->gzFile)
 	{
@@ -137,7 +137,7 @@ INT32 VGMFile::onSeekSet(UINT32 offset)
 	}
 }
 
-INT32 VGMFile::onSeekCur(UINT32 offset)
+s32 VGMFile::onSeekCur(u32 offset)
 {
 	if (impl->gzFile)
 	{

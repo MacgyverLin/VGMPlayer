@@ -7,12 +7,12 @@
 extern "C" {
 #endif
 
-	INT32 NESAPU_Initialize(UINT8 chipID, UINT32 clock, UINT32 sampleRate);
-	void NESAPU_Shutdown(UINT8 chipID);
-	void NESAPU_Reset(UINT8 chipID);
-	void NESAPU_WriteRegister(UINT8 chipID, UINT32 address, UINT8 data);
-	UINT8 NESAPU_ReadRegister(UINT8 chipID, UINT32 address);
-	void NESAPU_Update(UINT8 chipID, INT32** buffer, UINT32 length);
+	s32 NESAPU_Initialize(u8 chipID, u32 clock, u32 sampleRate);
+	void NESAPU_Shutdown(u8 chipID);
+	void NESAPU_Reset(u8 chipID);
+	void NESAPU_WriteRegister(u8 chipID, u32 address, u8 data);
+	u8 NESAPU_ReadRegister(u8 chipID, u32 address);
+	void NESAPU_Update(u8 chipID, s32** buffer, u32 length);
 
 #ifdef __cplusplus
 };

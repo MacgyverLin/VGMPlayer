@@ -3,41 +3,20 @@
 
 #include <windows.h>
 
-//#define RASPBERRY_PI
-
-#ifdef RASPBERRY_PI
-//typedef bool BOOL;
-typedef char CHAR;
+//typedef char boolean;
 //typedef void VOID;
-typedef signed long long INT64;
-typedef signed int INT32;
-typedef signed short INT16;
-typedef signed char INT8;
-typedef unsigned int UINT32;
-typedef unsigned short UINT16;
-typedef unsigned char UINT8;
-typedef unsigned long long UINT64;
-typedef float FLOAT32;
-typedef double FLOAT64;
-//#define TRUE true
-//#define FALSE false
-#else
-//typedef bool BOOL;
-typedef char CHAR;
-//typedef void VOID;
-typedef signed long long INT64;
-typedef signed int INT32;
-typedef signed short INT16;
-typedef signed char INT8;
-typedef unsigned int UINT32;
-typedef unsigned short UINT16;
-typedef unsigned char UINT8;
-typedef unsigned long long UINT64;
-typedef float FLOAT32;
-typedef double FLOAT64;
-//#define TRUE -1
-//#define FALSE 0
-#endif
+typedef signed long long s64;
+typedef signed int s32;
+typedef signed short s16;
+typedef signed char s8;
+typedef unsigned long long u64;
+typedef unsigned int u32;
+typedef unsigned short u16;
+typedef unsigned char u8;
+typedef float f32;
+typedef double f64;
+#define True -1
+#define False 0
 
 #define vgm_log printf
 #define VGM_SAMPLE_COUNT		882 // NTSC FRAME

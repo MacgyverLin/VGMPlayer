@@ -7,13 +7,13 @@
 extern "C" {
 #endif
 
-INT32 K053260_Initialize(UINT8 chipID, UINT32 clock, UINT32 sampleRate);
-void K053260_Shutdown(UINT8 chipID);
-void K053260_Reset(UINT8 chipID);
-void K053260_WriteRegister(UINT8 chipID, UINT32 address, UINT8 data);
-UINT8 K053260_ReadRegister(UINT8 chipID, UINT32 address);
-void K053260_Update(UINT8 chipID, INT32** buffer, UINT32 length);
-void K053260_SetROM(UINT8 chipID, UINT32 totalROMSize, UINT32 startAddress, UINT8 *rom, UINT32 nLen);
+s32 K053260_Initialize(u8 chipID, u32 clock, u32 sampleRate);
+void K053260_Shutdown(u8 chipID);
+void K053260_Reset(u8 chipID);
+void K053260_WriteRegister(u8 chipID, u32 address, u8 data);
+u8 K053260_ReadRegister(u8 chipID, u32 address);
+void K053260_Update(u8 chipID, s32** buffer, u32 length);
+void K053260_SetROM(u8 chipID, u32 totalROMSize, u32 startAddress, u8 *rom, u32 nLen);
 
 #ifdef __cplusplus
 };

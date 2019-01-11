@@ -11,7 +11,7 @@ public:
 	VGMAudioPlayer();
 	virtual ~VGMAudioPlayer();
 
-	UINT32 getQueued();
+	u32 getQueued();
 protected:
 	virtual void onNotifySomething(Obserable& vgmData);
 	virtual void onNotifyOpen(Obserable& vgmData);

@@ -151,7 +151,7 @@
 #  define DEF_MEM_LEVEL  MAX_MEM_LEVEL
 #endif
 
-/* default i/o buffer size -- double this for output when reading (this and
+/* default i/o buffer size -- f64 this for output when reading (this and
    twice this must be able to fit in an unsigned type) */
 #define GZBUFSIZE 8192
 
@@ -179,8 +179,8 @@ typedef struct {
     char *path;             /* path or fd for error messages */
     unsigned size;          /* buffer size, zero if not allocated yet */
     unsigned want;          /* requested buffer size, default is GZBUFSIZE */
-    unsigned char *in;      /* input buffer (double-sized when writing) */
-    unsigned char *out;     /* output buffer (double-sized when reading) */
+    unsigned char *in;      /* input buffer (f64-sized when writing) */
+    unsigned char *out;     /* output buffer (f64-sized when reading) */
     int direct;             /* 0 if processing gzip, 1 if transparent */
         /* just for reading */
     int how;                /* 0: get header, 1: copy, 2: decompress */

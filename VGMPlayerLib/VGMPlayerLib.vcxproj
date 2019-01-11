@@ -155,6 +155,7 @@
     <ClInclude Include="HuC6280.h" />
     <ClInclude Include="NESAPU.h" />
     <ClInclude Include="NESFDSAPU.h" />
+    <ClInclude Include="nes_defs.h" />
     <ClInclude Include="Obserable.h" />
     <ClInclude Include="Observer.h" />
     <ClInclude Include="VGMAudioPlayer.h" />

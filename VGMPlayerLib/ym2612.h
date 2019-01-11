@@ -7,12 +7,12 @@
 extern "C" {
 #endif
 
-	INT32 YM2612_Initialize(UINT8 chipID, UINT32 clock, UINT32 sampleRate);
-	void YM2612_Shutdown(UINT8 chipID);
-	void YM2612_Reset(UINT8 chipID);
-	void YM2612_WriteRegister(UINT8 chipID, UINT32 address, UINT8 data);
-	UINT8 YM2612_ReadStatus(UINT8 chipID);
-	void YM2612_Update(UINT8 chipID, INT32 **buffers, UINT32 length);
+	s32 YM2612_Initialize(u8 chipID, u32 clock, u32 sampleRate);
+	void YM2612_Shutdown(u8 chipID);
+	void YM2612_Reset(u8 chipID);
+	void YM2612_WriteRegister(u8 chipID, u32 address, u8 data);
+	u8 YM2612_ReadStatus(u8 chipID);
+	void YM2612_Update(u8 chipID, s32 **buffers, u32 length);
 
 #ifdef __cplusplus
 };

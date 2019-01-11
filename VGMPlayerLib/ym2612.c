@@ -47,16 +47,16 @@
 
 #define OUT_BITS       (OUTPUT_BITS - 2)
 #define OUT_SHIFT      (MAX_OUT_BITS - OUT_BITS)
-#define LIMIT_CH_OUT   ((INT32) (((1 << OUT_BITS) * 1.5) - 1))
+#define LIMIT_CH_OUT   ((s32) (((1 << OUT_BITS) * 1.5) - 1))
 
-#define PG_CUT_OFF     ((INT32) (78.0 / ENV_STEP))
-#define ENV_CUT_OFF    ((INT32) (68.0 / ENV_STEP))
+#define PG_CUT_OFF     ((s32) (78.0 / ENV_STEP))
+#define ENV_CUT_OFF    ((s32) (68.0 / ENV_STEP))
 
 #define AR_RATE        399128
 #define DR_RATE        5514396
 
 #define LFO_FMS_LBITS  9								// FIXED (LFO_FMS_BASE gives somethink as 1)
-#define LFO_FMS_BASE   ((INT32) (0.05946309436 * 0.0338 * (FLOAT32) (1 << LFO_FMS_LBITS)))
+#define LFO_FMS_BASE   ((s32) (0.05946309436 * 0.0338 * (f32) (1 << LFO_FMS_LBITS)))
 
 #define S0             0
 #define S1             2
@@ -64,155 +64,155 @@
 #define S3             3
 
 typedef struct {
-	INT32 *DT;  // paramètre detune
-	INT32 MUL;  // paramètre "multiple de fréquence"
-	INT32 TL;    // Total Level = volume lorsque l'enveloppe est au plus haut
-	INT32 TLL;  // Total Level ajusted
-	INT32 SLL;  // Sustin Level (ajusted) = volume o?l'enveloppe termine sa première phase de régression
-	INT32 KSR_S;  // Key Scale Rate Shift = facteur de prise en compte du KSL dans la variations de l'enveloppe
-	INT32 KSR;  // Key Scale Rate = cette valeur est calculée par rapport ?la fréquence actuelle, elle va influer
+	s32 *DT;  // paramètre detune
+	s32 MUL;  // paramètre "multiple de fréquence"
+	s32 TL;    // Total Level = volume lorsque l'enveloppe est au plus haut
+	s32 TLL;  // Total Level ajusted
+	s32 SLL;  // Sustin Level (ajusted) = volume o?l'enveloppe termine sa première phase de régression
+	s32 KSR_S;  // Key Scale Rate Shift = facteur de prise en compte du KSL dans la variations de l'enveloppe
+	s32 KSR;  // Key Scale Rate = cette valeur est calculée par rapport ?la fréquence actuelle, elle va influer
 		  // sur les différents paramètres de l'enveloppe comme l'attaque, le decay ...  comme dans la réalit?!
-	INT32 SEG;  // Type enveloppe SSG
-	INT32 *AR;  // Attack Rate (table pointeur) = Taux d'attaque (AR[KSR])
-	INT32 *DR;  // Decay Rate (table pointeur) = Taux pour la régression (DR[KSR])
-	INT32 *SR;  // Sustin Rate (table pointeur) = Taux pour le maintien (SR[KSR])
-	INT32 *RR;  // Release Rate (table pointeur) = Taux pour le relâchement (RR[KSR])
-	INT32 Fcnt;  // Frequency Count = compteur-fréquence pour déterminer l'amplitude actuelle (SIN[Finc >> 16])
-	INT32 Finc;  // frequency step = pas d'incrémentation du compteur-fréquence
+	s32 SEG;  // Type enveloppe SSG
+	s32 *AR;  // Attack Rate (table pointeur) = Taux d'attaque (AR[KSR])
+	s32 *DR;  // Decay Rate (table pointeur) = Taux pour la régression (DR[KSR])
+	s32 *SR;  // Sustin Rate (table pointeur) = Taux pour le maintien (SR[KSR])
+	s32 *RR;  // Release Rate (table pointeur) = Taux pour le relâchement (RR[KSR])
+	s32 Fcnt;  // Frequency Count = compteur-fréquence pour déterminer l'amplitude actuelle (SIN[Finc >> 16])
+	s32 Finc;  // frequency step = pas d'incrémentation du compteur-fréquence
 		  // plus le pas est grand, plus la fréquence est aïgu (ou haute)
-	INT32 Ecurp;  // Envelope current phase = cette variable permet de savoir dans quelle phase
+	s32 Ecurp;  // Envelope current phase = cette variable permet de savoir dans quelle phase
 		  // de l'enveloppe on se trouve, par exemple phase d'attaque ou phase de maintenue ...
 		  // en fonction de la valeur de cette variable, on va appeler une fonction permettant
 		  // de mettre ?jour l'enveloppe courante.
-	INT32 Ecnt;  // Envelope counter = le compteur-enveloppe permet de savoir o?l'on se trouve dans l'enveloppe
-	INT32 Einc;  // Envelope step courant
-	INT32 Ecmp;  // Envelope counter limite pour la prochaine phase
-	INT32 EincA;  // Envelope step for Attack = pas d'incrémentation du compteur durant la phase d'attaque
+	s32 Ecnt;  // Envelope counter = le compteur-enveloppe permet de savoir o?l'on se trouve dans l'enveloppe
+	s32 Einc;  // Envelope step courant
+	s32 Ecmp;  // Envelope counter limite pour la prochaine phase
+	s32 EincA;  // Envelope step for Attack = pas d'incrémentation du compteur durant la phase d'attaque
 		  // cette valeur est égal ?AR[KSR]
-	INT32 EincD;  // Envelope step for Decay = pas d'incrémentation du compteur durant la phase de regression
+	s32 EincD;  // Envelope step for Decay = pas d'incrémentation du compteur durant la phase de regression
 		  // cette valeur est égal ?DR[KSR]
-	INT32 EincS;  // Envelope step for Sustain = pas d'incrémentation du compteur durant la phase de maintenue
+	s32 EincS;  // Envelope step for Sustain = pas d'incrémentation du compteur durant la phase de maintenue
 		  // cette valeur est égal ?SR[KSR]
-	INT32 EincR;  // Envelope step for Release = pas d'incrémentation du compteur durant la phase de relâchement
+	s32 EincR;  // Envelope step for Release = pas d'incrémentation du compteur durant la phase de relâchement
 		  // cette valeur est égal ?RR[KSR]
-	INT32 *OUTp;  // pointeur of SLOT output = pointeur permettant de connecter la sortie de ce slot ?l'entrée
+	s32 *OUTp;  // pointeur of SLOT output = pointeur permettant de connecter la sortie de ce slot ?l'entrée
 		  // d'un autre ou carrement ?la sortie de la voie
-	INT32 INd;  // input data of the slot = données en entrée du slot
-	INT32 ChgEnM;  // Change envelop mask.
-	INT32 AMS;  // AMS depth level of this SLOT = degr?de modulation de l'amplitude par le LFO
-	INT32 AMSon;  // AMS enable flag = drapeau d'activation de l'AMS
+	s32 INd;  // input data of the slot = données en entrée du slot
+	s32 ChgEnM;  // Change envelop mask.
+	s32 AMS;  // AMS depth level of this SLOT = degr?de modulation de l'amplitude par le LFO
+	s32 AMSon;  // AMS enable flag = drapeau d'activation de l'AMS
 }Slot;
 
 typedef struct {
-	INT32 S0_OUT[4];      // anciennes sorties slot 0 (pour le feed back)
-	INT32 Old_OUTd;      // ancienne sortie de la voie (son brut)
-	INT32 OUTd;        // sortie de la voie (son brut)
-	INT32 LEFT;        // LEFT enable flag
-	INT32 RIGHT;        // RIGHT enable flag
-	INT32 ALGO;        // Algorythm = détermine les connections entre les opérateurs
-	INT32 FB;          // shift count of self feed back = degr?de "Feed-Back" du SLOT 1 (il est son unique entrée)
-	INT32 FMS;        // Fréquency Modulation Sensitivity of channel = degr?de modulation de la fréquence sur la voie par le LFO
-	INT32 AMS;        // Amplitude Modulation Sensitivity of channel = degr?de modulation de l'amplitude sur la voie par le LFO
-	INT32 FNUM[4];      // hauteur fréquence de la voie (+ 3 pour le mode spécial)
-	INT32 FOCT[4];      // octave de la voie (+ 3 pour le mode spécial)
-	INT32 KC[4];        // Key Code = valeur fonction de la fréquence (voir KSR pour les slots, KSR = KC >> KSR_S)
+	s32 S0_OUT[4];      // anciennes sorties slot 0 (pour le feed back)
+	s32 Old_OUTd;      // ancienne sortie de la voie (son brut)
+	s32 OUTd;        // sortie de la voie (son brut)
+	s32 LEFT;        // LEFT enable flag
+	s32 RIGHT;        // RIGHT enable flag
+	s32 ALGO;        // Algorythm = détermine les connections entre les opérateurs
+	s32 FB;          // shift count of self feed back = degr?de "Feed-Back" du SLOT 1 (il est son unique entrée)
+	s32 FMS;        // Fréquency Modulation Sensitivity of channel = degr?de modulation de la fréquence sur la voie par le LFO
+	s32 AMS;        // Amplitude Modulation Sensitivity of channel = degr?de modulation de l'amplitude sur la voie par le LFO
+	s32 FNUM[4];      // hauteur fréquence de la voie (+ 3 pour le mode spécial)
+	s32 FOCT[4];      // octave de la voie (+ 3 pour le mode spécial)
+	s32 KC[4];        // Key Code = valeur fonction de la fréquence (voir KSR pour les slots, KSR = KC >> KSR_S)
 	Slot SLOT[4];  // four slot.operators = les 4 slots de la voie
-	INT32 FFlag;        // Frequency step recalculation flag
+	s32 FFlag;        // Frequency step recalculation flag
 }Channel;
 
 typedef struct {
-	INT32 Clock;
-	INT32 Rate;
-	INT32 TimerBase;
-	INT32 Status;
-	INT32 OPNAadr;
-	INT32 OPNBadr;
-	INT32 LFOcnt;
-	INT32 LFOinc;
+	s32 Clock;
+	s32 Rate;
+	s32 TimerBase;
+	s32 Status;
+	s32 OPNAadr;
+	s32 OPNBadr;
+	s32 LFOcnt;
+	s32 LFOinc;
 
-	INT32 TimerA;
-	INT32 TimerAL;
-	INT32 TimerAcnt;
-	INT32 TimerB;
-	INT32 TimerBL;
-	INT32 TimerBcnt;
-	INT32 Mode;
-	INT32 DAC;
-	INT32 DACdata;
-	FLOAT32 Frequence;
-	UINT32 Inter_Cnt;
-	UINT32 Inter_Step;
+	s32 TimerA;
+	s32 TimerAL;
+	s32 TimerAcnt;
+	s32 TimerB;
+	s32 TimerBL;
+	s32 TimerBcnt;
+	s32 Mode;
+	s32 DAC;
+	s32 DACdata;
+	f32 Frequence;
+	u32 Inter_Cnt;
+	u32 Inter_Step;
 	Channel CHANNEL[6];
 
-	INT32 *SIN_TAB[SIN_LENGHT];							// SINUS TABLE (pointer on TL TABLE)
-	INT32 TL_TAB[TL_LENGHT * 2];							// TOTAL LEVEL TABLE (positif and minus)
-	UINT32 ENV_TAB[2 * ENV_LENGHT + 8];			// ENV CURVE TABLE (attack & decay)
+	s32 *SIN_TAB[SIN_LENGHT];							// SINUS TABLE (pointer on TL TABLE)
+	s32 TL_TAB[TL_LENGHT * 2];							// TOTAL LEVEL TABLE (positif and minus)
+	u32 ENV_TAB[2 * ENV_LENGHT + 8];			// ENV CURVE TABLE (attack & decay)
 
-	UINT32 DECAY_TO_ATTACK[ENV_LENGHT];			// Conversion from decay to attack phase
-	UINT32 FINC_TAB[2048];						// Frequency step table
+	u32 DECAY_TO_ATTACK[ENV_LENGHT];			// Conversion from decay to attack phase
+	u32 FINC_TAB[2048];						// Frequency step table
 
-	UINT32 AR_TAB[128];							// Attack rate table
-	UINT32 DR_TAB[96];							// Decay rate table
-	UINT32 DT_TAB[8][32];							// Detune table
-	UINT32 SL_TAB[16];							// Substain level table
-	UINT32 NULL_RATE[32];							// Table for NULL rate
+	u32 AR_TAB[128];							// Attack rate table
+	u32 DR_TAB[96];							// Decay rate table
+	u32 DT_TAB[8][32];							// Detune table
+	u32 SL_TAB[16];							// Substain level table
+	u32 NULL_RATE[32];							// Table for NULL rate
 
-	INT32 LFO_ENV_TAB[LFO_LENGHT];						// LFO AMS TABLE (adjusted for 11.8 dB)
-	INT32 LFO_FREQ_TAB[LFO_LENGHT];						// LFO FMS TABLE
-	INT32 LFO_ENV_UP[MAX_UPDATE_LENGHT];					// Temporary calculated LFO AMS (adjusted for 11.8 dB)
-	INT32 LFO_FREQ_UP[MAX_UPDATE_LENGHT];					// Temporary calculated LFO FMS
+	s32 LFO_ENV_TAB[LFO_LENGHT];						// LFO AMS TABLE (adjusted for 11.8 dB)
+	s32 LFO_FREQ_TAB[LFO_LENGHT];						// LFO FMS TABLE
+	s32 LFO_ENV_UP[MAX_UPDATE_LENGHT];					// Temporary calculated LFO AMS (adjusted for 11.8 dB)
+	s32 LFO_FREQ_UP[MAX_UPDATE_LENGHT];					// Temporary calculated LFO FMS
 
-	INT32 INTER_TAB[MAX_UPDATE_LENGHT];					// Interpolation table
-	INT32 LFO_INC_TAB[8];									// LFO step table
+	s32 INTER_TAB[MAX_UPDATE_LENGHT];					// Interpolation table
+	s32 LFO_INC_TAB[8];									// LFO step table
 
-	INT32 in0, in1, in2, in3;								// current phase calculation
-	INT32 en0, en1, en2, en3;								// current envelope calculation
+	s32 in0, in1, in2, in3;								// current phase calculation
+	s32 en0, en1, en2, en3;								// current envelope calculation
 
-	INT32 int_cnt;                // Interpolation calculation
+	s32 int_cnt;                // Interpolation calculation
 
-	INT32 REG[2][0x100];
+	s32 REG[2][0x100];
 }YM2612;
 
 //////////////////////////////////////////////////////////////
 #define YM2612_CHIPS_COUNT 2
 YM2612 ym2612Chips[YM2612_CHIPS_COUNT];					// array of YM2612
-INT32 YM2612_Enable_SSGEG = 0; // enable SSG-EG envelope (causes inacurate sound sometimes - rodrigo)
+s32 YM2612_Enable_SSGEG = 0; // enable SSG-EG envelope (causes inacurate sound sometimes - rodrigo)
 
-void Update_Chan_Algo0(YM2612 *ym2612, Channel *CH, INT32 **buf, INT32 lenght);
-void Update_Chan_Algo1(YM2612 *ym2612, Channel *CH, INT32 **buf, INT32 lenght);
-void Update_Chan_Algo2(YM2612 *ym2612, Channel *CH, INT32 **buf, INT32 lenght);
-void Update_Chan_Algo3(YM2612 *ym2612, Channel *CH, INT32 **buf, INT32 lenght);
-void Update_Chan_Algo4(YM2612 *ym2612, Channel *CH, INT32 **buf, INT32 lenght);
-void Update_Chan_Algo5(YM2612 *ym2612, Channel *CH, INT32 **buf, INT32 lenght);
-void Update_Chan_Algo6(YM2612 *ym2612, Channel *CH, INT32 **buf, INT32 lenght);
-void Update_Chan_Algo7(YM2612 *ym2612, Channel *CH, INT32 **buf, INT32 lenght);
+void Update_Chan_Algo0(YM2612 *ym2612, Channel *CH, s32 **buf, s32 lenght);
+void Update_Chan_Algo1(YM2612 *ym2612, Channel *CH, s32 **buf, s32 lenght);
+void Update_Chan_Algo2(YM2612 *ym2612, Channel *CH, s32 **buf, s32 lenght);
+void Update_Chan_Algo3(YM2612 *ym2612, Channel *CH, s32 **buf, s32 lenght);
+void Update_Chan_Algo4(YM2612 *ym2612, Channel *CH, s32 **buf, s32 lenght);
+void Update_Chan_Algo5(YM2612 *ym2612, Channel *CH, s32 **buf, s32 lenght);
+void Update_Chan_Algo6(YM2612 *ym2612, Channel *CH, s32 **buf, s32 lenght);
+void Update_Chan_Algo7(YM2612 *ym2612, Channel *CH, s32 **buf, s32 lenght);
 
-void Update_Chan_Algo0_LFO(YM2612 *ym2612, Channel *CH, INT32 **buf, INT32 lenght);
-void Update_Chan_Algo1_LFO(YM2612 *ym2612, Channel *CH, INT32 **buf, INT32 lenght);
-void Update_Chan_Algo2_LFO(YM2612 *ym2612, Channel *CH, INT32 **buf, INT32 lenght);
-void Update_Chan_Algo3_LFO(YM2612 *ym2612, Channel *CH, INT32 **buf, INT32 lenght);
-void Update_Chan_Algo4_LFO(YM2612 *ym2612, Channel *CH, INT32 **buf, INT32 lenght);
-void Update_Chan_Algo5_LFO(YM2612 *ym2612, Channel *CH, INT32 **buf, INT32 lenght);
-void Update_Chan_Algo6_LFO(YM2612 *ym2612, Channel *CH, INT32 **buf, INT32 lenght);
-void Update_Chan_Algo7_LFO(YM2612 *ym2612, Channel *CH, INT32 **buf, INT32 lenght);
+void Update_Chan_Algo0_LFO(YM2612 *ym2612, Channel *CH, s32 **buf, s32 lenght);
+void Update_Chan_Algo1_LFO(YM2612 *ym2612, Channel *CH, s32 **buf, s32 lenght);
+void Update_Chan_Algo2_LFO(YM2612 *ym2612, Channel *CH, s32 **buf, s32 lenght);
+void Update_Chan_Algo3_LFO(YM2612 *ym2612, Channel *CH, s32 **buf, s32 lenght);
+void Update_Chan_Algo4_LFO(YM2612 *ym2612, Channel *CH, s32 **buf, s32 lenght);
+void Update_Chan_Algo5_LFO(YM2612 *ym2612, Channel *CH, s32 **buf, s32 lenght);
+void Update_Chan_Algo6_LFO(YM2612 *ym2612, Channel *CH, s32 **buf, s32 lenght);
+void Update_Chan_Algo7_LFO(YM2612 *ym2612, Channel *CH, s32 **buf, s32 lenght);
 
-void Update_Chan_Algo0_Int(YM2612 *ym2612, Channel *CH, INT32 **buf, INT32 lenght);
-void Update_Chan_Algo1_Int(YM2612 *ym2612, Channel *CH, INT32 **buf, INT32 lenght);
-void Update_Chan_Algo2_Int(YM2612 *ym2612, Channel *CH, INT32 **buf, INT32 lenght);
-void Update_Chan_Algo3_Int(YM2612 *ym2612, Channel *CH, INT32 **buf, INT32 lenght);
-void Update_Chan_Algo4_Int(YM2612 *ym2612, Channel *CH, INT32 **buf, INT32 lenght);
-void Update_Chan_Algo5_Int(YM2612 *ym2612, Channel *CH, INT32 **buf, INT32 lenght);
-void Update_Chan_Algo6_Int(YM2612 *ym2612, Channel *CH, INT32 **buf, INT32 lenght);
-void Update_Chan_Algo7_Int(YM2612 *ym2612, Channel *CH, INT32 **buf, INT32 lenght);
+void Update_Chan_Algo0_Int(YM2612 *ym2612, Channel *CH, s32 **buf, s32 lenght);
+void Update_Chan_Algo1_Int(YM2612 *ym2612, Channel *CH, s32 **buf, s32 lenght);
+void Update_Chan_Algo2_Int(YM2612 *ym2612, Channel *CH, s32 **buf, s32 lenght);
+void Update_Chan_Algo3_Int(YM2612 *ym2612, Channel *CH, s32 **buf, s32 lenght);
+void Update_Chan_Algo4_Int(YM2612 *ym2612, Channel *CH, s32 **buf, s32 lenght);
+void Update_Chan_Algo5_Int(YM2612 *ym2612, Channel *CH, s32 **buf, s32 lenght);
+void Update_Chan_Algo6_Int(YM2612 *ym2612, Channel *CH, s32 **buf, s32 lenght);
+void Update_Chan_Algo7_Int(YM2612 *ym2612, Channel *CH, s32 **buf, s32 lenght);
 
-void Update_Chan_Algo0_LFO_Int(YM2612 *ym2612, Channel *CH, INT32 **buf, INT32 lenght);
-void Update_Chan_Algo1_LFO_Int(YM2612 *ym2612, Channel *CH, INT32 **buf, INT32 lenght);
-void Update_Chan_Algo2_LFO_Int(YM2612 *ym2612, Channel *CH, INT32 **buf, INT32 lenght);
-void Update_Chan_Algo3_LFO_Int(YM2612 *ym2612, Channel *CH, INT32 **buf, INT32 lenght);
-void Update_Chan_Algo4_LFO_Int(YM2612 *ym2612, Channel *CH, INT32 **buf, INT32 lenght);
-void Update_Chan_Algo5_LFO_Int(YM2612 *ym2612, Channel *CH, INT32 **buf, INT32 lenght);
-void Update_Chan_Algo6_LFO_Int(YM2612 *ym2612, Channel *CH, INT32 **buf, INT32 lenght);
-void Update_Chan_Algo7_LFO_Int(YM2612 *ym2612, Channel *CH, INT32 **buf, INT32 lenght);
+void Update_Chan_Algo0_LFO_Int(YM2612 *ym2612, Channel *CH, s32 **buf, s32 lenght);
+void Update_Chan_Algo1_LFO_Int(YM2612 *ym2612, Channel *CH, s32 **buf, s32 lenght);
+void Update_Chan_Algo2_LFO_Int(YM2612 *ym2612, Channel *CH, s32 **buf, s32 lenght);
+void Update_Chan_Algo3_LFO_Int(YM2612 *ym2612, Channel *CH, s32 **buf, s32 lenght);
+void Update_Chan_Algo4_LFO_Int(YM2612 *ym2612, Channel *CH, s32 **buf, s32 lenght);
+void Update_Chan_Algo5_LFO_Int(YM2612 *ym2612, Channel *CH, s32 **buf, s32 lenght);
+void Update_Chan_Algo6_LFO_Int(YM2612 *ym2612, Channel *CH, s32 **buf, s32 lenght);
+void Update_Chan_Algo7_LFO_Int(YM2612 *ym2612, Channel *CH, s32 **buf, s32 lenght);
 
 void Env_Attack_Next(Slot *SL);
 void Env_Decay_Next(Slot *SL);
@@ -221,7 +221,7 @@ void Env_Release_Next(Slot *SL);
 void Env_NULL_Next(Slot *SL);
 
 // Update Channel functions pointer table
-const void(*UPDATE_CHAN[8 * 8])(YM2612 *ym2612, Channel *CH, INT32 **buf, INT32 lenght) =
+const void(*UPDATE_CHAN[8 * 8])(YM2612 *ym2612, Channel *CH, s32 **buf, s32 lenght) =
 {
 	Update_Chan_Algo0,
 	Update_Chan_Algo1,
@@ -273,7 +273,7 @@ const void(*ENV_NEXT_EVENT[8])(Slot *SL) =
 	Env_NULL_Next
 };
 
-const UINT32 DT_DEF_TAB[4 * 32] =
+const u32 DT_DEF_TAB[4 * 32] =
 {
 	// FD = 0
 	0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
@@ -292,7 +292,7 @@ const UINT32 DT_DEF_TAB[4 * 32] =
 	8 , 8, 9, 10, 11, 12, 13, 14, 16, 17, 19, 20, 22, 22, 22, 22
 };
 
-const UINT32 FKEY_TAB[16] =
+const u32 FKEY_TAB[16] =
 {
 	0, 0, 0, 0,
 	0, 0, 0, 1,
@@ -300,12 +300,12 @@ const UINT32 FKEY_TAB[16] =
 	3, 3, 3, 3
 };
 
-const UINT32 LFO_AMS_TAB[4] =
+const u32 LFO_AMS_TAB[4] =
 {
 	31, 4, 1, 0
 };
 
-const UINT32 LFO_FMS_TAB[8] =
+const u32 LFO_FMS_TAB[8] =
 {
 	LFO_FMS_BASE * 0, LFO_FMS_BASE * 1,
 	LFO_FMS_BASE * 2, LFO_FMS_BASE * 3,
@@ -313,9 +313,9 @@ const UINT32 LFO_FMS_TAB[8] =
 	LFO_FMS_BASE * 12, LFO_FMS_BASE * 24
 };
 
-void CALC_FINC_SL(YM2612 *ym2612, Slot *SL, INT32 finc, INT32 kc)
+void CALC_FINC_SL(YM2612 *ym2612, Slot *SL, s32 finc, s32 kc)
 {
-	INT32 ksr;
+	s32 ksr;
 
 
 	SL->Finc = (finc + SL->DT[kc]) * SL->MUL;
@@ -347,7 +347,7 @@ void CALC_FINC_SL(YM2612 *ym2612, Slot *SL, INT32 finc, INT32 kc)
 
 void CALC_FINC_CH(YM2612 *ym2612, Channel *CH)
 {
-	INT32 finc, kc;
+	s32 finc, kc;
 
 
 	finc = ym2612->FINC_TAB[CH->FNUM[0]] >> (7 - CH->FOCT[0]);
@@ -359,7 +359,7 @@ void CALC_FINC_CH(YM2612 *ym2612, Channel *CH)
 	CALC_FINC_SL(ym2612, &CH->SLOT[3], finc, kc);
 }
 
-void KEY_ON(YM2612 *ym2612, Channel *CH, INT32 nsl)
+void KEY_ON(YM2612 *ym2612, Channel *CH, s32 nsl)
 {
 	Slot *SL = &(CH->SLOT[nsl]);  // on recupère le bon pointeur de slot
 
@@ -381,7 +381,7 @@ void KEY_ON(YM2612 *ym2612, Channel *CH, INT32 nsl)
 	}
 }
 
-void KEY_OFF(YM2612 *ym2612, Channel *CH, INT32 nsl)
+void KEY_OFF(YM2612 *ym2612, Channel *CH, s32 nsl)
 {
 	Slot *SL = &(CH->SLOT[nsl]);  // on recupère le bon pointeur de slot
 
@@ -406,11 +406,11 @@ void CSM_Key_Control(YM2612 *ym2612)
 	KEY_ON(ym2612, &ym2612->CHANNEL[2], 3);
 }
 
-INT32 SLOT_SET(YM2612 *ym2612, INT32 Adr, unsigned char data)
+s32 SLOT_SET(YM2612 *ym2612, s32 Adr, unsigned char data)
 {
 	Channel *CH;
 	Slot *SL;
-	INT32 nch, nsl;
+	s32 nch, nsl;
 
 	if ((nch = Adr & 3) == 3)
 		return 1;
@@ -543,10 +543,10 @@ INT32 SLOT_SET(YM2612 *ym2612, INT32 Adr, unsigned char data)
 	return 0;
 }
 
-INT32 CHANNEL_SET(YM2612 *ym2612, INT32 Adr, unsigned char data)
+s32 CHANNEL_SET(YM2612 *ym2612, s32 Adr, unsigned char data)
 {
 	Channel *CH;
-	INT32 chnIdx;
+	s32 chnIdx;
 
 	if ((chnIdx = Adr & 3) == 3)
 		return 1;
@@ -569,7 +569,7 @@ INT32 CHANNEL_SET(YM2612 *ym2612, INT32 Adr, unsigned char data)
 			chnIdx += 3;
 
 		CH = &(ym2612->CHANNEL[chnIdx]);
-		CH->FNUM[0] = (CH->FNUM[0] & 0x0FF) + ((INT32)(data & 0x07) << 8);
+		CH->FNUM[0] = (CH->FNUM[0] & 0x0FF) + ((s32)(data & 0x07) << 8);
 		CH->FOCT[0] = (data & 0x38) >> 3;
 		CH->KC[0] = (CH->FOCT[0] << 2) | FKEY_TAB[CH->FNUM[0] >> 7];
 
@@ -592,7 +592,7 @@ INT32 CHANNEL_SET(YM2612 *ym2612, INT32 Adr, unsigned char data)
 		{
 			chnIdx++;
 
-			ym2612->CHANNEL[2].FNUM[chnIdx] = (ym2612->CHANNEL[2].FNUM[chnIdx] & 0x0FF) + ((INT32)(data & 0x07) << 8);
+			ym2612->CHANNEL[2].FNUM[chnIdx] = (ym2612->CHANNEL[2].FNUM[chnIdx] & 0x0FF) + ((s32)(data & 0x07) << 8);
 			ym2612->CHANNEL[2].FOCT[chnIdx] = (data & 0x38) >> 3;
 			ym2612->CHANNEL[2].KC[chnIdx] = (ym2612->CHANNEL[2].FOCT[chnIdx] << 2) | FKEY_TAB[ym2612->CHANNEL[2].FNUM[chnIdx] >> 7];
 			ym2612->CHANNEL[2].SLOT[0].Finc = -1;
@@ -663,10 +663,10 @@ INT32 CHANNEL_SET(YM2612 *ym2612, INT32 Adr, unsigned char data)
 	return 0;
 }
 
-INT32 YM_SET(YM2612 *ym2612, INT32 Adr, unsigned char data)
+s32 YM_SET(YM2612 *ym2612, s32 Adr, unsigned char data)
 {
 	Channel *CH;
-	INT32 nch;
+	s32 nch;
 
 
 	switch (Adr)
@@ -683,7 +683,7 @@ INT32 YM_SET(YM2612 *ym2612, INT32 Adr, unsigned char data)
 		break;
 
 	case 0x24:
-		ym2612->TimerA = (ym2612->TimerA & 0x003) | (((INT32)data) << 2);
+		ym2612->TimerA = (ym2612->TimerA & 0x003) | (((s32)data) << 2);
 
 		if (ym2612->TimerAL != (1024 - ym2612->TimerA) << 12)
 		{
@@ -766,7 +766,7 @@ INT32 YM_SET(YM2612 *ym2612, INT32 Adr, unsigned char data)
 		break;
 
 	case 0x2A:
-		ym2612->DACdata = ((INT32)data - 0x80) << 7;  // donnée du DAC
+		ym2612->DACdata = ((s32)data - 0x80) << 7;  // donnée du DAC
 		break;
 
 	case 0x2B:
@@ -1021,7 +1021,7 @@ CH->OUTd = (ym2612->SIN_TAB[(ym2612->in3 >> SIN_LBITS) & SIN_MASK][ym2612->en3])
 DO_FEEDBACK(ym2612)                                  \
 ym2612->in1 += CH->S0_OUT[1];                            \
 ym2612->in3 += ym2612->SIN_TAB[(ym2612->in2 >> SIN_LBITS) & SIN_MASK][ym2612->en2];              \
-CH->OUTd = ((INT32)ym2612->SIN_TAB[(ym2612->in3 >> SIN_LBITS) & SIN_MASK][ym2612->en3] + (INT32)ym2612->SIN_TAB[(ym2612->in1 >> SIN_LBITS) & SIN_MASK][ym2612->en1]) >> OUT_SHIFT;  \
+CH->OUTd = ((s32)ym2612->SIN_TAB[(ym2612->in3 >> SIN_LBITS) & SIN_MASK][ym2612->en3] + (s32)ym2612->SIN_TAB[(ym2612->in1 >> SIN_LBITS) & SIN_MASK][ym2612->en1]) >> OUT_SHIFT;  \
 DO_LIMIT(ym2612)
 
 #define DO_ALGO_5(ym2612)                              \
@@ -1029,18 +1029,18 @@ DO_FEEDBACK(ym2612)                                  \
 ym2612->in1 += CH->S0_OUT[1];                            \
 ym2612->in2 += CH->S0_OUT[1];                            \
 ym2612->in3 += CH->S0_OUT[1];                            \
-CH->OUTd = ((INT32)ym2612->SIN_TAB[(ym2612->in3 >> SIN_LBITS) & SIN_MASK][ym2612->en3] + (INT32)ym2612->SIN_TAB[(ym2612->in1 >> SIN_LBITS) & SIN_MASK][ym2612->en1] + (INT32)ym2612->SIN_TAB[(ym2612->in2 >> SIN_LBITS) & SIN_MASK][ym2612->en2]) >> OUT_SHIFT;  \
+CH->OUTd = ((s32)ym2612->SIN_TAB[(ym2612->in3 >> SIN_LBITS) & SIN_MASK][ym2612->en3] + (s32)ym2612->SIN_TAB[(ym2612->in1 >> SIN_LBITS) & SIN_MASK][ym2612->en1] + (s32)ym2612->SIN_TAB[(ym2612->in2 >> SIN_LBITS) & SIN_MASK][ym2612->en2]) >> OUT_SHIFT;  \
 DO_LIMIT(ym2612)
 
 #define DO_ALGO_6(ym2612)                              \
 DO_FEEDBACK(ym2612)                                    \
 ym2612->in1 += CH->S0_OUT[1];                            \
-CH->OUTd = ((INT32)ym2612->SIN_TAB[(ym2612->in3 >> SIN_LBITS) & SIN_MASK][ym2612->en3] + (INT32)ym2612->SIN_TAB[(ym2612->in1 >> SIN_LBITS) & SIN_MASK][ym2612->en1] + (INT32)ym2612->SIN_TAB[(ym2612->in2 >> SIN_LBITS) & SIN_MASK][ym2612->en2]) >> OUT_SHIFT;  \
+CH->OUTd = ((s32)ym2612->SIN_TAB[(ym2612->in3 >> SIN_LBITS) & SIN_MASK][ym2612->en3] + (s32)ym2612->SIN_TAB[(ym2612->in1 >> SIN_LBITS) & SIN_MASK][ym2612->en1] + (s32)ym2612->SIN_TAB[(ym2612->in2 >> SIN_LBITS) & SIN_MASK][ym2612->en2]) >> OUT_SHIFT;  \
 DO_LIMIT(ym2612)
 
 #define DO_ALGO_7(ym2612)  \
 DO_FEEDBACK(ym2612) \
-CH->OUTd = ((INT32)ym2612->SIN_TAB[(ym2612->in3 >> SIN_LBITS) & SIN_MASK][ym2612->en3] + (INT32)ym2612->SIN_TAB[(ym2612->in1 >> SIN_LBITS) & SIN_MASK][ym2612->en1] + (INT32)ym2612->SIN_TAB[(ym2612->in2 >> SIN_LBITS) & SIN_MASK][ym2612->en2] + CH->S0_OUT[1]) >> OUT_SHIFT;  \
+CH->OUTd = ((s32)ym2612->SIN_TAB[(ym2612->in3 >> SIN_LBITS) & SIN_MASK][ym2612->en3] + (s32)ym2612->SIN_TAB[(ym2612->in1 >> SIN_LBITS) & SIN_MASK][ym2612->en1] + (s32)ym2612->SIN_TAB[(ym2612->in2 >> SIN_LBITS) & SIN_MASK][ym2612->en2] + CH->S0_OUT[1]) >> OUT_SHIFT;  \
 DO_LIMIT(ym2612)
 
 #define DO_OUTPUT(ym2612)            \
@@ -1092,9 +1092,9 @@ else \
 	i--;                    \
 CH->Old_OUTd = CH->OUTd;
 
-void Update_Chan_Algo0(YM2612 *ym2612, Channel *CH, INT32 **buf, INT32 lenght)
+void Update_Chan_Algo0(YM2612 *ym2612, Channel *CH, s32 **buf, s32 lenght)
 {
-	INT32 i;
+	s32 i;
 
 	if (CH->SLOT[S3].Ecnt == ENV_END)
 		return;
@@ -1110,9 +1110,9 @@ void Update_Chan_Algo0(YM2612 *ym2612, Channel *CH, INT32 **buf, INT32 lenght)
 	}
 }
 
-void Update_Chan_Algo1(YM2612 *ym2612, Channel *CH, INT32 **buf, INT32 lenght)
+void Update_Chan_Algo1(YM2612 *ym2612, Channel *CH, s32 **buf, s32 lenght)
 {
-	INT32 i;
+	s32 i;
 
 
 	if (CH->SLOT[S3].Ecnt == ENV_END)
@@ -1129,9 +1129,9 @@ void Update_Chan_Algo1(YM2612 *ym2612, Channel *CH, INT32 **buf, INT32 lenght)
 	}
 }
 
-void Update_Chan_Algo2(YM2612 *ym2612, Channel *CH, INT32 **buf, INT32 lenght)
+void Update_Chan_Algo2(YM2612 *ym2612, Channel *CH, s32 **buf, s32 lenght)
 {
-	INT32 i;
+	s32 i;
 
 
 	if (CH->SLOT[S3].Ecnt == ENV_END)
@@ -1149,9 +1149,9 @@ void Update_Chan_Algo2(YM2612 *ym2612, Channel *CH, INT32 **buf, INT32 lenght)
 }
 
 
-void Update_Chan_Algo3(YM2612 *ym2612, Channel *CH, INT32 **buf, INT32 lenght)
+void Update_Chan_Algo3(YM2612 *ym2612, Channel *CH, s32 **buf, s32 lenght)
 {
-	INT32 i;
+	s32 i;
 
 
 	if (CH->SLOT[S3].Ecnt == ENV_END)
@@ -1168,9 +1168,9 @@ void Update_Chan_Algo3(YM2612 *ym2612, Channel *CH, INT32 **buf, INT32 lenght)
 	}
 }
 
-void Update_Chan_Algo4(YM2612 *ym2612, Channel *CH, INT32 **buf, INT32 lenght)
+void Update_Chan_Algo4(YM2612 *ym2612, Channel *CH, s32 **buf, s32 lenght)
 {
-	INT32 i;
+	s32 i;
 
 
 	if ((CH->SLOT[S1].Ecnt == ENV_END) && (CH->SLOT[S3].Ecnt == ENV_END))
@@ -1187,9 +1187,9 @@ void Update_Chan_Algo4(YM2612 *ym2612, Channel *CH, INT32 **buf, INT32 lenght)
 	}
 }
 
-void Update_Chan_Algo5(YM2612 *ym2612, Channel *CH, INT32 **buf, INT32 lenght)
+void Update_Chan_Algo5(YM2612 *ym2612, Channel *CH, s32 **buf, s32 lenght)
 {
-	INT32 i;
+	s32 i;
 
 
 	if ((CH->SLOT[S1].Ecnt == ENV_END) && (CH->SLOT[S2].Ecnt == ENV_END) && (CH->SLOT[S3].Ecnt == ENV_END))
@@ -1206,9 +1206,9 @@ void Update_Chan_Algo5(YM2612 *ym2612, Channel *CH, INT32 **buf, INT32 lenght)
 	}
 }
 
-void Update_Chan_Algo6(YM2612 *ym2612, Channel *CH, INT32 **buf, INT32 lenght)
+void Update_Chan_Algo6(YM2612 *ym2612, Channel *CH, s32 **buf, s32 lenght)
 {
-	INT32 i;
+	s32 i;
 
 
 	if ((CH->SLOT[S1].Ecnt == ENV_END) && (CH->SLOT[S2].Ecnt == ENV_END) && (CH->SLOT[S3].Ecnt == ENV_END))
@@ -1225,9 +1225,9 @@ void Update_Chan_Algo6(YM2612 *ym2612, Channel *CH, INT32 **buf, INT32 lenght)
 	}
 }
 
-void Update_Chan_Algo7(YM2612 *ym2612, Channel *CH, INT32 **buf, INT32 lenght)
+void Update_Chan_Algo7(YM2612 *ym2612, Channel *CH, s32 **buf, s32 lenght)
 {
-	INT32 i;
+	s32 i;
 
 
 	if ((CH->SLOT[S0].Ecnt == ENV_END) && (CH->SLOT[S1].Ecnt == ENV_END) && (CH->SLOT[S2].Ecnt == ENV_END) && (CH->SLOT[S3].Ecnt == ENV_END))
@@ -1244,9 +1244,9 @@ void Update_Chan_Algo7(YM2612 *ym2612, Channel *CH, INT32 **buf, INT32 lenght)
 	}
 }
 
-void Update_Chan_Algo0_LFO(YM2612 *ym2612, Channel *CH, INT32 **buf, INT32 lenght)
+void Update_Chan_Algo0_LFO(YM2612 *ym2612, Channel *CH, s32 **buf, s32 lenght)
 {
-	INT32 i, env_LFO, freq_LFO;
+	s32 i, env_LFO, freq_LFO;
 
 
 	if (CH->SLOT[S3].Ecnt == ENV_END)
@@ -1263,9 +1263,9 @@ void Update_Chan_Algo0_LFO(YM2612 *ym2612, Channel *CH, INT32 **buf, INT32 lengh
 	}
 }
 
-void Update_Chan_Algo1_LFO(YM2612 *ym2612, Channel *CH, INT32 **buf, INT32 lenght)
+void Update_Chan_Algo1_LFO(YM2612 *ym2612, Channel *CH, s32 **buf, s32 lenght)
 {
-	INT32 i, env_LFO, freq_LFO;
+	s32 i, env_LFO, freq_LFO;
 
 
 	if (CH->SLOT[S3].Ecnt == ENV_END)
@@ -1282,9 +1282,9 @@ void Update_Chan_Algo1_LFO(YM2612 *ym2612, Channel *CH, INT32 **buf, INT32 lengh
 	}
 }
 
-void Update_Chan_Algo2_LFO(YM2612 *ym2612, Channel *CH, INT32 **buf, INT32 lenght)
+void Update_Chan_Algo2_LFO(YM2612 *ym2612, Channel *CH, s32 **buf, s32 lenght)
 {
-	INT32 i, env_LFO, freq_LFO;
+	s32 i, env_LFO, freq_LFO;
 
 
 	if (CH->SLOT[S3].Ecnt == ENV_END)
@@ -1301,9 +1301,9 @@ void Update_Chan_Algo2_LFO(YM2612 *ym2612, Channel *CH, INT32 **buf, INT32 lengh
 	}
 }
 
-void Update_Chan_Algo3_LFO(YM2612 *ym2612, Channel *CH, INT32 **buf, INT32 lenght)
+void Update_Chan_Algo3_LFO(YM2612 *ym2612, Channel *CH, s32 **buf, s32 lenght)
 {
-	INT32 i, env_LFO, freq_LFO;
+	s32 i, env_LFO, freq_LFO;
 
 
 	if (CH->SLOT[S3].Ecnt == ENV_END)
@@ -1320,9 +1320,9 @@ void Update_Chan_Algo3_LFO(YM2612 *ym2612, Channel *CH, INT32 **buf, INT32 lengh
 	}
 }
 
-void Update_Chan_Algo4_LFO(YM2612 *ym2612, Channel *CH, INT32 **buf, INT32 lenght)
+void Update_Chan_Algo4_LFO(YM2612 *ym2612, Channel *CH, s32 **buf, s32 lenght)
 {
-	INT32 i, env_LFO, freq_LFO;
+	s32 i, env_LFO, freq_LFO;
 
 
 	if ((CH->SLOT[S1].Ecnt == ENV_END) && (CH->SLOT[S3].Ecnt == ENV_END))
@@ -1339,9 +1339,9 @@ void Update_Chan_Algo4_LFO(YM2612 *ym2612, Channel *CH, INT32 **buf, INT32 lengh
 	}
 }
 
-void Update_Chan_Algo5_LFO(YM2612 *ym2612, Channel *CH, INT32 **buf, INT32 lenght)
+void Update_Chan_Algo5_LFO(YM2612 *ym2612, Channel *CH, s32 **buf, s32 lenght)
 {
-	INT32 i, env_LFO, freq_LFO;
+	s32 i, env_LFO, freq_LFO;
 
 
 	if ((CH->SLOT[S1].Ecnt == ENV_END) && (CH->SLOT[S2].Ecnt == ENV_END) && (CH->SLOT[S3].Ecnt == ENV_END))
@@ -1358,9 +1358,9 @@ void Update_Chan_Algo5_LFO(YM2612 *ym2612, Channel *CH, INT32 **buf, INT32 lengh
 	}
 }
 
-void Update_Chan_Algo6_LFO(YM2612 *ym2612, Channel *CH, INT32 **buf, INT32 lenght)
+void Update_Chan_Algo6_LFO(YM2612 *ym2612, Channel *CH, s32 **buf, s32 lenght)
 {
-	INT32 i, env_LFO, freq_LFO;
+	s32 i, env_LFO, freq_LFO;
 
 
 	if ((CH->SLOT[S1].Ecnt == ENV_END) && (CH->SLOT[S2].Ecnt == ENV_END) && (CH->SLOT[S3].Ecnt == ENV_END))
@@ -1377,9 +1377,9 @@ void Update_Chan_Algo6_LFO(YM2612 *ym2612, Channel *CH, INT32 **buf, INT32 lengh
 	}
 }
 
-void Update_Chan_Algo7_LFO(YM2612 *ym2612, Channel *CH, INT32 **buf, INT32 lenght)
+void Update_Chan_Algo7_LFO(YM2612 *ym2612, Channel *CH, s32 **buf, s32 lenght)
 {
-	INT32 i, env_LFO, freq_LFO;
+	s32 i, env_LFO, freq_LFO;
 
 
 	if ((CH->SLOT[S0].Ecnt == ENV_END) && (CH->SLOT[S1].Ecnt == ENV_END) && (CH->SLOT[S2].Ecnt == ENV_END) && (CH->SLOT[S3].Ecnt == ENV_END))
@@ -1396,9 +1396,9 @@ void Update_Chan_Algo7_LFO(YM2612 *ym2612, Channel *CH, INT32 **buf, INT32 lengh
 	}
 }
 
-void Update_Chan_Algo0_Int(YM2612 *ym2612, Channel *CH, INT32 **buf, INT32 lenght)
+void Update_Chan_Algo0_Int(YM2612 *ym2612, Channel *CH, s32 **buf, s32 lenght)
 {
-	INT32 i;
+	s32 i;
 
 
 	if (CH->SLOT[S3].Ecnt == ENV_END)
@@ -1418,9 +1418,9 @@ void Update_Chan_Algo0_Int(YM2612 *ym2612, Channel *CH, INT32 **buf, INT32 lengh
 }
 
 
-void Update_Chan_Algo1_Int(YM2612 *ym2612, Channel *CH, INT32 **buf, INT32 lenght)
+void Update_Chan_Algo1_Int(YM2612 *ym2612, Channel *CH, s32 **buf, s32 lenght)
 {
-	INT32 i;
+	s32 i;
 
 
 	if (CH->SLOT[S3].Ecnt == ENV_END)
@@ -1440,9 +1440,9 @@ void Update_Chan_Algo1_Int(YM2612 *ym2612, Channel *CH, INT32 **buf, INT32 lengh
 }
 
 
-void Update_Chan_Algo2_Int(YM2612 *ym2612, Channel *CH, INT32 **buf, INT32 lenght)
+void Update_Chan_Algo2_Int(YM2612 *ym2612, Channel *CH, s32 **buf, s32 lenght)
 {
-	INT32 i;
+	s32 i;
 
 
 	if (CH->SLOT[S3].Ecnt == ENV_END)
@@ -1462,9 +1462,9 @@ void Update_Chan_Algo2_Int(YM2612 *ym2612, Channel *CH, INT32 **buf, INT32 lengh
 }
 
 
-void Update_Chan_Algo3_Int(YM2612 *ym2612, Channel *CH, INT32 **buf, INT32 lenght)
+void Update_Chan_Algo3_Int(YM2612 *ym2612, Channel *CH, s32 **buf, s32 lenght)
 {
-	INT32 i;
+	s32 i;
 
 
 	if (CH->SLOT[S3].Ecnt == ENV_END)
@@ -1483,9 +1483,9 @@ void Update_Chan_Algo3_Int(YM2612 *ym2612, Channel *CH, INT32 **buf, INT32 lengh
 	}
 }
 
-void Update_Chan_Algo4_Int(YM2612 *ym2612, Channel *CH, INT32 **buf, INT32 lenght)
+void Update_Chan_Algo4_Int(YM2612 *ym2612, Channel *CH, s32 **buf, s32 lenght)
 {
-	INT32 i;
+	s32 i;
 
 
 	if ((CH->SLOT[S1].Ecnt == ENV_END) && (CH->SLOT[S3].Ecnt == ENV_END))
@@ -1504,9 +1504,9 @@ void Update_Chan_Algo4_Int(YM2612 *ym2612, Channel *CH, INT32 **buf, INT32 lengh
 	}
 }
 
-void Update_Chan_Algo5_Int(YM2612 *ym2612, Channel *CH, INT32 **buf, INT32 lenght)
+void Update_Chan_Algo5_Int(YM2612 *ym2612, Channel *CH, s32 **buf, s32 lenght)
 {
-	INT32 i;
+	s32 i;
 
 
 	if ((CH->SLOT[S1].Ecnt == ENV_END) && (CH->SLOT[S2].Ecnt == ENV_END) && (CH->SLOT[S3].Ecnt == ENV_END))
@@ -1526,9 +1526,9 @@ void Update_Chan_Algo5_Int(YM2612 *ym2612, Channel *CH, INT32 **buf, INT32 lengh
 }
 
 
-void Update_Chan_Algo6_Int(YM2612 *ym2612, Channel *CH, INT32 **buf, INT32 lenght)
+void Update_Chan_Algo6_Int(YM2612 *ym2612, Channel *CH, s32 **buf, s32 lenght)
 {
-	INT32 i;
+	s32 i;
 
 
 	if ((CH->SLOT[S1].Ecnt == ENV_END) && (CH->SLOT[S2].Ecnt == ENV_END) && (CH->SLOT[S3].Ecnt == ENV_END))
@@ -1548,9 +1548,9 @@ void Update_Chan_Algo6_Int(YM2612 *ym2612, Channel *CH, INT32 **buf, INT32 lengh
 }
 
 
-void Update_Chan_Algo7_Int(YM2612 *ym2612, Channel *CH, INT32 **buf, INT32 lenght)
+void Update_Chan_Algo7_Int(YM2612 *ym2612, Channel *CH, s32 **buf, s32 lenght)
 {
-	INT32 i;
+	s32 i;
 
 
 	if ((CH->SLOT[S0].Ecnt == ENV_END) && (CH->SLOT[S1].Ecnt == ENV_END) && (CH->SLOT[S2].Ecnt == ENV_END) && (CH->SLOT[S3].Ecnt == ENV_END))
@@ -1570,9 +1570,9 @@ void Update_Chan_Algo7_Int(YM2612 *ym2612, Channel *CH, INT32 **buf, INT32 lengh
 }
 
 
-void Update_Chan_Algo0_LFO_Int(YM2612 *ym2612, Channel *CH, INT32 **buf, INT32 lenght)
+void Update_Chan_Algo0_LFO_Int(YM2612 *ym2612, Channel *CH, s32 **buf, s32 lenght)
 {
-	INT32 i, env_LFO, freq_LFO;
+	s32 i, env_LFO, freq_LFO;
 
 	if (CH->SLOT[S3].Ecnt == ENV_END)
 		return;
@@ -1591,9 +1591,9 @@ void Update_Chan_Algo0_LFO_Int(YM2612 *ym2612, Channel *CH, INT32 **buf, INT32 l
 }
 
 
-void Update_Chan_Algo1_LFO_Int(YM2612 *ym2612, Channel *CH, INT32 **buf, INT32 lenght)
+void Update_Chan_Algo1_LFO_Int(YM2612 *ym2612, Channel *CH, s32 **buf, s32 lenght)
 {
-	INT32 i, env_LFO, freq_LFO;
+	s32 i, env_LFO, freq_LFO;
 
 	if (CH->SLOT[S3].Ecnt == ENV_END)
 		return;
@@ -1611,9 +1611,9 @@ void Update_Chan_Algo1_LFO_Int(YM2612 *ym2612, Channel *CH, INT32 **buf, INT32 l
 	}
 }
 
-void Update_Chan_Algo2_LFO_Int(YM2612 *ym2612, Channel *CH, INT32 **buf, INT32 lenght)
+void Update_Chan_Algo2_LFO_Int(YM2612 *ym2612, Channel *CH, s32 **buf, s32 lenght)
 {
-	INT32 i, env_LFO, freq_LFO;
+	s32 i, env_LFO, freq_LFO;
 
 
 	if (CH->SLOT[S3].Ecnt == ENV_END)
@@ -1632,9 +1632,9 @@ void Update_Chan_Algo2_LFO_Int(YM2612 *ym2612, Channel *CH, INT32 **buf, INT32 l
 	}
 }
 
-void Update_Chan_Algo3_LFO_Int(YM2612 *ym2612, Channel *CH, INT32 **buf, INT32 lenght)
+void Update_Chan_Algo3_LFO_Int(YM2612 *ym2612, Channel *CH, s32 **buf, s32 lenght)
 {
-	INT32 i, env_LFO, freq_LFO;
+	s32 i, env_LFO, freq_LFO;
 
 
 	if (CH->SLOT[S3].Ecnt == ENV_END)
@@ -1653,9 +1653,9 @@ void Update_Chan_Algo3_LFO_Int(YM2612 *ym2612, Channel *CH, INT32 **buf, INT32 l
 	}
 }
 
-void Update_Chan_Algo4_LFO_Int(YM2612 *ym2612, Channel *CH, INT32 **buf, INT32 lenght)
+void Update_Chan_Algo4_LFO_Int(YM2612 *ym2612, Channel *CH, s32 **buf, s32 lenght)
 {
-	INT32 i, env_LFO, freq_LFO;
+	s32 i, env_LFO, freq_LFO;
 
 	if ((CH->SLOT[S1].Ecnt == ENV_END) && (CH->SLOT[S3].Ecnt == ENV_END))
 		return;
@@ -1673,9 +1673,9 @@ void Update_Chan_Algo4_LFO_Int(YM2612 *ym2612, Channel *CH, INT32 **buf, INT32 l
 	}
 }
 
-void Update_Chan_Algo5_LFO_Int(YM2612 *ym2612, Channel *CH, INT32 **buf, INT32 lenght)
+void Update_Chan_Algo5_LFO_Int(YM2612 *ym2612, Channel *CH, s32 **buf, s32 lenght)
 {
-	INT32 i, env_LFO, freq_LFO;
+	s32 i, env_LFO, freq_LFO;
 
 	if ((CH->SLOT[S1].Ecnt == ENV_END) && (CH->SLOT[S2].Ecnt == ENV_END) && (CH->SLOT[S3].Ecnt == ENV_END))
 		return;
@@ -1694,9 +1694,9 @@ void Update_Chan_Algo5_LFO_Int(YM2612 *ym2612, Channel *CH, INT32 **buf, INT32 l
 }
 
 
-void Update_Chan_Algo6_LFO_Int(YM2612 *ym2612, Channel *CH, INT32 **buf, INT32 lenght)
+void Update_Chan_Algo6_LFO_Int(YM2612 *ym2612, Channel *CH, s32 **buf, s32 lenght)
 {
-	INT32 i, env_LFO, freq_LFO;
+	s32 i, env_LFO, freq_LFO;
 
 
 	if ((CH->SLOT[S1].Ecnt == ENV_END) && (CH->SLOT[S2].Ecnt == ENV_END) && (CH->SLOT[S3].Ecnt == ENV_END))
@@ -1715,9 +1715,9 @@ void Update_Chan_Algo6_LFO_Int(YM2612 *ym2612, Channel *CH, INT32 **buf, INT32 l
 	}
 }
 
-void Update_Chan_Algo7_LFO_Int(YM2612 *ym2612, Channel *CH, INT32 **buf, INT32 lenght)
+void Update_Chan_Algo7_LFO_Int(YM2612 *ym2612, Channel *CH, s32 **buf, s32 lenght)
 {
-	INT32 i, env_LFO, freq_LFO;
+	s32 i, env_LFO, freq_LFO;
 
 	if ((CH->SLOT[S0].Ecnt == ENV_END) && (CH->SLOT[S1].Ecnt == ENV_END) && (CH->SLOT[S2].Ecnt == ENV_END) && (CH->SLOT[S3].Ecnt == ENV_END))
 		return;
@@ -1736,10 +1736,10 @@ void Update_Chan_Algo7_LFO_Int(YM2612 *ym2612, Channel *CH, INT32 **buf, INT32 l
 }
 
 /////////////////////////////////////////////////////////////////////////////
-INT32 YM2612_Initialize(UINT8 chipID, UINT32 clock, UINT32 sampleRate)
+s32 YM2612_Initialize(u8 chipID, u32 clock, u32 sampleRate)
 {
-	INT32 i, j;
-	FLOAT32 x;
+	s32 i, j;
+	f32 x;
 	YM2612 *ym2612 = &ym2612Chips[chipID];
 
 	if ((sampleRate == 0) || (clock == 0))
@@ -1754,13 +1754,13 @@ INT32 YM2612_Initialize(UINT8 chipID, UINT32 clock, UINT32 sampleRate)
 	// 144 = 12 * (prescale * 2) = 12 * 6 * 2
 	// prescale set to 6 by default
 
-	ym2612->Frequence = ((FLOAT32)ym2612->Clock / (FLOAT32)ym2612->Rate) / 144.0;
-	ym2612->TimerBase = (INT32)(ym2612->Frequence * 4096.0);
+	ym2612->Frequence = ((f32)ym2612->Clock / (f32)ym2612->Rate) / 144.0;
+	ym2612->TimerBase = (s32)(ym2612->Frequence * 4096.0);
 
-	INT32 Interpolation = -1;
+	s32 Interpolation = -1;
 	if ((Interpolation) && (ym2612->Frequence > 1.0))
 	{
-		ym2612->Inter_Step = (UINT32)((1.0 / ym2612->Frequence) * (FLOAT32)(0x4000));
+		ym2612->Inter_Step = (u32)((1.0 / ym2612->Frequence) * (f32)(0x4000));
 		ym2612->Inter_Cnt = 0;
 
 		// We recalculate rate and frequence after interpolation
@@ -1788,7 +1788,7 @@ INT32 YM2612_Initialize(UINT8 chipID, UINT32 clock, UINT32 sampleRate)
 			x = MAX_OUT;                // Max output
 			x /= pow(10, (ENV_STEP * i) / 20);      // Decibel -> Voltage
 
-			ym2612->TL_TAB[i] = (INT32)x;
+			ym2612->TL_TAB[i] = (s32)x;
 			ym2612->TL_TAB[TL_LENGHT + i] = -ym2612->TL_TAB[i];
 		}
 	}
@@ -1797,15 +1797,15 @@ INT32 YM2612_Initialize(UINT8 chipID, UINT32 clock, UINT32 sampleRate)
 	// SIN_TAB[x][y] = sin(x) * y;
 	// x = phase and y = volume
 
-	ym2612->SIN_TAB[0] = ym2612->SIN_TAB[SIN_LENGHT / 2] = &ym2612->TL_TAB[(INT32)PG_CUT_OFF];
+	ym2612->SIN_TAB[0] = ym2612->SIN_TAB[SIN_LENGHT / 2] = &ym2612->TL_TAB[(s32)PG_CUT_OFF];
 	for (i = 1; i <= SIN_LENGHT / 4; i++)
 	{
-		x = sin(2.0 * PI * (FLOAT32)(i) / (FLOAT32)(SIN_LENGHT));  // Sinus
+		x = sin(2.0 * PI * (f32)(i) / (f32)(SIN_LENGHT));  // Sinus
 		x = 20 * log10(1 / x);                    // convert to dB
 
-		j = (INT32)(x / ENV_STEP);            // Get TL range
+		j = (s32)(x / ENV_STEP);            // Get TL range
 
-		if (j > PG_CUT_OFF) j = (INT32)PG_CUT_OFF;
+		if (j > PG_CUT_OFF) j = (s32)PG_CUT_OFF;
 
 		ym2612->SIN_TAB[i] = ym2612->SIN_TAB[(SIN_LENGHT / 2) - i] = &ym2612->TL_TAB[j];
 		ym2612->SIN_TAB[(SIN_LENGHT / 2) + i] = ym2612->SIN_TAB[SIN_LENGHT - i] = &ym2612->TL_TAB[TL_LENGHT + j];
@@ -1814,17 +1814,17 @@ INT32 YM2612_Initialize(UINT8 chipID, UINT32 clock, UINT32 sampleRate)
 	// Tableau LFO (LFO wav) :
 	for (i = 0; i < LFO_LENGHT; i++)
 	{
-		x = sin(2.0 * PI * (FLOAT32)(i) / (FLOAT32)(LFO_LENGHT));  // Sinus
+		x = sin(2.0 * PI * (f32)(i) / (f32)(LFO_LENGHT));  // Sinus
 		x += 1.0;
 		x /= 2.0;          // positive only
 		x *= 11.8 / ENV_STEP;    // ajusted to MAX enveloppe modulation
 
-		ym2612->LFO_ENV_TAB[i] = (INT32)x;
+		ym2612->LFO_ENV_TAB[i] = (s32)x;
 
-		x = sin(2.0 * PI * (FLOAT32)(i) / (FLOAT32)(LFO_LENGHT));  // Sinus
-		x *= (FLOAT32)((1 << (LFO_HBITS - 1)) - 1);
+		x = sin(2.0 * PI * (f32)(i) / (f32)(LFO_LENGHT));  // Sinus
+		x *= (f32)((1 << (LFO_HBITS - 1)) - 1);
 
-		ym2612->LFO_FREQ_TAB[i] = (INT32)x;
+		ym2612->LFO_FREQ_TAB[i] = (s32)x;
 	}
 
 	// Tableau Enveloppe :
@@ -1833,16 +1833,16 @@ INT32 YM2612_Initialize(UINT8 chipID, UINT32 clock, UINT32 sampleRate)
 	for (i = 0; i < ENV_LENGHT; i++)
 	{
 		// Attack curve (x^8 - music level 2 Vectorman 2)
-		x = pow(((FLOAT32)((ENV_LENGHT - 1) - i) / (FLOAT32)(ENV_LENGHT)), 8);
+		x = pow(((f32)((ENV_LENGHT - 1) - i) / (f32)(ENV_LENGHT)), 8);
 		x *= ENV_LENGHT;
 
-		ym2612->ENV_TAB[i] = (INT32)x;
+		ym2612->ENV_TAB[i] = (s32)x;
 
 		// Decay curve (just linear)
-		x = pow(((FLOAT32)(i) / (FLOAT32)(ENV_LENGHT)), 1);
+		x = pow(((f32)(i) / (f32)(ENV_LENGHT)), 1);
 		x *= ENV_LENGHT;
 
-		ym2612->ENV_TAB[ENV_LENGHT + i] = (INT32)x;
+		ym2612->ENV_TAB[ENV_LENGHT + i] = (s32)x;
 	}
 
 	ym2612->ENV_TAB[ENV_END >> ENV_LBITS] = ENV_LENGHT - 1;    // for the stopped state
@@ -1861,7 +1861,7 @@ INT32 YM2612_Initialize(UINT8 chipID, UINT32 clock, UINT32 sampleRate)
 		x = i * 3;          // 3 and not 6 (Mickey Mania first music for test)
 		x /= ENV_STEP;
 
-		j = (INT32)x;
+		j = (s32)x;
 		j <<= ENV_LBITS;
 
 		ym2612->SL_TAB[i] = j + ENV_DECAY;
@@ -1874,16 +1874,16 @@ INT32 YM2612_Initialize(UINT8 chipID, UINT32 clock, UINT32 sampleRate)
 	// Tableau Frequency Step
 	for (i = 0; i < 2048; i++)
 	{
-		x = (FLOAT32)(i)* ym2612->Frequence;
+		x = (f32)(i)* ym2612->Frequence;
 
 #if((SIN_LBITS + SIN_HBITS - (21 - 7)) < 0)
-		x /= (FLOAT32)(1 << ((21 - 7) - SIN_LBITS - SIN_HBITS));
+		x /= (f32)(1 << ((21 - 7) - SIN_LBITS - SIN_HBITS));
 #else
-		x *= (FLOAT32)(1 << (SIN_LBITS + SIN_HBITS - (21 - 7)));
+		x *= (f32)(1 << (SIN_LBITS + SIN_HBITS - (21 - 7)));
 #endif
 		x /= 2.0;  // because MUL = value * 2
 
-		ym2612->FINC_TAB[i] = (UINT32)x;
+		ym2612->FINC_TAB[i] = (u32)x;
 	}
 
 	// Tableaux Attack & Decay Rate
@@ -1899,11 +1899,11 @@ INT32 YM2612_Initialize(UINT8 chipID, UINT32 clock, UINT32 sampleRate)
 		x = ym2612->Frequence;
 
 		x *= 1.0 + ((i & 3) * 0.25);          // bits 0-1 : x1.00, x1.25, x1.50, x1.75
-		x *= (FLOAT32)(1 << ((i >> 2)));        // bits 2-5 : shift bits (x2^0 - x2^15)
-		x *= (FLOAT32)(ENV_LENGHT << ENV_LBITS);    // on ajuste pour le tableau ENV_TAB
+		x *= (f32)(1 << ((i >> 2)));        // bits 2-5 : shift bits (x2^0 - x2^15)
+		x *= (f32)(ENV_LENGHT << ENV_LBITS);    // on ajuste pour le tableau ENV_TAB
 
-		ym2612->AR_TAB[i + 4] = (UINT32)(x / AR_RATE);
-		ym2612->DR_TAB[i + 4] = (UINT32)(x / DR_RATE);
+		ym2612->AR_TAB[i + 4] = (u32)(x / AR_RATE);
+		ym2612->DR_TAB[i + 4] = (u32)(x / DR_RATE);
 	}
 
 	for (i = 64; i < 96; i++)
@@ -1921,12 +1921,12 @@ INT32 YM2612_Initialize(UINT8 chipID, UINT32 clock, UINT32 sampleRate)
 		for (j = 0; j < 32; j++)
 		{
 #if((SIN_LBITS + SIN_HBITS - 21) < 0)
-			x = (FLOAT32)DT_DEF_TAB[(i << 5) + j] * ym2612->Frequence / (FLOAT32)(1 << (21 - SIN_LBITS - SIN_HBITS));
+			x = (f32)DT_DEF_TAB[(i << 5) + j] * ym2612->Frequence / (f32)(1 << (21 - SIN_LBITS - SIN_HBITS));
 #else
-			x = (FLOAT32)DT_DEF_TAB[(i << 5) + j] * ym2612->Frequence * (FLOAT32)(1 << (SIN_LBITS + SIN_HBITS - 21));
+			x = (f32)DT_DEF_TAB[(i << 5) + j] * ym2612->Frequence * (f32)(1 << (SIN_LBITS + SIN_HBITS - 21));
 #endif
-			ym2612->DT_TAB[i + 0][j] = (INT32)x;
-			ym2612->DT_TAB[i + 4][j] = (INT32)-x;
+			ym2612->DT_TAB[i + 0][j] = (s32)x;
+			ym2612->DT_TAB[i + 4][j] = (s32)-x;
 		}
 	}
 
@@ -1934,30 +1934,30 @@ INT32 YM2612_Initialize(UINT8 chipID, UINT32 clock, UINT32 sampleRate)
 
 	j = (ym2612->Rate * ym2612->Inter_Step) / 0x4000;
 
-	ym2612->LFO_INC_TAB[0] = (UINT32)(3.98 * (FLOAT32)(1 << (LFO_HBITS + LFO_LBITS)) / j);
-	ym2612->LFO_INC_TAB[1] = (UINT32)(5.56 * (FLOAT32)(1 << (LFO_HBITS + LFO_LBITS)) / j);
-	ym2612->LFO_INC_TAB[2] = (UINT32)(6.02 * (FLOAT32)(1 << (LFO_HBITS + LFO_LBITS)) / j);
-	ym2612->LFO_INC_TAB[3] = (UINT32)(6.37 * (FLOAT32)(1 << (LFO_HBITS + LFO_LBITS)) / j);
-	ym2612->LFO_INC_TAB[4] = (UINT32)(6.88 * (FLOAT32)(1 << (LFO_HBITS + LFO_LBITS)) / j);
-	ym2612->LFO_INC_TAB[5] = (UINT32)(9.63 * (FLOAT32)(1 << (LFO_HBITS + LFO_LBITS)) / j);
-	ym2612->LFO_INC_TAB[6] = (UINT32)(48.1 * (FLOAT32)(1 << (LFO_HBITS + LFO_LBITS)) / j);
-	ym2612->LFO_INC_TAB[7] = (UINT32)(72.2 * (FLOAT32)(1 << (LFO_HBITS + LFO_LBITS)) / j);
+	ym2612->LFO_INC_TAB[0] = (u32)(3.98 * (f32)(1 << (LFO_HBITS + LFO_LBITS)) / j);
+	ym2612->LFO_INC_TAB[1] = (u32)(5.56 * (f32)(1 << (LFO_HBITS + LFO_LBITS)) / j);
+	ym2612->LFO_INC_TAB[2] = (u32)(6.02 * (f32)(1 << (LFO_HBITS + LFO_LBITS)) / j);
+	ym2612->LFO_INC_TAB[3] = (u32)(6.37 * (f32)(1 << (LFO_HBITS + LFO_LBITS)) / j);
+	ym2612->LFO_INC_TAB[4] = (u32)(6.88 * (f32)(1 << (LFO_HBITS + LFO_LBITS)) / j);
+	ym2612->LFO_INC_TAB[5] = (u32)(9.63 * (f32)(1 << (LFO_HBITS + LFO_LBITS)) / j);
+	ym2612->LFO_INC_TAB[6] = (u32)(48.1 * (f32)(1 << (LFO_HBITS + LFO_LBITS)) / j);
+	ym2612->LFO_INC_TAB[7] = (u32)(72.2 * (f32)(1 << (LFO_HBITS + LFO_LBITS)) / j);
 
 	YM2612_Reset(chipID);
 
 	return -1;
 }
 
-void YM2612_Shutdown(UINT8 chipID)
+void YM2612_Shutdown(u8 chipID)
 {
 	YM2612 *ym2612 = &ym2612Chips[chipID];
 
 	memset(ym2612, 0, sizeof(YM2612));
 }
 
-void YM2612_Reset(UINT8 chipID)
+void YM2612_Reset(u8 chipID)
 {
-	INT32 i, j;
+	s32 i, j;
 	YM2612 *ym2612 = &ym2612Chips[chipID];
 
 	ym2612->LFOcnt = 0;
@@ -2031,16 +2031,16 @@ void YM2612_Reset(UINT8 chipID)
 	YM2612_WriteRegister(chipID, 1, 0x80);
 }
 
-UINT8 YM2612_ReadStatus(UINT8 chipID)
+u8 YM2612_ReadStatus(u8 chipID)
 {
 	YM2612 *ym2612 = &ym2612Chips[chipID];
 
 	return ym2612->Status;
 }
 
-void YM2612_WriteRegister(UINT8 chipID, UINT32 address, UINT8 data)
+void YM2612_WriteRegister(u8 chipID, u32 address, u8 data)
 {
-	INT32 d;
+	s32 d;
 	YM2612 *ym2612 = &ym2612Chips[chipID];
 
 	data &= 0xFF;
@@ -2056,7 +2056,7 @@ void YM2612_WriteRegister(UINT8 chipID, UINT32 address, UINT8 data)
 		// Trivial optimisation
 		if (ym2612->OPNAadr == 0x2A)
 		{
-			ym2612->DACdata = ((INT32)data - 0x80) << 7;
+			ym2612->DACdata = ((s32)data - 0x80) << 7;
 		}
 
 		d = ym2612->OPNAadr & 0xF0;
@@ -2116,9 +2116,9 @@ void YM2612_WriteRegister(UINT8 chipID, UINT32 address, UINT8 data)
 	}
 }
 
-void YM2612_Update(UINT8 chipID, INT32 **buffers, UINT32 length)
+void YM2612_Update(u8 chipID, s32 **buffers, u32 length)
 {
-	INT32 i, j, algo_type;
+	s32 i, j, algo_type;
 	YM2612 *ym2612 = &ym2612Chips[chipID];
 
 	if (ym2612->CHANNEL[0].SLOT[0].Finc == -1)

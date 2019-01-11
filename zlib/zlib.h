@@ -1349,7 +1349,7 @@ ZEXTERN gzFile ZEXPORT gzdopen OF((int fd, const char *mode));
    mode);.  The duplicated descriptor should be saved to avoid a leak, since
    gzdopen does not close fd if it fails.  If you are using fileno() to get the
    file descriptor from a FILE *, then you will have to use dup() to avoid
-   double-close()ing the file descriptor.  Both gzclose() and fclose() will
+   f64-close()ing the file descriptor.  Both gzclose() and fclose() will
    close the associated file descriptor, so they need to have different file
    descriptors.
 

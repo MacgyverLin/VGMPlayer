@@ -21,7 +21,7 @@ FILE *fptr = 0;
 int length = 0;
 #endif
 
-VGMData::VGMData(INT32 channels_, INT32 bitPerSample_, INT32 sampleRate_)
+VGMData::VGMData(s32 channels_, s32 bitPerSample_, s32 sampleRate_)
 	: Obserable()
 {
 	playInfo.paused = true;
@@ -45,7 +45,7 @@ VGMData::~VGMData()
 {
 }
 
-UINT32 VGMData::getVersion()
+u32 VGMData::getVersion()
 {
 	return header.version;
 }
@@ -129,7 +129,7 @@ BOOL VGMData::open()
 	}
 
 	// seek to first data
-	UINT32 dataStart;
+	u32 dataStart;
 	if (((header.VGMDataOffset == 0x0c) && (header.version >= 0x150)) || (header.version < 0x150))
 	{
 		dataStart = 0x40;
@@ -139,9 +139,9 @@ BOOL VGMData::open()
 		dataStart = 0x34 + header.VGMDataOffset;
 	}
 
-	UINT32 byteRemained = dataStart - 0x38;
+	u32 byteRemained = dataStart - 0x38;
 	if (byteRemained >= 0)
-		read((UINT8*)(&header) + 0x38, byteRemained);
+		read((u8*)(&header) + 0x38, byteRemained);
 
 #if defined(DUMP_YM2612) || defined(DUMP_SN76489)
 	length = 0;
@@ -221,17 +221,17 @@ void VGMData::close()
 	onClose();
 }
 
-INT32 VGMData::read(VOID *buffer, UINT32 size)
+s32 VGMData::read(VOID *buffer, u32 size)
 {
 	return onRead(buffer, size);
 }
 
-INT32 VGMData::seekSet(UINT32 size)
+s32 VGMData::seekSet(u32 size)
 {
 	return onSeekSet(size);
 }
 
-INT32 VGMData::seekCur(UINT32 size)
+s32 VGMData::seekCur(u32 size)
 {
 	return onSeekCur(size);
 }
@@ -240,16 +240,16 @@ void VGMData::fillOutputBuffer()
 {
 	int i, out_L, out_R;
 	short *dest = (short *)(&bufferInfo.outputSamples[0]);
-	INT32* l = &bufferInfo.samplesL[0];
-	INT32* r = &bufferInfo.samplesR[0];
+	s32* l = &bufferInfo.samplesL[0];
+	s32* r = &bufferInfo.samplesR[0];
 
 	for (i = 0; i < VGM_SAMPLE_COUNT; i++) // always fill by fix size VGM_SAMPLE_COUNT
 	{
 		out_L = l[i];
 		out_R = r[i];
 		/*
-		out_L = 32000 * sin(((float)sample) * frequency / playInfo.sampleRate * 2.0f * 3.1415f); //l[i];
-		out_R = 32000 * sin(((float)sample) * frequency / playInfo.sampleRate * 2.0f * 3.1415f); //r[i];
+		out_L = 32000 * sin(((f32)sample) * frequency / playInfo.sampleRate * 2.0f * 3.1415f); //l[i];
+		out_R = 32000 * sin(((f32)sample) * frequency / playInfo.sampleRate * 2.0f * 3.1415f); //r[i];
 		sample++;
 		if(sample>44100*5)
 		{
@@ -281,13 +281,13 @@ void VGMData::fillOutputBuffer()
 	}
 }
 
-UINT32 VGMData::updateSamples(UINT32 updateSampleCounts)
+u32 VGMData::updateSamples(u32 updateSampleCounts)
 {
 	updateSampleCounts = VGMPlayer_MIN((VGM_SAMPLE_COUNT - bufferInfo.sampleIdx), updateSampleCounts); // never exceed bufferSize
 	if (updateSampleCounts == 0)
 		return 0;
 
-	INT32* sampleBuffers[2];
+	s32* sampleBuffers[2];
 	sampleBuffers[0] = &bufferInfo.samplesL[bufferInfo.sampleIdx];
 	sampleBuffers[1] = &bufferInfo.samplesR[bufferInfo.sampleIdx];
 
@@ -326,7 +326,7 @@ void VGMData::handleEndOfSound()
 {
 }
 
-void VGMData::handleK053260ROM(INT32 skipByte0x66, INT32 blockType, INT32 blockSize)
+void VGMData::handleK053260ROM(s32 skipByte0x66, s32 blockType, s32 blockSize)
 {
 	unsigned int entireRomSize;
 	read(&entireRomSize, sizeof(entireRomSize));
@@ -334,7 +334,7 @@ void VGMData::handleK053260ROM(INT32 skipByte0x66, INT32 blockType, INT32 blockS
 	unsigned int startAddress;
 	read(&startAddress, sizeof(startAddress));
 
-	vector<UINT8> romData;
+	vector<u8> romData;
 	romData.resize(blockSize - 8);
 	read(&romData[0], blockSize - 8);
 
@@ -370,7 +370,7 @@ BOOL VGMData::update()
 	{
 		if (updateSampleCounts > 0)
 		{
-			INT32 nnnn = updateSamples(updateSampleCounts);
+			s32 nnnn = updateSamples(updateSampleCounts);
 			updateSampleCounts -= nnnn;
 
 #if defined(DUMP_YM2612) || defined(DUMP_SN76489)
@@ -398,25 +398,25 @@ BOOL VGMData::update()
 		}
 		else
 		{
-			UINT8 command;
+			u8 command;
 			read(&command, sizeof(command));
 
-			UINT8 aa;
-			UINT8 dd;
-			UINT16 NNNN;
+			u8 aa;
+			u8 dd;
+			u16 NNNN;
 
-			UINT8 ss;
-			UINT8 tt;
-			UINT8 pp;
-			UINT8 cc;
-			UINT8 ll;
-			UINT8 bb;
-			UINT32 ffffffff;
-			UINT32 aaaaaaaa;
-			UINT8 mm;
-			UINT32 llllllll;
-			UINT16 bbbb;
-			UINT8 ff;
+			u8 ss;
+			u8 tt;
+			u8 pp;
+			u8 cc;
+			u8 ll;
+			u8 bb;
+			u32 ffffffff;
+			u32 aaaaaaaa;
+			u8 mm;
+			u32 llllllll;
+			u16 bbbb;
+			u8 ff;
 
 			switch (command)
 			{

@@ -3,7 +3,7 @@
 #include <GL/glu.h>
 #include <GL/gl.h>
 
-VGMWaveFormViewer::VGMWaveFormViewer(const string& name_, UINT32 x_, UINT32 y_, UINT32 width_, UINT32 height_, const Skin& skin_)
+VGMWaveFormViewer::VGMWaveFormViewer(const string& name_, u32 x_, u32 y_, u32 width_, u32 height_, const Skin& skin_)
 : VGMDataObverser()
 , name(name_)
 , x(x_)
@@ -95,40 +95,40 @@ void VGMWaveFormViewer::onNotifyUpdate(Obserable& observable)
 
 		glBlendFunc(GL_ONE, GL_ONE);
 		videoDevice.drawLine(Vertex(startX, 0), Vertex(endX, 0), skin.gridColor);
-		for (INT32 i=startX; i< endX; i += (endX - startX) / divX)
+		for (s32 i=startX; i< endX; i += (endX - startX) / divX)
 		{
 			videoDevice.drawLine(Vertex(i, startY), Vertex(i, endY), skin.gridColor);
 		}
-		for (INT32 i = startY; i < endY; i += (endY - startY) / 10)
+		for (s32 i = startY; i < endY; i += (endY - startY) / 10)
 		{
 			videoDevice.drawLine(Vertex(startX, i), Vertex(endX, i), skin.gridColor);
 		}
 		videoDevice.drawLine(Vertex(startX, 0), Vertex(endX, 0), skin.axisColor);
 
-		for (INT32 i = startX; i < endX - 3; i+=3)
+		for (s32 i = startX; i < endX - 3; i+=3)
 		{
-			INT32 y0 = bufferInfo.outputSamples[i + 0].l;
-			INT32 y1 = bufferInfo.outputSamples[i + 3].l;
+			s32 y0 = bufferInfo.outputSamples[i + 0].l;
+			s32 y1 = bufferInfo.outputSamples[i + 3].l;
 			videoDevice.drawLine(Vertex(i, y0), Vertex(i + 3, y1), skin.leftColor);
 		}
 
 		glViewport(0, height / 2, width, height / 2);
 
 		videoDevice.drawLine(Vertex(startX, 0), Vertex(endX, 0), skin.gridColor);
-		for (INT32 i = startX; i < endX; i += (endX - startX) / divX)
+		for (s32 i = startX; i < endX; i += (endX - startX) / divX)
 		{
 			videoDevice.drawLine(Vertex(i, startY), Vertex(i, endY), skin.gridColor);
 		}
-		for (INT32 i = startY; i < endY; i += (endY - startY) / 10)
+		for (s32 i = startY; i < endY; i += (endY - startY) / 10)
 		{
 			videoDevice.drawLine(Vertex(startX, i), Vertex(endX, i), skin.gridColor);
 		}
 		videoDevice.drawLine(Vertex(startX, 0), Vertex(endX, 0), skin.axisColor);
 
-		for (INT32 i = startX; i < endX - 3; i+=3)
+		for (s32 i = startX; i < endX - 3; i+=3)
 		{
-			INT32 y0 = bufferInfo.outputSamples[i + 0].r;
-			INT32 y1 = bufferInfo.outputSamples[i + 3].r;
+			s32 y0 = bufferInfo.outputSamples[i + 0].r;
+			s32 y1 = bufferInfo.outputSamples[i + 3].r;
 			videoDevice.drawLine(Vertex(i, y0), Vertex(i + 3, y1), skin.rightColor);
 		}
 

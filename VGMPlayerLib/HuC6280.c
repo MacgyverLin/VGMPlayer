@@ -2,52 +2,52 @@
 #include <math.h>
 
 typedef struct {
-	UINT16 frequency;
-	UINT8 control;
-	UINT8 balance;
-	UINT8 waveform[32];
-	UINT8 index;
-	INT16 dda;
-	UINT8 noise_control;
-	UINT32 noise_counter;
-	UINT32 counter;
+	u16 frequency;
+	u8 control;
+	u8 balance;
+	u8 waveform[32];
+	u8 index;
+	s16 dda;
+	u8 noise_control;
+	u32 noise_counter;
+	u32 counter;
 } Channel;
 
 typedef struct {
-	UINT8 select;
-	UINT8 balance;
-	UINT8 lfo_frequency;
-	UINT8 lfo_control;
+	u8 select;
+	u8 balance;
+	u8 lfo_frequency;
+	u8 lfo_control;
 	Channel channel[8];
 
-	INT16 volume_table[32];
-	UINT32 noise_freq_tab[32];
-	UINT32 wave_freq_tab[4096];
+	s16 volume_table[32];
+	u32 noise_freq_tab[32];
+	u32 wave_freq_tab[4096];
 }HUC6280;
 
 #define HUC6280_CHIPS_COUNT 2
 static HUC6280 chips[HUC6280_CHIPS_COUNT];
 
-static void c6280_stream_update(UINT8 chipID, INT32 **buffer, UINT32 length)
+static void c6280_stream_update(u8 chipID, s32 **buffer, u32 length)
 {
 	HUC6280 *ic = &chips[chipID];
 
-	static const INT32 scale_tab[] = {
+	static const s32 scale_tab[] = {
 		0x00, 0x03, 0x05, 0x07, 0x09, 0x0B, 0x0D, 0x0F,
 		0x10, 0x13, 0x15, 0x17, 0x19, 0x1B, 0x1D, 0x1F
 	};
-	UINT32 ch;
-	UINT32 i;
+	u32 ch;
+	u32 i;
 
-	INT32 lmal = (ic->balance >> 4) & 0x0F;
-	INT32 rmal = (ic->balance >> 0) & 0x0F;
-	INT32 vll, vlr;
+	s32 lmal = (ic->balance >> 4) & 0x0F;
+	s32 rmal = (ic->balance >> 0) & 0x0F;
+	s32 vll, vlr;
 
 	lmal = scale_tab[lmal];
 	rmal = scale_tab[rmal];
 
-	INT32* lBuf = buffer[0];
-	INT32* rBuf = buffer[1];
+	s32* lBuf = buffer[0];
+	s32* rBuf = buffer[1];
 
 	/* Clear buffer */
 	for(ch = 0; ch < 6; ch++)
@@ -55,9 +55,9 @@ static void c6280_stream_update(UINT8 chipID, INT32 **buffer, UINT32 length)
 		/* Only look at enabled channels */
 		if(ic->channel[ch].control & 0x80)
 		{
-			INT32 lal = (ic->channel[ch].balance >> 4) & 0x0F;
-			INT32 ral = (ic->channel[ch].balance >> 0) & 0x0F;
-			INT32 al  = ic->channel[ch].control & 0x1F;
+			s32 lal = (ic->channel[ch].balance >> 4) & 0x0F;
+			s32 ral = (ic->channel[ch].balance >> 0) & 0x0F;
+			s32 al  = ic->channel[ch].control & 0x1F;
 
 			lal = scale_tab[lal];
 			ral = scale_tab[ral];
@@ -78,10 +78,10 @@ static void c6280_stream_update(UINT8 chipID, INT32 **buffer, UINT32 length)
 			if((ch >= 4) && (ic->channel[ch].noise_control & 0x80))
 			{
 				/* Noise mode */
-				UINT32 step = ic->noise_freq_tab[(ic->channel[ch].noise_control & 0x1F) ^ 0x1F];
+				u32 step = ic->noise_freq_tab[(ic->channel[ch].noise_control & 0x1F) ^ 0x1F];
 				for(i=0; i<length; i++)
 				{
-					static INT32 data = 0;
+					static s32 data = 0;
 					ic->channel[ch].noise_counter += step;
 					if(ic->channel[ch].noise_counter >= 0x800)
 					{
@@ -106,13 +106,13 @@ static void c6280_stream_update(UINT8 chipID, INT32 **buffer, UINT32 length)
 			else
 			{
 				/* Waveform mode */
-				UINT32 step = ic->wave_freq_tab[ic->channel[ch].frequency];
+				u32 step = ic->wave_freq_tab[ic->channel[ch].frequency];
 				for(i = 0; i < length; i++)
 				{
-					INT32 offset = (ic->channel[ch].counter >> 12) & 0x1F;
+					s32 offset = (ic->channel[ch].counter >> 12) & 0x1F;
 					ic->channel[ch].counter += step;
 					ic->channel[ch].counter &= 0x1FFFF;
-					INT16 data = ic->channel[ch].waveform[offset];
+					s16 data = ic->channel[ch].waveform[offset];
 					
 					lBuf[i] += (vll * (data - 16));
 					rBuf[i] += (vlr * (data - 16));
@@ -122,7 +122,7 @@ static void c6280_stream_update(UINT8 chipID, INT32 **buffer, UINT32 length)
 	}
 }
 
-static void c6280_write_internal(UINT8 chipID, INT32 address, INT32 data)
+static void c6280_write_internal(u8 chipID, s32 address, s32 data)
 {
 	HUC6280 *ic = &chips[chipID];
 	Channel *q = &ic->channel[ic->select];
@@ -203,14 +203,14 @@ static void c6280_write_internal(UINT8 chipID, INT32 address, INT32 data)
 }
 
 #define nBurnSoundRate sampleRate
-INT32 HUC6280_Initialize(UINT8 chipID, UINT32 clock, UINT32 sampleRate)
+s32 HUC6280_Initialize(u8 chipID, u32 clock, u32 sampleRate)
 {
-	INT32 i;
-	FLOAT32 step;
+	s32 i;
+	f32 step;
 	HUC6280 *ic = &chips[chipID];
 
 	/* Loudest volume level for table */
-	FLOAT32 level = 65535.0 / 6.0 / 32.0;
+	f32 level = 65535.0 / 6.0 / 32.0;
 
 	/* Clear context */
 	memset(ic, 0, sizeof(HUC6280));
@@ -219,14 +219,14 @@ INT32 HUC6280_Initialize(UINT8 chipID, UINT32 clock, UINT32 sampleRate)
 	for (i = 0; i < 4096; i += 1)
 	{
 		step = ((clock / (nBurnSoundRate * 1.0000f)) * 4096) / (i + 1);
-		ic->wave_freq_tab[(1 + i) & 0xFFF] = (UINT32)step;
+		ic->wave_freq_tab[(1 + i) & 0xFFF] = (u32)step;
 	}
 
 	/* Make noise frequency table */
 	for (i = 0; i < 32; i += 1)
 	{
 		step = ((clock / (nBurnSoundRate * 1.0000f)) * 32) / (i + 1);
-		ic->noise_freq_tab[i] = (UINT32)step;
+		ic->noise_freq_tab[i] = (u32)step;
 	}
 
 	/* Make volume table */
@@ -234,7 +234,7 @@ INT32 HUC6280_Initialize(UINT8 chipID, UINT32 clock, UINT32 sampleRate)
 	step = 48.0f / 32.0f;
 	for (i = 0; i < 31; i++)
 	{
-		ic->volume_table[i] = (INT16)level;
+		ic->volume_table[i] = (s16)level;
 		level /= pow(10.0f, step / 20.0f);
 	}
 	ic->volume_table[31] = 0;
@@ -242,12 +242,12 @@ INT32 HUC6280_Initialize(UINT8 chipID, UINT32 clock, UINT32 sampleRate)
 	return -1;
 }
 
-void HUC6280_Shutdown(UINT8 chipID)
+void HUC6280_Shutdown(u8 chipID)
 {
 	HUC6280 *ic = &chips[chipID];
 }
 
-void HUC6280_Reset(UINT8 chipID)
+void HUC6280_Reset(u8 chipID)
 {
 	HUC6280 *ic = &chips[chipID];
 
@@ -258,18 +258,18 @@ void HUC6280_Reset(UINT8 chipID)
 	memset(ic->channel, 0, 8 * sizeof(Channel));
 }
 
-void HUC6280_Update(UINT8 chipID, INT32 **buffer, UINT32 length)
+void HUC6280_Update(u8 chipID, s32 **buffer, u32 length)
 {
 	HUC6280 *ic = &chips[chipID];
 	c6280_stream_update(chipID, buffer, length);
 }
 
-UINT8 HUC6280_ReadRegister(UINT8 chipID, UINT32 address)
+u8 HUC6280_ReadRegister(u8 chipID, u32 address)
 {
 	return 0;//h6280io_get_buffer();
 }
 
-void HUC6280_WriteRegister(UINT8 chipID, UINT32 address, UINT8 data)
+void HUC6280_WriteRegister(u8 chipID, u32 address, u8 data)
 {
 	// h6280io_set_buffer(data);
 

@@ -11,7 +11,7 @@ public:
 	class Skin
 	{
 	public:
-		Skin(UINT8 numChannels_ = 2,
+		Skin(u8 numChannels_ = 2,
 			const Color& bgColor_ = Color(0.0f, 0.0f, 0.0f, 1.0f), const Color& gridColor_ = Color(0.0f, 0.2f, 0.2f, 1.0f), const Color& axisColor_ = Color(0.0f, 0.5f, 0.5f, 1.0f),
 			const Color& leftColor_ = Color(0.0f, 0.5f, 0.0f, 1.0f), const Color& rightColor_ = Color(0.0f, 0.5f, 0.5f, 1.0f))
 		: numChannels(numChannels_)
@@ -23,7 +23,7 @@ public:
 		{
 		}
 
-		UINT8 numChannels;
+		u8 numChannels;
 		Color bgColor;
 		Color gridColor;
 		Color axisColor;
@@ -31,7 +31,7 @@ public:
 		Color rightColor;
 	};
 	VGMWaveFormViewer(const string& name_, 
-					 UINT32 x_, UINT32 y_, UINT32 width_, UINT32 height_, const Skin& skin_);
+					 u32 x_, u32 y_, u32 width_, u32 height_, const Skin& skin_);
 	virtual ~VGMWaveFormViewer();
 protected:
 	virtual void onNotifySomething(Obserable& vgmData);
@@ -49,12 +49,12 @@ private:
 	VideoDevice videoDevice;
 
 	string name;
-	UINT32 x;
-	UINT32 y;
-	UINT32 width;
-	UINT32 height;
+	u32 x;
+	u32 y;
+	u32 width;
+	u32 height;
 	Skin skin;
-	vector<FLOAT32> max;
+	vector<f32> max;
 };
 
 #endif

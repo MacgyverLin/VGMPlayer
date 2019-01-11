@@ -3,7 +3,7 @@
 #include <GL/glu.h>
 #include <GL/gl.h>
 
-VGMSpectrumViewer::VGMSpectrumViewer(const string& name_, UINT32 x_, UINT32 y_, UINT32 width_, UINT32 height_, const Skin& skin_)
+VGMSpectrumViewer::VGMSpectrumViewer(const string& name_, u32 x_, u32 y_, u32 width_, u32 height_, const Skin& skin_)
 	: VGMDataObverser()
 	, name(name_)
 	, x(x_)
@@ -81,11 +81,11 @@ void VGMSpectrumViewer::onNotifyUpdate(Obserable& observable)
 		int fftSampleCount = skin.numColumns * 2;
 		int startX = fftSampleCount / 2;
 		int endX = fftSampleCount; //sampleCount;
-		float stepX = ((float)(endX - startX)) / ((float)fftSampleCount / 2);
+		f32 stepX = ((f32)(endX - startX)) / ((f32)fftSampleCount / 2);
 
 		int startY = 0;
 		int endY = 1;
-		float stepY = ((float)(endY - startY)) / 20;
+		f32 stepY = ((f32)(endY - startY)) / 20;
 
 		glMatrixMode(GL_PROJECTION);
 		glLoadIdentity();
@@ -93,11 +93,11 @@ void VGMSpectrumViewer::onNotifyUpdate(Obserable& observable)
 		gluOrtho2D(endX, startX, startY, endY);
 		glMatrixMode(GL_MODELVIEW);
 
-		float step = VGM_SAMPLE_COUNT / fftSampleCount;
+		f32 step = VGM_SAMPLE_COUNT / fftSampleCount;
 
 		vector<complex> left;
 		left.resize(fftSampleCount);
-		float leftIdx = 0;
+		f32 leftIdx = 0;
 		for (int i = 0; i < fftSampleCount; i++)
 		{
 			left[i].real = 0;
@@ -113,7 +113,7 @@ void VGMSpectrumViewer::onNotifyUpdate(Obserable& observable)
 
 		vector<complex> right;
 		right.resize(fftSampleCount);
-		float rightIdx = 0;
+		f32 rightIdx = 0;
 		for (int i = 0; i < fftSampleCount; i++)
 		{
 			right[i].real = 0;
@@ -132,13 +132,13 @@ void VGMSpectrumViewer::onNotifyUpdate(Obserable& observable)
 
 		for (int i = 0; i < fftSampleCount; i++)
 		{
-			FLOAT32 l = abs(left[i].real);
+			f32 l = abs(left[i].real);
 			if (maxLeft[i] < l)
 				maxLeft[i] = l;
 			else
 				maxLeft[i] *= 0.96f;
 
-			FLOAT32 r = abs(right[i].real);
+			f32 r = abs(right[i].real);
 			if (maxRight[i] < r)
 				maxRight[i] = r;
 			else
@@ -150,24 +150,24 @@ void VGMSpectrumViewer::onNotifyUpdate(Obserable& observable)
 
 		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 		videoDevice.drawLine(Vertex(startX, 0), Vertex(endX, 0), skin.gridColor);
-		for (FLOAT32 i = startX; i < endX; i += stepX)
+		for (f32 i = startX; i < endX; i += stepX)
 		{
 			videoDevice.drawLine(Vertex(i, startY), Vertex(i, endY), skin.gridColor);
 		}
-		for (FLOAT32 i = startY; i < endY; i += stepY)
+		for (f32 i = startY; i < endY; i += stepY)
 		{
 			videoDevice.drawLine(Vertex(startX, i), Vertex(endX, i), skin.gridColor);
 		}
 		videoDevice.drawLine(Vertex(startX, 0.0f), Vertex(endX, 0.0f), skin.axisColor);
 
 		{
-			FLOAT32 bloom = 0.01f;
+			f32 bloom = 0.01f;
 			glBlendFunc(GL_SRC_ALPHA, GL_ONE);
 			Color topColor = skin.leftColor; topColor.a = 0.3f;
 			Color bottomColor = skin.leftColor; bottomColor.a = 0.9f;
-			for (INT32 i = startX; i < endX; i++)
+			for (s32 i = startX; i < endX; i++)
 			{
-				FLOAT32 y0 = abs(left[i].real) / (65536);
+				f32 y0 = abs(left[i].real) / (65536);
 				videoDevice.drawSolidRectangle(
 					Vertex(i + 0.1f, y0), topColor,
 					Vertex(i + 0.9f, y0), topColor,
@@ -187,24 +187,24 @@ void VGMSpectrumViewer::onNotifyUpdate(Obserable& observable)
 		glViewport(0, height / 2, width, height / 2);
 		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 		videoDevice.drawLine(Vertex(startX, 0), Vertex(endX, 0), skin.gridColor);
-		for (FLOAT32 i = startX; i < endX; i += stepX)
+		for (f32 i = startX; i < endX; i += stepX)
 		{
 			videoDevice.drawLine(Vertex(i, startY), Vertex(i, endY), skin.gridColor);
 		}
-		for (FLOAT32 i = startY; i < endY; i += stepY)
+		for (f32 i = startY; i < endY; i += stepY)
 		{
 			videoDevice.drawLine(Vertex(startX, i), Vertex(endX, i), skin.gridColor);
 		}
 		videoDevice.drawLine(Vertex(startX, 0.0f), Vertex(endX, 0.0f), skin.axisColor);
 
 		{
-			FLOAT32 bloom = 0.01f;
+			f32 bloom = 0.01f;
 			glBlendFunc(GL_SRC_ALPHA, GL_ONE);
 			Color topColor = skin.rightColor; topColor.a = 0.3f;
 			Color bottomColor = skin.rightColor; bottomColor.a = 0.9f;
-			for (INT32 i = startX; i < endX; i++)
+			for (s32 i = startX; i < endX; i++)
 			{
-				FLOAT32 y0 = abs(right[i].real) / (65536);
+				f32 y0 = abs(right[i].real) / (65536);
 				videoDevice.drawSolidRectangle(
 					Vertex(i + 0.1f, y0), topColor,
 					Vertex(i + 0.9f, y0), topColor,
