@@ -7,7 +7,7 @@ class Observer
 	friend class Obserable;
 public:
 	Observer();
-	virtual ~Observer();
+	~Observer();
 protected:
 	virtual void onNotifySomething(Obserable& obserable) = 0;
 	virtual void onNotifyOpen(Obserable& obserable) = 0;

@@ -2,16 +2,16 @@
 #define _Obserable_h_
 
 #include "vgmdef.h"
-#include <string>
-#include <list>
 #include "Observer.h"
+#include <Array.h>
+
 using namespace std;
 
 class Obserable
 {
 public:
 	Obserable();
-	virtual ~Obserable();
+	~Obserable();
 
 	void attach(Observer& observer);
 	void detach(Observer& observer);
@@ -25,7 +25,7 @@ protected:
 	void notifyResume();
 	void notifyUpdate();
 private:
-	list<Observer *> observers;
+	Vector<Observer *> observers;
 };
 
 #endif

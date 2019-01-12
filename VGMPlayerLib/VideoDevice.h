@@ -6,14 +6,6 @@
 #include <algorithm>
 using namespace std;
 
-class Platform
-{
-public:
-	static bool initialize();
-	static bool update();
-	static void terminate();
-};
-
 class Vertex
 {
 public:

@@ -102,6 +102,12 @@
     <ClInclude Include="nes_defs.h">
       <Filter>Source Files\chips</Filter>
     </ClInclude>
+    <ClInclude Include="Array.h">
+      <Filter>Source Files\VGM</Filter>
+    </ClInclude>
+    <ClInclude Include="Platform.h">
+      <Filter>Source Files\Platform</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="ym2151.c">
@@ -160,6 +166,12 @@
     </ClCompile>
     <ClCompile Include="VGMFireSpectrumViewer.cpp">
       <Filter>Source Files\VGM\Observer</Filter>
+    </ClCompile>
+    <ClCompile Include="Array.cpp">
+      <Filter>Source Files\VGM</Filter>
+    </ClCompile>
+    <ClCompile Include="Platform.cpp">
+      <Filter>Source Files\Platform</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

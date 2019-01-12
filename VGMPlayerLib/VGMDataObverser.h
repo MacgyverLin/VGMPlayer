@@ -8,7 +8,7 @@ class VGMDataObverser : public Observer
 {
 public:
 	VGMDataObverser();
-	virtual ~VGMDataObverser();
+	~VGMDataObverser();
 protected:
 private:
 

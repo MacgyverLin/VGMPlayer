@@ -8,8 +8,8 @@ class VGMFileImpl;
 class VGMFile : public VGMData
 {
 public:
-	VGMFile(const string& path, s32 channels_, s32 bitPerSample_, s32 sampleRate_);
-	virtual ~VGMFile();
+	VGMFile(const char* path_, s32 channels_, s32 bitPerSample_, s32 sampleRate_);
+	~VGMFile();
 protected:
 	virtual boolean onOpen();
 	virtual void onClose();

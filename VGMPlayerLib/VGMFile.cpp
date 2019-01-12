@@ -1,5 +1,8 @@
 #include "VGMFile.h"
 #ifdef STM32
+#include <ff.h>
+#include <string>
+using namespace std;
 #else
 #include <assert.h>
 #include <stdlib.h>
@@ -10,36 +13,52 @@
 #endif
 using namespace std;
 
+#ifdef STM32
+#define MAX_PATH 256
+#else
+#endif
+
 class VGMFileImpl
 {
 public:
-	string path;
-	FILE *file;
+	char path[MAX_PATH];
 #ifdef STM32
+	FIL fil;
+	boolean opened;
 #else
+	FILE *file;
 	gzFile gzFile;
 #endif
 };
 
 /////////////////////////////////////////////////////////
-VGMFile::VGMFile(const string& path_, s32 channels_, s32 bitPerSample_, s32 sampleRate_)
+VGMFile::VGMFile(const char* path_, s32 channels_, s32 bitPerSample_, s32 sampleRate_)
 : VGMData(channels_, bitPerSample_, sampleRate_)
 , impl(0)
 {
 	impl = new VGMFileImpl();
 
-	impl->path = path_;
+	strncpy(impl->path, path_, MAX_PATH);
 #ifdef STM32
+	impl->opened = false;
 #else	
+	impl->file = 0;
 	impl->gzFile = 0;
 #endif
-	impl->file = 0;
 }
 
 VGMFile::~VGMFile()
 {
 	if (impl)
 	{
+#ifdef STM32
+		if(impl->opened)
+		{
+			f_close(&impl->fil);
+			impl->opened = false;
+		}
+#else
+#endif
 		delete impl;
 		impl = 0;
 	}
@@ -47,30 +66,40 @@ VGMFile::~VGMFile()
 
 boolean VGMFile::onOpen()
 {
-	boolean isvgz = (impl->path.find(".vgz") != -1);
-	boolean isvgm = (impl->path.find(".vgm") != -1);
-
+	boolean isvgz = (strstr(impl->path, ".vgz") != 0);
+	boolean isvgm = (strstr(impl->path, ".vgm") != 0);
 	if (!isvgz && !isvgm)
 	{
 		return false;
 	}
 
-	if (isvgz)
-	{
 #ifdef STM32
-			return false;
-#else		
-		impl->gzFile = gzopen(impl->path.c_str(), "r");
-		if (!impl->gzFile)
-			return false;
-#endif
-	}
-	else if (isvgm)
+	if(isvgm)
 	{
-		impl->file = fopen(impl->path.c_str(), "rb");
+		u8 res = f_open(&impl->fil, (const TCHAR*)impl->path, FA_OPEN_ALWAYS | FA_READ);
+		impl->opened = (res==FR_OK);
+
+		return impl->opened;
+	}
+	else// if (isvgz)
+	{
+		// printf("vgz is not supported for STM32 platform");
+		return false;
+	}
+#else
+	if(isvgm)
+	{
+		impl->file = fopen(impl->path, "rb");
 		if(!impl->file)
 			return false;
 	}
+	else// if (isvgz)
+	{
+		impl->gzFile = gzopen(impl->path, "r");
+		if (!impl->gzFile)
+			return false;
+	}
+#endif
 
 	notifyOpen();
 
@@ -81,17 +110,18 @@ void VGMFile::onClose()
 {
 	notifyClose();
 
-	const VGMHeader& header = getHeader();
-	const VGMData::PlayInfo& playInfo = getPlayInfo();
-	const VGMData::BufferInfo& bufferInfo = getBufferInfo();
-
+#ifdef STM32
+	if (impl->opened)
+	{
+		f_close(&impl->fil);
+		impl->opened = false;
+	}
+#else
 	if (impl->file)
 	{
 		fclose(impl->file);
 		impl->file = 0;
-	}	
-#ifdef STM32
-#else
+	}
 	else if(impl->gzFile)
 	{
 		gzclose(impl->gzFile);
@@ -123,12 +153,19 @@ boolean VGMFile::onUpdate()
 
 s32 VGMFile::onRead(void *buffer, u32 size)
 {
+#ifdef STM32
+	UINT br;
+
+	if(impl->opened)
+	{
+		f_read(&impl->fil, buffer, size, &br);
+		return size;
+	}
+#else	
 	if (impl->file)
 	{
 		return fread(buffer, 1, size, impl->file);
 	}
-#ifdef STM32
-#else	
 	else if(impl->gzFile)
 	{
 		return gzread(impl->gzFile, buffer, size);
@@ -142,12 +179,17 @@ s32 VGMFile::onRead(void *buffer, u32 size)
 
 s32 VGMFile::onSeekSet(u32 offset)
 {
+#ifdef STM32
+	if (impl->opened)
+	{
+		f_lseek(&impl->fil, offset);
+		return offset;
+	}	
+#else	
 	if (impl->file)
 	{
 		return fseek(impl->file, offset, SEEK_SET);
 	}	
-#ifdef STM32
-#else	
 	else if(impl->gzFile)
 	{
 		return gzseek(impl->gzFile, offset, SEEK_SET);
@@ -161,12 +203,17 @@ s32 VGMFile::onSeekSet(u32 offset)
 
 s32 VGMFile::onSeekCur(u32 offset)
 {
+#ifdef STM32
+	if (impl->opened)
+	{
+		f_lseek(&impl->fil, impl->fil.fptr + offset);
+		return offset;
+	}	
+#else
 	if (impl->file)
 	{
 		return fseek(impl->file, offset, SEEK_CUR);
-	}	
-#ifdef STM32
-#else	
+	}
 	else if (impl->gzFile)
 	{
 		return gzseek(impl->gzFile, offset, SEEK_CUR);

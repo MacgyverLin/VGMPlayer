@@ -4,6 +4,7 @@
 #ifdef STM32
 #include <stm32f10x.h>
 #include <assert.h>
+#include <string.h>
 typedef unsigned char boolean;
 typedef float f32;
 typedef double f64;

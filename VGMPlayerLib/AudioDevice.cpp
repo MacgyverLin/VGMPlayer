@@ -88,7 +88,7 @@ boolean AudioDevice::open(s32 channels_, s32 bitsPerSample_, s32 sampleRate_, s3
 	error = alGetError();
 	if (error != AL_NO_ERROR)
 	{
-		printf("error alGenBuffers %x \n", error);
+		//printf("error alGenBuffers %x \n", error);
 		return false;
 	}
 
@@ -138,7 +138,7 @@ s32 AudioDevice::play()
 	error = alGetError();
 	if (error != AL_NO_ERROR)
 	{
-		printf("error playSound %x\n", error);
+		//printf("error playSound %x\n", error);
 		return 0;
 	}
 
@@ -157,7 +157,7 @@ s32 AudioDevice::stop()
 	error = alGetError();
 	if (error != AL_NO_ERROR)
 	{
-		printf("error stopSound %x\n", error);
+		//printf("error stopSound %x\n", error);
 		return 0;
 	}
 
@@ -214,7 +214,7 @@ s32 AudioDevice::update()
 		error = alGetError();
 		if (error != AL_NO_ERROR)
 		{
-			printf("error alSourceUnqueueBuffers %x\n", error);
+			//printf("error alSourceUnqueueBuffers %x\n", error);
 			//AL_ILLEGAL_ENUM
 			//AL_INVALID_VALUE
 			//#define AL_ILLEGAL_COMMAND                        0xA004
@@ -247,7 +247,7 @@ s32 AudioDevice::queue(void* data_, int dataSize_)
 		}
 		else
 		{
-			printf("Error: Channel must be 1 or 2\n");
+			//printf("Error: Channel must be 1 or 2\n");
 			return 0;
 		}
 	}
@@ -263,13 +263,13 @@ s32 AudioDevice::queue(void* data_, int dataSize_)
 		}
 		else
 		{
-			printf("Error: Channel must be 1 or 2\n");
+			//printf("Error: Channel must be 1 or 2\n");
 			return 0;
 		}
 	}
 	else
 	{
-		printf("Error: bit per sample must be 8 or 16\n");
+		//printf("Error: bit per sample must be 8 or 16\n");
 		return 0;
 	}
 
@@ -283,8 +283,7 @@ s32 AudioDevice::queue(void* data_, int dataSize_)
 	{
 		alGetSourcei(impl->outSource, AL_BUFFERS_PROCESSED, &p);
 		alGetSourcei(impl->outSource, AL_BUFFERS_QUEUED, &q);
-		printf("alGetError %x: WP=%d, processed: %d, queued: %d, alBufferData(%x, %x, %p, %d, %d)\n",
-			error, impl->WP, p, q, buffer, format, data_, dataSize_, impl->sampleRate);
+		//printf("alGetError %x: WP=%d, processed: %d, queued: %d, alBufferData(%x, %x, %p, %d, %d)\n", error, impl->WP, p, q, buffer, format, data_, dataSize_, impl->sampleRate);
 		//AL_ILLEGAL_ENUM
 		//AL_INVALID_VALUE
 		//#define AL_ILLEGAL_COMMAND                        0xA004
@@ -297,8 +296,7 @@ s32 AudioDevice::queue(void* data_, int dataSize_)
 	error = alGetError();
 	if (error != AL_NO_ERROR)
 	{
-		printf("error alSourceQueueBuffers %x\n", error);
-
+		// printf("error alSourceQueueBuffers %x\n", error);
 		return 0;
 	}
 

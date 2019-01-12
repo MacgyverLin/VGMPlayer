@@ -1,5 +1,4 @@
 #include "Obserable.h"
-using namespace std;
 
 Obserable::Obserable()
 {
@@ -11,82 +10,74 @@ Obserable::~Obserable()
 
 void Obserable::attach(Observer& observer)
 {
-	observers.push_back(&observer);
+	observers.push() = &observer;
 }
 
 void Obserable::detach(Observer& observer)
 {
-	observers.remove(&observer);
+	//observers.remove(&observer);
 }
 
 void Obserable::notifySomething()
 {
-	list<Observer *>::iterator itr;
-	for(itr=observers.begin(); itr!=observers.end(); itr++)
+	for(u32 i=0; i<observers.size(); i++)
 	{
-		(*itr)->onNotifySomething(*this);
+		observers[i]->onNotifySomething(*this);
 	}
 }
 
 void Obserable::notifyOpen()
 {
-	list<Observer *>::iterator itr;
-	for(itr=observers.begin(); itr!=observers.end(); itr++)
+	for(u32 i=0; i<observers.size(); i++)
 	{
-		(*itr)->onNotifyOpen(*this);
+		observers[i]->onNotifyOpen(*this);
 	}
 }
 
 void Obserable::notifyClose()
 {
-	list<Observer *>::iterator itr;
-	for(itr=observers.begin(); itr!=observers.end(); itr++)
+	for(u32 i=0; i<observers.size(); i++)
 	{
-		(*itr)->onNotifyClose(*this);
+		observers[i]->onNotifyClose(*this);
 	}
 }
 
 void Obserable::notifyPlay()
 {
-	list<Observer *>::iterator itr;
-	for(itr=observers.begin(); itr!=observers.end(); itr++)
+	for(u32 i=0; i<observers.size(); i++)
 	{
-		(*itr)->onNotifyPlay(*this);
+		observers[i]->onNotifyPlay(*this);
 	}
 }
 
 void Obserable::notifyStop()
 {
-	list<Observer *>::iterator itr;
-	for(itr=observers.begin(); itr!=observers.end(); itr++)
+	for(u32 i=0; i<observers.size(); i++)
 	{
-		(*itr)->onNotifyStop(*this);
+		observers[i]->onNotifyStop(*this);
 	}
 }
 
 void Obserable::notifyPause()
 {
-	list<Observer *>::iterator itr;
-	for(itr=observers.begin(); itr!=observers.end(); itr++)
+	for(u32 i=0; i<observers.size(); i++)
 	{
-		(*itr)->onNotifyPause(*this);
+		observers[i]->onNotifyPause(*this);
 	}
 }
 
 void Obserable::notifyResume()
 {
-	list<Observer *>::iterator itr;
-	for(itr=observers.begin(); itr!=observers.end(); itr++)
+	for(u32 i=0; i<observers.size(); i++)
 	{
-		(*itr)->onNotifyResume(*this);
+		observers[i]->onNotifyResume(*this);
 	}
 }
 
 void Obserable::notifyUpdate()
 {
-	list<Observer *>::iterator itr;
-	for(itr=observers.begin(); itr!=observers.end(); itr++)
+	for(u32 i=0; i<observers.size(); i++)
 	{
-		(*itr)->onNotifyUpdate(*this);
+		observers[i]->onNotifyUpdate(*this);
 	}
 }

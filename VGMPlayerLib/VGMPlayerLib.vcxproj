@@ -90,7 +90,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS; WIN32;_DEBUG;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories> ../SDK/OpenAL/include; ../zlib; ../SDK/SDL/include</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories> ../SDK/OpenAL/include; ../zlib; ../SDK/SDL/include; ../VGMPlayerLib</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -105,7 +105,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS; _DEBUG;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories> ../SDK/OpenAL/include; ../zlib; ../SDK/SDL/include</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories> ../SDK/OpenAL/include; ../zlib; ../SDK/SDL/include; ../VGMPlayerLib</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -122,7 +122,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS; WIN32;NDEBUG;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories> ../SDK/OpenAL/include; ../zlib; ../SDK/SDL/include</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories> ../SDK/OpenAL/include; ../zlib; ../SDK/SDL/include; ../VGMPlayerLib</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -141,7 +141,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS; NDEBUG;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories> ../SDK/OpenAL/include; ../zlib; ../SDK/SDL/include</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories> ../SDK/OpenAL/include; ../zlib; ../SDK/SDL/include; ../VGMPlayerLib</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -151,6 +151,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="Array.h" />
     <ClInclude Include="FFT.h" />
     <ClInclude Include="HuC6280.h" />
     <ClInclude Include="NESAPU.h" />
@@ -158,6 +159,7 @@
     <ClInclude Include="nes_defs.h" />
     <ClInclude Include="Obserable.h" />
     <ClInclude Include="Observer.h" />
+    <ClInclude Include="Platform.h" />
     <ClInclude Include="VGMAudioPlayer.h" />
     <ClInclude Include="VGMFireSpectrumViewer.h" />
     <ClInclude Include="VGMWaveFormViewer.h" />
@@ -177,6 +179,7 @@
     <ClInclude Include="ym2612.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="Array.cpp" />
     <ClCompile Include="FFT.cpp" />
     <ClCompile Include="HuC6280.c" />
     <ClCompile Include="K053260.c" />
@@ -184,6 +187,7 @@
     <ClCompile Include="NESFDSAPU.c" />
     <ClCompile Include="Obserable.cpp" />
     <ClCompile Include="Observer.cpp" />
+    <ClCompile Include="Platform.cpp" />
     <ClCompile Include="SN76489.c" />
     <ClCompile Include="AudioDevice.cpp" />
     <ClCompile Include="VGMAudioPlayer.cpp" />

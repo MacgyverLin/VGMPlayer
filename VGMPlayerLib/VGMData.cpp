@@ -1,9 +1,10 @@
 #include "VGMData.h"
-#ifdef STM32
-#else
 #include "SN76489.h"
 #include "YM2612.h"
 #include "YM2151.h"
+#ifdef STM32
+#include "VGMBoard.h"
+#else
 #include "K053260.h"
 #include "NESAPU.h"
 #include "NESFDSAPU.h"
@@ -20,12 +21,15 @@ VGMData::VGMData(s32 channels_, s32 bitPerSample_, s32 sampleRate_)
 	playInfo.bitPerSamples = bitPerSample_;
 	playInfo.sampleRate = sampleRate_;
 
+#ifdef STM32
+#else
 	bufferInfo.sampleIdx = 0;
 	bufferInfo.samplesL.resize(VGM_SAMPLE_COUNT);
 	bufferInfo.samplesR.resize(VGM_SAMPLE_COUNT);
 	bufferInfo.outputSamples.resize(VGM_SAMPLE_COUNT);
 
 	bufferInfo.needQueueOutputSamples = false;
+#endif
 
 	updateDataRequest = false;
 	updateSampleCounts = 0;
@@ -93,10 +97,13 @@ const VGMData::PlayInfo& VGMData::getPlayInfo() const
 	return playInfo;
 }
 
+#ifdef STM32
+#else
 const VGMData::BufferInfo& VGMData::getBufferInfo() const
 {
 	return bufferInfo;
 }
+#endif
 
 boolean VGMData::open()
 {
@@ -133,8 +140,6 @@ boolean VGMData::open()
 	if (byteRemained > 0)
 		read((u8*)(&header) + 0x38, byteRemained);
 
-#ifdef STM32
-#else	
 	if (header.YM2612Clock)
 	{
 		YM2612_Initialize(0, header.YM2612Clock, playInfo.sampleRate);
@@ -147,6 +152,8 @@ boolean VGMData::open()
 	{
 		YM2151_Initialize(0, header.YM2151Clock, playInfo.sampleRate);
 	}
+#ifdef STM32
+#else	
 	if (header.K053260Clock)
 	{
 		K053260_Initialize(0, header.K053260Clock, playInfo.sampleRate);
@@ -168,8 +175,6 @@ boolean VGMData::open()
 
 void VGMData::close()
 {
-#ifdef STM32
-#else	
 	if (header.YM2612Clock)
 	{
 		YM2612_Shutdown(0);
@@ -182,6 +187,8 @@ void VGMData::close()
 	{
 		YM2151_Shutdown(0);
 	}
+#ifdef STM32
+#else	
 	if (header.K053260Clock)
 	{
 		K053260_Shutdown(0);
@@ -217,6 +224,8 @@ s32 VGMData::seekCur(u32 size)
 
 void VGMData::fillOutputBuffer()
 {
+#ifdef STM32
+#else
 	int i, out_L, out_R;
 	short *dest = (short *)(&bufferInfo.outputSamples[0]);
 	s32* l = &bufferInfo.samplesL[0];
@@ -226,23 +235,8 @@ void VGMData::fillOutputBuffer()
 	{
 		out_L = l[i];
 		out_R = r[i];
-		/*
-		out_L = 32000 * sin(((f32)sample) * frequency / playInfo.sampleRate * 2.0f * 3.1415f); //l[i];
-		out_R = 32000 * sin(((f32)sample) * frequency / playInfo.sampleRate * 2.0f * 3.1415f); //r[i];
-		sample++;
-		if(sample>44100*5)
-		{
-			sample = 0;
-			frequency *= 2;
-			printf("%f\n", frequency);
-		}
-		*/
-
 		r[i] = 0;
 		l[i] = 0;
-
-		// *dest++ = VGMPlayer_MIN(VGMPlayer_MAX(l[i], -0x7FFF), 0x7FFF)
-		// *dest++ = VGMPlayer_MIN(VGMPlayer_MAX(r[i], -0x7FFF), 0x7FFF)
 
 		if (out_L < -0x7FFF)
 			*dest++ = -0x7FFF;
@@ -258,10 +252,14 @@ void VGMData::fillOutputBuffer()
 		else
 			*dest++ = out_R;
 	}
+#endif
 }
 
 u32 VGMData::updateSamples(u32 updateSampleCounts)
 {
+#ifdef STM32
+	return updateSampleCounts;
+#else
 	updateSampleCounts = VGMPlayer_MIN((VGM_SAMPLE_COUNT - bufferInfo.sampleIdx), updateSampleCounts); // never exceed bufferSize
 	if (updateSampleCounts == 0)
 		return 0;
@@ -271,8 +269,6 @@ u32 VGMData::updateSamples(u32 updateSampleCounts)
 	sampleBuffers[1] = &bufferInfo.samplesR[bufferInfo.sampleIdx];
 
 	assert(bufferInfo.samplesL.size() == VGM_SAMPLE_COUNT);
-#ifdef STM32
-#else
 	if (header.YM2612Clock)
 		YM2612_Update(0, sampleBuffers, updateSampleCounts);
 	if (header.SN76489Clock)
@@ -289,7 +285,7 @@ u32 VGMData::updateSamples(u32 updateSampleCounts)
 	}
 	if (header.HuC6280Clock)
 		HUC6280_Update(0, sampleBuffers, updateSampleCounts);
-#endif
+
 	bufferInfo.sampleIdx = bufferInfo.sampleIdx + updateSampleCounts;	// updated samples, sampleIdx+
 	assert(bufferInfo.sampleIdx <= VGM_SAMPLE_COUNT);
 	if (bufferInfo.sampleIdx == VGM_SAMPLE_COUNT)
@@ -301,6 +297,7 @@ u32 VGMData::updateSamples(u32 updateSampleCounts)
 	}
 
 	return updateSampleCounts;
+#endif
 }
 
 void VGMData::handleEndOfSound()
@@ -350,12 +347,17 @@ void VGMData::handleDataBlocks()
 
 boolean VGMData::update()
 {
-	if (updateDataRequest)
+	if(updateDataRequest)
 	{
-		if (updateSampleCounts > 0)
+		if(updateSampleCounts > 0)
 		{
+#ifdef STM32
+			s32 nnnn = VGMBoard_UpdateSamples(updateSampleCounts);
+			updateSampleCounts -= nnnn;
+#else	
 			s32 nnnn = updateSamples(updateSampleCounts);
 			updateSampleCounts -= nnnn;
+#endif
 		}
 		else
 		{
@@ -384,30 +386,23 @@ boolean VGMData::update()
 			case YM2612_PORT0_WRITE:
 				read(&aa, sizeof(aa));
 				read(&dd, sizeof(dd));			
-#ifdef STM32
-#else			
+		
 				YM2612_WriteRegister(0, 0, aa);
 				YM2612_WriteRegister(0, 1, dd);
-#endif
 				break;
 
 			case YM2612_PORT1_WRITE:
 				read(&aa, sizeof(aa));
 				read(&dd, sizeof(dd));
-#ifdef STM32
-#else						
+
 				YM2612_WriteRegister(0, 2, aa);
 				YM2612_WriteRegister(0, 3, dd);
-#endif
 				break;
 
 			case YM2151_WRITE:
 				read(&aa, sizeof(aa));
 				read(&dd, sizeof(dd));
-#ifdef STM32
-#else				
 				YM2151_WriteRegister(0, aa, dd);
-#endif
 				break;
 
 			case YM2203_WRITE:
@@ -419,18 +414,12 @@ boolean VGMData::update()
 
 			case GAME_GEAR_PSG_PORT6_WRITE:
 				read(&dd, sizeof(dd));
-#ifdef STM32
-#else				
-				SN76489_WriteRegister(0, -1, dd);
-#endif
+				SN76489_WriteRegister(0, 0, dd);
 				break;
 
 			case SN76489_WRITE:
 				read(&dd, sizeof(dd));
-#ifdef STM32
-#else	
-				SN76489_WriteRegister(0, -1, dd);
-#endif
+				SN76489_WriteRegister(0, 0, dd);
 				break;
 
 			case UNKNOWN_CHIP_A5_WRITE:
@@ -585,18 +574,19 @@ boolean VGMData::update()
 				if (header.loopOffset)
 				{
 					seekSet(header.loopOffset + 0x1c);
-					printf("Loop();\n");
+					//printf("Loop();\n");
 					return false;
 				}
 				else
 				{
-					printf("END_OF_SOUND();\n");
+					//printf("END_OF_SOUND();\n");
 					return false;
 				}
 				break;
 
 			default:
-				printf("UnHandled Command: 0x%02x\n", command);
+				//printf("UnHandled Command: 0x%02x\n", command);
+				return false;
 			};
 		}
 
@@ -604,7 +594,9 @@ boolean VGMData::update()
 	}
 
 	notifyUpdate();
+#ifdef STM32
+#else
 	bufferInfo.needQueueOutputSamples = false;
-
+#endif
 	return true;
 }
