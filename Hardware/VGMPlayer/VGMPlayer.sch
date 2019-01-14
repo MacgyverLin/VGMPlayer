@@ -2837,4 +2837,66 @@ F 3 "~" H 1050 3900 50  0001 C CNN
 	1    1050 3900
 	0    1    1    0   
 $EndComp
+$Comp
+L VGMPlayer-rescue:SD_Card J2
+U 1 1 5C3FE198
+P 16400 -150
+F 0 "J2" H 16400 -815 50  0000 C CNN
+F 1 "SD_Card" H 16400 -724 50  0000 C CNN
+F 2 "Connector_Card:SD_TE_2041021" H 16400 -150 50  0001 C CNN
+F 3 "http://portal.fciconnect.com/Comergent//fci/drawing/10067847.pdf" H 16400 -150 50  0001 C CNN
+	1    16400 -150
+	-1   0    0    1   
+$EndComp
+Text GLabel 17650 -450 2    50   Input ~ 0
+SPI_MISO
+Text GLabel 17600 50   2    50   Input ~ 0
+SPI_MOSI
+Text GLabel 17650 -250 2    50   Input ~ 0
+SPI_CLK
+Text GLabel 17600 150  2    50   Input ~ 0
+SD_CS
+Wire Wire Line
+	17600 150  17300 150 
+Wire Wire Line
+	17600 50   17300 50  
+Wire Wire Line
+	17650 -450 17300 -450
+Wire Wire Line
+	17650 -250 17300 -250
+Wire Wire Line
+	17300 -350 17400 -350
+Wire Wire Line
+	17400 -350 17400 -50 
+Wire Wire Line
+	17400 -50  17300 -50 
+$Comp
+L power:GND #PWR0101
+U 1 1 5C6ABA25
+P 17400 300
+F 0 "#PWR0101" H 17400 50  50  0001 C CNN
+F 1 "GND" H 17500 300 50  0000 C CNN
+F 2 "" H 17400 300 50  0001 C CNN
+F 3 "" H 17400 300 50  0001 C CNN
+	1    17400 300 
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	17400 -50  17400 300 
+Connection ~ 17400 -50 
+$Comp
+L power:+3.3V #PWR0102
+U 1 1 5C71FFAB
+P 17500 -700
+F 0 "#PWR0102" H 17500 -850 50  0001 C CNN
+F 1 "+3.3V" H 17350 -600 50  0000 C CNN
+F 2 "" H 17500 -700 50  0001 C CNN
+F 3 "" H 17500 -700 50  0001 C CNN
+	1    17500 -700
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	17500 -150 17300 -150
+Wire Wire Line
+	17500 -700 17500 -150
 $EndSCHEMATC
