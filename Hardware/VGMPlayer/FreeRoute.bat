@@ -1,1 +1,1 @@
-java -jar C:\Project\VGMPlayer\Hardware\freeRoute.jar
+java -jar freeRoute.jar
