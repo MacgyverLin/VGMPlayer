@@ -3,7 +3,7 @@ EELAYER 26 0
 EELAYER END
 $Descr A3 16535 11693
 encoding utf-8
-Sheet 1 2
+Sheet 1 1
 Title ""
 Date ""
 Rev ""
@@ -1069,11 +1069,4 @@ Wire Wire Line
 	11500 2900 11400 2900
 Wire Wire Line
 	11400 3000 11500 3000
-$Sheet
-S 6550 4700 4000 2250
-U 5C8ACEDD
-F0 "Register" 50
-F1 "Register.sch" 50
-F2 "~ENABLE" I L 6550 5050 50 
-$EndSheet
 $EndSCHEMATC
