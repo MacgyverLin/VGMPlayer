@@ -1,0 +1,51 @@
+***********************************************
+* VGM music package                           *
+* http://vgm.mdscene.net/                     *
+***********************************************
+Game name:           Life Force (U) /
+                     Salamander (J) /
+                     Life Force ~ Salamander
+                     (E, KR)
+System:              Nintendo Entertainment
+                     System / Famicom
+Music hardware:      NES APU (N2A03)
+
+Music author:        Miki Higashino (AC),
+                     Shinya Sakamoto,
+                     Satoe Terashima,
+                     Hidenori Maezawa,
+                     Atsushi Fujio (NES)
+Game developer:      Konami
+Game publisher:      Konami
+Game release date:   1988-08 (U) /
+                     1987-09-25 (J) /
+                     1989-11-22 (E)
+                     1990 (KR)
+
+Package created by:  Sonic of 8!
+Package version:     1.00
+
+Song list, in approximate game order:
+Song name                           Length:
+                                    Total  Loop
+01 Coin                             0:02   -
+02 Power of Anger                   0:35   0:26
+03 Poison of Snake                  0:35   0:35
+04 Thunderbolt                      0:34   0:34
+05 Planet Ratis                     0:37   0:24
+06 Starfield                        0:32   0:26
+07 Burn the Wind                    0:34   0:27
+08 Destroy Them All                 0:40   0:34
+09 Aircraft Carrier                 0:08   0:06
+10 Peace Again                      0:58   -
+11 Crystal Forever                  0:26   -
+
+Total Length                        5:41   9:13
+
+
+Notes:
+-
+
+
+Package history:
+1.00 2013-11-05 Sonic of 8!: Initial release.

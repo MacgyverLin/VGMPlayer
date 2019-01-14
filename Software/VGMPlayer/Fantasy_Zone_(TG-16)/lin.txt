@@ -1,0 +1,21 @@
+ Volume in drive E has no label.
+ Volume Serial Number is 0007-91B0
+
+ Directory of E:\Project\VGMPlayer\VGMPlayer\Fantasy_Zone_(TG-16)
+
+01/08/2012  09:17            17,481 01 Start ~ Opa-Opa! [Round 1].vgz
+01/08/2012  09:17             7,158 02 Shop.vgz
+01/08/2012  09:17             5,297 03 Boss [Round 1~7 Boss].vgz
+01/08/2012  09:17             1,808 04 Round Up [Round Clear].vgz
+01/08/2012  09:17             7,839 05 Keep on the Beat [Round 2].vgz
+01/08/2012  09:17             6,790 06 Saari [Round 3].vgz
+01/08/2012  09:17             8,316 07 Prome [Round 4].vgz
+01/08/2012  09:17            11,181 08 Hot Snow [Round 5].vgz
+01/08/2012  09:17             6,706 09 Don't Stop [Round 6].vgz
+01/08/2012  09:17             8,922 10 Dreaming Tomorrow [Round 7].vgz
+01/08/2012  09:17             5,438 11 Ya-Da-Yo [Round 8 Boss].vgz
+01/08/2012  09:17             9,217 12 Victory Way [Ending].vgz
+01/08/2012  09:17               627 13 Miss.vgz
+01/08/2012  09:17             1,901 14 Game Over.vgz
+              14 File(s)         98,681 bytes
+               0 Dir(s)  230,435,573,760 bytes free

@@ -1,0 +1,19 @@
+ Volume in drive E has no label.
+ Volume Serial Number is 0007-91B0
+
+ Directory of E:\Project\VGMPlayer\VGMPlayer\Arumana_no_Kiseki_(Nintendo_Famicom_Disk_System)
+
+04/04/2017  04:33             1,135 01 Opening.vgz
+04/04/2017  04:33             7,348 02 Stage 1, 4, 6.vgz
+04/04/2017  04:33               917 03 Stage Exit.vgz
+04/04/2017  04:33             2,571 04 Boss.vgz
+04/04/2017  04:33             1,114 05 Stage Clear.vgz
+04/04/2017  04:33             6,975 06 Stage 2, 3.vgz
+04/04/2017  04:33             6,967 07 Stage 5.vgz
+04/04/2017  04:33             4,028 08 Last Boss.vgz
+04/04/2017  04:33               520 09 Last Boss Clear.vgz
+04/04/2017  04:33               840 10 Arumana Recovered.vgz
+04/04/2017  04:33             1,393 11 Ending.vgz
+04/04/2017  04:33             1,683 12 Game Over.vgz
+              12 File(s)         35,491 bytes
+               0 Dir(s)  230,409,773,056 bytes free

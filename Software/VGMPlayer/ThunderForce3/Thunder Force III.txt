@@ -1,0 +1,57 @@
+***********************************************
+* Megadrive VGM music package                 *
+* http://project2612.org/                     *
+***********************************************
+
+Game name:           Thunder Force III
+System:              Sega Mega Drive
+Complete music dump: Yes
+
+Original author:     Tomomi Otani, Naosuke
+                      Arai, Toshiharu Yamanishi
+Publisher:           Tecnosoft / Sega
+Package created by:  DJ Squarewave
+Package version:     1.05
+
+Files, in approximate game order:
+
+Name                                Length:
+                                    Total  Loop
+The Wind Blew All Day Long
+                    (Opening Theme) 0:14   -
+Beyond the Peace (Stage Select)     0:26   0:24
+Back to the Fire (Stage 1: Hydra)   1:02   1:02
+Gargoyle (Stage 1 Boss)             0:47   0:40
+Venus Fire (Stage 2: Gorgon)        1:27   1:17
+Twin Vulcan (Stage 2 Boss)          0:32   0:29
+The Grubby Dark Blue
+                  (Stage 3: Seiren) 1:13   1:09
+King Fish (Stage 3 Boss)            0:43   0:37
+Truth (Stage 4: Haides)             1:00   0:33
+G Lobster (Stage 4 Boss)            0:45   0:43
+Final Take a Chance
+                   (Stage 5: Ellis) 0:51   0:40
+Mobile Fort (Stage 5 Boss)          0:28   0:25
+His Behavior Inspired Us With
+       Distrust (Stage 6: Cerberus) 2:39   2:27
+Hunger Made Them Desperate
+                (Stage 7: Orn Base) 1:51   1:49
+Off Luck (Stage 7 Boss)             0:44   0:44
+Final Moment (Stage 8: Orn Core)    0:42   0:31
+Be Menaced by Orn (Stage 8 Boss)    0:55   0:43
+Stage Clear                         0:02   -
+A War Without the End (Ending)      0:38   0:16
+Present (Staff Roll)                3:07   -
+Continue                            0:21   -
+Game Over                           0:04   -
+
+Notes:
+1.05: Ootani -> Otani
+
+1.03: Per-track composer credits.
+
+1.02: Added track numbers to filenames.
+Modified tags for consistency.
+
+Ah, Tecno Soft. Masters of indecipherable song
+titles. See Herzog Zwei for further examples.

@@ -1,0 +1,45 @@
+***********************************************
+* VGM music package                           *
+* http://vgmrips.net/                         *
+***********************************************
+Game name:           Arumana no Kiseki
+System:              Nintendo Famicom
+                     Disk System
+Music hardware:      NES APU + FDS
+
+Music author:        Kinuyo Yamashita,
+                     Kōji Murata
+Game developer:      Konami
+Game publisher:      Konami
+Game release date:   1987-08-11
+
+Package created by:  shywolf
+Package version:     1.00
+
+Song list, in approximate game order:
+Song name                           Length:
+                                    Total  Loop
+01 Opening                          0:11   -
+02 Stage 1, 4, 6                    0:37   0:22
+03 Stage Exit                       0:02   -
+04 Boss                             0:13   0:06
+05 Stage Clear                      0:04   -
+06 Stage 2, 3                       0:46   0:38
+07 Stage 5                          0:46   0:43
+08 Last Boss                        0:26   0:19
+09 Last Boss Clear                  0:04   0:04
+10 Arumana Recovered                0:04   -
+11 Ending                           0:19   -
+12 Game Over                        0:07   -
+
+Total Length                        3:39   5:51
+
+
+Notes:
+Pack was made using
+NEZplug 0.9.4.8+2+19.20 VGM mod
+and .NSF file from http://nsf.joshw.info/.
+
+
+Package history:
+1.00 2017-04-03 shywolf: Initial release.
