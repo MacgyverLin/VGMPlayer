@@ -1,8 +1,42 @@
+#include "ym2151.h"
+
+#ifdef STM32
+#include <VGMBoard.h>
+
+s32 YM2151_Initialize(u8 chipID, u32 clock, u32 sampleRate)
+{
+	return -1;
+}
+
+void YM2151_Shutdown(u8 chipID)
+{
+}
+
+void YM2151_Reset(u8 chipID)
+{
+}
+
+void YM2151_WriteRegister(u8 chipID, u32 address, u8 data)
+{
+	VGMBoard_WriteYM2151(address, data);
+}
+
+u8 YM2151_ReadRegister(u8 chipID, u32 address)
+{
+	return -1;
+}
+
+void YM2151_Update(u8 chipID, s32** buffer, u32 length)
+{
+}
+
+#else
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include <math.h>
-#include "ym2151.h"
+
 
 /* struct describing a single operator */
 typedef struct {
@@ -1908,3 +1942,5 @@ void YM2151_Update(u8 chipID, s32 **buffers, u32 length)
 		advance(ic);
 	}
 }
+
+#endif

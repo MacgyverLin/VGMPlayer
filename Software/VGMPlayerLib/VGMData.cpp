@@ -120,7 +120,7 @@ boolean VGMData::open()
 		header.ID[2] != 'm' ||
 		header.ID[3] != ' ')
 	{
-		vgm_log("Data is not a .vgm format");
+		//vgm_log("Data is not a .vgm format");
 
 		return false;
 	}

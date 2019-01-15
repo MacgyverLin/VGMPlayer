@@ -21,17 +21,23 @@ void VGMAudioPlayer::onNotifySomething(Obserable& observable)
 
 void VGMAudioPlayer::onNotifyOpen(Obserable& observable)
 {
+#ifdef STM32
+#else
 	VGMData& vgmData = (VGMData &)observable;
+
 
 	const VGMHeader& header = vgmData.getHeader();
 	const VGMData::PlayInfo& playInfo = vgmData.getPlayInfo();
 	const VGMData::BufferInfo& bufferInfo = vgmData.getBufferInfo();
 
 	boolean rval = outputDevice.open(playInfo.channels, playInfo.bitPerSamples, playInfo.sampleRate, VGM_OUTPUT_BUFFER_COUNT);
+#endif
 }
 
 void VGMAudioPlayer::onNotifyClose(Obserable& observable)
 {
+#ifdef STM32
+#else	
 	VGMData& vgmData = (VGMData &)observable;
 
 	const VGMHeader& header = vgmData.getHeader();
@@ -39,6 +45,7 @@ void VGMAudioPlayer::onNotifyClose(Obserable& observable)
 	const VGMData::BufferInfo& bufferInfo = vgmData.getBufferInfo();
 
 	outputDevice.close();
+#endif
 }
 
 void VGMAudioPlayer::onNotifyPlay(Obserable& observable)
@@ -63,6 +70,8 @@ void VGMAudioPlayer::onNotifyResume(Obserable& observable)
 
 void VGMAudioPlayer::onNotifyUpdate(Obserable& observable)
 {
+#ifdef STM32
+#else	
 	VGMData& vgmData = (VGMData &)observable;
 	const VGMData::PlayInfo& playInfo = vgmData.getPlayInfo();
 	const VGMData::BufferInfo& bufferInfo = vgmData.getBufferInfo();
@@ -83,4 +92,5 @@ void VGMAudioPlayer::onNotifyUpdate(Obserable& observable)
 	}
 
 	outputDevice.update();
+#endif
 }
