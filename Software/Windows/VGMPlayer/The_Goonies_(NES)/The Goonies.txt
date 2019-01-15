@@ -1,0 +1,45 @@
+***********************************************
+* VGM music package                           *
+* http://vgm.mdscene.net/                     *
+***********************************************
+Game name:           The Goonies /
+                     Vs. The Goonies
+System:              Nintendo Entertainment
+                     System / Famicom /
+                     Famicom Disk System /
+                     Nintendo Vs. Unisystem
+Music hardware:      NES APU (N2A03)
+
+Music author:        Satoe Terashima
+Game developer:      Konami
+Game publisher:      Konami
+Game release date:   1986-03-21 (FC) /
+                     1986-12 (VS.) /
+                     1988-04-08 (FDS)
+
+Package created by:  Sonic of 8!
+Package version:     1.00
+
+Song list, in approximate game order:
+Song name                           Length:
+                                    Total  Loop
+01 Start                            0:02   -
+02 The Goonies 'R' Good Enough      1:01   0:42
+03 Round Clear                      0:04   -
+04 BGM 2                            0:27   0:27
+05 BGM 3                            0:22   0:22
+06 Secret Cave                      0:17   0:17
+07 Invincible                       0:02   0:02
+08 Ending                           0:23   -
+09 Miss                             0:03   -
+10 Game Over                        0:05   -
+
+Total Length                        2:45   4:34
+
+
+Notes:
+-
+
+
+Package history:
+1.00 2013-11-12 Sonic of 8!: Initial release.

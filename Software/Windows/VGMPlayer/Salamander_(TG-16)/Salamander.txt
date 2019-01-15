@@ -1,0 +1,46 @@
+***********************************************
+* VGM music package                           *
+* http://vgm.mdscene.net/                     *
+***********************************************
+Game name:           Salamander
+System:              TurboGrafx-16 / PC Engine
+Music hardware:      HuC6280
+
+Music author:        Miki Higashino,
+                     Yoshiaki Hatano (AC / PCE)
+Game developer:      Konami (AC / PCE)
+Game publisher:      Konami (AC / PCE)
+Game release date:   1986 (AC) /
+                     1991-12-06 (PCE)
+
+Package created by:  Sonic of 8!
+Package version:     1.00
+
+Song list, in approximate game order:
+Song name                           Length:
+                                    Total  Loop
+01 Konami Logo                      0:03   -
+02 Title Screen                     0:30   -
+03 Attract Mode                     0:22   0:17
+04 Power of Anger                   0:36   0:26
+05 Poison of Snake                  0:36   0:35
+06 Fly High                         0:32   0:26
+07 Planet Ratis                     0:38   0:25
+08 Starfield                        0:32   0:26
+09 Burn the Wind                    0:34   0:27
+10 Destroy Them All                 0:40   0:34
+11 Aircraft Carrier                 0:10   0:08
+12 Destroy Them All -Type 2- 
+   ~ Poison of Snake                0:49   0:35
+13 Peace Again                      0:40   -
+14 Crystal Forever                  0:08   0:08
+
+Total Length                        6:51  11:18
+
+
+Notes:
+-
+
+
+Package history:
+1.00 2012-11-25 Sonic of 8!: Initial release.

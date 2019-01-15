@@ -1,0 +1,36 @@
+ Volume in drive E has no label.
+ Volume Serial Number is 0007-91B0
+
+ Directory of E:\Project\VGMPlayer\VGMPlayer\Detana!!_TwinBee_(Sharp_X68000)
+
+22/05/2015  22:59            24,981 01 Morning Music (Load BGM).vgz
+22/05/2015  22:59             2,411 02 Konami Logo.vgz
+22/05/2015  22:10            55,056 03 Detana TwinBee (Title).vgz
+22/05/2015  22:10             5,988 04 Credit.vgz
+22/05/2015  22:10            28,484 05 Message from Queen Melora (Start Demo).vgz
+22/05/2015  22:10            66,601 06 Gift of The Wind (Stage 1 BGM).vgz
+22/05/2015  22:10            58,957 07 Attacked by The Forces of Iva (Stage 1, 2, 5, 6 Boss BGM).vgz
+22/05/2015  22:10            18,586 08 Thank You! TwinBee (Stage Clear).vgz
+22/05/2015  22:10            63,459 09 Crossing The Sea of Clouds (Stage 2 BGM).vgz
+22/05/2015  22:10            48,464 10 Sky Fortress Laputa (Stage 3 BGM).vgz
+22/05/2015  22:10            49,378 11 Bring it on!! (Stage 3, 4 Boss BGM).vgz
+22/05/2015  22:10            44,728 12 World of The Mold (Stage 4 BGM).vgz
+22/05/2015  22:10            60,106 13 Aquatic Parade (Stage 5 BGM).vgz
+22/05/2015  22:10            54,966 14 Iva Temple (Stage 6 BGM).vgz
+22/05/2015  22:10            51,677 15 Paradise of Beyond The Fog (Stage 7 BGM).vgz
+22/05/2015  22:10            37,552 16 Emperor Iva Brain Insect (Last Boss BGM).vgz
+22/05/2015  22:10            42,430 17 The Day Peace Returns to Planet Meru (Ending).vgz
+22/05/2015  22:10            19,086 18 Let's Try Again (Game Over).vgz
+22/05/2015  22:10            22,141 19 Congratulations! (Ranking).vgz
+22/05/2015  22:10            62,831 20 Detana TwinBee (Title, With SE).vgz
+22/05/2015  22:59             8,287 21 Opening (Shop Demo).vgz
+22/05/2015  22:59            20,029 22 Message from Queen Melora (Shop Demo).vgz
+22/05/2015  22:59             7,763 23 It is Dispatched to The Planet Meru (Shop Demo).vgz
+22/05/2015  22:10            42,081 24 Detana TwinBee (Shop Demo).vgz
+22/05/2015  22:59            48,508 25 Twinbee's Home Town Song (Shop Demo).vgz
+22/05/2015  22:10           119,388 26 Shop Demo 1.vgz
+22/05/2015  22:10            52,905 27 Shop Demo 2.vgz
+22/05/2015  22:10           124,235 28 Shop Demo 3 (Pre-Release).vgz
+22/05/2015  22:10           114,978 29 Shop Demo 3 (Now on Sale).vgz
+              29 File(s)      1,356,056 bytes
+               0 Dir(s)  230,421,745,664 bytes free

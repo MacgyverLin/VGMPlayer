@@ -1,0 +1,171 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Source Files">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;c;cc;cxx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
+    <Filter Include="Header Files">
+      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
+      <Extensions>h;hh;hpp;hxx;hm;inl;inc;ipp;xsd</Extensions>
+    </Filter>
+    <Filter Include="Resource Files">
+      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
+      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
+    </Filter>
+    <Filter Include="Source Files\VGM">
+      <UniqueIdentifier>{4ed98003-02f7-499a-8bfe-772b6c5f2cdb}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\VGM\Model">
+      <UniqueIdentifier>{39929eed-54fe-4936-bd99-a8967fcdb483}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\VGM\Observer">
+      <UniqueIdentifier>{c4ac0809-838f-4022-897b-73d79ae48e02}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Platform">
+      <UniqueIdentifier>{1ee9c2fb-e2f3-4674-b0c7-169744791f24}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\chips">
+      <UniqueIdentifier>{90b8fce6-c59a-40e9-954c-affc203e5044}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="stdafx.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="targetver.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="VGMPlayerLib.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="VGMDef.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="HuC6280.h">
+      <Filter>Source Files\chips</Filter>
+    </ClInclude>
+    <ClInclude Include="k053260.h">
+      <Filter>Source Files\chips</Filter>
+    </ClInclude>
+    <ClInclude Include="nes_defs.h">
+      <Filter>Source Files\chips</Filter>
+    </ClInclude>
+    <ClInclude Include="NESAPU.h">
+      <Filter>Source Files\chips</Filter>
+    </ClInclude>
+    <ClInclude Include="NESFDSAPU.h">
+      <Filter>Source Files\chips</Filter>
+    </ClInclude>
+    <ClInclude Include="SN76489.h">
+      <Filter>Source Files\chips</Filter>
+    </ClInclude>
+    <ClInclude Include="ym2151.h">
+      <Filter>Source Files\chips</Filter>
+    </ClInclude>
+    <ClInclude Include="ym2612.h">
+      <Filter>Source Files\chips</Filter>
+    </ClInclude>
+    <ClInclude Include="VideoDevice.h">
+      <Filter>Source Files\Platform</Filter>
+    </ClInclude>
+    <ClInclude Include="VGMWaveFormViewer.h">
+      <Filter>Source Files\VGM\Observer</Filter>
+    </ClInclude>
+    <ClInclude Include="VGMSpectrumViewer.h">
+      <Filter>Source Files\VGM\Observer</Filter>
+    </ClInclude>
+    <ClInclude Include="VGMData.h">
+      <Filter>Source Files\VGM\Model</Filter>
+    </ClInclude>
+    <ClInclude Include="VGMDataObverser.h">
+      <Filter>Source Files\VGM\Observer</Filter>
+    </ClInclude>
+    <ClInclude Include="Observer.h">
+      <Filter>Source Files\VGM</Filter>
+    </ClInclude>
+    <ClInclude Include="Obserable.h">
+      <Filter>Source Files\VGM</Filter>
+    </ClInclude>
+    <ClInclude Include="Array.h">
+      <Filter>Source Files\VGM</Filter>
+    </ClInclude>
+    <ClInclude Include="FFT.h">
+      <Filter>Source Files\VGM</Filter>
+    </ClInclude>
+    <ClInclude Include="VGMFile.h">
+      <Filter>Source Files\VGM\Model</Filter>
+    </ClInclude>
+    <ClInclude Include="VGMAudioPlayer.h">
+      <Filter>Source Files\VGM\Observer</Filter>
+    </ClInclude>
+    <ClInclude Include="AudioDevice.h">
+      <Filter>Source Files\Platform</Filter>
+    </ClInclude>
+    <ClInclude Include="Platform.h">
+      <Filter>Source Files\Platform</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="HuC6280.c">
+      <Filter>Source Files\chips</Filter>
+    </ClCompile>
+    <ClCompile Include="K053260.c">
+      <Filter>Source Files\chips</Filter>
+    </ClCompile>
+    <ClCompile Include="NESAPU.c">
+      <Filter>Source Files\chips</Filter>
+    </ClCompile>
+    <ClCompile Include="NESFDSAPU.c">
+      <Filter>Source Files\chips</Filter>
+    </ClCompile>
+    <ClCompile Include="SN76489.c">
+      <Filter>Source Files\chips</Filter>
+    </ClCompile>
+    <ClCompile Include="ym2151.c">
+      <Filter>Source Files\chips</Filter>
+    </ClCompile>
+    <ClCompile Include="ym2612.c">
+      <Filter>Source Files\chips</Filter>
+    </ClCompile>
+    <ClCompile Include="VideoDevice.cpp">
+      <Filter>Source Files\Platform</Filter>
+    </ClCompile>
+    <ClCompile Include="VGMSpectrumViewer.cpp">
+      <Filter>Source Files\VGM\Observer</Filter>
+    </ClCompile>
+    <ClCompile Include="VGMWaveFormViewer.cpp">
+      <Filter>Source Files\VGM\Observer</Filter>
+    </ClCompile>
+    <ClCompile Include="VGMData.cpp">
+      <Filter>Source Files\VGM\Model</Filter>
+    </ClCompile>
+    <ClCompile Include="VGMDataObverser.cpp">
+      <Filter>Source Files\VGM\Observer</Filter>
+    </ClCompile>
+    <ClCompile Include="Obserable.cpp">
+      <Filter>Source Files\VGM</Filter>
+    </ClCompile>
+    <ClCompile Include="Observer.cpp">
+      <Filter>Source Files\VGM</Filter>
+    </ClCompile>
+    <ClCompile Include="Array.cpp">
+      <Filter>Source Files\VGM</Filter>
+    </ClCompile>
+    <ClCompile Include="FFT.cpp">
+      <Filter>Source Files\VGM</Filter>
+    </ClCompile>
+    <ClCompile Include="VGMFile.cpp">
+      <Filter>Source Files\VGM\Model</Filter>
+    </ClCompile>
+    <ClCompile Include="VGMAudioPlayer.cpp">
+      <Filter>Source Files\VGM\Observer</Filter>
+    </ClCompile>
+    <ClCompile Include="AudioDevice.cpp">
+      <Filter>Source Files\Platform</Filter>
+    </ClCompile>
+    <ClCompile Include="Platform.cpp">
+      <Filter>Source Files\Platform</Filter>
+    </ClCompile>
+  </ItemGroup>
+</Project>

@@ -1,0 +1,47 @@
+***********************************************
+* VGM music package                           *
+* http://vgm.mdscene.net/                     *
+***********************************************
+Game name:           Columns
+System:              TurboGrafx-16 / PC Engine
+Music hardware:      HuC6280
+
+Music author:        Tokuhiko Uwabo
+Game developer:      Telenet Japan
+Game publisher:      Telenet Japan
+ Licensed By:        Sega
+Game release date:   1991-03-29
+
+Package created by:  2ch-H
+Package version:     1.10
+
+Song list, in approximate game order:
+Song name                           Length:
+                                    Total  Loop
+01 Filthy (Select)                  0:21   0:17
+02 Clotho (BGM 1)                   1:29   1:29
+03 Lathesis (BGM 2)                 1:32   1:31
+04 Atropos (BGM 3)                  1:25   1:25
+05 Boy Wonder (Name Entry)          0:32   0:31
+06 Concilation (Game Over)          0:04   -
+
+Total Length                        5:24  10:37
+
+
+Notes:
+Track Names are used in Columns, Columns II OST
+
+This pack was made using Ootake 2.66 VGM mod.
+
+The songs ... are missing
+ Quagmire (Start)
+Was not able to rip the VGM 
+because they were not used during the game.
+
+Size reduction (vgm_cmp):
+    7.14 MB -> 257 KB (3.5 %)
+
+
+Package history:
+1.00 2012-07-30 2ch-H: Initial release.
+1.10 2012-11-18 2ch-H: Rerip Fixed Tempo.

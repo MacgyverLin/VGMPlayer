@@ -1,0 +1,44 @@
+***********************************************
+* VGM music package                           *
+* http://vgm.mdscene.net/                     *
+***********************************************
+Game name:           Bubble Bobble
+System:              Nintendo Entertainment
+                     System / Famicom /
+                     Famicom Disk System
+Music hardware:      NES APU (N2A03)
+
+Music author:        Tadashi Kimijima
+Game developer:      Taito
+Game publisher:      Taito (U / FDS) /
+                     Nintendo (E) /
+                     Mattel (AU)
+Game release date:   1988-11 (U) /
+                     1990-10-26 (P) /
+                     1990 (AU) /
+                     1987-10-30 (FDS)
+
+Package created by:  Sonic of 8!
+Package version:     1.00
+
+Song list, in approximate game order:
+Song name                           Length:
+                                    Total  Loop
+01 Introduction ~ Main Theme        0:53   0:45
+02 Bonus Music                      0:05   0:05
+03 Secret Room                      0:56   0:45
+04 False Ending                     0:28   -
+05 Super Drunk                      0:13   0:13
+06 Real Ending                      1:29   -
+07 Name Regist                      0:10   0:10
+08 Game Over                        0:04   -
+
+Total Length                        4:18   6:16
+
+
+Notes:
+-
+
+
+Package history:
+1.00 2013-07-12 Sonic of 8!: Initial release.

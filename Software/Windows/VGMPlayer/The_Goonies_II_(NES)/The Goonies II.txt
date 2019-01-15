@@ -1,0 +1,46 @@
+***********************************************
+* VGM music package                           *
+* http://vgm.mdscene.net/                     *
+***********************************************
+Game name:           The Goonies II (UE) /
+                     Goonies 2: Fratelli Saigo
+                     no Chousen (J)
+System:              Nintendo Entertainment
+                     System / Famicom
+Music hardware:      NES APU (N2A03)
+
+Music author:        Satoe Terashima
+Game developer:      Konami
+Game publisher:      Konami
+Game release date:   1987-11 (U) /
+                     1987-03-18 (J) /
+                     1988-12-19 (E)
+
+Package created by:  Sonic of 8!
+Package version:     1.00
+
+Song list, in approximate game order:
+Song name                           Length:
+                                    Total  Loop
+01 Start                            0:02   -
+02 The Goonies 'R' Good Enough      0:55   0:42
+03 Basement Theme                   0:32   0:32
+04 Cavern Theme                     1:10   1:10
+05 Ice Cavern Theme                 0:44   0:43
+06 Undersea Theme                   0:41   0:41
+07 Password Theme                   0:13   0:13
+08 1st Person Mode                  0:19   0:19
+09 Warp Mode ~ Guide Theme          0:07   0:06
+10 Ending                           0:51   -
+11 Miss                             0:03   -
+12 Game Over                        0:08   -
+
+Total Length                        5:44  10:10
+
+
+Notes:
+-
+
+
+Package history:
+1.00 2013-11-12 Sonic of 8!: Initial release.
