@@ -1,5 +1,0 @@
--c --cpu Cortex-M3 -g -O0 --apcs=interwork -I./CMSIS -I./Drivers/inc -I./Startup -I./HAL -I./HWModule -I./FATFS/src -I./Users/Src 
--I C:\Keil\ARM\RV31\INC 
--I C:\Keil\ARM\CMSIS\Include 
--I C:\Keil\ARM\Inc\ST\STM32F10x 
--DSTM32 -DSTM32F10X_MD -DUSE_STDPERIPH_DRIVER -o ".\Obj\fatfs_fun.o" --omf_browse ".\Obj\fatfs_fun.crf" --depend ".\Obj\fatfs_fun.d" "Users\Src\fatfs_fun.c"

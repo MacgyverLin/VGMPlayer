@@ -1,5 +1,0 @@
--c --cpu Cortex-M3 -g -O0 --apcs=interwork -I./CMSIS -I./Drivers/inc -I./Startup -I./HAL -I./HWModule -I./FATFS/src -I./Users/Src --exceptions 
--I C:\Keil\ARM\RV31\INC 
--I C:\Keil\ARM\CMSIS\Include 
--I C:\Keil\ARM\Inc\ST\STM32F10x 
--DSTM32 -DSTM32F10X_MD -DUSE_STDPERIPH_DRIVER -o ".\Obj\retarget.o" --omf_browse ".\Obj\retarget.crf" --depend ".\Obj\retarget.d" "Users\Src\retarget.c"
