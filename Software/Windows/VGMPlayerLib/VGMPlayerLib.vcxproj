@@ -90,7 +90,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS; WIN32;_DEBUG;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories> ../SDK/OpenAL/include; ../zlib; ../SDK/SDL/include; ../VGMPlayerLib</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories> ../SDK/OpenAL/include; ../zlib; ../SDK/SDL/include; ../../VGMPlayerLib</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -105,7 +105,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS; _DEBUG;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories> ../SDK/OpenAL/include; ../zlib; ../SDK/SDL/include; ../VGMPlayerLib</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories> ../SDK/OpenAL/include; ../zlib; ../SDK/SDL/include; ../../VGMPlayerLib</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -122,7 +122,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS; WIN32;NDEBUG;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories> ../SDK/OpenAL/include; ../zlib; ../SDK/SDL/include; ../VGMPlayerLib</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories> ../SDK/OpenAL/include; ../zlib; ../SDK/SDL/include; ../../VGMPlayerLib</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -141,7 +141,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS; NDEBUG;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories> ../SDK/OpenAL/include; ../zlib; ../SDK/SDL/include; ../VGMPlayerLib</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories> ../SDK/OpenAL/include; ../zlib; ../SDK/SDL/include; ../../VGMPlayerLib</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -151,53 +151,53 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClInclude Include="Array.h" />
-    <ClInclude Include="AudioDevice.h" />
-    <ClInclude Include="FFT.h" />
-    <ClInclude Include="HuC6280.h" />
-    <ClInclude Include="k053260.h" />
-    <ClInclude Include="NESAPU.h" />
-    <ClInclude Include="NESFDSAPU.h" />
-    <ClInclude Include="nes_defs.h" />
-    <ClInclude Include="Obserable.h" />
-    <ClInclude Include="Observer.h" />
-    <ClInclude Include="Platform.h" />
-    <ClInclude Include="SN76489.h" />
-    <ClInclude Include="VGMAudioPlayer.h" />
-    <ClInclude Include="VGMData.h" />
-    <ClInclude Include="VGMDataObverser.h" />
-    <ClInclude Include="VGMDef.h" />
+    <ClInclude Include="..\..\VGMPlayerLib\Array.h" />
+    <ClInclude Include="..\..\VGMPlayerLib\AudioDevice.h" />
+    <ClInclude Include="..\..\VGMPlayerLib\FFT.h" />
+    <ClInclude Include="..\..\VGMPlayerLib\HuC6280.h" />
+    <ClInclude Include="..\..\VGMPlayerLib\k053260.h" />
+    <ClInclude Include="..\..\VGMPlayerLib\NESAPU.h" />
+    <ClInclude Include="..\..\VGMPlayerLib\NESFDSAPU.h" />
+    <ClInclude Include="..\..\VGMPlayerLib\nes_defs.h" />
+    <ClInclude Include="..\..\VGMPlayerLib\Obserable.h" />
+    <ClInclude Include="..\..\VGMPlayerLib\Observer.h" />
+    <ClInclude Include="..\..\VGMPlayerLib\Platform.h" />
+    <ClInclude Include="..\..\VGMPlayerLib\SN76489.h" />
+    <ClInclude Include="..\..\VGMPlayerLib\VGMAudioPlayer.h" />
+    <ClInclude Include="..\..\VGMPlayerLib\VGMData.h" />
+    <ClInclude Include="..\..\VGMPlayerLib\VGMDataObverser.h" />
+    <ClInclude Include="..\..\VGMPlayerLib\vgmdef.h" />
+    <ClInclude Include="..\..\VGMPlayerLib\VGMFile.h" />
+    <ClInclude Include="..\..\VGMPlayerLib\VGMPlayerLib.h" />
+    <ClInclude Include="..\..\VGMPlayerLib\VGMSpectrumViewer.h" />
+    <ClInclude Include="..\..\VGMPlayerLib\VGMWaveFormViewer.h" />
+    <ClInclude Include="..\..\VGMPlayerLib\VideoDevice.h" />
+    <ClInclude Include="..\..\VGMPlayerLib\ym2151.h" />
+    <ClInclude Include="..\..\VGMPlayerLib\ym2612.h" />
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="targetver.h" />
-    <ClInclude Include="VGMFile.h" />
-    <ClInclude Include="VGMPlayerLib.h" />
-    <ClInclude Include="VGMSpectrumViewer.h" />
-    <ClInclude Include="VGMWaveFormViewer.h" />
-    <ClInclude Include="VideoDevice.h" />
-    <ClInclude Include="ym2151.h" />
-    <ClInclude Include="ym2612.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="Array.cpp" />
-    <ClCompile Include="AudioDevice.cpp" />
-    <ClCompile Include="FFT.cpp" />
-    <ClCompile Include="HuC6280.c" />
-    <ClCompile Include="K053260.c" />
-    <ClCompile Include="NESAPU.c" />
-    <ClCompile Include="NESFDSAPU.c" />
-    <ClCompile Include="Obserable.cpp" />
-    <ClCompile Include="Observer.cpp" />
-    <ClCompile Include="Platform.cpp" />
-    <ClCompile Include="SN76489.c" />
-    <ClCompile Include="VGMAudioPlayer.cpp" />
-    <ClCompile Include="VGMData.cpp" />
-    <ClCompile Include="VGMDataObverser.cpp" />
-    <ClCompile Include="VGMFile.cpp" />
-    <ClCompile Include="VGMSpectrumViewer.cpp" />
-    <ClCompile Include="VGMWaveFormViewer.cpp" />
-    <ClCompile Include="VideoDevice.cpp" />
-    <ClCompile Include="ym2151.c" />
-    <ClCompile Include="ym2612.c" />
+    <ClCompile Include="..\..\VGMPlayerLib\Array.cpp" />
+    <ClCompile Include="..\..\VGMPlayerLib\AudioDevice.cpp" />
+    <ClCompile Include="..\..\VGMPlayerLib\FFT.cpp" />
+    <ClCompile Include="..\..\VGMPlayerLib\HuC6280.c" />
+    <ClCompile Include="..\..\VGMPlayerLib\K053260.c" />
+    <ClCompile Include="..\..\VGMPlayerLib\NESAPU.c" />
+    <ClCompile Include="..\..\VGMPlayerLib\NESFDSAPU.c" />
+    <ClCompile Include="..\..\VGMPlayerLib\Obserable.cpp" />
+    <ClCompile Include="..\..\VGMPlayerLib\Observer.cpp" />
+    <ClCompile Include="..\..\VGMPlayerLib\Platform.cpp" />
+    <ClCompile Include="..\..\VGMPlayerLib\SN76489.c" />
+    <ClCompile Include="..\..\VGMPlayerLib\VGMAudioPlayer.cpp" />
+    <ClCompile Include="..\..\VGMPlayerLib\VGMData.cpp" />
+    <ClCompile Include="..\..\VGMPlayerLib\VGMDataObverser.cpp" />
+    <ClCompile Include="..\..\VGMPlayerLib\VGMFile.cpp" />
+    <ClCompile Include="..\..\VGMPlayerLib\VGMSpectrumViewer.cpp" />
+    <ClCompile Include="..\..\VGMPlayerLib\VGMWaveFormViewer.cpp" />
+    <ClCompile Include="..\..\VGMPlayerLib\VideoDevice.cpp" />
+    <ClCompile Include="..\..\VGMPlayerLib\ym2151.c" />
+    <ClCompile Include="..\..\VGMPlayerLib\ym2612.c" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
