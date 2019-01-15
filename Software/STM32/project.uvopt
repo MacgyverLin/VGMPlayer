@@ -282,7 +282,7 @@
 
   <Group>
     <GroupName>CMSIS</GroupName>
-    <tvExp>1</tvExp>
+    <tvExp>0</tvExp>
     <tvExpOptDlg>0</tvExpOptDlg>
     <cbSel>0</cbSel>
     <RteFlg>0</RteFlg>
@@ -322,7 +322,7 @@
 
   <Group>
     <GroupName>Drivers</GroupName>
-    <tvExp>1</tvExp>
+    <tvExp>0</tvExp>
     <tvExpOptDlg>0</tvExpOptDlg>
     <cbSel>0</cbSel>
     <RteFlg>0</RteFlg>
@@ -410,7 +410,7 @@
 
   <Group>
     <GroupName>Startup</GroupName>
-    <tvExp>1</tvExp>
+    <tvExp>0</tvExp>
     <tvExpOptDlg>0</tvExpOptDlg>
     <cbSel>0</cbSel>
     <RteFlg>0</RteFlg>
@@ -422,7 +422,7 @@
       <Focus>0</Focus>
       <ColumnNumber>36</ColumnNumber>
       <tvExpOptDlg>0</tvExpOptDlg>
-      <TopLine>120</TopLine>
+      <TopLine>121</TopLine>
       <CurrentLine>135</CurrentLine>
       <bDave2>0</bDave2>
       <PathWithFileName>.\StartUp\startup_stm32f10x_md.s</PathWithFileName>
@@ -434,7 +434,7 @@
 
   <Group>
     <GroupName>HAL</GroupName>
-    <tvExp>1</tvExp>
+    <tvExp>0</tvExp>
     <tvExpOptDlg>0</tvExpOptDlg>
     <cbSel>0</cbSel>
     <RteFlg>0</RteFlg>
@@ -494,8 +494,8 @@
       <Focus>0</Focus>
       <ColumnNumber>0</ColumnNumber>
       <tvExpOptDlg>0</tvExpOptDlg>
-      <TopLine>0</TopLine>
-      <CurrentLine>0</CurrentLine>
+      <TopLine>1</TopLine>
+      <CurrentLine>1</CurrentLine>
       <bDave2>0</bDave2>
       <PathWithFileName>.\HAL\io.c</PathWithFileName>
       <FilenameWithoutPath>io.c</FilenameWithoutPath>
@@ -532,13 +532,13 @@
       <FileType>1</FileType>
       <tvExp>0</tvExp>
       <Focus>0</Focus>
-      <ColumnNumber>30</ColumnNumber>
+      <ColumnNumber>0</ColumnNumber>
       <tvExpOptDlg>0</tvExpOptDlg>
-      <TopLine>0</TopLine>
-      <CurrentLine>0</CurrentLine>
+      <TopLine>55</TopLine>
+      <CurrentLine>80</CurrentLine>
       <bDave2>0</bDave2>
-      <PathWithFileName>.\HWModule\SN76489.c</PathWithFileName>
-      <FilenameWithoutPath>SN76489.c</FilenameWithoutPath>
+      <PathWithFileName>.\HWModule\VGMBoard.c</PathWithFileName>
+      <FilenameWithoutPath>VGMBoard.c</FilenameWithoutPath>
       <RteFlg>0</RteFlg>
       <bShared>0</bShared>
     </File>
@@ -550,11 +550,11 @@
       <Focus>0</Focus>
       <ColumnNumber>0</ColumnNumber>
       <tvExpOptDlg>0</tvExpOptDlg>
-      <TopLine>1</TopLine>
-      <CurrentLine>21</CurrentLine>
+      <TopLine>0</TopLine>
+      <CurrentLine>0</CurrentLine>
       <bDave2>0</bDave2>
-      <PathWithFileName>.\HWModule\ym2151.c</PathWithFileName>
-      <FilenameWithoutPath>ym2151.c</FilenameWithoutPath>
+      <PathWithFileName>..\VGMPlayerLib\SN76489.c</PathWithFileName>
+      <FilenameWithoutPath>SN76489.c</FilenameWithoutPath>
       <RteFlg>0</RteFlg>
       <bShared>0</bShared>
     </File>
@@ -564,13 +564,13 @@
       <FileType>1</FileType>
       <tvExp>0</tvExp>
       <Focus>0</Focus>
-      <ColumnNumber>0</ColumnNumber>
+      <ColumnNumber>32</ColumnNumber>
       <tvExpOptDlg>0</tvExpOptDlg>
-      <TopLine>0</TopLine>
-      <CurrentLine>0</CurrentLine>
+      <TopLine>1411</TopLine>
+      <CurrentLine>1422</CurrentLine>
       <bDave2>0</bDave2>
-      <PathWithFileName>.\HWModule\ym2612.c</PathWithFileName>
-      <FilenameWithoutPath>ym2612.c</FilenameWithoutPath>
+      <PathWithFileName>..\VGMPlayerLib\ym2151.c</PathWithFileName>
+      <FilenameWithoutPath>ym2151.c</FilenameWithoutPath>
       <RteFlg>0</RteFlg>
       <bShared>0</bShared>
     </File>
@@ -580,13 +580,13 @@
       <FileType>1</FileType>
       <tvExp>0</tvExp>
       <Focus>0</Focus>
-      <ColumnNumber>0</ColumnNumber>
+      <ColumnNumber>25</ColumnNumber>
       <tvExpOptDlg>0</tvExpOptDlg>
-      <TopLine>50</TopLine>
-      <CurrentLine>80</CurrentLine>
+      <TopLine>1738</TopLine>
+      <CurrentLine>1748</CurrentLine>
       <bDave2>0</bDave2>
-      <PathWithFileName>.\HWModule\VGMBoard.c</PathWithFileName>
-      <FilenameWithoutPath>VGMBoard.c</FilenameWithoutPath>
+      <PathWithFileName>..\VGMPlayerLib\ym2612.c</PathWithFileName>
+      <FilenameWithoutPath>ym2612.c</FilenameWithoutPath>
       <RteFlg>0</RteFlg>
       <bShared>0</bShared>
     </File>
@@ -601,7 +601,7 @@
     <File>
       <GroupNumber>6</GroupNumber>
       <FileNumber>18</FileNumber>
-      <FileType>1</FileType>
+      <FileType>8</FileType>
       <tvExp>0</tvExp>
       <Focus>0</Focus>
       <ColumnNumber>0</ColumnNumber>
@@ -609,8 +609,8 @@
       <TopLine>0</TopLine>
       <CurrentLine>0</CurrentLine>
       <bDave2>0</bDave2>
-      <PathWithFileName>.\Users\Src\stm32f10x_it.c</PathWithFileName>
-      <FilenameWithoutPath>stm32f10x_it.c</FilenameWithoutPath>
+      <PathWithFileName>..\VGMPlayerLib\Array.cpp</PathWithFileName>
+      <FilenameWithoutPath>Array.cpp</FilenameWithoutPath>
       <RteFlg>0</RteFlg>
       <bShared>0</bShared>
     </File>
@@ -622,11 +622,11 @@
       <Focus>0</Focus>
       <ColumnNumber>0</ColumnNumber>
       <tvExpOptDlg>0</tvExpOptDlg>
-      <TopLine>167</TopLine>
-      <CurrentLine>197</CurrentLine>
+      <TopLine>1</TopLine>
+      <CurrentLine>1</CurrentLine>
       <bDave2>0</bDave2>
-      <PathWithFileName>.\Users\Src\main.cpp</PathWithFileName>
-      <FilenameWithoutPath>main.cpp</FilenameWithoutPath>
+      <PathWithFileName>..\VGMPlayerLib\AudioDevice.cpp</PathWithFileName>
+      <FilenameWithoutPath>AudioDevice.cpp</FilenameWithoutPath>
       <RteFlg>0</RteFlg>
       <bShared>0</bShared>
     </File>
@@ -638,11 +638,11 @@
       <Focus>0</Focus>
       <ColumnNumber>0</ColumnNumber>
       <tvExpOptDlg>0</tvExpOptDlg>
-      <TopLine>0</TopLine>
-      <CurrentLine>0</CurrentLine>
+      <TopLine>1</TopLine>
+      <CurrentLine>1</CurrentLine>
       <bDave2>0</bDave2>
-      <PathWithFileName>.\Users\Src\Array.cpp</PathWithFileName>
-      <FilenameWithoutPath>Array.cpp</FilenameWithoutPath>
+      <PathWithFileName>..\VGMPlayerLib\Obserable.cpp</PathWithFileName>
+      <FilenameWithoutPath>Obserable.cpp</FilenameWithoutPath>
       <RteFlg>0</RteFlg>
       <bShared>0</bShared>
     </File>
@@ -654,11 +654,11 @@
       <Focus>0</Focus>
       <ColumnNumber>0</ColumnNumber>
       <tvExpOptDlg>0</tvExpOptDlg>
-      <TopLine>0</TopLine>
-      <CurrentLine>0</CurrentLine>
+      <TopLine>1</TopLine>
+      <CurrentLine>1</CurrentLine>
       <bDave2>0</bDave2>
-      <PathWithFileName>.\Users\Src\AudioDevice.cpp</PathWithFileName>
-      <FilenameWithoutPath>AudioDevice.cpp</FilenameWithoutPath>
+      <PathWithFileName>..\VGMPlayerLib\Observer.cpp</PathWithFileName>
+      <FilenameWithoutPath>Observer.cpp</FilenameWithoutPath>
       <RteFlg>0</RteFlg>
       <bShared>0</bShared>
     </File>
@@ -668,13 +668,13 @@
       <FileType>8</FileType>
       <tvExp>0</tvExp>
       <Focus>0</Focus>
-      <ColumnNumber>4</ColumnNumber>
+      <ColumnNumber>0</ColumnNumber>
       <tvExpOptDlg>0</tvExpOptDlg>
-      <TopLine>0</TopLine>
-      <CurrentLine>0</CurrentLine>
+      <TopLine>1</TopLine>
+      <CurrentLine>1</CurrentLine>
       <bDave2>0</bDave2>
-      <PathWithFileName>.\Users\Src\Obserable.cpp</PathWithFileName>
-      <FilenameWithoutPath>Obserable.cpp</FilenameWithoutPath>
+      <PathWithFileName>..\VGMPlayerLib\Platform.cpp</PathWithFileName>
+      <FilenameWithoutPath>Platform.cpp</FilenameWithoutPath>
       <RteFlg>0</RteFlg>
       <bShared>0</bShared>
     </File>
@@ -684,13 +684,13 @@
       <FileType>8</FileType>
       <tvExp>0</tvExp>
       <Focus>0</Focus>
-      <ColumnNumber>0</ColumnNumber>
+      <ColumnNumber>14</ColumnNumber>
       <tvExpOptDlg>0</tvExpOptDlg>
-      <TopLine>0</TopLine>
-      <CurrentLine>0</CurrentLine>
+      <TopLine>548</TopLine>
+      <CurrentLine>560</CurrentLine>
       <bDave2>0</bDave2>
-      <PathWithFileName>.\Users\Src\Observer.cpp</PathWithFileName>
-      <FilenameWithoutPath>Observer.cpp</FilenameWithoutPath>
+      <PathWithFileName>..\VGMPlayerLib\VGMData.cpp</PathWithFileName>
+      <FilenameWithoutPath>VGMData.cpp</FilenameWithoutPath>
       <RteFlg>0</RteFlg>
       <bShared>0</bShared>
     </File>
@@ -705,8 +705,8 @@
       <TopLine>0</TopLine>
       <CurrentLine>0</CurrentLine>
       <bDave2>0</bDave2>
-      <PathWithFileName>.\Users\Src\VGMAudioPlayer.cpp</PathWithFileName>
-      <FilenameWithoutPath>VGMAudioPlayer.cpp</FilenameWithoutPath>
+      <PathWithFileName>..\VGMPlayerLib\VGMDataObverser.cpp</PathWithFileName>
+      <FilenameWithoutPath>VGMDataObverser.cpp</FilenameWithoutPath>
       <RteFlg>0</RteFlg>
       <bShared>0</bShared>
     </File>
@@ -718,11 +718,11 @@
       <Focus>0</Focus>
       <ColumnNumber>0</ColumnNumber>
       <tvExpOptDlg>0</tvExpOptDlg>
-      <TopLine>390</TopLine>
-      <CurrentLine>405</CurrentLine>
+      <TopLine>0</TopLine>
+      <CurrentLine>0</CurrentLine>
       <bDave2>0</bDave2>
-      <PathWithFileName>.\Users\Src\VGMData.cpp</PathWithFileName>
-      <FilenameWithoutPath>VGMData.cpp</FilenameWithoutPath>
+      <PathWithFileName>..\VGMPlayerLib\VGMFile.cpp</PathWithFileName>
+      <FilenameWithoutPath>VGMFile.cpp</FilenameWithoutPath>
       <RteFlg>0</RteFlg>
       <bShared>0</bShared>
     </File>
@@ -737,8 +737,8 @@
       <TopLine>0</TopLine>
       <CurrentLine>0</CurrentLine>
       <bDave2>0</bDave2>
-      <PathWithFileName>.\Users\Src\VGMDataObverser.cpp</PathWithFileName>
-      <FilenameWithoutPath>VGMDataObverser.cpp</FilenameWithoutPath>
+      <PathWithFileName>..\VGMPlayerLib\VideoDevice.cpp</PathWithFileName>
+      <FilenameWithoutPath>VideoDevice.cpp</FilenameWithoutPath>
       <RteFlg>0</RteFlg>
       <bShared>0</bShared>
     </File>
@@ -750,11 +750,11 @@
       <Focus>0</Focus>
       <ColumnNumber>0</ColumnNumber>
       <tvExpOptDlg>0</tvExpOptDlg>
-      <TopLine>183</TopLine>
-      <CurrentLine>225</CurrentLine>
+      <TopLine>44</TopLine>
+      <CurrentLine>97</CurrentLine>
       <bDave2>0</bDave2>
-      <PathWithFileName>.\Users\Src\VGMFile.cpp</PathWithFileName>
-      <FilenameWithoutPath>VGMFile.cpp</FilenameWithoutPath>
+      <PathWithFileName>..\VGMPlayerLib\VGMAudioPlayer.cpp</PathWithFileName>
+      <FilenameWithoutPath>VGMAudioPlayer.cpp</FilenameWithoutPath>
       <RteFlg>0</RteFlg>
       <bShared>0</bShared>
     </File>
@@ -769,15 +769,15 @@
       <TopLine>0</TopLine>
       <CurrentLine>0</CurrentLine>
       <bDave2>0</bDave2>
-      <PathWithFileName>.\Users\Src\VideoDevice.cpp</PathWithFileName>
-      <FilenameWithoutPath>VideoDevice.cpp</FilenameWithoutPath>
+      <PathWithFileName>.\Users\main.cpp</PathWithFileName>
+      <FilenameWithoutPath>main.cpp</FilenameWithoutPath>
       <RteFlg>0</RteFlg>
       <bShared>0</bShared>
     </File>
     <File>
       <GroupNumber>6</GroupNumber>
       <FileNumber>29</FileNumber>
-      <FileType>8</FileType>
+      <FileType>1</FileType>
       <tvExp>0</tvExp>
       <Focus>0</Focus>
       <ColumnNumber>0</ColumnNumber>
@@ -785,8 +785,8 @@
       <TopLine>0</TopLine>
       <CurrentLine>0</CurrentLine>
       <bDave2>0</bDave2>
-      <PathWithFileName>.\Users\Src\Platform.cpp</PathWithFileName>
-      <FilenameWithoutPath>Platform.cpp</FilenameWithoutPath>
+      <PathWithFileName>.\Users\stm32f10x_it.c</PathWithFileName>
+      <FilenameWithoutPath>stm32f10x_it.c</FilenameWithoutPath>
       <RteFlg>0</RteFlg>
       <bShared>0</bShared>
     </File>
