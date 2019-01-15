@@ -483,7 +483,7 @@ boolean VGMData::update()
 
 			case WAIT_NNNN_SAMPLES:
 				read(&NNNN, sizeof(NNNN));
-				updateSampleCounts += (NNNN * playInfo.sampleRate / 44100);
+				updateSampleCounts += (((u32)NNNN) * playInfo.sampleRate / 44100);
 				break;
 
 			case WAIT_735_SAMPLES:
