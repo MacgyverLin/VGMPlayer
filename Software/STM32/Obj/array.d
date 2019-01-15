@@ -1,0 +1,14 @@
+.\Obj\array.o: ..\VGMPlayerLib\Array.cpp
+.\Obj\array.o: ../VGMPlayerLib/Array.h
+.\Obj\array.o: ../VGMPlayerLib/vgmdef.h
+.\Obj\array.o: ./CMSIS/stm32f10x.h
+.\Obj\array.o: ./CMSIS/core_cm3.h
+.\Obj\array.o: E:\Keil\ARM\ARMCC\bin\..\include\stdint.h
+.\Obj\array.o: ./CMSIS/system_stm32f10x.h
+.\Obj\array.o: ./Users/stm32f10x_conf.h
+.\Obj\array.o: ./Drivers/inc/stm32f10x_gpio.h
+.\Obj\array.o: ./CMSIS/stm32f10x.h
+.\Obj\array.o: ./Drivers/inc/stm32f10x_rcc.h
+.\Obj\array.o: ./Drivers/inc/misc.h
+.\Obj\array.o: E:\Keil\ARM\ARMCC\bin\..\include\assert.h
+.\Obj\array.o: E:\Keil\ARM\ARMCC\bin\..\include\string.h

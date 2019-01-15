@@ -1,0 +1,585 @@
+Dependencies for Project 'project', Target 'project': (DO NOT MODIFY !)
+F (.\CMSIS\system_stm32f10x.c)(0x5C3BFA84)(-c --cpu Cortex-M3 -g -O3 --apcs=interwork -I./CMSIS -I./Drivers/inc -I./Startup -I./HAL -I./HWModule -I./FATFS/src -I./Users -I../VGMPlayerLib -I E:\Keil\ARM\RV31\INC -I E:\Keil\ARM\CMSIS\Include -I E:\Keil\ARM\Inc\ST\STM32F10x -DSTM32 -DSTM32F10X_MD -DUSE_STDPERIPH_DRIVER -o ".\Obj\system_stm32f10x.o" --omf_browse ".\Obj\system_stm32f10x.crf" --depend ".\Obj\system_stm32f10x.d")
+I (CMSIS\stm32f10x.h)(0x5C3BFA84)
+I (CMSIS\core_cm3.h)(0x5C3BFA84)
+I (E:\Keil\ARM\ARMCC\bin\..\include\stdint.h)(0x4EB0D284)
+I (CMSIS\system_stm32f10x.h)(0x5C3BFA84)
+I (./Users/stm32f10x_conf.h)(0x5C3BFA84)
+I (./Drivers/inc/stm32f10x_gpio.h)(0x5C3BFA84)
+I (./CMSIS/stm32f10x.h)(0x5C3BFA84)
+I (./Drivers/inc/stm32f10x_rcc.h)(0x5C3BFA84)
+I (./Drivers/inc/misc.h)(0x5C3BFA84)
+F (.\CMSIS\core_cm3.c)(0x5C3BFA84)(-c --cpu Cortex-M3 -g -O3 --apcs=interwork -I./CMSIS -I./Drivers/inc -I./Startup -I./HAL -I./HWModule -I./FATFS/src -I./Users -I../VGMPlayerLib -I E:\Keil\ARM\RV31\INC -I E:\Keil\ARM\CMSIS\Include -I E:\Keil\ARM\Inc\ST\STM32F10x -DSTM32 -DSTM32F10X_MD -DUSE_STDPERIPH_DRIVER -o ".\Obj\core_cm3.o" --omf_browse ".\Obj\core_cm3.crf" --depend ".\Obj\core_cm3.d")
+I (E:\Keil\ARM\ARMCC\bin\..\include\stdint.h)(0x4EB0D284)
+F (.\Drivers\src\misc.c)(0x5C3BFA84)(-c --cpu Cortex-M3 -g -O3 --apcs=interwork -I./CMSIS -I./Drivers/inc -I./Startup -I./HAL -I./HWModule -I./FATFS/src -I./Users -I../VGMPlayerLib -I E:\Keil\ARM\RV31\INC -I E:\Keil\ARM\CMSIS\Include -I E:\Keil\ARM\Inc\ST\STM32F10x -DSTM32 -DSTM32F10X_MD -DUSE_STDPERIPH_DRIVER -o ".\Obj\misc.o" --omf_browse ".\Obj\misc.crf" --depend ".\Obj\misc.d")
+I (./Drivers/inc/misc.h)(0x5C3BFA84)
+I (./CMSIS/stm32f10x.h)(0x5C3BFA84)
+I (./CMSIS/core_cm3.h)(0x5C3BFA84)
+I (E:\Keil\ARM\ARMCC\bin\..\include\stdint.h)(0x4EB0D284)
+I (./CMSIS/system_stm32f10x.h)(0x5C3BFA84)
+I (./Users/stm32f10x_conf.h)(0x5C3BFA84)
+I (./Drivers/inc/stm32f10x_gpio.h)(0x5C3BFA84)
+I (./Drivers/inc/stm32f10x_rcc.h)(0x5C3BFA84)
+F (.\Drivers\src\stm32f10x_gpio.c)(0x5C3BFA84)(-c --cpu Cortex-M3 -g -O3 --apcs=interwork -I./CMSIS -I./Drivers/inc -I./Startup -I./HAL -I./HWModule -I./FATFS/src -I./Users -I../VGMPlayerLib -I E:\Keil\ARM\RV31\INC -I E:\Keil\ARM\CMSIS\Include -I E:\Keil\ARM\Inc\ST\STM32F10x -DSTM32 -DSTM32F10X_MD -DUSE_STDPERIPH_DRIVER -o ".\Obj\stm32f10x_gpio.o" --omf_browse ".\Obj\stm32f10x_gpio.crf" --depend ".\Obj\stm32f10x_gpio.d")
+I (./Drivers/inc/stm32f10x_gpio.h)(0x5C3BFA84)
+I (./CMSIS/stm32f10x.h)(0x5C3BFA84)
+I (./CMSIS/core_cm3.h)(0x5C3BFA84)
+I (E:\Keil\ARM\ARMCC\bin\..\include\stdint.h)(0x4EB0D284)
+I (./CMSIS/system_stm32f10x.h)(0x5C3BFA84)
+I (./Users/stm32f10x_conf.h)(0x5C3BFA84)
+I (./Drivers/inc/stm32f10x_rcc.h)(0x5C3BFA84)
+I (./Drivers/inc/misc.h)(0x5C3BFA84)
+F (.\Drivers\src\stm32f10x_rcc.c)(0x5C3BFA84)(-c --cpu Cortex-M3 -g -O3 --apcs=interwork -I./CMSIS -I./Drivers/inc -I./Startup -I./HAL -I./HWModule -I./FATFS/src -I./Users -I../VGMPlayerLib -I E:\Keil\ARM\RV31\INC -I E:\Keil\ARM\CMSIS\Include -I E:\Keil\ARM\Inc\ST\STM32F10x -DSTM32 -DSTM32F10X_MD -DUSE_STDPERIPH_DRIVER -o ".\Obj\stm32f10x_rcc.o" --omf_browse ".\Obj\stm32f10x_rcc.crf" --depend ".\Obj\stm32f10x_rcc.d")
+I (./Drivers/inc/stm32f10x_rcc.h)(0x5C3BFA84)
+I (./CMSIS/stm32f10x.h)(0x5C3BFA84)
+I (./CMSIS/core_cm3.h)(0x5C3BFA84)
+I (E:\Keil\ARM\ARMCC\bin\..\include\stdint.h)(0x4EB0D284)
+I (./CMSIS/system_stm32f10x.h)(0x5C3BFA84)
+I (./Users/stm32f10x_conf.h)(0x5C3BFA84)
+I (./Drivers/inc/stm32f10x_gpio.h)(0x5C3BFA84)
+I (./Drivers/inc/misc.h)(0x5C3BFA84)
+F (.\Drivers\src\stm32f10x_spi.c)(0x5C3BFA84)(-c --cpu Cortex-M3 -g -O3 --apcs=interwork -I./CMSIS -I./Drivers/inc -I./Startup -I./HAL -I./HWModule -I./FATFS/src -I./Users -I../VGMPlayerLib -I E:\Keil\ARM\RV31\INC -I E:\Keil\ARM\CMSIS\Include -I E:\Keil\ARM\Inc\ST\STM32F10x -DSTM32 -DSTM32F10X_MD -DUSE_STDPERIPH_DRIVER -o ".\Obj\stm32f10x_spi.o" --omf_browse ".\Obj\stm32f10x_spi.crf" --depend ".\Obj\stm32f10x_spi.d")
+I (./Drivers/inc/stm32f10x_spi.h)(0x5C3BFA84)
+I (./CMSIS/stm32f10x.h)(0x5C3BFA84)
+I (./CMSIS/core_cm3.h)(0x5C3BFA84)
+I (E:\Keil\ARM\ARMCC\bin\..\include\stdint.h)(0x4EB0D284)
+I (./CMSIS/system_stm32f10x.h)(0x5C3BFA84)
+I (./Users/stm32f10x_conf.h)(0x5C3BFA84)
+I (./Drivers/inc/stm32f10x_gpio.h)(0x5C3BFA84)
+I (./Drivers/inc/stm32f10x_rcc.h)(0x5C3BFA84)
+I (./Drivers/inc/misc.h)(0x5C3BFA84)
+F (.\Drivers\src\stm32f10x_usart.c)(0x5C3BFA84)(-c --cpu Cortex-M3 -g -O3 --apcs=interwork -I./CMSIS -I./Drivers/inc -I./Startup -I./HAL -I./HWModule -I./FATFS/src -I./Users -I../VGMPlayerLib -I E:\Keil\ARM\RV31\INC -I E:\Keil\ARM\CMSIS\Include -I E:\Keil\ARM\Inc\ST\STM32F10x -DSTM32 -DSTM32F10X_MD -DUSE_STDPERIPH_DRIVER -o ".\Obj\stm32f10x_usart.o" --omf_browse ".\Obj\stm32f10x_usart.crf" --depend ".\Obj\stm32f10x_usart.d")
+I (./Drivers/inc/stm32f10x_usart.h)(0x5C3BFA84)
+I (./CMSIS/stm32f10x.h)(0x5C3BFA84)
+I (./CMSIS/core_cm3.h)(0x5C3BFA84)
+I (E:\Keil\ARM\ARMCC\bin\..\include\stdint.h)(0x4EB0D284)
+I (./CMSIS/system_stm32f10x.h)(0x5C3BFA84)
+I (./Users/stm32f10x_conf.h)(0x5C3BFA84)
+I (./Drivers/inc/stm32f10x_gpio.h)(0x5C3BFA84)
+I (./Drivers/inc/stm32f10x_rcc.h)(0x5C3BFA84)
+I (./Drivers/inc/misc.h)(0x5C3BFA84)
+F (.\StartUp\startup_stm32f10x_md.s)(0x5C3BFA84)(--cpu Cortex-M3 -g --apcs=interwork -I E:\Keil\ARM\RV31\INC -I E:\Keil\ARM\CMSIS\Include -I E:\Keil\ARM\Inc\ST\STM32F10x --list ".\List\startup_stm32f10x_md.lst" --xref -o ".\Obj\startup_stm32f10x_md.o" --depend ".\Obj\startup_stm32f10x_md.d")
+F (.\HAL\delay.c)(0x5C3BFA84)(-c --cpu Cortex-M3 -g -O3 --apcs=interwork -I./CMSIS -I./Drivers/inc -I./Startup -I./HAL -I./HWModule -I./FATFS/src -I./Users -I../VGMPlayerLib -I E:\Keil\ARM\RV31\INC -I E:\Keil\ARM\CMSIS\Include -I E:\Keil\ARM\Inc\ST\STM32F10x -DSTM32 -DSTM32F10X_MD -DUSE_STDPERIPH_DRIVER -o ".\Obj\delay.o" --omf_browse ".\Obj\delay.crf" --depend ".\Obj\delay.d")
+I (HAL\delay.h)(0x5C3BFA84)
+I (HAL\sys.h)(0x5C3BFA84)
+I (./CMSIS/stm32f10x.h)(0x5C3BFA84)
+I (./CMSIS/core_cm3.h)(0x5C3BFA84)
+I (E:\Keil\ARM\ARMCC\bin\..\include\stdint.h)(0x4EB0D284)
+I (./CMSIS/system_stm32f10x.h)(0x5C3BFA84)
+I (./Users/stm32f10x_conf.h)(0x5C3BFA84)
+I (./Drivers/inc/stm32f10x_gpio.h)(0x5C3BFA84)
+I (./Drivers/inc/stm32f10x_rcc.h)(0x5C3BFA84)
+I (./Drivers/inc/misc.h)(0x5C3BFA84)
+F (.\HAL\spi.c)(0x5C3BFA84)(-c --cpu Cortex-M3 -g -O3 --apcs=interwork -I./CMSIS -I./Drivers/inc -I./Startup -I./HAL -I./HWModule -I./FATFS/src -I./Users -I../VGMPlayerLib -I E:\Keil\ARM\RV31\INC -I E:\Keil\ARM\CMSIS\Include -I E:\Keil\ARM\Inc\ST\STM32F10x -DSTM32 -DSTM32F10X_MD -DUSE_STDPERIPH_DRIVER -o ".\Obj\spi.o" --omf_browse ".\Obj\spi.crf" --depend ".\Obj\spi.d")
+I (HAL\spi.h)(0x5C3BFA84)
+I (HAL\sys.h)(0x5C3BFA84)
+I (./CMSIS/stm32f10x.h)(0x5C3BFA84)
+I (./CMSIS/core_cm3.h)(0x5C3BFA84)
+I (E:\Keil\ARM\ARMCC\bin\..\include\stdint.h)(0x4EB0D284)
+I (./CMSIS/system_stm32f10x.h)(0x5C3BFA84)
+I (./Users/stm32f10x_conf.h)(0x5C3BFA84)
+I (./Drivers/inc/stm32f10x_gpio.h)(0x5C3BFA84)
+I (./Drivers/inc/stm32f10x_rcc.h)(0x5C3BFA84)
+I (./Drivers/inc/misc.h)(0x5C3BFA84)
+I (./Drivers/inc/stm32f10x_spi.h)(0x5C3BFA84)
+F (.\HAL\sys.c)(0x5C3BFA84)(-c --cpu Cortex-M3 -g -O3 --apcs=interwork -I./CMSIS -I./Drivers/inc -I./Startup -I./HAL -I./HWModule -I./FATFS/src -I./Users -I../VGMPlayerLib -I E:\Keil\ARM\RV31\INC -I E:\Keil\ARM\CMSIS\Include -I E:\Keil\ARM\Inc\ST\STM32F10x -DSTM32 -DSTM32F10X_MD -DUSE_STDPERIPH_DRIVER -o ".\Obj\sys.o" --omf_browse ".\Obj\sys.crf" --depend ".\Obj\sys.d")
+I (HAL\sys.h)(0x5C3BFA84)
+I (./CMSIS/stm32f10x.h)(0x5C3BFA84)
+I (./CMSIS/core_cm3.h)(0x5C3BFA84)
+I (E:\Keil\ARM\ARMCC\bin\..\include\stdint.h)(0x4EB0D284)
+I (./CMSIS/system_stm32f10x.h)(0x5C3BFA84)
+I (./Users/stm32f10x_conf.h)(0x5C3BFA84)
+I (./Drivers/inc/stm32f10x_gpio.h)(0x5C3BFA84)
+I (./Drivers/inc/stm32f10x_rcc.h)(0x5C3BFA84)
+I (./Drivers/inc/misc.h)(0x5C3BFA84)
+F (.\HAL\io.c)(0x5C3BFA84)(-c --cpu Cortex-M3 -g -O3 --apcs=interwork -I./CMSIS -I./Drivers/inc -I./Startup -I./HAL -I./HWModule -I./FATFS/src -I./Users -I../VGMPlayerLib -I E:\Keil\ARM\RV31\INC -I E:\Keil\ARM\CMSIS\Include -I E:\Keil\ARM\Inc\ST\STM32F10x -DSTM32 -DSTM32F10X_MD -DUSE_STDPERIPH_DRIVER -o ".\Obj\io.o" --omf_browse ".\Obj\io.crf" --depend ".\Obj\io.d")
+I (./HAL/io.h)(0x5C3BFA84)
+I (./HAL/delay.h)(0x5C3BFA84)
+I (./HAL/sys.h)(0x5C3BFA84)
+I (./CMSIS/stm32f10x.h)(0x5C3BFA84)
+I (./CMSIS/core_cm3.h)(0x5C3BFA84)
+I (E:\Keil\ARM\ARMCC\bin\..\include\stdint.h)(0x4EB0D284)
+I (./CMSIS/system_stm32f10x.h)(0x5C3BFA84)
+I (./Users/stm32f10x_conf.h)(0x5C3BFA84)
+I (./Drivers/inc/stm32f10x_gpio.h)(0x5C3BFA84)
+I (./Drivers/inc/stm32f10x_rcc.h)(0x5C3BFA84)
+I (./Drivers/inc/misc.h)(0x5C3BFA84)
+F (.\HWModule\mmc_sd.c)(0x5C3BFA84)(-c --cpu Cortex-M3 -g -O3 --apcs=interwork -I./CMSIS -I./Drivers/inc -I./Startup -I./HAL -I./HWModule -I./FATFS/src -I./Users -I../VGMPlayerLib -I E:\Keil\ARM\RV31\INC -I E:\Keil\ARM\CMSIS\Include -I E:\Keil\ARM\Inc\ST\STM32F10x -DSTM32 -DSTM32F10X_MD -DUSE_STDPERIPH_DRIVER -o ".\Obj\mmc_sd.o" --omf_browse ".\Obj\mmc_sd.crf" --depend ".\Obj\mmc_sd.d")
+I (./HAL/sys.h)(0x5C3BFA84)
+I (./CMSIS/stm32f10x.h)(0x5C3BFA84)
+I (./CMSIS/core_cm3.h)(0x5C3BFA84)
+I (E:\Keil\ARM\ARMCC\bin\..\include\stdint.h)(0x4EB0D284)
+I (./CMSIS/system_stm32f10x.h)(0x5C3BFA84)
+I (./Users/stm32f10x_conf.h)(0x5C3BFA84)
+I (./Drivers/inc/stm32f10x_gpio.h)(0x5C3BFA84)
+I (./Drivers/inc/stm32f10x_rcc.h)(0x5C3BFA84)
+I (./Drivers/inc/misc.h)(0x5C3BFA84)
+I (HWModule\mmc_sd.h)(0x5C3BFA84)
+I (./HAL/spi.h)(0x5C3BFA84)
+F (.\HWModule\VGMBoard.c)(0x5C3D6A15)(-c --cpu Cortex-M3 -g -O3 --apcs=interwork -I./CMSIS -I./Drivers/inc -I./Startup -I./HAL -I./HWModule -I./FATFS/src -I./Users -I../VGMPlayerLib -I E:\Keil\ARM\RV31\INC -I E:\Keil\ARM\CMSIS\Include -I E:\Keil\ARM\Inc\ST\STM32F10x -DSTM32 -DSTM32F10X_MD -DUSE_STDPERIPH_DRIVER -o ".\Obj\vgmboard.o" --omf_browse ".\Obj\vgmboard.crf" --depend ".\Obj\vgmboard.d")
+I (HWModule\VGMBoard.h)(0x5C3D6967)
+I (../VGMPlayerLib/vgmdef.h)(0x5C3BFA2D)
+I (./CMSIS/stm32f10x.h)(0x5C3BFA84)
+I (./CMSIS/core_cm3.h)(0x5C3BFA84)
+I (E:\Keil\ARM\ARMCC\bin\..\include\stdint.h)(0x4EB0D284)
+I (./CMSIS/system_stm32f10x.h)(0x5C3BFA84)
+I (./Users/stm32f10x_conf.h)(0x5C3BFA84)
+I (./Drivers/inc/stm32f10x_gpio.h)(0x5C3BFA84)
+I (./Drivers/inc/stm32f10x_rcc.h)(0x5C3BFA84)
+I (./Drivers/inc/misc.h)(0x5C3BFA84)
+I (E:\Keil\ARM\ARMCC\bin\..\include\assert.h)(0x4EB0D280)
+I (E:\Keil\ARM\ARMCC\bin\..\include\string.h)(0x4EB0D286)
+I (./HAL/delay.h)(0x5C3BFA84)
+I (./HAL/sys.h)(0x5C3BFA84)
+I (./HAL/io.h)(0x5C3BFA84)
+I (./HAL/spi.h)(0x5C3BFA84)
+I (./HAL/malloc.h)(0x5C3BFA84)
+I (./HWModule/mmc_sd.h)(0x5C3BFA84)
+I (./FATFS/src/ff.h)(0x5C3BFA84)
+I (./FATFS/src/integer.h)(0x5C3BFA84)
+I (./FATFS/src/ffconf.h)(0x5C3BFA84)
+F (..\VGMPlayerLib\SN76489.c)(0x5C38692D)(-c --cpu Cortex-M3 -g -O3 --apcs=interwork -I./CMSIS -I./Drivers/inc -I./Startup -I./HAL -I./HWModule -I./FATFS/src -I./Users -I../VGMPlayerLib -I E:\Keil\ARM\RV31\INC -I E:\Keil\ARM\CMSIS\Include -I E:\Keil\ARM\Inc\ST\STM32F10x -DSTM32 -DSTM32F10X_MD -DUSE_STDPERIPH_DRIVER -o ".\Obj\sn76489.o" --omf_browse ".\Obj\sn76489.crf" --depend ".\Obj\sn76489.d")
+I (E:\Keil\ARM\ARMCC\bin\..\include\stdio.h)(0x4EB0D286)
+I (E:\Keil\ARM\ARMCC\bin\..\include\math.h)(0x4EB0D288)
+I (..\VGMPlayerLib\SN76489.h)(0x5C3868DB)
+I (..\VGMPlayerLib\vgmdef.h)(0x5C3BFA2D)
+I (./CMSIS/stm32f10x.h)(0x5C3BFA84)
+I (./CMSIS/core_cm3.h)(0x5C3BFA84)
+I (E:\Keil\ARM\ARMCC\bin\..\include\stdint.h)(0x4EB0D284)
+I (./CMSIS/system_stm32f10x.h)(0x5C3BFA84)
+I (./Users/stm32f10x_conf.h)(0x5C3BFA84)
+I (./Drivers/inc/stm32f10x_gpio.h)(0x5C3BFA84)
+I (./Drivers/inc/stm32f10x_rcc.h)(0x5C3BFA84)
+I (./Drivers/inc/misc.h)(0x5C3BFA84)
+I (E:\Keil\ARM\ARMCC\bin\..\include\assert.h)(0x4EB0D280)
+I (E:\Keil\ARM\ARMCC\bin\..\include\string.h)(0x4EB0D286)
+F (..\VGMPlayerLib\ym2151.c)(0x5C3DA1D5)(-c --cpu Cortex-M3 -g -O3 --apcs=interwork -I./CMSIS -I./Drivers/inc -I./Startup -I./HAL -I./HWModule -I./FATFS/src -I./Users -I../VGMPlayerLib -I E:\Keil\ARM\RV31\INC -I E:\Keil\ARM\CMSIS\Include -I E:\Keil\ARM\Inc\ST\STM32F10x -DSTM32 -DSTM32F10X_MD -DUSE_STDPERIPH_DRIVER -o ".\Obj\ym2151.o" --omf_browse ".\Obj\ym2151.crf" --depend ".\Obj\ym2151.d")
+I (E:\Keil\ARM\ARMCC\bin\..\include\stdio.h)(0x4EB0D286)
+I (E:\Keil\ARM\ARMCC\bin\..\include\stdlib.h)(0x4EB0D284)
+I (E:\Keil\ARM\ARMCC\bin\..\include\string.h)(0x4EB0D286)
+I (E:\Keil\ARM\ARMCC\bin\..\include\math.h)(0x4EB0D288)
+I (..\VGMPlayerLib\ym2151.h)(0x5C3D9F7F)
+I (..\VGMPlayerLib\vgmdef.h)(0x5C3BFA2D)
+I (./CMSIS/stm32f10x.h)(0x5C3BFA84)
+I (./CMSIS/core_cm3.h)(0x5C3BFA84)
+I (E:\Keil\ARM\ARMCC\bin\..\include\stdint.h)(0x4EB0D284)
+I (./CMSIS/system_stm32f10x.h)(0x5C3BFA84)
+I (./Users/stm32f10x_conf.h)(0x5C3BFA84)
+I (./Drivers/inc/stm32f10x_gpio.h)(0x5C3BFA84)
+I (./Drivers/inc/stm32f10x_rcc.h)(0x5C3BFA84)
+I (./Drivers/inc/misc.h)(0x5C3BFA84)
+I (E:\Keil\ARM\ARMCC\bin\..\include\assert.h)(0x4EB0D280)
+F (..\VGMPlayerLib\ym2612.c)(0x5C3DA1F8)(-c --cpu Cortex-M3 -g -O3 --apcs=interwork -I./CMSIS -I./Drivers/inc -I./Startup -I./HAL -I./HWModule -I./FATFS/src -I./Users -I../VGMPlayerLib -I E:\Keil\ARM\RV31\INC -I E:\Keil\ARM\CMSIS\Include -I E:\Keil\ARM\Inc\ST\STM32F10x -DSTM32 -DSTM32F10X_MD -DUSE_STDPERIPH_DRIVER -o ".\Obj\ym2612.o" --omf_browse ".\Obj\ym2612.crf" --depend ".\Obj\ym2612.d")
+I (E:\Keil\ARM\ARMCC\bin\..\include\stdio.h)(0x4EB0D286)
+I (E:\Keil\ARM\ARMCC\bin\..\include\stdlib.h)(0x4EB0D284)
+I (E:\Keil\ARM\ARMCC\bin\..\include\math.h)(0x4EB0D288)
+I (E:\Keil\ARM\ARMCC\bin\..\include\string.h)(0x4EB0D286)
+I (..\VGMPlayerLib\ym2612.h)(0x5C3868DC)
+I (..\VGMPlayerLib\vgmdef.h)(0x5C3BFA2D)
+I (./CMSIS/stm32f10x.h)(0x5C3BFA84)
+I (./CMSIS/core_cm3.h)(0x5C3BFA84)
+I (E:\Keil\ARM\ARMCC\bin\..\include\stdint.h)(0x4EB0D284)
+I (./CMSIS/system_stm32f10x.h)(0x5C3BFA84)
+I (./Users/stm32f10x_conf.h)(0x5C3BFA84)
+I (./Drivers/inc/stm32f10x_gpio.h)(0x5C3BFA84)
+I (./Drivers/inc/stm32f10x_rcc.h)(0x5C3BFA84)
+I (./Drivers/inc/misc.h)(0x5C3BFA84)
+I (E:\Keil\ARM\ARMCC\bin\..\include\assert.h)(0x4EB0D280)
+F (..\VGMPlayerLib\Array.cpp)(0x5C3BFA2D)(--cpp -c --cpu Cortex-M3 -g -O3 --apcs=interwork -I./CMSIS -I./Drivers/inc -I./Startup -I./HAL -I./HWModule -I./FATFS/src -I./Users -I../VGMPlayerLib -I E:\Keil\ARM\RV31\INC -I E:\Keil\ARM\CMSIS\Include -I E:\Keil\ARM\Inc\ST\STM32F10x -DSTM32 -DSTM32F10X_MD -DUSE_STDPERIPH_DRIVER -o ".\Obj\array.o" --omf_browse ".\Obj\array.crf" --depend ".\Obj\array.d")
+I (../VGMPlayerLib/Array.h)(0x5C3BFA2D)
+I (../VGMPlayerLib/vgmdef.h)(0x5C3BFA2D)
+I (./CMSIS/stm32f10x.h)(0x5C3BFA84)
+I (./CMSIS/core_cm3.h)(0x5C3BFA84)
+I (E:\Keil\ARM\ARMCC\bin\..\include\stdint.h)(0x4EB0D284)
+I (./CMSIS/system_stm32f10x.h)(0x5C3BFA84)
+I (./Users/stm32f10x_conf.h)(0x5C3BFA84)
+I (./Drivers/inc/stm32f10x_gpio.h)(0x5C3BFA84)
+I (./Drivers/inc/stm32f10x_rcc.h)(0x5C3BFA84)
+I (./Drivers/inc/misc.h)(0x5C3BFA84)
+I (E:\Keil\ARM\ARMCC\bin\..\include\assert.h)(0x4EB0D280)
+I (E:\Keil\ARM\ARMCC\bin\..\include\string.h)(0x4EB0D286)
+F (..\VGMPlayerLib\AudioDevice.cpp)(0x5C3BFA2D)(--cpp -c --cpu Cortex-M3 -g -O3 --apcs=interwork -I./CMSIS -I./Drivers/inc -I./Startup -I./HAL -I./HWModule -I./FATFS/src -I./Users -I../VGMPlayerLib -I E:\Keil\ARM\RV31\INC -I E:\Keil\ARM\CMSIS\Include -I E:\Keil\ARM\Inc\ST\STM32F10x -DSTM32 -DSTM32F10X_MD -DUSE_STDPERIPH_DRIVER -o ".\Obj\audiodevice.o" --omf_browse ".\Obj\audiodevice.crf" --depend ".\Obj\audiodevice.d")
+I (..\VGMPlayerLib\AudioDevice.h)(0x5C38758E)
+I (..\VGMPlayerLib\vgmdef.h)(0x5C3BFA2D)
+I (./CMSIS/stm32f10x.h)(0x5C3BFA84)
+I (./CMSIS/core_cm3.h)(0x5C3BFA84)
+I (E:\Keil\ARM\ARMCC\bin\..\include\stdint.h)(0x4EB0D284)
+I (./CMSIS/system_stm32f10x.h)(0x5C3BFA84)
+I (./Users/stm32f10x_conf.h)(0x5C3BFA84)
+I (./Drivers/inc/stm32f10x_gpio.h)(0x5C3BFA84)
+I (./Drivers/inc/stm32f10x_rcc.h)(0x5C3BFA84)
+I (./Drivers/inc/misc.h)(0x5C3BFA84)
+I (E:\Keil\ARM\ARMCC\bin\..\include\assert.h)(0x4EB0D280)
+I (E:\Keil\ARM\ARMCC\bin\..\include\string.h)(0x4EB0D286)
+F (..\VGMPlayerLib\Obserable.cpp)(0x5C3BFA2D)(--cpp -c --cpu Cortex-M3 -g -O3 --apcs=interwork -I./CMSIS -I./Drivers/inc -I./Startup -I./HAL -I./HWModule -I./FATFS/src -I./Users -I../VGMPlayerLib -I E:\Keil\ARM\RV31\INC -I E:\Keil\ARM\CMSIS\Include -I E:\Keil\ARM\Inc\ST\STM32F10x -DSTM32 -DSTM32F10X_MD -DUSE_STDPERIPH_DRIVER -o ".\Obj\obserable.o" --omf_browse ".\Obj\obserable.crf" --depend ".\Obj\obserable.d")
+I (..\VGMPlayerLib\Obserable.h)(0x5C3BFA2D)
+I (..\VGMPlayerLib\vgmdef.h)(0x5C3BFA2D)
+I (./CMSIS/stm32f10x.h)(0x5C3BFA84)
+I (./CMSIS/core_cm3.h)(0x5C3BFA84)
+I (E:\Keil\ARM\ARMCC\bin\..\include\stdint.h)(0x4EB0D284)
+I (./CMSIS/system_stm32f10x.h)(0x5C3BFA84)
+I (./Users/stm32f10x_conf.h)(0x5C3BFA84)
+I (./Drivers/inc/stm32f10x_gpio.h)(0x5C3BFA84)
+I (./Drivers/inc/stm32f10x_rcc.h)(0x5C3BFA84)
+I (./Drivers/inc/misc.h)(0x5C3BFA84)
+I (E:\Keil\ARM\ARMCC\bin\..\include\assert.h)(0x4EB0D280)
+I (E:\Keil\ARM\ARMCC\bin\..\include\string.h)(0x4EB0D286)
+I (..\VGMPlayerLib\Observer.h)(0x5C3BFA2D)
+I (../VGMPlayerLib/Array.h)(0x5C3BFA2D)
+F (..\VGMPlayerLib\Observer.cpp)(0x5C3BFA2D)(--cpp -c --cpu Cortex-M3 -g -O3 --apcs=interwork -I./CMSIS -I./Drivers/inc -I./Startup -I./HAL -I./HWModule -I./FATFS/src -I./Users -I../VGMPlayerLib -I E:\Keil\ARM\RV31\INC -I E:\Keil\ARM\CMSIS\Include -I E:\Keil\ARM\Inc\ST\STM32F10x -DSTM32 -DSTM32F10X_MD -DUSE_STDPERIPH_DRIVER -o ".\Obj\observer.o" --omf_browse ".\Obj\observer.crf" --depend ".\Obj\observer.d")
+I (..\VGMPlayerLib\Observer.h)(0x5C3BFA2D)
+F (..\VGMPlayerLib\Platform.cpp)(0x5C3BFA2D)(--cpp -c --cpu Cortex-M3 -g -O3 --apcs=interwork -I./CMSIS -I./Drivers/inc -I./Startup -I./HAL -I./HWModule -I./FATFS/src -I./Users -I../VGMPlayerLib -I E:\Keil\ARM\RV31\INC -I E:\Keil\ARM\CMSIS\Include -I E:\Keil\ARM\Inc\ST\STM32F10x -DSTM32 -DSTM32F10X_MD -DUSE_STDPERIPH_DRIVER -o ".\Obj\platform.o" --omf_browse ".\Obj\platform.crf" --depend ".\Obj\platform.d")
+I (..\VGMPlayerLib\Platform.h)(0x5C3BFA2D)
+I (..\VGMPlayerLib\vgmdef.h)(0x5C3BFA2D)
+I (./CMSIS/stm32f10x.h)(0x5C3BFA84)
+I (./CMSIS/core_cm3.h)(0x5C3BFA84)
+I (E:\Keil\ARM\ARMCC\bin\..\include\stdint.h)(0x4EB0D284)
+I (./CMSIS/system_stm32f10x.h)(0x5C3BFA84)
+I (./Users/stm32f10x_conf.h)(0x5C3BFA84)
+I (./Drivers/inc/stm32f10x_gpio.h)(0x5C3BFA84)
+I (./Drivers/inc/stm32f10x_rcc.h)(0x5C3BFA84)
+I (./Drivers/inc/misc.h)(0x5C3BFA84)
+I (E:\Keil\ARM\ARMCC\bin\..\include\assert.h)(0x4EB0D280)
+I (E:\Keil\ARM\ARMCC\bin\..\include\string.h)(0x4EB0D286)
+I (./HWModule/VGMBoard.h)(0x5C3D6967)
+F (..\VGMPlayerLib\VGMData.cpp)(0x5C3D9F92)(--cpp -c --cpu Cortex-M3 -g -O3 --apcs=interwork -I./CMSIS -I./Drivers/inc -I./Startup -I./HAL -I./HWModule -I./FATFS/src -I./Users -I../VGMPlayerLib -I E:\Keil\ARM\RV31\INC -I E:\Keil\ARM\CMSIS\Include -I E:\Keil\ARM\Inc\ST\STM32F10x -DSTM32 -DSTM32F10X_MD -DUSE_STDPERIPH_DRIVER -o ".\Obj\vgmdata.o" --omf_browse ".\Obj\vgmdata.crf" --depend ".\Obj\vgmdata.d")
+I (..\VGMPlayerLib\VGMData.h)(0x5C386F77)
+I (..\VGMPlayerLib\vgmdef.h)(0x5C3BFA2D)
+I (./CMSIS/stm32f10x.h)(0x5C3BFA84)
+I (./CMSIS/core_cm3.h)(0x5C3BFA84)
+I (E:\Keil\ARM\ARMCC\bin\..\include\stdint.h)(0x4EB0D284)
+I (./CMSIS/system_stm32f10x.h)(0x5C3BFA84)
+I (./Users/stm32f10x_conf.h)(0x5C3BFA84)
+I (./Drivers/inc/stm32f10x_gpio.h)(0x5C3BFA84)
+I (./Drivers/inc/stm32f10x_rcc.h)(0x5C3BFA84)
+I (./Drivers/inc/misc.h)(0x5C3BFA84)
+I (E:\Keil\ARM\ARMCC\bin\..\include\assert.h)(0x4EB0D280)
+I (E:\Keil\ARM\ARMCC\bin\..\include\string.h)(0x4EB0D286)
+I (..\VGMPlayerLib\Obserable.h)(0x5C3BFA2D)
+I (..\VGMPlayerLib\Observer.h)(0x5C3BFA2D)
+I (../VGMPlayerLib/Array.h)(0x5C3BFA2D)
+I (E:\Keil\ARM\ARMCC\bin\..\include\vector)(0x4EB18EC6)
+I (E:\Keil\ARM\ARMCC\bin\..\include\limits)(0x4EB18EC4)
+I (E:\Keil\ARM\ARMCC\bin\..\include\rw/_defs.h)(0x4EB18EC6)
+I (E:\Keil\ARM\ARMCC\bin\..\include\rw/_config.h)(0x4EB18EC6)
+I (E:\Keil\ARM\ARMCC\bin\..\include\rw/config.h)(0x4C3B5372)
+I (E:\Keil\ARM\ARMCC\bin\..\include\rw/_math.h)(0x4EB18EC6)
+I (E:\Keil\ARM\ARMCC\bin\..\include\cmath)(0x4EB0D28A)
+I (E:\Keil\ARM\ARMCC\bin\..\include\math.h)(0x4EB0D288)
+I (E:\Keil\ARM\ARMCC\bin\..\include\cfloat)(0x4EB0D27C)
+I (E:\Keil\ARM\ARMCC\bin\..\include\float.h)(0x4EB0D282)
+I (E:\Keil\ARM\ARMCC\bin\..\include\climits)(0x4EB0D286)
+I (E:\Keil\ARM\ARMCC\bin\..\include\limits.h)(0x4EB0D27E)
+I (E:\Keil\ARM\ARMCC\bin\..\include\memory)(0x4F311B62)
+I (E:\Keil\ARM\ARMCC\bin\..\include\new)(0x4EB0D286)
+I (E:\Keil\ARM\ARMCC\bin\..\include\exception)(0x4EB0D284)
+I (E:\Keil\ARM\ARMCC\bin\..\include\utility)(0x4EB18EC4)
+I (E:\Keil\ARM\ARMCC\bin\..\include\rw/_iterbase.h)(0x4EB18EC6)
+I (E:\Keil\ARM\ARMCC\bin\..\include\cstddef)(0x4EB0D288)
+I (E:\Keil\ARM\ARMCC\bin\..\include\stddef.h)(0x4EB0D27E)
+I (E:\Keil\ARM\ARMCC\bin\..\include\rw/_mutex.h)(0x4EB18EC4)
+I (E:\Keil\ARM\ARMCC\bin\..\include\cstring)(0x4EB0D286)
+I (E:\Keil\ARM\ARMCC\bin\..\include\rw/_algobase.h)(0x4EB18EC4)
+I (E:\Keil\ARM\ARMCC\bin\..\include\rw/_iterator.h)(0x4EB18EC6)
+I (E:\Keil\ARM\ARMCC\bin\..\include\rw/_dispatch.h)(0x4EB18EC4)
+I (E:\Keil\ARM\ARMCC\bin\..\include\rw/_error.h)(0x4EB18EC6)
+I (..\VGMPlayerLib\SN76489.h)(0x5C3868DB)
+I (..\VGMPlayerLib\YM2612.h)(0x5C3868DC)
+I (..\VGMPlayerLib\YM2151.h)(0x5C3D9F7F)
+I (./HWModule/VGMBoard.h)(0x5C3D6967)
+I (E:\Keil\ARM\ARMCC\bin\..\include\vector.CC)(0x4EB18EC4)
+F (..\VGMPlayerLib\VGMDataObverser.cpp)(0x5C125330)(--cpp -c --cpu Cortex-M3 -g -O3 --apcs=interwork -I./CMSIS -I./Drivers/inc -I./Startup -I./HAL -I./HWModule -I./FATFS/src -I./Users -I../VGMPlayerLib -I E:\Keil\ARM\RV31\INC -I E:\Keil\ARM\CMSIS\Include -I E:\Keil\ARM\Inc\ST\STM32F10x -DSTM32 -DSTM32F10X_MD -DUSE_STDPERIPH_DRIVER -o ".\Obj\vgmdataobverser.o" --omf_browse ".\Obj\vgmdataobverser.crf" --depend ".\Obj\vgmdataobverser.d")
+I (..\VGMPlayerLib\VGMDataObverser.h)(0x5C3BFA2D)
+I (..\VGMPlayerLib\Observer.h)(0x5C3BFA2D)
+I (..\VGMPlayerLib\VGMData.h)(0x5C386F77)
+I (..\VGMPlayerLib\vgmdef.h)(0x5C3BFA2D)
+I (./CMSIS/stm32f10x.h)(0x5C3BFA84)
+I (./CMSIS/core_cm3.h)(0x5C3BFA84)
+I (E:\Keil\ARM\ARMCC\bin\..\include\stdint.h)(0x4EB0D284)
+I (./CMSIS/system_stm32f10x.h)(0x5C3BFA84)
+I (./Users/stm32f10x_conf.h)(0x5C3BFA84)
+I (./Drivers/inc/stm32f10x_gpio.h)(0x5C3BFA84)
+I (./Drivers/inc/stm32f10x_rcc.h)(0x5C3BFA84)
+I (./Drivers/inc/misc.h)(0x5C3BFA84)
+I (E:\Keil\ARM\ARMCC\bin\..\include\assert.h)(0x4EB0D280)
+I (E:\Keil\ARM\ARMCC\bin\..\include\string.h)(0x4EB0D286)
+I (..\VGMPlayerLib\Obserable.h)(0x5C3BFA2D)
+I (../VGMPlayerLib/Array.h)(0x5C3BFA2D)
+I (E:\Keil\ARM\ARMCC\bin\..\include\vector)(0x4EB18EC6)
+I (E:\Keil\ARM\ARMCC\bin\..\include\limits)(0x4EB18EC4)
+I (E:\Keil\ARM\ARMCC\bin\..\include\rw/_defs.h)(0x4EB18EC6)
+I (E:\Keil\ARM\ARMCC\bin\..\include\rw/_config.h)(0x4EB18EC6)
+I (E:\Keil\ARM\ARMCC\bin\..\include\rw/config.h)(0x4C3B5372)
+I (E:\Keil\ARM\ARMCC\bin\..\include\rw/_math.h)(0x4EB18EC6)
+I (E:\Keil\ARM\ARMCC\bin\..\include\cmath)(0x4EB0D28A)
+I (E:\Keil\ARM\ARMCC\bin\..\include\math.h)(0x4EB0D288)
+I (E:\Keil\ARM\ARMCC\bin\..\include\cfloat)(0x4EB0D27C)
+I (E:\Keil\ARM\ARMCC\bin\..\include\float.h)(0x4EB0D282)
+I (E:\Keil\ARM\ARMCC\bin\..\include\climits)(0x4EB0D286)
+I (E:\Keil\ARM\ARMCC\bin\..\include\limits.h)(0x4EB0D27E)
+I (E:\Keil\ARM\ARMCC\bin\..\include\memory)(0x4F311B62)
+I (E:\Keil\ARM\ARMCC\bin\..\include\new)(0x4EB0D286)
+I (E:\Keil\ARM\ARMCC\bin\..\include\exception)(0x4EB0D284)
+I (E:\Keil\ARM\ARMCC\bin\..\include\utility)(0x4EB18EC4)
+I (E:\Keil\ARM\ARMCC\bin\..\include\rw/_iterbase.h)(0x4EB18EC6)
+I (E:\Keil\ARM\ARMCC\bin\..\include\cstddef)(0x4EB0D288)
+I (E:\Keil\ARM\ARMCC\bin\..\include\stddef.h)(0x4EB0D27E)
+I (E:\Keil\ARM\ARMCC\bin\..\include\rw/_mutex.h)(0x4EB18EC4)
+I (E:\Keil\ARM\ARMCC\bin\..\include\cstring)(0x4EB0D286)
+I (E:\Keil\ARM\ARMCC\bin\..\include\rw/_algobase.h)(0x4EB18EC4)
+I (E:\Keil\ARM\ARMCC\bin\..\include\rw/_iterator.h)(0x4EB18EC6)
+I (E:\Keil\ARM\ARMCC\bin\..\include\rw/_dispatch.h)(0x4EB18EC4)
+I (E:\Keil\ARM\ARMCC\bin\..\include\rw/_error.h)(0x4EB18EC6)
+I (E:\Keil\ARM\ARMCC\bin\..\include\vector.CC)(0x4EB18EC4)
+F (..\VGMPlayerLib\VGMFile.cpp)(0x5C3BFA2D)(--cpp -c --cpu Cortex-M3 -g -O3 --apcs=interwork -I./CMSIS -I./Drivers/inc -I./Startup -I./HAL -I./HWModule -I./FATFS/src -I./Users -I../VGMPlayerLib -I E:\Keil\ARM\RV31\INC -I E:\Keil\ARM\CMSIS\Include -I E:\Keil\ARM\Inc\ST\STM32F10x -DSTM32 -DSTM32F10X_MD -DUSE_STDPERIPH_DRIVER -o ".\Obj\vgmfile.o" --omf_browse ".\Obj\vgmfile.crf" --depend ".\Obj\vgmfile.d")
+I (..\VGMPlayerLib\VGMFile.h)(0x5C3BFA2D)
+I (..\VGMPlayerLib\VGMData.h)(0x5C386F77)
+I (..\VGMPlayerLib\vgmdef.h)(0x5C3BFA2D)
+I (./CMSIS/stm32f10x.h)(0x5C3BFA84)
+I (./CMSIS/core_cm3.h)(0x5C3BFA84)
+I (E:\Keil\ARM\ARMCC\bin\..\include\stdint.h)(0x4EB0D284)
+I (./CMSIS/system_stm32f10x.h)(0x5C3BFA84)
+I (./Users/stm32f10x_conf.h)(0x5C3BFA84)
+I (./Drivers/inc/stm32f10x_gpio.h)(0x5C3BFA84)
+I (./Drivers/inc/stm32f10x_rcc.h)(0x5C3BFA84)
+I (./Drivers/inc/misc.h)(0x5C3BFA84)
+I (E:\Keil\ARM\ARMCC\bin\..\include\assert.h)(0x4EB0D280)
+I (E:\Keil\ARM\ARMCC\bin\..\include\string.h)(0x4EB0D286)
+I (..\VGMPlayerLib\Obserable.h)(0x5C3BFA2D)
+I (..\VGMPlayerLib\Observer.h)(0x5C3BFA2D)
+I (../VGMPlayerLib/Array.h)(0x5C3BFA2D)
+I (E:\Keil\ARM\ARMCC\bin\..\include\vector)(0x4EB18EC6)
+I (E:\Keil\ARM\ARMCC\bin\..\include\limits)(0x4EB18EC4)
+I (E:\Keil\ARM\ARMCC\bin\..\include\rw/_defs.h)(0x4EB18EC6)
+I (E:\Keil\ARM\ARMCC\bin\..\include\rw/_config.h)(0x4EB18EC6)
+I (E:\Keil\ARM\ARMCC\bin\..\include\rw/config.h)(0x4C3B5372)
+I (E:\Keil\ARM\ARMCC\bin\..\include\rw/_math.h)(0x4EB18EC6)
+I (E:\Keil\ARM\ARMCC\bin\..\include\cmath)(0x4EB0D28A)
+I (E:\Keil\ARM\ARMCC\bin\..\include\math.h)(0x4EB0D288)
+I (E:\Keil\ARM\ARMCC\bin\..\include\cfloat)(0x4EB0D27C)
+I (E:\Keil\ARM\ARMCC\bin\..\include\float.h)(0x4EB0D282)
+I (E:\Keil\ARM\ARMCC\bin\..\include\climits)(0x4EB0D286)
+I (E:\Keil\ARM\ARMCC\bin\..\include\limits.h)(0x4EB0D27E)
+I (E:\Keil\ARM\ARMCC\bin\..\include\memory)(0x4F311B62)
+I (E:\Keil\ARM\ARMCC\bin\..\include\new)(0x4EB0D286)
+I (E:\Keil\ARM\ARMCC\bin\..\include\exception)(0x4EB0D284)
+I (E:\Keil\ARM\ARMCC\bin\..\include\utility)(0x4EB18EC4)
+I (E:\Keil\ARM\ARMCC\bin\..\include\rw/_iterbase.h)(0x4EB18EC6)
+I (E:\Keil\ARM\ARMCC\bin\..\include\cstddef)(0x4EB0D288)
+I (E:\Keil\ARM\ARMCC\bin\..\include\stddef.h)(0x4EB0D27E)
+I (E:\Keil\ARM\ARMCC\bin\..\include\rw/_mutex.h)(0x4EB18EC4)
+I (E:\Keil\ARM\ARMCC\bin\..\include\cstring)(0x4EB0D286)
+I (E:\Keil\ARM\ARMCC\bin\..\include\rw/_algobase.h)(0x4EB18EC4)
+I (E:\Keil\ARM\ARMCC\bin\..\include\rw/_iterator.h)(0x4EB18EC6)
+I (E:\Keil\ARM\ARMCC\bin\..\include\rw/_dispatch.h)(0x4EB18EC4)
+I (E:\Keil\ARM\ARMCC\bin\..\include\rw/_error.h)(0x4EB18EC6)
+I (./FATFS/src/ff.h)(0x5C3BFA84)
+I (./FATFS/src/integer.h)(0x5C3BFA84)
+I (./FATFS/src/ffconf.h)(0x5C3BFA84)
+I (E:\Keil\ARM\ARMCC\bin\..\include\string)(0x4EB18EC6)
+I (E:\Keil\ARM\ARMCC\bin\..\include\iosfwd)(0x4EB18EC4)
+I (E:\Keil\ARM\ARMCC\bin\..\include\cwchar)(0x4EB0D282)
+I (E:\Keil\ARM\ARMCC\bin\..\include\wchar.h)(0x4EB0D28A)
+I (E:\Keil\ARM\ARMCC\bin\..\include\rw/_strref.h)(0x4EB18EC4)
+I (E:\Keil\ARM\ARMCC\bin\..\include\rw/_traits.h)(0x4EB18EC4)
+I (E:\Keil\ARM\ARMCC\bin\..\include\cstdio)(0x4EB0D27C)
+I (E:\Keil\ARM\ARMCC\bin\..\include\stdio.h)(0x4EB0D286)
+I (E:\Keil\ARM\ARMCC\bin\..\include\vector.CC)(0x4EB18EC4)
+F (..\VGMPlayerLib\VideoDevice.cpp)(0x5C3BFA2D)(--cpp -c --cpu Cortex-M3 -g -O3 --apcs=interwork -I./CMSIS -I./Drivers/inc -I./Startup -I./HAL -I./HWModule -I./FATFS/src -I./Users -I../VGMPlayerLib -I E:\Keil\ARM\RV31\INC -I E:\Keil\ARM\CMSIS\Include -I E:\Keil\ARM\Inc\ST\STM32F10x -DSTM32 -DSTM32F10X_MD -DUSE_STDPERIPH_DRIVER -o ".\Obj\videodevice.o" --omf_browse ".\Obj\videodevice.crf" --depend ".\Obj\videodevice.d")
+I (..\VGMPlayerLib\VideoDevice.h)(0x5C3BFA2D)
+I (..\VGMPlayerLib\vgmdef.h)(0x5C3BFA2D)
+I (./CMSIS/stm32f10x.h)(0x5C3BFA84)
+I (./CMSIS/core_cm3.h)(0x5C3BFA84)
+I (E:\Keil\ARM\ARMCC\bin\..\include\stdint.h)(0x4EB0D284)
+I (./CMSIS/system_stm32f10x.h)(0x5C3BFA84)
+I (./Users/stm32f10x_conf.h)(0x5C3BFA84)
+I (./Drivers/inc/stm32f10x_gpio.h)(0x5C3BFA84)
+I (./Drivers/inc/stm32f10x_rcc.h)(0x5C3BFA84)
+I (./Drivers/inc/misc.h)(0x5C3BFA84)
+I (E:\Keil\ARM\ARMCC\bin\..\include\assert.h)(0x4EB0D280)
+I (E:\Keil\ARM\ARMCC\bin\..\include\string.h)(0x4EB0D286)
+I (E:\Keil\ARM\ARMCC\bin\..\include\string)(0x4EB18EC6)
+I (E:\Keil\ARM\ARMCC\bin\..\include\iosfwd)(0x4EB18EC4)
+I (E:\Keil\ARM\ARMCC\bin\..\include\rw/_defs.h)(0x4EB18EC6)
+I (E:\Keil\ARM\ARMCC\bin\..\include\rw/_config.h)(0x4EB18EC6)
+I (E:\Keil\ARM\ARMCC\bin\..\include\rw/config.h)(0x4C3B5372)
+I (E:\Keil\ARM\ARMCC\bin\..\include\cwchar)(0x4EB0D282)
+I (E:\Keil\ARM\ARMCC\bin\..\include\wchar.h)(0x4EB0D28A)
+I (E:\Keil\ARM\ARMCC\bin\..\include\limits)(0x4EB18EC4)
+I (E:\Keil\ARM\ARMCC\bin\..\include\rw/_math.h)(0x4EB18EC6)
+I (E:\Keil\ARM\ARMCC\bin\..\include\cmath)(0x4EB0D28A)
+I (E:\Keil\ARM\ARMCC\bin\..\include\math.h)(0x4EB0D288)
+I (E:\Keil\ARM\ARMCC\bin\..\include\cfloat)(0x4EB0D27C)
+I (E:\Keil\ARM\ARMCC\bin\..\include\float.h)(0x4EB0D282)
+I (E:\Keil\ARM\ARMCC\bin\..\include\climits)(0x4EB0D286)
+I (E:\Keil\ARM\ARMCC\bin\..\include\limits.h)(0x4EB0D27E)
+I (E:\Keil\ARM\ARMCC\bin\..\include\rw/_algobase.h)(0x4EB18EC4)
+I (E:\Keil\ARM\ARMCC\bin\..\include\utility)(0x4EB18EC4)
+I (E:\Keil\ARM\ARMCC\bin\..\include\rw/_iterator.h)(0x4EB18EC6)
+I (E:\Keil\ARM\ARMCC\bin\..\include\rw/_iterbase.h)(0x4EB18EC6)
+I (E:\Keil\ARM\ARMCC\bin\..\include\cstddef)(0x4EB0D288)
+I (E:\Keil\ARM\ARMCC\bin\..\include\stddef.h)(0x4EB0D27E)
+I (E:\Keil\ARM\ARMCC\bin\..\include\rw/_strref.h)(0x4EB18EC4)
+I (E:\Keil\ARM\ARMCC\bin\..\include\memory)(0x4F311B62)
+I (E:\Keil\ARM\ARMCC\bin\..\include\new)(0x4EB0D286)
+I (E:\Keil\ARM\ARMCC\bin\..\include\exception)(0x4EB0D284)
+I (E:\Keil\ARM\ARMCC\bin\..\include\rw/_mutex.h)(0x4EB18EC4)
+I (E:\Keil\ARM\ARMCC\bin\..\include\cstring)(0x4EB0D286)
+I (E:\Keil\ARM\ARMCC\bin\..\include\rw/_traits.h)(0x4EB18EC4)
+I (E:\Keil\ARM\ARMCC\bin\..\include\cstdio)(0x4EB0D27C)
+I (E:\Keil\ARM\ARMCC\bin\..\include\stdio.h)(0x4EB0D286)
+I (E:\Keil\ARM\ARMCC\bin\..\include\rw/_error.h)(0x4EB18EC6)
+I (E:\Keil\ARM\ARMCC\bin\..\include\algorithm)(0x4F8EDA7C)
+I (E:\Keil\ARM\ARMCC\bin\..\include\cstdlib)(0x4EB0D28A)
+I (E:\Keil\ARM\ARMCC\bin\..\include\stdlib.h)(0x4EB0D284)
+F (..\VGMPlayerLib\VGMAudioPlayer.cpp)(0x5C3DA00E)(--cpp -c --cpu Cortex-M3 -g -O3 --apcs=interwork -I./CMSIS -I./Drivers/inc -I./Startup -I./HAL -I./HWModule -I./FATFS/src -I./Users -I../VGMPlayerLib -I E:\Keil\ARM\RV31\INC -I E:\Keil\ARM\CMSIS\Include -I E:\Keil\ARM\Inc\ST\STM32F10x -DSTM32 -DSTM32F10X_MD -DUSE_STDPERIPH_DRIVER -o ".\Obj\vgmaudioplayer.o" --omf_browse ".\Obj\vgmaudioplayer.crf" --depend ".\Obj\vgmaudioplayer.d")
+I (..\VGMPlayerLib\VGMAudioPlayer.h)(0x5C3BFA2D)
+I (..\VGMPlayerLib\VGMData.h)(0x5C386F77)
+I (..\VGMPlayerLib\vgmdef.h)(0x5C3BFA2D)
+I (./CMSIS/stm32f10x.h)(0x5C3BFA84)
+I (./CMSIS/core_cm3.h)(0x5C3BFA84)
+I (E:\Keil\ARM\ARMCC\bin\..\include\stdint.h)(0x4EB0D284)
+I (./CMSIS/system_stm32f10x.h)(0x5C3BFA84)
+I (./Users/stm32f10x_conf.h)(0x5C3BFA84)
+I (./Drivers/inc/stm32f10x_gpio.h)(0x5C3BFA84)
+I (./Drivers/inc/stm32f10x_rcc.h)(0x5C3BFA84)
+I (./Drivers/inc/misc.h)(0x5C3BFA84)
+I (E:\Keil\ARM\ARMCC\bin\..\include\assert.h)(0x4EB0D280)
+I (E:\Keil\ARM\ARMCC\bin\..\include\string.h)(0x4EB0D286)
+I (..\VGMPlayerLib\Obserable.h)(0x5C3BFA2D)
+I (..\VGMPlayerLib\Observer.h)(0x5C3BFA2D)
+I (../VGMPlayerLib/Array.h)(0x5C3BFA2D)
+I (E:\Keil\ARM\ARMCC\bin\..\include\vector)(0x4EB18EC6)
+I (E:\Keil\ARM\ARMCC\bin\..\include\limits)(0x4EB18EC4)
+I (E:\Keil\ARM\ARMCC\bin\..\include\rw/_defs.h)(0x4EB18EC6)
+I (E:\Keil\ARM\ARMCC\bin\..\include\rw/_config.h)(0x4EB18EC6)
+I (E:\Keil\ARM\ARMCC\bin\..\include\rw/config.h)(0x4C3B5372)
+I (E:\Keil\ARM\ARMCC\bin\..\include\rw/_math.h)(0x4EB18EC6)
+I (E:\Keil\ARM\ARMCC\bin\..\include\cmath)(0x4EB0D28A)
+I (E:\Keil\ARM\ARMCC\bin\..\include\math.h)(0x4EB0D288)
+I (E:\Keil\ARM\ARMCC\bin\..\include\cfloat)(0x4EB0D27C)
+I (E:\Keil\ARM\ARMCC\bin\..\include\float.h)(0x4EB0D282)
+I (E:\Keil\ARM\ARMCC\bin\..\include\climits)(0x4EB0D286)
+I (E:\Keil\ARM\ARMCC\bin\..\include\limits.h)(0x4EB0D27E)
+I (E:\Keil\ARM\ARMCC\bin\..\include\memory)(0x4F311B62)
+I (E:\Keil\ARM\ARMCC\bin\..\include\new)(0x4EB0D286)
+I (E:\Keil\ARM\ARMCC\bin\..\include\exception)(0x4EB0D284)
+I (E:\Keil\ARM\ARMCC\bin\..\include\utility)(0x4EB18EC4)
+I (E:\Keil\ARM\ARMCC\bin\..\include\rw/_iterbase.h)(0x4EB18EC6)
+I (E:\Keil\ARM\ARMCC\bin\..\include\cstddef)(0x4EB0D288)
+I (E:\Keil\ARM\ARMCC\bin\..\include\stddef.h)(0x4EB0D27E)
+I (E:\Keil\ARM\ARMCC\bin\..\include\rw/_mutex.h)(0x4EB18EC4)
+I (E:\Keil\ARM\ARMCC\bin\..\include\cstring)(0x4EB0D286)
+I (E:\Keil\ARM\ARMCC\bin\..\include\rw/_algobase.h)(0x4EB18EC4)
+I (E:\Keil\ARM\ARMCC\bin\..\include\rw/_iterator.h)(0x4EB18EC6)
+I (E:\Keil\ARM\ARMCC\bin\..\include\rw/_dispatch.h)(0x4EB18EC4)
+I (E:\Keil\ARM\ARMCC\bin\..\include\rw/_error.h)(0x4EB18EC6)
+I (..\VGMPlayerLib\VGMDataObverser.h)(0x5C3BFA2D)
+I (..\VGMPlayerLib\AudioDevice.h)(0x5C38758E)
+I (E:\Keil\ARM\ARMCC\bin\..\include\vector.CC)(0x4EB18EC4)
+F (.\Users\main.cpp)(0x5C3D6CAC)(--cpp -c --cpu Cortex-M3 -g -O3 --apcs=interwork -I./CMSIS -I./Drivers/inc -I./Startup -I./HAL -I./HWModule -I./FATFS/src -I./Users -I../VGMPlayerLib -I E:\Keil\ARM\RV31\INC -I E:\Keil\ARM\CMSIS\Include -I E:\Keil\ARM\Inc\ST\STM32F10x -DSTM32 -DSTM32F10X_MD -DUSE_STDPERIPH_DRIVER -o ".\Obj\main.o" --omf_browse ".\Obj\main.crf" --depend ".\Obj\main.d")
+I (../VGMPlayerLib/Array.h)(0x5C3BFA2D)
+I (../VGMPlayerLib/vgmdef.h)(0x5C3BFA2D)
+I (./CMSIS/stm32f10x.h)(0x5C3BFA84)
+I (./CMSIS/core_cm3.h)(0x5C3BFA84)
+I (E:\Keil\ARM\ARMCC\bin\..\include\stdint.h)(0x4EB0D284)
+I (./CMSIS/system_stm32f10x.h)(0x5C3BFA84)
+I (./Users/stm32f10x_conf.h)(0x5C3BFA84)
+I (./Drivers/inc/stm32f10x_gpio.h)(0x5C3BFA84)
+I (./Drivers/inc/stm32f10x_rcc.h)(0x5C3BFA84)
+I (./Drivers/inc/misc.h)(0x5C3BFA84)
+I (E:\Keil\ARM\ARMCC\bin\..\include\assert.h)(0x4EB0D280)
+I (E:\Keil\ARM\ARMCC\bin\..\include\string.h)(0x4EB0D286)
+I (../VGMPlayerLib/Platform.h)(0x5C3BFA2D)
+I (../VGMPlayerLib/VGMFile.h)(0x5C3BFA2D)
+I (../VGMPlayerLib/VGMData.h)(0x5C386F77)
+I (../VGMPlayerLib/Obserable.h)(0x5C3BFA2D)
+I (../VGMPlayerLib/Observer.h)(0x5C3BFA2D)
+I (E:\Keil\ARM\ARMCC\bin\..\include\vector)(0x4EB18EC6)
+I (E:\Keil\ARM\ARMCC\bin\..\include\limits)(0x4EB18EC4)
+I (E:\Keil\ARM\ARMCC\bin\..\include\rw/_defs.h)(0x4EB18EC6)
+I (E:\Keil\ARM\ARMCC\bin\..\include\rw/_config.h)(0x4EB18EC6)
+I (E:\Keil\ARM\ARMCC\bin\..\include\rw/config.h)(0x4C3B5372)
+I (E:\Keil\ARM\ARMCC\bin\..\include\rw/_math.h)(0x4EB18EC6)
+I (E:\Keil\ARM\ARMCC\bin\..\include\cmath)(0x4EB0D28A)
+I (E:\Keil\ARM\ARMCC\bin\..\include\math.h)(0x4EB0D288)
+I (E:\Keil\ARM\ARMCC\bin\..\include\cfloat)(0x4EB0D27C)
+I (E:\Keil\ARM\ARMCC\bin\..\include\float.h)(0x4EB0D282)
+I (E:\Keil\ARM\ARMCC\bin\..\include\climits)(0x4EB0D286)
+I (E:\Keil\ARM\ARMCC\bin\..\include\limits.h)(0x4EB0D27E)
+I (E:\Keil\ARM\ARMCC\bin\..\include\memory)(0x4F311B62)
+I (E:\Keil\ARM\ARMCC\bin\..\include\new)(0x4EB0D286)
+I (E:\Keil\ARM\ARMCC\bin\..\include\exception)(0x4EB0D284)
+I (E:\Keil\ARM\ARMCC\bin\..\include\utility)(0x4EB18EC4)
+I (E:\Keil\ARM\ARMCC\bin\..\include\rw/_iterbase.h)(0x4EB18EC6)
+I (E:\Keil\ARM\ARMCC\bin\..\include\cstddef)(0x4EB0D288)
+I (E:\Keil\ARM\ARMCC\bin\..\include\stddef.h)(0x4EB0D27E)
+I (E:\Keil\ARM\ARMCC\bin\..\include\rw/_mutex.h)(0x4EB18EC4)
+I (E:\Keil\ARM\ARMCC\bin\..\include\cstring)(0x4EB0D286)
+I (E:\Keil\ARM\ARMCC\bin\..\include\rw/_algobase.h)(0x4EB18EC4)
+I (E:\Keil\ARM\ARMCC\bin\..\include\rw/_iterator.h)(0x4EB18EC6)
+I (E:\Keil\ARM\ARMCC\bin\..\include\rw/_dispatch.h)(0x4EB18EC4)
+I (E:\Keil\ARM\ARMCC\bin\..\include\rw/_error.h)(0x4EB18EC6)
+I (../VGMPlayerLib/VGMAudioPlayer.h)(0x5C3BFA2D)
+I (../VGMPlayerLib/VGMDataObverser.h)(0x5C3BFA2D)
+I (../VGMPlayerLib/AudioDevice.h)(0x5C38758E)
+I (../VGMPlayerLib/VGMWaveFormViewer.h)(0x5C387423)
+I (../VGMPlayerLib/VideoDevice.h)(0x5C3BFA2D)
+I (E:\Keil\ARM\ARMCC\bin\..\include\string)(0x4EB18EC6)
+I (E:\Keil\ARM\ARMCC\bin\..\include\iosfwd)(0x4EB18EC4)
+I (E:\Keil\ARM\ARMCC\bin\..\include\cwchar)(0x4EB0D282)
+I (E:\Keil\ARM\ARMCC\bin\..\include\wchar.h)(0x4EB0D28A)
+I (E:\Keil\ARM\ARMCC\bin\..\include\rw/_strref.h)(0x4EB18EC4)
+I (E:\Keil\ARM\ARMCC\bin\..\include\rw/_traits.h)(0x4EB18EC4)
+I (E:\Keil\ARM\ARMCC\bin\..\include\cstdio)(0x4EB0D27C)
+I (E:\Keil\ARM\ARMCC\bin\..\include\stdio.h)(0x4EB0D286)
+I (E:\Keil\ARM\ARMCC\bin\..\include\algorithm)(0x4F8EDA7C)
+I (E:\Keil\ARM\ARMCC\bin\..\include\cstdlib)(0x4EB0D28A)
+I (E:\Keil\ARM\ARMCC\bin\..\include\stdlib.h)(0x4EB0D284)
+I (E:\Keil\ARM\ARMCC\bin\..\include\vector.CC)(0x4EB18EC4)
+I (E:\Keil\ARM\ARMCC\bin\..\include\string.CC)(0x4EB18EC6)
+F (.\Users\stm32f10x_it.c)(0x5C3BFA84)(-c --cpu Cortex-M3 -g -O3 --apcs=interwork -I./CMSIS -I./Drivers/inc -I./Startup -I./HAL -I./HWModule -I./FATFS/src -I./Users -I../VGMPlayerLib -I E:\Keil\ARM\RV31\INC -I E:\Keil\ARM\CMSIS\Include -I E:\Keil\ARM\Inc\ST\STM32F10x -DSTM32 -DSTM32F10X_MD -DUSE_STDPERIPH_DRIVER -o ".\Obj\stm32f10x_it.o" --omf_browse ".\Obj\stm32f10x_it.crf" --depend ".\Obj\stm32f10x_it.d")
+I (Users\stm32f10x_it.h)(0x5C3BFA84)
+I (./CMSIS/stm32f10x.h)(0x5C3BFA84)
+I (./CMSIS/core_cm3.h)(0x5C3BFA84)
+I (E:\Keil\ARM\ARMCC\bin\..\include\stdint.h)(0x4EB0D284)
+I (./CMSIS/system_stm32f10x.h)(0x5C3BFA84)
+I (./Users/stm32f10x_conf.h)(0x5C3BFA84)
+I (./Drivers/inc/stm32f10x_gpio.h)(0x5C3BFA84)
+I (./Drivers/inc/stm32f10x_rcc.h)(0x5C3BFA84)
+I (./Drivers/inc/misc.h)(0x5C3BFA84)
+F (.\FATFS\src\diskio.c)(0x5C3BFA84)(-c --cpu Cortex-M3 -g -O3 --apcs=interwork -I./CMSIS -I./Drivers/inc -I./Startup -I./HAL -I./HWModule -I./FATFS/src -I./Users -I../VGMPlayerLib -I E:\Keil\ARM\RV31\INC -I E:\Keil\ARM\CMSIS\Include -I E:\Keil\ARM\Inc\ST\STM32F10x -DSTM32 -DSTM32F10X_MD -DUSE_STDPERIPH_DRIVER -o ".\Obj\diskio.o" --omf_browse ".\Obj\diskio.crf" --depend ".\Obj\diskio.d")
+I (FATFS\src\diskio.h)(0x5C3BFA84)
+I (FATFS\src\integer.h)(0x5C3BFA84)
+I (./HWModule/mmc_sd.h)(0x5C3BFA84)
+I (./HAL/sys.h)(0x5C3BFA84)
+I (./CMSIS/stm32f10x.h)(0x5C3BFA84)
+I (./CMSIS/core_cm3.h)(0x5C3BFA84)
+I (E:\Keil\ARM\ARMCC\bin\..\include\stdint.h)(0x4EB0D284)
+I (./CMSIS/system_stm32f10x.h)(0x5C3BFA84)
+I (./Users/stm32f10x_conf.h)(0x5C3BFA84)
+I (./Drivers/inc/stm32f10x_gpio.h)(0x5C3BFA84)
+I (./Drivers/inc/stm32f10x_rcc.h)(0x5C3BFA84)
+I (./Drivers/inc/misc.h)(0x5C3BFA84)
+I (./HAL/malloc.h)(0x5C3BFA84)
+F (.\FATFS\src\ff.c)(0x5C3BFA84)(-c --cpu Cortex-M3 -g -O3 --apcs=interwork -I./CMSIS -I./Drivers/inc -I./Startup -I./HAL -I./HWModule -I./FATFS/src -I./Users -I../VGMPlayerLib -I E:\Keil\ARM\RV31\INC -I E:\Keil\ARM\CMSIS\Include -I E:\Keil\ARM\Inc\ST\STM32F10x -DSTM32 -DSTM32F10X_MD -DUSE_STDPERIPH_DRIVER -o ".\Obj\ff.o" --omf_browse ".\Obj\ff.crf" --depend ".\Obj\ff.d")
+I (FATFS\src\ff.h)(0x5C3BFA84)
+I (FATFS\src\integer.h)(0x5C3BFA84)
+I (FATFS\src\ffconf.h)(0x5C3BFA84)
+I (FATFS\src\diskio.h)(0x5C3BFA84)
+I (E:\Keil\ARM\ARMCC\bin\..\include\stdarg.h)(0x4EB0D27C)
+F (.\FATFS\option\unicode.c)(0x5C3BFA84)(-c --cpu Cortex-M3 -g -O3 --apcs=interwork -I./CMSIS -I./Drivers/inc -I./Startup -I./HAL -I./HWModule -I./FATFS/src -I./Users -I../VGMPlayerLib -I E:\Keil\ARM\RV31\INC -I E:\Keil\ARM\CMSIS\Include -I E:\Keil\ARM\Inc\ST\STM32F10x -DSTM32 -DSTM32F10X_MD -DUSE_STDPERIPH_DRIVER -o ".\Obj\unicode.o" --omf_browse ".\Obj\unicode.crf" --depend ".\Obj\unicode.d")
+I (./FATFS/src/ff.h)(0x5C3BFA84)
+I (./FATFS/src/integer.h)(0x5C3BFA84)
+I (./FATFS/src/ffconf.h)(0x5C3BFA84)
+I (FATFS\option\ccsbcs.c)(0x5C3BFA84)
+F (.\HAL\malloc.c)(0x5C3BFA84)(-c --cpu Cortex-M3 -g -O3 --apcs=interwork -I./CMSIS -I./Drivers/inc -I./Startup -I./HAL -I./HWModule -I./FATFS/src -I./Users -I../VGMPlayerLib -I E:\Keil\ARM\RV31\INC -I E:\Keil\ARM\CMSIS\Include -I E:\Keil\ARM\Inc\ST\STM32F10x -DSTM32 -DSTM32F10X_MD -DUSE_STDPERIPH_DRIVER -o ".\Obj\malloc.o" --omf_browse ".\Obj\malloc.crf" --depend ".\Obj\malloc.d")
+I (HAL\malloc.h)(0x5C3BFA84)
+I (./CMSIS/stm32f10x.h)(0x5C3BFA84)
+I (./CMSIS/core_cm3.h)(0x5C3BFA84)
+I (E:\Keil\ARM\ARMCC\bin\..\include\stdint.h)(0x4EB0D284)
+I (./CMSIS/system_stm32f10x.h)(0x5C3BFA84)
+I (./Users/stm32f10x_conf.h)(0x5C3BFA84)
+I (./Drivers/inc/stm32f10x_gpio.h)(0x5C3BFA84)
+I (./Drivers/inc/stm32f10x_rcc.h)(0x5C3BFA84)
+I (./Drivers/inc/misc.h)(0x5C3BFA84)

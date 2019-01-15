@@ -1,0 +1,705 @@
+<html>
+<body>
+<pre>
+<h1>µVision Build Log</h1>
+<h2>Project:</h2>
+E:\Project\VGMPlayer\Software\STM32\project.uvproj
+Project File Date:  01/15/2019
+
+<h2>Output:</h2>
+Build target 'project'
+linking...
+Program Size: Code=21616 RO-data=4196 RW-data=84 ZI-data=19732  
+".\Obj\project.axf" - 0 Error(s), 0 Warning(s).
+Build target 'project'
+compiling Array.cpp...
+compiling AudioDevice.cpp...
+compiling Obserable.cpp...
+compiling Observer.cpp...
+compiling Platform.cpp...
+compiling VGMAudioPlayer.cpp...
+..\VGMPlayerLib\VGMAudioPlayer.cpp(19): warning:  #177-D: variable "vgmData" was declared but never referenced
+..\VGMPlayerLib\VGMAudioPlayer.cpp(46): warning:  #177-D: variable "vgmData" was declared but never referenced
+..\VGMPlayerLib\VGMAudioPlayer.cpp(51): warning:  #177-D: variable "vgmData" was declared but never referenced
+..\VGMPlayerLib\VGMAudioPlayer.cpp(56): warning:  #177-D: variable "vgmData" was declared but never referenced
+..\VGMPlayerLib\VGMAudioPlayer.cpp(61): warning:  #177-D: variable "vgmData" was declared but never referenced
+..\VGMPlayerLib\VGMAudioPlayer.cpp(86): warning:  #1-D: last line of file ends without a newline
+compiling VGMData.cpp...
+..\VGMPlayerLib\YM2151.h(21): warning:  #1-D: last line of file ends without a newline
+..\VGMPlayerLib\VGMData.cpp(123): error:  #20: identifier "printf" is undefined
+..\VGMPlayerLib\VGMData.cpp(585): warning:  #111-D: statement is unreachable
+compiling VGMDataObverser.cpp...
+compiling VGMFile.cpp...
+..\VGMPlayerLib\VGMFile.h(12): warning:  #1300-D: ~VGMFile inherits implicit virtual
+..\VGMPlayerLib\VGMFile.cpp(104): warning:  #111-D: statement is unreachable
+compiling VideoDevice.cpp...
+Target not created
+Build target 'project'
+compiling VGMData.cpp...
+..\VGMPlayerLib\VGMData.cpp(585): warning:  #111-D: statement is unreachable
+linking...
+.\Obj\project.axf: Error: L6218E: Undefined symbol VGMData::getBufferInfo() const (referred from vgmaudioplayer.o).
+Target not created
+Build target 'project'
+linking...
+.\Obj\project.axf: Error: L6218E: Undefined symbol VGMData::getBufferInfo() const (referred from vgmaudioplayer.o).
+Target not created
+Build target 'project'
+linking...
+.\Obj\project.axf: Error: L6218E: Undefined symbol VGMAudioPlayer::getQueued() (referred from main.o).
+.\Obj\project.axf: Error: L6218E: Undefined symbol VGMAudioPlayer::VGMAudioPlayer() (referred from main.o).
+.\Obj\project.axf: Error: L6218E: Undefined symbol VGMAudioPlayer::~VGMAudioPlayer() (referred from main.o).
+Target not created
+Build target 'project'
+compiling VGMAudioPlayer.cpp...
+..\VGMPlayerLib\VGMAudioPlayer.cpp(19): warning:  #177-D: variable "vgmData" was declared but never referenced
+..\VGMPlayerLib\VGMAudioPlayer.cpp(53): warning:  #177-D: variable "vgmData" was declared but never referenced
+..\VGMPlayerLib\VGMAudioPlayer.cpp(58): warning:  #177-D: variable "vgmData" was declared but never referenced
+..\VGMPlayerLib\VGMAudioPlayer.cpp(63): warning:  #177-D: variable "vgmData" was declared but never referenced
+..\VGMPlayerLib\VGMAudioPlayer.cpp(68): warning:  #177-D: variable "vgmData" was declared but never referenced
+..\VGMPlayerLib\VGMAudioPlayer.cpp(96): warning:  #1-D: last line of file ends without a newline
+linking...
+Program Size: Code=21712 RO-data=4212 RW-data=84 ZI-data=19732  
+".\Obj\project.axf" - 0 Error(s), 6 Warning(s).
+Build target 'project'
+compiling VGMAudioPlayer.cpp...
+..\VGMPlayerLib\VGMAudioPlayer.cpp(19): warning:  #177-D: variable "vgmData" was declared but never referenced
+..\VGMPlayerLib\VGMAudioPlayer.cpp(53): warning:  #177-D: variable "vgmData" was declared but never referenced
+..\VGMPlayerLib\VGMAudioPlayer.cpp(58): warning:  #177-D: variable "vgmData" was declared but never referenced
+..\VGMPlayerLib\VGMAudioPlayer.cpp(63): warning:  #177-D: variable "vgmData" was declared but never referenced
+..\VGMPlayerLib\VGMAudioPlayer.cpp(68): warning:  #177-D: variable "vgmData" was declared but never referenced
+linking...
+Program Size: Code=21712 RO-data=4212 RW-data=84 ZI-data=19732  
+".\Obj\project.axf" - 0 Error(s), 5 Warning(s).
+Build target 'project'
+compiling SN76489.c...
+HWModule\SN76489.h(4): error:  #5: cannot open source input file "vgmdef.h": No such file or directory
+compiling ym2151.c...
+HWModule\ym2151.h(4): error:  #5: cannot open source input file "vgmdef.h": No such file or directory
+compiling ym2612.c...
+HWModule\ym2612.h(4): error:  #5: cannot open source input file "vgmdef.h": No such file or directory
+compiling VGMBoard.c...
+HWModule\VGMBoard.h(4): error:  #5: cannot open source input file "vgmdef.h": No such file or directory
+compiling main.cpp...
+Users\Src\main.cpp(1): error:  #5: cannot open source input file "Array.h": No such file or directory
+compiling Array.cpp...
+..\VGMPlayerLib\Array.cpp(1): error:  #5: cannot open source input file "Array.h": No such file or directory
+compiling Obserable.cpp...
+..\VGMPlayerLib\Obserable.h(6): error:  #5: cannot open source input file "Array.h": No such file or directory
+compiling Platform.cpp...
+./HWModule/VGMBoard.h(4): error:  #5: cannot open source input file "vgmdef.h": No such file or directory
+compiling VGMData.cpp...
+..\VGMPlayerLib\Obserable.h(6): error:  #5: cannot open source input file "Array.h": No such file or directory
+compiling VGMDataObverser.cpp...
+..\VGMPlayerLib\Obserable.h(6): error:  #5: cannot open source input file "Array.h": No such file or directory
+compiling VGMFile.cpp...
+..\VGMPlayerLib\Obserable.h(6): error:  #5: cannot open source input file "Array.h": No such file or directory
+compiling VGMAudioPlayer.cpp...
+..\VGMPlayerLib\Obserable.h(6): error:  #5: cannot open source input file "Array.h": No such file or directory
+Target not created
+Build target 'project'
+compiling system_stm32f10x.c...
+CMSIS\stm32f10x.h(8297): error:  #5: cannot open source input file "stm32f10x_conf.h": No such file or directory
+compiling core_cm3.c...
+compiling misc.c...
+./CMSIS/stm32f10x.h(8297): error:  #5: cannot open source input file "stm32f10x_conf.h": No such file or directory
+compiling stm32f10x_gpio.c...
+./CMSIS/stm32f10x.h(8297): error:  #5: cannot open source input file "stm32f10x_conf.h": No such file or directory
+compiling stm32f10x_rcc.c...
+./CMSIS/stm32f10x.h(8297): error:  #5: cannot open source input file "stm32f10x_conf.h": No such file or directory
+compiling stm32f10x_spi.c...
+./CMSIS/stm32f10x.h(8297): error:  #5: cannot open source input file "stm32f10x_conf.h": No such file or directory
+compiling stm32f10x_usart.c...
+./CMSIS/stm32f10x.h(8297): error:  #5: cannot open source input file "stm32f10x_conf.h": No such file or directory
+compiling delay.c...
+./CMSIS/stm32f10x.h(8297): error:  #5: cannot open source input file "stm32f10x_conf.h": No such file or directory
+compiling spi.c...
+./CMSIS/stm32f10x.h(8297): error:  #5: cannot open source input file "stm32f10x_conf.h": No such file or directory
+compiling sys.c...
+./CMSIS/stm32f10x.h(8297): error:  #5: cannot open source input file "stm32f10x_conf.h": No such file or directory
+compiling io.c...
+./CMSIS/stm32f10x.h(8297): error:  #5: cannot open source input file "stm32f10x_conf.h": No such file or directory
+compiling mmc_sd.c...
+./CMSIS/stm32f10x.h(8297): error:  #5: cannot open source input file "stm32f10x_conf.h": No such file or directory
+compiling SN76489.c...
+./CMSIS/stm32f10x.h(8297): error:  #5: cannot open source input file "stm32f10x_conf.h": No such file or directory
+compiling ym2151.c...
+./CMSIS/stm32f10x.h(8297): error:  #5: cannot open source input file "stm32f10x_conf.h": No such file or directory
+compiling ym2612.c...
+./CMSIS/stm32f10x.h(8297): error:  #5: cannot open source input file "stm32f10x_conf.h": No such file or directory
+compiling VGMBoard.c...
+./CMSIS/stm32f10x.h(8297): error:  #5: cannot open source input file "stm32f10x_conf.h": No such file or directory
+compiling stm32f10x_it.c...
+./CMSIS/stm32f10x.h(8297): error:  #5: cannot open source input file "stm32f10x_conf.h": No such file or directory
+compiling main.cpp...
+./CMSIS/stm32f10x.h(8297): error:  #5: cannot open source input file "stm32f10x_conf.h": No such file or directory
+compiling Array.cpp...
+./CMSIS/stm32f10x.h(8297): error:  #5: cannot open source input file "stm32f10x_conf.h": No such file or directory
+compiling AudioDevice.cpp...
+./CMSIS/stm32f10x.h(8297): error:  #5: cannot open source input file "stm32f10x_conf.h": No such file or directory
+compiling Obserable.cpp...
+./CMSIS/stm32f10x.h(8297): error:  #5: cannot open source input file "stm32f10x_conf.h": No such file or directory
+compiling Observer.cpp...
+compiling Platform.cpp...
+./CMSIS/stm32f10x.h(8297): error:  #5: cannot open source input file "stm32f10x_conf.h": No such file or directory
+compiling VGMData.cpp...
+./CMSIS/stm32f10x.h(8297): error:  #5: cannot open source input file "stm32f10x_conf.h": No such file or directory
+compiling VGMDataObverser.cpp...
+./CMSIS/stm32f10x.h(8297): error:  #5: cannot open source input file "stm32f10x_conf.h": No such file or directory
+compiling VGMFile.cpp...
+./CMSIS/stm32f10x.h(8297): error:  #5: cannot open source input file "stm32f10x_conf.h": No such file or directory
+compiling VideoDevice.cpp...
+./CMSIS/stm32f10x.h(8297): error:  #5: cannot open source input file "stm32f10x_conf.h": No such file or directory
+compiling VGMAudioPlayer.cpp...
+./CMSIS/stm32f10x.h(8297): error:  #5: cannot open source input file "stm32f10x_conf.h": No such file or directory
+compiling diskio.c...
+./CMSIS/stm32f10x.h(8297): error:  #5: cannot open source input file "stm32f10x_conf.h": No such file or directory
+compiling ff.c...
+FATFS\src\ff.c(1829): warning:  #111-D: statement is unreachable
+compiling unicode.c...
+compiling malloc.c...
+./CMSIS/stm32f10x.h(8297): error:  #5: cannot open source input file "stm32f10x_conf.h": No such file or directory
+Target not created
+Build target 'project'
+compiling system_stm32f10x.c...
+CMSIS\stm32f10x.h(8297): error:  #5: cannot open source input file "stm32f10x_conf.h": No such file or directory
+compiling misc.c...
+./CMSIS/stm32f10x.h(8297): error:  #5: cannot open source input file "stm32f10x_conf.h": No such file or directory
+compiling stm32f10x_gpio.c...
+./CMSIS/stm32f10x.h(8297): error:  #5: cannot open source input file "stm32f10x_conf.h": No such file or directory
+compiling stm32f10x_rcc.c...
+./CMSIS/stm32f10x.h(8297): error:  #5: cannot open source input file "stm32f10x_conf.h": No such file or directory
+compiling stm32f10x_spi.c...
+./CMSIS/stm32f10x.h(8297): error:  #5: cannot open source input file "stm32f10x_conf.h": No such file or directory
+compiling stm32f10x_usart.c...
+./CMSIS/stm32f10x.h(8297): error:  #5: cannot open source input file "stm32f10x_conf.h": No such file or directory
+compiling delay.c...
+./CMSIS/stm32f10x.h(8297): error:  #5: cannot open source input file "stm32f10x_conf.h": No such file or directory
+compiling spi.c...
+./CMSIS/stm32f10x.h(8297): error:  #5: cannot open source input file "stm32f10x_conf.h": No such file or directory
+compiling sys.c...
+./CMSIS/stm32f10x.h(8297): error:  #5: cannot open source input file "stm32f10x_conf.h": No such file or directory
+compiling io.c...
+./CMSIS/stm32f10x.h(8297): error:  #5: cannot open source input file "stm32f10x_conf.h": No such file or directory
+compiling mmc_sd.c...
+./CMSIS/stm32f10x.h(8297): error:  #5: cannot open source input file "stm32f10x_conf.h": No such file or directory
+compiling SN76489.c...
+./CMSIS/stm32f10x.h(8297): error:  #5: cannot open source input file "stm32f10x_conf.h": No such file or directory
+compiling ym2151.c...
+./CMSIS/stm32f10x.h(8297): error:  #5: cannot open source input file "stm32f10x_conf.h": No such file or directory
+compiling ym2612.c...
+./CMSIS/stm32f10x.h(8297): error:  #5: cannot open source input file "stm32f10x_conf.h": No such file or directory
+compiling VGMBoard.c...
+./CMSIS/stm32f10x.h(8297): error:  #5: cannot open source input file "stm32f10x_conf.h": No such file or directory
+compiling stm32f10x_it.c...
+./CMSIS/stm32f10x.h(8297): error:  #5: cannot open source input file "stm32f10x_conf.h": No such file or directory
+compiling main.cpp...
+./CMSIS/stm32f10x.h(8297): error:  #5: cannot open source input file "stm32f10x_conf.h": No such file or directory
+compiling Array.cpp...
+./CMSIS/stm32f10x.h(8297): error:  #5: cannot open source input file "stm32f10x_conf.h": No such file or directory
+compiling AudioDevice.cpp...
+./CMSIS/stm32f10x.h(8297): error:  #5: cannot open source input file "stm32f10x_conf.h": No such file or directory
+compiling Obserable.cpp...
+./CMSIS/stm32f10x.h(8297): error:  #5: cannot open source input file "stm32f10x_conf.h": No such file or directory
+compiling Platform.cpp...
+./CMSIS/stm32f10x.h(8297): error:  #5: cannot open source input file "stm32f10x_conf.h": No such file or directory
+compiling VGMData.cpp...
+./CMSIS/stm32f10x.h(8297): error:  #5: cannot open source input file "stm32f10x_conf.h": No such file or directory
+compiling VGMDataObverser.cpp...
+./CMSIS/stm32f10x.h(8297): error:  #5: cannot open source input file "stm32f10x_conf.h": No such file or directory
+compiling VGMFile.cpp...
+./CMSIS/stm32f10x.h(8297): error:  #5: cannot open source input file "stm32f10x_conf.h": No such file or directory
+compiling VideoDevice.cpp...
+./CMSIS/stm32f10x.h(8297): error:  #5: cannot open source input file "stm32f10x_conf.h": No such file or directory
+compiling VGMAudioPlayer.cpp...
+./CMSIS/stm32f10x.h(8297): error:  #5: cannot open source input file "stm32f10x_conf.h": No such file or directory
+compiling diskio.c...
+./CMSIS/stm32f10x.h(8297): error:  #5: cannot open source input file "stm32f10x_conf.h": No such file or directory
+compiling malloc.c...
+./CMSIS/stm32f10x.h(8297): error:  #5: cannot open source input file "stm32f10x_conf.h": No such file or directory
+Target not created
+Build target 'project'
+compiling system_stm32f10x.c...
+compiling core_cm3.c...
+compiling misc.c...
+compiling stm32f10x_gpio.c...
+compiling stm32f10x_rcc.c...
+compiling stm32f10x_spi.c...
+compiling stm32f10x_usart.c...
+compiling delay.c...
+compiling spi.c...
+compiling sys.c...
+compiling io.c...
+compiling mmc_sd.c...
+compiling SN76489.c...
+compiling ym2151.c...
+HWModule\ym2151.c(26): warning:  #68-D: integer conversion resulted in a change of sign
+compiling ym2612.c...
+compiling VGMBoard.c...
+compiling stm32f10x_it.c...
+stm32f10x_it.c: Error:  #5: cannot open source input file "Users\Src\stm32f10x_it.c": No such file or directory
+Target not created
+Build target 'project'
+compiling Array.cpp...
+compiling AudioDevice.cpp...
+compiling Obserable.cpp...
+compiling Observer.cpp...
+compiling Platform.cpp...
+compiling VGMData.cpp...
+..\VGMPlayerLib\VGMData.cpp(585): warning:  #111-D: statement is unreachable
+compiling VGMDataObverser.cpp...
+compiling VGMFile.cpp...
+..\VGMPlayerLib\VGMFile.h(12): warning:  #1300-D: ~VGMFile inherits implicit virtual
+..\VGMPlayerLib\VGMFile.cpp(104): warning:  #111-D: statement is unreachable
+compiling VideoDevice.cpp...
+compiling VGMAudioPlayer.cpp...
+..\VGMPlayerLib\VGMAudioPlayer.cpp(19): warning:  #177-D: variable "vgmData" was declared but never referenced
+..\VGMPlayerLib\VGMAudioPlayer.cpp(53): warning:  #177-D: variable "vgmData" was declared but never referenced
+..\VGMPlayerLib\VGMAudioPlayer.cpp(58): warning:  #177-D: variable "vgmData" was declared but never referenced
+..\VGMPlayerLib\VGMAudioPlayer.cpp(63): warning:  #177-D: variable "vgmData" was declared but never referenced
+..\VGMPlayerLib\VGMAudioPlayer.cpp(68): warning:  #177-D: variable "vgmData" was declared but never referenced
+compiling main.cpp...
+../VGMPlayerLib/VGMFile.h(12): warning:  #1300-D: ~VGMFile inherits implicit virtual
+Users\main.cpp(146): warning:  #940-D: missing return statement at end of non-void function "getNextMusic"
+compiling stm32f10x_it.c...
+compiling diskio.c...
+FATFS\src\diskio.c(32): warning:  #177-D: variable "result" was declared but never referenced
+FATFS\src\diskio.c(70): warning:  #177-D: variable "result" was declared but never referenced
+FATFS\src\diskio.c(117): warning:  #188-D: enumerated type mixed with another type
+FATFS\src\diskio.c(111): warning:  #177-D: variable "result" was declared but never referenced
+FATFS\src\diskio.c(165): warning:  #188-D: enumerated type mixed with another type
+FATFS\src\diskio.c(159): warning:  #177-D: variable "result" was declared but never referenced
+FATFS\src\diskio.c(265): warning:  #940-D: missing return statement at end of non-void function "disk_ioctl"
+FATFS\src\diskio.c(209): warning:  #550-D: variable "res" was set but never used
+FATFS\src\diskio.c(31): warning: C3017W: stat may be used before being set
+FATFS\src\diskio.c(69): warning: C3017W: stat may be used before being set
+FATFS\src\diskio.c(110): warning: C3017W: res may be used before being set
+FATFS\src\diskio.c(158): warning: C3017W: res may be used before being set
+compiling ff.c...
+FATFS\src\ff.c(1829): warning:  #111-D: statement is unreachable
+compiling unicode.c...
+compiling malloc.c...
+linking...
+Program Size: Code=21708 RO-data=4212 RW-data=84 ZI-data=19732  
+".\Obj\project.axf" - 0 Error(s), 23 Warning(s).
+Build target 'project'
+compiling SN76489.c...
+..\VGMPlayerLib\SN76489.c(212): warning:  #1293-D: assignment in condition
+..\VGMPlayerLib\SN76489.c(253): warning:  #1293-D: assignment in condition
+..\VGMPlayerLib\SN76489.c(287): warning:  #1293-D: assignment in condition
+..\VGMPlayerLib\SN76489.c(318): warning:  #1-D: last line of file ends without a newline
+compiling ym2151.c...
+..\VGMPlayerLib\ym2151.c(1424): error:  #268: declaration may not appear after executable statement in block
+..\VGMPlayerLib\ym2151.c(1424): warning:  #177-D: variable "a" was declared but never referenced
+..\VGMPlayerLib\ym2151.c(1449): warning:  #177-D: variable "ic" was declared but never referenced
+..\VGMPlayerLib\ym2151.c(1552): warning:  #177-D: variable "oldstate" was declared but never referenced
+..\VGMPlayerLib\ym2151.c(1562): warning:  #177-D: variable "oldstate" was declared but never referenced
+..\VGMPlayerLib\ym2151.c(1812): warning:  #177-D: variable "oldstate" was declared but never referenced
+..\VGMPlayerLib\ym2151.c(1896): warning:  #177-D: variable "oldstate" was declared but never referenced
+..\VGMPlayerLib\ym2151.c(1910): warning:  #1-D: last line of file ends without a newline
+compiling ym2612.c...
+..\VGMPlayerLib\ym2612.c(140): error:  #18: expected a ")"
+..\VGMPlayerLib\ym2612.c(140): error:  #79: expected a type specifier
+..\VGMPlayerLib\ym2612.c(140): error:  #168: a function type is not allowed here
+..\VGMPlayerLib\ym2612.c(224): warning:  #815-D: type qualifier on return type is meaningless
+..\VGMPlayerLib\ym2612.c(226): warning:  #144-D: a value of type "void (*)(YM2612 *, Channel *, s32 **, s32)" cannot be used to initialize an entity of type "const void (*)(YM2612 *, Channel *, s32 **, s32)"
+..\VGMPlayerLib\ym2612.c(227): warning:  #144-D: a value of type "void (*)(YM2612 *, Channel *, s32 **, s32)" cannot be used to initialize an entity of type "const void (*)(YM2612 *, Channel *, s32 **, s32)"
+..\VGMPlayerLib\ym2612.c(228): warning:  #144-D: a value of type "void (*)(YM2612 *, Channel *, s32 **, s32)" cannot be used to initialize an entity of type "const void (*)(YM2612 *, Channel *, s32 **, s32)"
+..\VGMPlayerLib\ym2612.c(229): warning:  #144-D: a value of type "void (*)(YM2612 *, Channel *, s32 **, s32)" cannot be used to initialize an entity of type "const void (*)(YM2612 *, Channel *, s32 **, s32)"
+..\VGMPlayerLib\ym2612.c(230): warning:  #144-D: a value of type "void (*)(YM2612 *, Channel *, s32 **, s32)" cannot be used to initialize an entity of type "const void (*)(YM2612 *, Channel *, s32 **, s32)"
+..\VGMPlayerLib\ym2612.c(231): warning:  #144-D: a value of type "void (*)(YM2612 *, Channel *, s32 **, s32)" cannot be used to initialize an entity of type "const void (*)(YM2612 *, Channel *, s32 **, s32)"
+..\VGMPlayerLib\ym2612.c(232): warning:  #144-D: a value of type "void (*)(YM2612 *, Channel *, s32 **, s32)" cannot be used to initialize an entity of type "const void (*)(YM2612 *, Channel *, s32 **, s32)"
+..\VGMPlayerLib\ym2612.c(233): warning:  #144-D: a value of type "void (*)(YM2612 *, Channel *, s32 **, s32)" cannot be used to initialize an entity of type "const void (*)(YM2612 *, Channel *, s32 **, s32)"
+..\VGMPlayerLib\ym2612.c(235): warning:  #144-D: a value of type "void (*)(YM2612 *, Channel *, s32 **, s32)" cannot be used to initialize an entity of type "const void (*)(YM2612 *, Channel *, s32 **, s32)"
+..\VGMPlayerLib\ym2612.c(236): warning:  #144-D: a value of type "void (*)(YM2612 *, Channel *, s32 **, s32)" cannot be used to initialize an entity of type "const void (*)(YM2612 *, Channel *, s32 **, s32)"
+..\VGMPlayerLib\ym2612.c(237): warning:  #144-D: a value of type "void (*)(YM2612 *, Channel *, s32 **, s32)" cannot be used to initialize an entity of type "const void (*)(YM2612 *, Channel *, s32 **, s32)"
+..\VGMPlayerLib\ym2612.c(238): warning:  #144-D: a value of type "void (*)(YM2612 *, Channel *, s32 **, s32)" cannot be used to initialize an entity of type "const void (*)(YM2612 *, Channel *, s32 **, s32)"
+..\VGMPlayerLib\ym2612.c(239): warning:  #144-D: a value of type "void (*)(YM2612 *, Channel *, s32 **, s32)" cannot be used to initialize an entity of type "const void (*)(YM2612 *, Channel *, s32 **, s32)"
+..\VGMPlayerLib\ym2612.c(240): warning:  #144-D: a value of type "void (*)(YM2612 *, Channel *, s32 **, s32)" cannot be used to initialize an entity of type "const void (*)(YM2612 *, Channel *, s32 **, s32)"
+..\VGMPlayerLib\ym2612.c(241): warning:  #144-D: a value of type "void (*)(YM2612 *, Channel *, s32 **, s32)" cannot be used to initialize an entity of type "const void (*)(YM2612 *, Channel *, s32 **, s32)"
+..\VGMPlayerLib\ym2612.c(242): warning:  #144-D: a value of type "void (*)(YM2612 *, Channel *, s32 **, s32)" cannot be used to initialize an entity of type "const void (*)(YM2612 *, Channel *, s32 **, s32)"
+..\VGMPlayerLib\ym2612.c(244): warning:  #144-D: a value of type "void (*)(YM2612 *, Channel *, s32 **, s32)" cannot be used to initialize an entity of type "const void (*)(YM2612 *, Channel *, s32 **, s32)"
+..\VGMPlayerLib\ym2612.c(245): warning:  #144-D: a value of type "void (*)(YM2612 *, Channel *, s32 **, s32)" cannot be used to initialize an entity of type "const void (*)(YM2612 *, Channel *, s32 **, s32)"
+..\VGMPlayerLib\ym2612.c(246): warning:  #144-D: a value of type "void (*)(YM2612 *, Channel *, s32 **, s32)" cannot be used to initialize an entity of type "const void (*)(YM2612 *, Channel *, s32 **, s32)"
+..\VGMPlayerLib\ym2612.c(247): warning:  #144-D: a value of type "void (*)(YM2612 *, Channel *, s32 **, s32)" cannot be used to initialize an entity of type "const void (*)(YM2612 *, Channel *, s32 **, s32)"
+..\VGMPlayerLib\ym2612.c(248): warning:  #144-D: a value of type "void (*)(YM2612 *, Channel *, s32 **, s32)" cannot be used to initialize an entity of type "const void (*)(YM2612 *, Channel *, s32 **, s32)"
+..\VGMPlayerLib\ym2612.c(249): warning:  #144-D: a value of type "void (*)(YM2612 *, Channel *, s32 **, s32)" cannot be used to initialize an entity of type "const void (*)(YM2612 *, Channel *, s32 **, s32)"
+..\VGMPlayerLib\ym2612.c(250): warning:  #144-D: a value of type "void (*)(YM2612 *, Channel *, s32 **, s32)" cannot be used to initialize an entity of type "const void (*)(YM2612 *, Channel *, s32 **, s32)"
+..\VGMPlayerLib\ym2612.c(251): warning:  #144-D: a value of type "void (*)(YM2612 *, Channel *, s32 **, s32)" cannot be used to initialize an entity of type "const void (*)(YM2612 *, Channel *, s32 **, s32)"
+..\VGMPlayerLib\ym2612.c(253): warning:  #144-D: a value of type "void (*)(YM2612 *, Channel *, s32 **, s32)" cannot be used to initialize an entity of type "const void (*)(YM2612 *, Channel *, s32 **, s32)"
+..\VGMPlayerLib\ym2612.c(254): warning:  #144-D: a value of type "void (*)(YM2612 *, Channel *, s32 **, s32)" cannot be used to initialize an entity of type "const void (*)(YM2612 *, Channel *, s32 **, s32)"
+..\VGMPlayerLib\ym2612.c(255): warning:  #144-D: a value of type "void (*)(YM2612 *, Channel *, s32 **, s32)" cannot be used to initialize an entity of type "const void (*)(YM2612 *, Channel *, s32 **, s32)"
+..\VGMPlayerLib\ym2612.c(256): warning:  #144-D: a value of type "void (*)(YM2612 *, Channel *, s32 **, s32)" cannot be used to initialize an entity of type "const void (*)(YM2612 *, Channel *, s32 **, s32)"
+..\VGMPlayerLib\ym2612.c(257): warning:  #144-D: a value of type "void (*)(YM2612 *, Channel *, s32 **, s32)" cannot be used to initialize an entity of type "const void (*)(YM2612 *, Channel *, s32 **, s32)"
+..\VGMPlayerLib\ym2612.c(258): warning:  #144-D: a value of type "void (*)(YM2612 *, Channel *, s32 **, s32)" cannot be used to initialize an entity of type "const void (*)(YM2612 *, Channel *, s32 **, s32)"
+..\VGMPlayerLib\ym2612.c(259): warning:  #144-D: a value of type "void (*)(YM2612 *, Channel *, s32 **, s32)" cannot be used to initialize an entity of type "const void (*)(YM2612 *, Channel *, s32 **, s32)"
+..\VGMPlayerLib\ym2612.c(260): warning:  #144-D: a value of type "void (*)(YM2612 *, Channel *, s32 **, s32)" cannot be used to initialize an entity of type "const void (*)(YM2612 *, Channel *, s32 **, s32)"
+..\VGMPlayerLib\ym2612.c(264): warning:  #815-D: type qualifier on return type is meaningless
+..\VGMPlayerLib\ym2612.c(266): warning:  #144-D: a value of type "void (*)(Slot *)" cannot be used to initialize an entity of type "const void (*)(Slot *)"
+..\VGMPlayerLib\ym2612.c(267): warning:  #144-D: a value of type "void (*)(Slot *)" cannot be used to initialize an entity of type "const void (*)(Slot *)"
+..\VGMPlayerLib\ym2612.c(268): warning:  #144-D: a value of type "void (*)(Slot *)" cannot be used to initialize an entity of type "const void (*)(Slot *)"
+..\VGMPlayerLib\ym2612.c(269): warning:  #144-D: a value of type "void (*)(Slot *)" cannot be used to initialize an entity of type "const void (*)(Slot *)"
+..\VGMPlayerLib\ym2612.c(270): warning:  #144-D: a value of type "void (*)(Slot *)" cannot be used to initialize an entity of type "const void (*)(Slot *)"
+..\VGMPlayerLib\ym2612.c(271): warning:  #144-D: a value of type "void (*)(Slot *)" cannot be used to initialize an entity of type "const void (*)(Slot *)"
+..\VGMPlayerLib\ym2612.c(272): warning:  #144-D: a value of type "void (*)(Slot *)" cannot be used to initialize an entity of type "const void (*)(Slot *)"
+..\VGMPlayerLib\ym2612.c(273): warning:  #144-D: a value of type "void (*)(Slot *)" cannot be used to initialize an entity of type "const void (*)(Slot *)"
+..\VGMPlayerLib\ym2612.c(428): warning:  #1293-D: assignment in condition
+..\VGMPlayerLib\ym2612.c(433): warning:  #513-D: a value of type "u32 *" cannot be assigned to an entity of type "s32 *"
+..\VGMPlayerLib\ym2612.c(458): warning:  #513-D: a value of type "u32 *" cannot be assigned to an entity of type "s32 *"
+..\VGMPlayerLib\ym2612.c(460): warning:  #513-D: a value of type "u32 *" cannot be assigned to an entity of type "s32 *"
+..\VGMPlayerLib\ym2612.c(469): warning:  #1293-D: assignment in condition
+..\VGMPlayerLib\ym2612.c(475): warning:  #513-D: a value of type "u32 *" cannot be assigned to an entity of type "s32 *"
+..\VGMPlayerLib\ym2612.c(477): warning:  #513-D: a value of type "u32 *" cannot be assigned to an entity of type "s32 *"
+..\VGMPlayerLib\ym2612.c(487): warning:  #513-D: a value of type "u32 *" cannot be assigned to an entity of type "s32 *"
+..\VGMPlayerLib\ym2612.c(489): warning:  #513-D: a value of type "u32 *" cannot be assigned to an entity of type "s32 *"
+..\VGMPlayerLib\ym2612.c(500): warning:  #513-D: a value of type "u32 *" cannot be assigned to an entity of type "s32 *"
+..\VGMPlayerLib\ym2612.c(773): error:  #134: expected a field name
+..\VGMPlayerLib\ym2612.c(1258): warning:  #1293-D: assignment in condition
+..\VGMPlayerLib\ym2612.c(1277): warning:  #1293-D: assignment in condition
+..\VGMPlayerLib\ym2612.c(1296): warning:  #1293-D: assignment in condition
+..\VGMPlayerLib\ym2612.c(1315): warning:  #1293-D: assignment in condition
+..\VGMPlayerLib\ym2612.c(1334): warning:  #1293-D: assignment in condition
+..\VGMPlayerLib\ym2612.c(1353): warning:  #1293-D: assignment in condition
+..\VGMPlayerLib\ym2612.c(1372): warning:  #1293-D: assignment in condition
+..\VGMPlayerLib\ym2612.c(1391): warning:  #1293-D: assignment in condition
+..\VGMPlayerLib\ym2612.c(1585): warning:  #1293-D: assignment in condition
+..\VGMPlayerLib\ym2612.c(1606): warning:  #1293-D: assignment in condition
+..\VGMPlayerLib\ym2612.c(1627): warning:  #1293-D: assignment in condition
+..\VGMPlayerLib\ym2612.c(1648): warning:  #1293-D: assignment in condition
+..\VGMPlayerLib\ym2612.c(1668): warning:  #1293-D: assignment in condition
+..\VGMPlayerLib\ym2612.c(1688): warning:  #1293-D: assignment in condition
+..\VGMPlayerLib\ym2612.c(1710): warning:  #1293-D: assignment in condition
+..\VGMPlayerLib\ym2612.c(1730): warning:  #1293-D: assignment in condition
+..\VGMPlayerLib\ym2612.c(1748): error:  #268: declaration may not appear after executable statement in block
+..\VGMPlayerLib\ym2612.c(1760): error:  #268: declaration may not appear after executable statement in block
+..\VGMPlayerLib\ym2612.c(1748): warning:  #177-D: variable "a" was declared but never referenced
+..\VGMPlayerLib\ym2612.c(1970): error:  #134: expected a field name
+..\VGMPlayerLib\ym2612.c(2184): error:  #134: expected a field name
+..\VGMPlayerLib\ym2612.c(2188): warning:  #1-D: last line of file ends without a newline
+Target not created
+Build target 'project'
+compiling ym2151.c...
+..\VGMPlayerLib\ym2151.c(1447): warning:  #177-D: variable "ic" was declared but never referenced
+..\VGMPlayerLib\ym2151.c(1550): warning:  #177-D: variable "oldstate" was declared but never referenced
+..\VGMPlayerLib\ym2151.c(1560): warning:  #177-D: variable "oldstate" was declared but never referenced
+..\VGMPlayerLib\ym2151.c(1810): warning:  #177-D: variable "oldstate" was declared but never referenced
+..\VGMPlayerLib\ym2151.c(1894): warning:  #177-D: variable "oldstate" was declared but never referenced
+..\VGMPlayerLib\ym2151.c(1908): warning:  #1-D: last line of file ends without a newline
+compiling ym2612.c...
+..\VGMPlayerLib\ym2612.c(140): error:  #18: expected a ")"
+..\VGMPlayerLib\ym2612.c(140): error:  #79: expected a type specifier
+..\VGMPlayerLib\ym2612.c(140): error:  #168: a function type is not allowed here
+..\VGMPlayerLib\ym2612.c(224): warning:  #815-D: type qualifier on return type is meaningless
+..\VGMPlayerLib\ym2612.c(226): warning:  #144-D: a value of type "void (*)(YM2612 *, Channel *, s32 **, s32)" cannot be used to initialize an entity of type "const void (*)(YM2612 *, Channel *, s32 **, s32)"
+..\VGMPlayerLib\ym2612.c(227): warning:  #144-D: a value of type "void (*)(YM2612 *, Channel *, s32 **, s32)" cannot be used to initialize an entity of type "const void (*)(YM2612 *, Channel *, s32 **, s32)"
+..\VGMPlayerLib\ym2612.c(228): warning:  #144-D: a value of type "void (*)(YM2612 *, Channel *, s32 **, s32)" cannot be used to initialize an entity of type "const void (*)(YM2612 *, Channel *, s32 **, s32)"
+..\VGMPlayerLib\ym2612.c(229): warning:  #144-D: a value of type "void (*)(YM2612 *, Channel *, s32 **, s32)" cannot be used to initialize an entity of type "const void (*)(YM2612 *, Channel *, s32 **, s32)"
+..\VGMPlayerLib\ym2612.c(230): warning:  #144-D: a value of type "void (*)(YM2612 *, Channel *, s32 **, s32)" cannot be used to initialize an entity of type "const void (*)(YM2612 *, Channel *, s32 **, s32)"
+..\VGMPlayerLib\ym2612.c(231): warning:  #144-D: a value of type "void (*)(YM2612 *, Channel *, s32 **, s32)" cannot be used to initialize an entity of type "const void (*)(YM2612 *, Channel *, s32 **, s32)"
+..\VGMPlayerLib\ym2612.c(232): warning:  #144-D: a value of type "void (*)(YM2612 *, Channel *, s32 **, s32)" cannot be used to initialize an entity of type "const void (*)(YM2612 *, Channel *, s32 **, s32)"
+..\VGMPlayerLib\ym2612.c(233): warning:  #144-D: a value of type "void (*)(YM2612 *, Channel *, s32 **, s32)" cannot be used to initialize an entity of type "const void (*)(YM2612 *, Channel *, s32 **, s32)"
+..\VGMPlayerLib\ym2612.c(235): warning:  #144-D: a value of type "void (*)(YM2612 *, Channel *, s32 **, s32)" cannot be used to initialize an entity of type "const void (*)(YM2612 *, Channel *, s32 **, s32)"
+..\VGMPlayerLib\ym2612.c(236): warning:  #144-D: a value of type "void (*)(YM2612 *, Channel *, s32 **, s32)" cannot be used to initialize an entity of type "const void (*)(YM2612 *, Channel *, s32 **, s32)"
+..\VGMPlayerLib\ym2612.c(237): warning:  #144-D: a value of type "void (*)(YM2612 *, Channel *, s32 **, s32)" cannot be used to initialize an entity of type "const void (*)(YM2612 *, Channel *, s32 **, s32)"
+..\VGMPlayerLib\ym2612.c(238): warning:  #144-D: a value of type "void (*)(YM2612 *, Channel *, s32 **, s32)" cannot be used to initialize an entity of type "const void (*)(YM2612 *, Channel *, s32 **, s32)"
+..\VGMPlayerLib\ym2612.c(239): warning:  #144-D: a value of type "void (*)(YM2612 *, Channel *, s32 **, s32)" cannot be used to initialize an entity of type "const void (*)(YM2612 *, Channel *, s32 **, s32)"
+..\VGMPlayerLib\ym2612.c(240): warning:  #144-D: a value of type "void (*)(YM2612 *, Channel *, s32 **, s32)" cannot be used to initialize an entity of type "const void (*)(YM2612 *, Channel *, s32 **, s32)"
+..\VGMPlayerLib\ym2612.c(241): warning:  #144-D: a value of type "void (*)(YM2612 *, Channel *, s32 **, s32)" cannot be used to initialize an entity of type "const void (*)(YM2612 *, Channel *, s32 **, s32)"
+..\VGMPlayerLib\ym2612.c(242): warning:  #144-D: a value of type "void (*)(YM2612 *, Channel *, s32 **, s32)" cannot be used to initialize an entity of type "const void (*)(YM2612 *, Channel *, s32 **, s32)"
+..\VGMPlayerLib\ym2612.c(244): warning:  #144-D: a value of type "void (*)(YM2612 *, Channel *, s32 **, s32)" cannot be used to initialize an entity of type "const void (*)(YM2612 *, Channel *, s32 **, s32)"
+..\VGMPlayerLib\ym2612.c(245): warning:  #144-D: a value of type "void (*)(YM2612 *, Channel *, s32 **, s32)" cannot be used to initialize an entity of type "const void (*)(YM2612 *, Channel *, s32 **, s32)"
+..\VGMPlayerLib\ym2612.c(246): warning:  #144-D: a value of type "void (*)(YM2612 *, Channel *, s32 **, s32)" cannot be used to initialize an entity of type "const void (*)(YM2612 *, Channel *, s32 **, s32)"
+..\VGMPlayerLib\ym2612.c(247): warning:  #144-D: a value of type "void (*)(YM2612 *, Channel *, s32 **, s32)" cannot be used to initialize an entity of type "const void (*)(YM2612 *, Channel *, s32 **, s32)"
+..\VGMPlayerLib\ym2612.c(248): warning:  #144-D: a value of type "void (*)(YM2612 *, Channel *, s32 **, s32)" cannot be used to initialize an entity of type "const void (*)(YM2612 *, Channel *, s32 **, s32)"
+..\VGMPlayerLib\ym2612.c(249): warning:  #144-D: a value of type "void (*)(YM2612 *, Channel *, s32 **, s32)" cannot be used to initialize an entity of type "const void (*)(YM2612 *, Channel *, s32 **, s32)"
+..\VGMPlayerLib\ym2612.c(250): warning:  #144-D: a value of type "void (*)(YM2612 *, Channel *, s32 **, s32)" cannot be used to initialize an entity of type "const void (*)(YM2612 *, Channel *, s32 **, s32)"
+..\VGMPlayerLib\ym2612.c(251): warning:  #144-D: a value of type "void (*)(YM2612 *, Channel *, s32 **, s32)" cannot be used to initialize an entity of type "const void (*)(YM2612 *, Channel *, s32 **, s32)"
+..\VGMPlayerLib\ym2612.c(253): warning:  #144-D: a value of type "void (*)(YM2612 *, Channel *, s32 **, s32)" cannot be used to initialize an entity of type "const void (*)(YM2612 *, Channel *, s32 **, s32)"
+..\VGMPlayerLib\ym2612.c(254): warning:  #144-D: a value of type "void (*)(YM2612 *, Channel *, s32 **, s32)" cannot be used to initialize an entity of type "const void (*)(YM2612 *, Channel *, s32 **, s32)"
+..\VGMPlayerLib\ym2612.c(255): warning:  #144-D: a value of type "void (*)(YM2612 *, Channel *, s32 **, s32)" cannot be used to initialize an entity of type "const void (*)(YM2612 *, Channel *, s32 **, s32)"
+..\VGMPlayerLib\ym2612.c(256): warning:  #144-D: a value of type "void (*)(YM2612 *, Channel *, s32 **, s32)" cannot be used to initialize an entity of type "const void (*)(YM2612 *, Channel *, s32 **, s32)"
+..\VGMPlayerLib\ym2612.c(257): warning:  #144-D: a value of type "void (*)(YM2612 *, Channel *, s32 **, s32)" cannot be used to initialize an entity of type "const void (*)(YM2612 *, Channel *, s32 **, s32)"
+..\VGMPlayerLib\ym2612.c(258): warning:  #144-D: a value of type "void (*)(YM2612 *, Channel *, s32 **, s32)" cannot be used to initialize an entity of type "const void (*)(YM2612 *, Channel *, s32 **, s32)"
+..\VGMPlayerLib\ym2612.c(259): warning:  #144-D: a value of type "void (*)(YM2612 *, Channel *, s32 **, s32)" cannot be used to initialize an entity of type "const void (*)(YM2612 *, Channel *, s32 **, s32)"
+..\VGMPlayerLib\ym2612.c(260): warning:  #144-D: a value of type "void (*)(YM2612 *, Channel *, s32 **, s32)" cannot be used to initialize an entity of type "const void (*)(YM2612 *, Channel *, s32 **, s32)"
+..\VGMPlayerLib\ym2612.c(264): warning:  #815-D: type qualifier on return type is meaningless
+..\VGMPlayerLib\ym2612.c(266): warning:  #144-D: a value of type "void (*)(Slot *)" cannot be used to initialize an entity of type "const void (*)(Slot *)"
+..\VGMPlayerLib\ym2612.c(267): warning:  #144-D: a value of type "void (*)(Slot *)" cannot be used to initialize an entity of type "const void (*)(Slot *)"
+..\VGMPlayerLib\ym2612.c(268): warning:  #144-D: a value of type "void (*)(Slot *)" cannot be used to initialize an entity of type "const void (*)(Slot *)"
+..\VGMPlayerLib\ym2612.c(269): warning:  #144-D: a value of type "void (*)(Slot *)" cannot be used to initialize an entity of type "const void (*)(Slot *)"
+..\VGMPlayerLib\ym2612.c(270): warning:  #144-D: a value of type "void (*)(Slot *)" cannot be used to initialize an entity of type "const void (*)(Slot *)"
+..\VGMPlayerLib\ym2612.c(271): warning:  #144-D: a value of type "void (*)(Slot *)" cannot be used to initialize an entity of type "const void (*)(Slot *)"
+..\VGMPlayerLib\ym2612.c(272): warning:  #144-D: a value of type "void (*)(Slot *)" cannot be used to initialize an entity of type "const void (*)(Slot *)"
+..\VGMPlayerLib\ym2612.c(273): warning:  #144-D: a value of type "void (*)(Slot *)" cannot be used to initialize an entity of type "const void (*)(Slot *)"
+..\VGMPlayerLib\ym2612.c(428): warning:  #1293-D: assignment in condition
+..\VGMPlayerLib\ym2612.c(433): warning:  #513-D: a value of type "u32 *" cannot be assigned to an entity of type "s32 *"
+..\VGMPlayerLib\ym2612.c(458): warning:  #513-D: a value of type "u32 *" cannot be assigned to an entity of type "s32 *"
+..\VGMPlayerLib\ym2612.c(460): warning:  #513-D: a value of type "u32 *" cannot be assigned to an entity of type "s32 *"
+..\VGMPlayerLib\ym2612.c(469): warning:  #1293-D: assignment in condition
+..\VGMPlayerLib\ym2612.c(475): warning:  #513-D: a value of type "u32 *" cannot be assigned to an entity of type "s32 *"
+..\VGMPlayerLib\ym2612.c(477): warning:  #513-D: a value of type "u32 *" cannot be assigned to an entity of type "s32 *"
+..\VGMPlayerLib\ym2612.c(487): warning:  #513-D: a value of type "u32 *" cannot be assigned to an entity of type "s32 *"
+..\VGMPlayerLib\ym2612.c(489): warning:  #513-D: a value of type "u32 *" cannot be assigned to an entity of type "s32 *"
+..\VGMPlayerLib\ym2612.c(500): warning:  #513-D: a value of type "u32 *" cannot be assigned to an entity of type "s32 *"
+..\VGMPlayerLib\ym2612.c(773): error:  #134: expected a field name
+..\VGMPlayerLib\ym2612.c(1258): warning:  #1293-D: assignment in condition
+..\VGMPlayerLib\ym2612.c(1277): warning:  #1293-D: assignment in condition
+..\VGMPlayerLib\ym2612.c(1296): warning:  #1293-D: assignment in condition
+..\VGMPlayerLib\ym2612.c(1315): warning:  #1293-D: assignment in condition
+..\VGMPlayerLib\ym2612.c(1334): warning:  #1293-D: assignment in condition
+..\VGMPlayerLib\ym2612.c(1353): warning:  #1293-D: assignment in condition
+..\VGMPlayerLib\ym2612.c(1372): warning:  #1293-D: assignment in condition
+..\VGMPlayerLib\ym2612.c(1391): warning:  #1293-D: assignment in condition
+..\VGMPlayerLib\ym2612.c(1585): warning:  #1293-D: assignment in condition
+..\VGMPlayerLib\ym2612.c(1606): warning:  #1293-D: assignment in condition
+..\VGMPlayerLib\ym2612.c(1627): warning:  #1293-D: assignment in condition
+..\VGMPlayerLib\ym2612.c(1648): warning:  #1293-D: assignment in condition
+..\VGMPlayerLib\ym2612.c(1668): warning:  #1293-D: assignment in condition
+..\VGMPlayerLib\ym2612.c(1688): warning:  #1293-D: assignment in condition
+..\VGMPlayerLib\ym2612.c(1710): warning:  #1293-D: assignment in condition
+..\VGMPlayerLib\ym2612.c(1730): warning:  #1293-D: assignment in condition
+..\VGMPlayerLib\ym2612.c(1748): error:  #268: declaration may not appear after executable statement in block
+..\VGMPlayerLib\ym2612.c(1760): error:  #268: declaration may not appear after executable statement in block
+..\VGMPlayerLib\ym2612.c(1748): warning:  #177-D: variable "a" was declared but never referenced
+..\VGMPlayerLib\ym2612.c(1970): error:  #134: expected a field name
+..\VGMPlayerLib\ym2612.c(2184): error:  #134: expected a field name
+..\VGMPlayerLib\ym2612.c(2188): warning:  #1-D: last line of file ends without a newline
+Target not created
+Build target 'project'
+compiling ym2612.c...
+..\VGMPlayerLib\ym2612.c(140): error:  #18: expected a ")"
+..\VGMPlayerLib\ym2612.c(140): error:  #79: expected a type specifier
+..\VGMPlayerLib\ym2612.c(140): error:  #168: a function type is not allowed here
+..\VGMPlayerLib\ym2612.c(224): warning:  #815-D: type qualifier on return type is meaningless
+..\VGMPlayerLib\ym2612.c(226): warning:  #144-D: a value of type "void (*)(YM2612 *, Channel *, s32 **, s32)" cannot be used to initialize an entity of type "const void (*)(YM2612 *, Channel *, s32 **, s32)"
+..\VGMPlayerLib\ym2612.c(227): warning:  #144-D: a value of type "void (*)(YM2612 *, Channel *, s32 **, s32)" cannot be used to initialize an entity of type "const void (*)(YM2612 *, Channel *, s32 **, s32)"
+..\VGMPlayerLib\ym2612.c(228): warning:  #144-D: a value of type "void (*)(YM2612 *, Channel *, s32 **, s32)" cannot be used to initialize an entity of type "const void (*)(YM2612 *, Channel *, s32 **, s32)"
+..\VGMPlayerLib\ym2612.c(229): warning:  #144-D: a value of type "void (*)(YM2612 *, Channel *, s32 **, s32)" cannot be used to initialize an entity of type "const void (*)(YM2612 *, Channel *, s32 **, s32)"
+..\VGMPlayerLib\ym2612.c(230): warning:  #144-D: a value of type "void (*)(YM2612 *, Channel *, s32 **, s32)" cannot be used to initialize an entity of type "const void (*)(YM2612 *, Channel *, s32 **, s32)"
+..\VGMPlayerLib\ym2612.c(231): warning:  #144-D: a value of type "void (*)(YM2612 *, Channel *, s32 **, s32)" cannot be used to initialize an entity of type "const void (*)(YM2612 *, Channel *, s32 **, s32)"
+..\VGMPlayerLib\ym2612.c(232): warning:  #144-D: a value of type "void (*)(YM2612 *, Channel *, s32 **, s32)" cannot be used to initialize an entity of type "const void (*)(YM2612 *, Channel *, s32 **, s32)"
+..\VGMPlayerLib\ym2612.c(233): warning:  #144-D: a value of type "void (*)(YM2612 *, Channel *, s32 **, s32)" cannot be used to initialize an entity of type "const void (*)(YM2612 *, Channel *, s32 **, s32)"
+..\VGMPlayerLib\ym2612.c(235): warning:  #144-D: a value of type "void (*)(YM2612 *, Channel *, s32 **, s32)" cannot be used to initialize an entity of type "const void (*)(YM2612 *, Channel *, s32 **, s32)"
+..\VGMPlayerLib\ym2612.c(236): warning:  #144-D: a value of type "void (*)(YM2612 *, Channel *, s32 **, s32)" cannot be used to initialize an entity of type "const void (*)(YM2612 *, Channel *, s32 **, s32)"
+..\VGMPlayerLib\ym2612.c(237): warning:  #144-D: a value of type "void (*)(YM2612 *, Channel *, s32 **, s32)" cannot be used to initialize an entity of type "const void (*)(YM2612 *, Channel *, s32 **, s32)"
+..\VGMPlayerLib\ym2612.c(238): warning:  #144-D: a value of type "void (*)(YM2612 *, Channel *, s32 **, s32)" cannot be used to initialize an entity of type "const void (*)(YM2612 *, Channel *, s32 **, s32)"
+..\VGMPlayerLib\ym2612.c(239): warning:  #144-D: a value of type "void (*)(YM2612 *, Channel *, s32 **, s32)" cannot be used to initialize an entity of type "const void (*)(YM2612 *, Channel *, s32 **, s32)"
+..\VGMPlayerLib\ym2612.c(240): warning:  #144-D: a value of type "void (*)(YM2612 *, Channel *, s32 **, s32)" cannot be used to initialize an entity of type "const void (*)(YM2612 *, Channel *, s32 **, s32)"
+..\VGMPlayerLib\ym2612.c(241): warning:  #144-D: a value of type "void (*)(YM2612 *, Channel *, s32 **, s32)" cannot be used to initialize an entity of type "const void (*)(YM2612 *, Channel *, s32 **, s32)"
+..\VGMPlayerLib\ym2612.c(242): warning:  #144-D: a value of type "void (*)(YM2612 *, Channel *, s32 **, s32)" cannot be used to initialize an entity of type "const void (*)(YM2612 *, Channel *, s32 **, s32)"
+..\VGMPlayerLib\ym2612.c(244): warning:  #144-D: a value of type "void (*)(YM2612 *, Channel *, s32 **, s32)" cannot be used to initialize an entity of type "const void (*)(YM2612 *, Channel *, s32 **, s32)"
+..\VGMPlayerLib\ym2612.c(245): warning:  #144-D: a value of type "void (*)(YM2612 *, Channel *, s32 **, s32)" cannot be used to initialize an entity of type "const void (*)(YM2612 *, Channel *, s32 **, s32)"
+..\VGMPlayerLib\ym2612.c(246): warning:  #144-D: a value of type "void (*)(YM2612 *, Channel *, s32 **, s32)" cannot be used to initialize an entity of type "const void (*)(YM2612 *, Channel *, s32 **, s32)"
+..\VGMPlayerLib\ym2612.c(247): warning:  #144-D: a value of type "void (*)(YM2612 *, Channel *, s32 **, s32)" cannot be used to initialize an entity of type "const void (*)(YM2612 *, Channel *, s32 **, s32)"
+..\VGMPlayerLib\ym2612.c(248): warning:  #144-D: a value of type "void (*)(YM2612 *, Channel *, s32 **, s32)" cannot be used to initialize an entity of type "const void (*)(YM2612 *, Channel *, s32 **, s32)"
+..\VGMPlayerLib\ym2612.c(249): warning:  #144-D: a value of type "void (*)(YM2612 *, Channel *, s32 **, s32)" cannot be used to initialize an entity of type "const void (*)(YM2612 *, Channel *, s32 **, s32)"
+..\VGMPlayerLib\ym2612.c(250): warning:  #144-D: a value of type "void (*)(YM2612 *, Channel *, s32 **, s32)" cannot be used to initialize an entity of type "const void (*)(YM2612 *, Channel *, s32 **, s32)"
+..\VGMPlayerLib\ym2612.c(251): warning:  #144-D: a value of type "void (*)(YM2612 *, Channel *, s32 **, s32)" cannot be used to initialize an entity of type "const void (*)(YM2612 *, Channel *, s32 **, s32)"
+..\VGMPlayerLib\ym2612.c(253): warning:  #144-D: a value of type "void (*)(YM2612 *, Channel *, s32 **, s32)" cannot be used to initialize an entity of type "const void (*)(YM2612 *, Channel *, s32 **, s32)"
+..\VGMPlayerLib\ym2612.c(254): warning:  #144-D: a value of type "void (*)(YM2612 *, Channel *, s32 **, s32)" cannot be used to initialize an entity of type "const void (*)(YM2612 *, Channel *, s32 **, s32)"
+..\VGMPlayerLib\ym2612.c(255): warning:  #144-D: a value of type "void (*)(YM2612 *, Channel *, s32 **, s32)" cannot be used to initialize an entity of type "const void (*)(YM2612 *, Channel *, s32 **, s32)"
+..\VGMPlayerLib\ym2612.c(256): warning:  #144-D: a value of type "void (*)(YM2612 *, Channel *, s32 **, s32)" cannot be used to initialize an entity of type "const void (*)(YM2612 *, Channel *, s32 **, s32)"
+..\VGMPlayerLib\ym2612.c(257): warning:  #144-D: a value of type "void (*)(YM2612 *, Channel *, s32 **, s32)" cannot be used to initialize an entity of type "const void (*)(YM2612 *, Channel *, s32 **, s32)"
+..\VGMPlayerLib\ym2612.c(258): warning:  #144-D: a value of type "void (*)(YM2612 *, Channel *, s32 **, s32)" cannot be used to initialize an entity of type "const void (*)(YM2612 *, Channel *, s32 **, s32)"
+..\VGMPlayerLib\ym2612.c(259): warning:  #144-D: a value of type "void (*)(YM2612 *, Channel *, s32 **, s32)" cannot be used to initialize an entity of type "const void (*)(YM2612 *, Channel *, s32 **, s32)"
+..\VGMPlayerLib\ym2612.c(260): warning:  #144-D: a value of type "void (*)(YM2612 *, Channel *, s32 **, s32)" cannot be used to initialize an entity of type "const void (*)(YM2612 *, Channel *, s32 **, s32)"
+..\VGMPlayerLib\ym2612.c(264): warning:  #815-D: type qualifier on return type is meaningless
+..\VGMPlayerLib\ym2612.c(266): warning:  #144-D: a value of type "void (*)(Slot *)" cannot be used to initialize an entity of type "const void (*)(Slot *)"
+..\VGMPlayerLib\ym2612.c(267): warning:  #144-D: a value of type "void (*)(Slot *)" cannot be used to initialize an entity of type "const void (*)(Slot *)"
+..\VGMPlayerLib\ym2612.c(268): warning:  #144-D: a value of type "void (*)(Slot *)" cannot be used to initialize an entity of type "const void (*)(Slot *)"
+..\VGMPlayerLib\ym2612.c(269): warning:  #144-D: a value of type "void (*)(Slot *)" cannot be used to initialize an entity of type "const void (*)(Slot *)"
+..\VGMPlayerLib\ym2612.c(270): warning:  #144-D: a value of type "void (*)(Slot *)" cannot be used to initialize an entity of type "const void (*)(Slot *)"
+..\VGMPlayerLib\ym2612.c(271): warning:  #144-D: a value of type "void (*)(Slot *)" cannot be used to initialize an entity of type "const void (*)(Slot *)"
+..\VGMPlayerLib\ym2612.c(272): warning:  #144-D: a value of type "void (*)(Slot *)" cannot be used to initialize an entity of type "const void (*)(Slot *)"
+..\VGMPlayerLib\ym2612.c(273): warning:  #144-D: a value of type "void (*)(Slot *)" cannot be used to initialize an entity of type "const void (*)(Slot *)"
+..\VGMPlayerLib\ym2612.c(428): warning:  #1293-D: assignment in condition
+..\VGMPlayerLib\ym2612.c(433): warning:  #513-D: a value of type "u32 *" cannot be assigned to an entity of type "s32 *"
+..\VGMPlayerLib\ym2612.c(458): warning:  #513-D: a value of type "u32 *" cannot be assigned to an entity of type "s32 *"
+..\VGMPlayerLib\ym2612.c(460): warning:  #513-D: a value of type "u32 *" cannot be assigned to an entity of type "s32 *"
+..\VGMPlayerLib\ym2612.c(469): warning:  #1293-D: assignment in condition
+..\VGMPlayerLib\ym2612.c(475): warning:  #513-D: a value of type "u32 *" cannot be assigned to an entity of type "s32 *"
+..\VGMPlayerLib\ym2612.c(477): warning:  #513-D: a value of type "u32 *" cannot be assigned to an entity of type "s32 *"
+..\VGMPlayerLib\ym2612.c(487): warning:  #513-D: a value of type "u32 *" cannot be assigned to an entity of type "s32 *"
+..\VGMPlayerLib\ym2612.c(489): warning:  #513-D: a value of type "u32 *" cannot be assigned to an entity of type "s32 *"
+..\VGMPlayerLib\ym2612.c(500): warning:  #513-D: a value of type "u32 *" cannot be assigned to an entity of type "s32 *"
+..\VGMPlayerLib\ym2612.c(773): error:  #134: expected a field name
+..\VGMPlayerLib\ym2612.c(1258): warning:  #1293-D: assignment in condition
+..\VGMPlayerLib\ym2612.c(1277): warning:  #1293-D: assignment in condition
+..\VGMPlayerLib\ym2612.c(1296): warning:  #1293-D: assignment in condition
+..\VGMPlayerLib\ym2612.c(1315): warning:  #1293-D: assignment in condition
+..\VGMPlayerLib\ym2612.c(1334): warning:  #1293-D: assignment in condition
+..\VGMPlayerLib\ym2612.c(1353): warning:  #1293-D: assignment in condition
+..\VGMPlayerLib\ym2612.c(1372): warning:  #1293-D: assignment in condition
+..\VGMPlayerLib\ym2612.c(1391): warning:  #1293-D: assignment in condition
+..\VGMPlayerLib\ym2612.c(1585): warning:  #1293-D: assignment in condition
+..\VGMPlayerLib\ym2612.c(1606): warning:  #1293-D: assignment in condition
+..\VGMPlayerLib\ym2612.c(1627): warning:  #1293-D: assignment in condition
+..\VGMPlayerLib\ym2612.c(1648): warning:  #1293-D: assignment in condition
+..\VGMPlayerLib\ym2612.c(1668): warning:  #1293-D: assignment in condition
+..\VGMPlayerLib\ym2612.c(1688): warning:  #1293-D: assignment in condition
+..\VGMPlayerLib\ym2612.c(1710): warning:  #1293-D: assignment in condition
+..\VGMPlayerLib\ym2612.c(1730): warning:  #1293-D: assignment in condition
+..\VGMPlayerLib\ym2612.c(1758): error:  #268: declaration may not appear after executable statement in block
+..\VGMPlayerLib\ym2612.c(1968): error:  #134: expected a field name
+..\VGMPlayerLib\ym2612.c(2182): error:  #134: expected a field name
+..\VGMPlayerLib\ym2612.c(2186): warning:  #1-D: last line of file ends without a newline
+Target not created
+Build target 'project'
+compiling ym2612.c...
+..\VGMPlayerLib\ym2612.c(140): error:  #18: expected a ")"
+..\VGMPlayerLib\ym2612.c(140): error:  #79: expected a type specifier
+..\VGMPlayerLib\ym2612.c(140): error:  #168: a function type is not allowed here
+..\VGMPlayerLib\ym2612.c(224): warning:  #815-D: type qualifier on return type is meaningless
+..\VGMPlayerLib\ym2612.c(226): warning:  #144-D: a value of type "void (*)(YM2612 *, Channel *, s32 **, s32)" cannot be used to initialize an entity of type "const void (*)(YM2612 *, Channel *, s32 **, s32)"
+..\VGMPlayerLib\ym2612.c(227): warning:  #144-D: a value of type "void (*)(YM2612 *, Channel *, s32 **, s32)" cannot be used to initialize an entity of type "const void (*)(YM2612 *, Channel *, s32 **, s32)"
+..\VGMPlayerLib\ym2612.c(228): warning:  #144-D: a value of type "void (*)(YM2612 *, Channel *, s32 **, s32)" cannot be used to initialize an entity of type "const void (*)(YM2612 *, Channel *, s32 **, s32)"
+..\VGMPlayerLib\ym2612.c(229): warning:  #144-D: a value of type "void (*)(YM2612 *, Channel *, s32 **, s32)" cannot be used to initialize an entity of type "const void (*)(YM2612 *, Channel *, s32 **, s32)"
+..\VGMPlayerLib\ym2612.c(230): warning:  #144-D: a value of type "void (*)(YM2612 *, Channel *, s32 **, s32)" cannot be used to initialize an entity of type "const void (*)(YM2612 *, Channel *, s32 **, s32)"
+..\VGMPlayerLib\ym2612.c(231): warning:  #144-D: a value of type "void (*)(YM2612 *, Channel *, s32 **, s32)" cannot be used to initialize an entity of type "const void (*)(YM2612 *, Channel *, s32 **, s32)"
+..\VGMPlayerLib\ym2612.c(232): warning:  #144-D: a value of type "void (*)(YM2612 *, Channel *, s32 **, s32)" cannot be used to initialize an entity of type "const void (*)(YM2612 *, Channel *, s32 **, s32)"
+..\VGMPlayerLib\ym2612.c(233): warning:  #144-D: a value of type "void (*)(YM2612 *, Channel *, s32 **, s32)" cannot be used to initialize an entity of type "const void (*)(YM2612 *, Channel *, s32 **, s32)"
+..\VGMPlayerLib\ym2612.c(235): warning:  #144-D: a value of type "void (*)(YM2612 *, Channel *, s32 **, s32)" cannot be used to initialize an entity of type "const void (*)(YM2612 *, Channel *, s32 **, s32)"
+..\VGMPlayerLib\ym2612.c(236): warning:  #144-D: a value of type "void (*)(YM2612 *, Channel *, s32 **, s32)" cannot be used to initialize an entity of type "const void (*)(YM2612 *, Channel *, s32 **, s32)"
+..\VGMPlayerLib\ym2612.c(237): warning:  #144-D: a value of type "void (*)(YM2612 *, Channel *, s32 **, s32)" cannot be used to initialize an entity of type "const void (*)(YM2612 *, Channel *, s32 **, s32)"
+..\VGMPlayerLib\ym2612.c(238): warning:  #144-D: a value of type "void (*)(YM2612 *, Channel *, s32 **, s32)" cannot be used to initialize an entity of type "const void (*)(YM2612 *, Channel *, s32 **, s32)"
+..\VGMPlayerLib\ym2612.c(239): warning:  #144-D: a value of type "void (*)(YM2612 *, Channel *, s32 **, s32)" cannot be used to initialize an entity of type "const void (*)(YM2612 *, Channel *, s32 **, s32)"
+..\VGMPlayerLib\ym2612.c(240): warning:  #144-D: a value of type "void (*)(YM2612 *, Channel *, s32 **, s32)" cannot be used to initialize an entity of type "const void (*)(YM2612 *, Channel *, s32 **, s32)"
+..\VGMPlayerLib\ym2612.c(241): warning:  #144-D: a value of type "void (*)(YM2612 *, Channel *, s32 **, s32)" cannot be used to initialize an entity of type "const void (*)(YM2612 *, Channel *, s32 **, s32)"
+..\VGMPlayerLib\ym2612.c(242): warning:  #144-D: a value of type "void (*)(YM2612 *, Channel *, s32 **, s32)" cannot be used to initialize an entity of type "const void (*)(YM2612 *, Channel *, s32 **, s32)"
+..\VGMPlayerLib\ym2612.c(244): warning:  #144-D: a value of type "void (*)(YM2612 *, Channel *, s32 **, s32)" cannot be used to initialize an entity of type "const void (*)(YM2612 *, Channel *, s32 **, s32)"
+..\VGMPlayerLib\ym2612.c(245): warning:  #144-D: a value of type "void (*)(YM2612 *, Channel *, s32 **, s32)" cannot be used to initialize an entity of type "const void (*)(YM2612 *, Channel *, s32 **, s32)"
+..\VGMPlayerLib\ym2612.c(246): warning:  #144-D: a value of type "void (*)(YM2612 *, Channel *, s32 **, s32)" cannot be used to initialize an entity of type "const void (*)(YM2612 *, Channel *, s32 **, s32)"
+..\VGMPlayerLib\ym2612.c(247): warning:  #144-D: a value of type "void (*)(YM2612 *, Channel *, s32 **, s32)" cannot be used to initialize an entity of type "const void (*)(YM2612 *, Channel *, s32 **, s32)"
+..\VGMPlayerLib\ym2612.c(248): warning:  #144-D: a value of type "void (*)(YM2612 *, Channel *, s32 **, s32)" cannot be used to initialize an entity of type "const void (*)(YM2612 *, Channel *, s32 **, s32)"
+..\VGMPlayerLib\ym2612.c(249): warning:  #144-D: a value of type "void (*)(YM2612 *, Channel *, s32 **, s32)" cannot be used to initialize an entity of type "const void (*)(YM2612 *, Channel *, s32 **, s32)"
+..\VGMPlayerLib\ym2612.c(250): warning:  #144-D: a value of type "void (*)(YM2612 *, Channel *, s32 **, s32)" cannot be used to initialize an entity of type "const void (*)(YM2612 *, Channel *, s32 **, s32)"
+..\VGMPlayerLib\ym2612.c(251): warning:  #144-D: a value of type "void (*)(YM2612 *, Channel *, s32 **, s32)" cannot be used to initialize an entity of type "const void (*)(YM2612 *, Channel *, s32 **, s32)"
+..\VGMPlayerLib\ym2612.c(253): warning:  #144-D: a value of type "void (*)(YM2612 *, Channel *, s32 **, s32)" cannot be used to initialize an entity of type "const void (*)(YM2612 *, Channel *, s32 **, s32)"
+..\VGMPlayerLib\ym2612.c(254): warning:  #144-D: a value of type "void (*)(YM2612 *, Channel *, s32 **, s32)" cannot be used to initialize an entity of type "const void (*)(YM2612 *, Channel *, s32 **, s32)"
+..\VGMPlayerLib\ym2612.c(255): warning:  #144-D: a value of type "void (*)(YM2612 *, Channel *, s32 **, s32)" cannot be used to initialize an entity of type "const void (*)(YM2612 *, Channel *, s32 **, s32)"
+..\VGMPlayerLib\ym2612.c(256): warning:  #144-D: a value of type "void (*)(YM2612 *, Channel *, s32 **, s32)" cannot be used to initialize an entity of type "const void (*)(YM2612 *, Channel *, s32 **, s32)"
+..\VGMPlayerLib\ym2612.c(257): warning:  #144-D: a value of type "void (*)(YM2612 *, Channel *, s32 **, s32)" cannot be used to initialize an entity of type "const void (*)(YM2612 *, Channel *, s32 **, s32)"
+..\VGMPlayerLib\ym2612.c(258): warning:  #144-D: a value of type "void (*)(YM2612 *, Channel *, s32 **, s32)" cannot be used to initialize an entity of type "const void (*)(YM2612 *, Channel *, s32 **, s32)"
+..\VGMPlayerLib\ym2612.c(259): warning:  #144-D: a value of type "void (*)(YM2612 *, Channel *, s32 **, s32)" cannot be used to initialize an entity of type "const void (*)(YM2612 *, Channel *, s32 **, s32)"
+..\VGMPlayerLib\ym2612.c(260): warning:  #144-D: a value of type "void (*)(YM2612 *, Channel *, s32 **, s32)" cannot be used to initialize an entity of type "const void (*)(YM2612 *, Channel *, s32 **, s32)"
+..\VGMPlayerLib\ym2612.c(264): warning:  #815-D: type qualifier on return type is meaningless
+..\VGMPlayerLib\ym2612.c(266): warning:  #144-D: a value of type "void (*)(Slot *)" cannot be used to initialize an entity of type "const void (*)(Slot *)"
+..\VGMPlayerLib\ym2612.c(267): warning:  #144-D: a value of type "void (*)(Slot *)" cannot be used to initialize an entity of type "const void (*)(Slot *)"
+..\VGMPlayerLib\ym2612.c(268): warning:  #144-D: a value of type "void (*)(Slot *)" cannot be used to initialize an entity of type "const void (*)(Slot *)"
+..\VGMPlayerLib\ym2612.c(269): warning:  #144-D: a value of type "void (*)(Slot *)" cannot be used to initialize an entity of type "const void (*)(Slot *)"
+..\VGMPlayerLib\ym2612.c(270): warning:  #144-D: a value of type "void (*)(Slot *)" cannot be used to initialize an entity of type "const void (*)(Slot *)"
+..\VGMPlayerLib\ym2612.c(271): warning:  #144-D: a value of type "void (*)(Slot *)" cannot be used to initialize an entity of type "const void (*)(Slot *)"
+..\VGMPlayerLib\ym2612.c(272): warning:  #144-D: a value of type "void (*)(Slot *)" cannot be used to initialize an entity of type "const void (*)(Slot *)"
+..\VGMPlayerLib\ym2612.c(273): warning:  #144-D: a value of type "void (*)(Slot *)" cannot be used to initialize an entity of type "const void (*)(Slot *)"
+..\VGMPlayerLib\ym2612.c(428): warning:  #1293-D: assignment in condition
+..\VGMPlayerLib\ym2612.c(433): warning:  #513-D: a value of type "u32 *" cannot be assigned to an entity of type "s32 *"
+..\VGMPlayerLib\ym2612.c(458): warning:  #513-D: a value of type "u32 *" cannot be assigned to an entity of type "s32 *"
+..\VGMPlayerLib\ym2612.c(460): warning:  #513-D: a value of type "u32 *" cannot be assigned to an entity of type "s32 *"
+..\VGMPlayerLib\ym2612.c(469): warning:  #1293-D: assignment in condition
+..\VGMPlayerLib\ym2612.c(475): warning:  #513-D: a value of type "u32 *" cannot be assigned to an entity of type "s32 *"
+..\VGMPlayerLib\ym2612.c(477): warning:  #513-D: a value of type "u32 *" cannot be assigned to an entity of type "s32 *"
+..\VGMPlayerLib\ym2612.c(487): warning:  #513-D: a value of type "u32 *" cannot be assigned to an entity of type "s32 *"
+..\VGMPlayerLib\ym2612.c(489): warning:  #513-D: a value of type "u32 *" cannot be assigned to an entity of type "s32 *"
+..\VGMPlayerLib\ym2612.c(500): warning:  #513-D: a value of type "u32 *" cannot be assigned to an entity of type "s32 *"
+..\VGMPlayerLib\ym2612.c(773): error:  #134: expected a field name
+..\VGMPlayerLib\ym2612.c(1258): warning:  #1293-D: assignment in condition
+..\VGMPlayerLib\ym2612.c(1277): warning:  #1293-D: assignment in condition
+..\VGMPlayerLib\ym2612.c(1296): warning:  #1293-D: assignment in condition
+..\VGMPlayerLib\ym2612.c(1315): warning:  #1293-D: assignment in condition
+..\VGMPlayerLib\ym2612.c(1334): warning:  #1293-D: assignment in condition
+..\VGMPlayerLib\ym2612.c(1353): warning:  #1293-D: assignment in condition
+..\VGMPlayerLib\ym2612.c(1372): warning:  #1293-D: assignment in condition
+..\VGMPlayerLib\ym2612.c(1391): warning:  #1293-D: assignment in condition
+..\VGMPlayerLib\ym2612.c(1585): warning:  #1293-D: assignment in condition
+..\VGMPlayerLib\ym2612.c(1606): warning:  #1293-D: assignment in condition
+..\VGMPlayerLib\ym2612.c(1627): warning:  #1293-D: assignment in condition
+..\VGMPlayerLib\ym2612.c(1648): warning:  #1293-D: assignment in condition
+..\VGMPlayerLib\ym2612.c(1668): warning:  #1293-D: assignment in condition
+..\VGMPlayerLib\ym2612.c(1688): warning:  #1293-D: assignment in condition
+..\VGMPlayerLib\ym2612.c(1710): warning:  #1293-D: assignment in condition
+..\VGMPlayerLib\ym2612.c(1730): warning:  #1293-D: assignment in condition
+..\VGMPlayerLib\ym2612.c(1968): error:  #134: expected a field name
+..\VGMPlayerLib\ym2612.c(2182): error:  #134: expected a field name
+..\VGMPlayerLib\ym2612.c(2186): warning:  #1-D: last line of file ends without a newline
+Target not created
+Build target 'project'
+compiling ym2612.c...
+..\VGMPlayerLib\ym2612.c(140): error:  #18: expected a ")"
+..\VGMPlayerLib\ym2612.c(140): error:  #79: expected a type specifier
+..\VGMPlayerLib\ym2612.c(140): error:  #168: a function type is not allowed here
+..\VGMPlayerLib\ym2612.c(224): warning:  #815-D: type qualifier on return type is meaningless
+..\VGMPlayerLib\ym2612.c(226): warning:  #144-D: a value of type "void (*)(YM2612 *, Channel *, s32 **, s32)" cannot be used to initialize an entity of type "const void (*)(YM2612 *, Channel *, s32 **, s32)"
+..\VGMPlayerLib\ym2612.c(227): warning:  #144-D: a value of type "void (*)(YM2612 *, Channel *, s32 **, s32)" cannot be used to initialize an entity of type "const void (*)(YM2612 *, Channel *, s32 **, s32)"
+..\VGMPlayerLib\ym2612.c(228): warning:  #144-D: a value of type "void (*)(YM2612 *, Channel *, s32 **, s32)" cannot be used to initialize an entity of type "const void (*)(YM2612 *, Channel *, s32 **, s32)"
+..\VGMPlayerLib\ym2612.c(229): warning:  #144-D: a value of type "void (*)(YM2612 *, Channel *, s32 **, s32)" cannot be used to initialize an entity of type "const void (*)(YM2612 *, Channel *, s32 **, s32)"
+..\VGMPlayerLib\ym2612.c(230): warning:  #144-D: a value of type "void (*)(YM2612 *, Channel *, s32 **, s32)" cannot be used to initialize an entity of type "const void (*)(YM2612 *, Channel *, s32 **, s32)"
+..\VGMPlayerLib\ym2612.c(231): warning:  #144-D: a value of type "void (*)(YM2612 *, Channel *, s32 **, s32)" cannot be used to initialize an entity of type "const void (*)(YM2612 *, Channel *, s32 **, s32)"
+..\VGMPlayerLib\ym2612.c(232): warning:  #144-D: a value of type "void (*)(YM2612 *, Channel *, s32 **, s32)" cannot be used to initialize an entity of type "const void (*)(YM2612 *, Channel *, s32 **, s32)"
+..\VGMPlayerLib\ym2612.c(233): warning:  #144-D: a value of type "void (*)(YM2612 *, Channel *, s32 **, s32)" cannot be used to initialize an entity of type "const void (*)(YM2612 *, Channel *, s32 **, s32)"
+..\VGMPlayerLib\ym2612.c(235): warning:  #144-D: a value of type "void (*)(YM2612 *, Channel *, s32 **, s32)" cannot be used to initialize an entity of type "const void (*)(YM2612 *, Channel *, s32 **, s32)"
+..\VGMPlayerLib\ym2612.c(236): warning:  #144-D: a value of type "void (*)(YM2612 *, Channel *, s32 **, s32)" cannot be used to initialize an entity of type "const void (*)(YM2612 *, Channel *, s32 **, s32)"
+..\VGMPlayerLib\ym2612.c(237): warning:  #144-D: a value of type "void (*)(YM2612 *, Channel *, s32 **, s32)" cannot be used to initialize an entity of type "const void (*)(YM2612 *, Channel *, s32 **, s32)"
+..\VGMPlayerLib\ym2612.c(238): warning:  #144-D: a value of type "void (*)(YM2612 *, Channel *, s32 **, s32)" cannot be used to initialize an entity of type "const void (*)(YM2612 *, Channel *, s32 **, s32)"
+..\VGMPlayerLib\ym2612.c(239): warning:  #144-D: a value of type "void (*)(YM2612 *, Channel *, s32 **, s32)" cannot be used to initialize an entity of type "const void (*)(YM2612 *, Channel *, s32 **, s32)"
+..\VGMPlayerLib\ym2612.c(240): warning:  #144-D: a value of type "void (*)(YM2612 *, Channel *, s32 **, s32)" cannot be used to initialize an entity of type "const void (*)(YM2612 *, Channel *, s32 **, s32)"
+..\VGMPlayerLib\ym2612.c(241): warning:  #144-D: a value of type "void (*)(YM2612 *, Channel *, s32 **, s32)" cannot be used to initialize an entity of type "const void (*)(YM2612 *, Channel *, s32 **, s32)"
+..\VGMPlayerLib\ym2612.c(242): warning:  #144-D: a value of type "void (*)(YM2612 *, Channel *, s32 **, s32)" cannot be used to initialize an entity of type "const void (*)(YM2612 *, Channel *, s32 **, s32)"
+..\VGMPlayerLib\ym2612.c(244): warning:  #144-D: a value of type "void (*)(YM2612 *, Channel *, s32 **, s32)" cannot be used to initialize an entity of type "const void (*)(YM2612 *, Channel *, s32 **, s32)"
+..\VGMPlayerLib\ym2612.c(245): warning:  #144-D: a value of type "void (*)(YM2612 *, Channel *, s32 **, s32)" cannot be used to initialize an entity of type "const void (*)(YM2612 *, Channel *, s32 **, s32)"
+..\VGMPlayerLib\ym2612.c(246): warning:  #144-D: a value of type "void (*)(YM2612 *, Channel *, s32 **, s32)" cannot be used to initialize an entity of type "const void (*)(YM2612 *, Channel *, s32 **, s32)"
+..\VGMPlayerLib\ym2612.c(247): warning:  #144-D: a value of type "void (*)(YM2612 *, Channel *, s32 **, s32)" cannot be used to initialize an entity of type "const void (*)(YM2612 *, Channel *, s32 **, s32)"
+..\VGMPlayerLib\ym2612.c(248): warning:  #144-D: a value of type "void (*)(YM2612 *, Channel *, s32 **, s32)" cannot be used to initialize an entity of type "const void (*)(YM2612 *, Channel *, s32 **, s32)"
+..\VGMPlayerLib\ym2612.c(249): warning:  #144-D: a value of type "void (*)(YM2612 *, Channel *, s32 **, s32)" cannot be used to initialize an entity of type "const void (*)(YM2612 *, Channel *, s32 **, s32)"
+..\VGMPlayerLib\ym2612.c(250): warning:  #144-D: a value of type "void (*)(YM2612 *, Channel *, s32 **, s32)" cannot be used to initialize an entity of type "const void (*)(YM2612 *, Channel *, s32 **, s32)"
+..\VGMPlayerLib\ym2612.c(251): warning:  #144-D: a value of type "void (*)(YM2612 *, Channel *, s32 **, s32)" cannot be used to initialize an entity of type "const void (*)(YM2612 *, Channel *, s32 **, s32)"
+..\VGMPlayerLib\ym2612.c(253): warning:  #144-D: a value of type "void (*)(YM2612 *, Channel *, s32 **, s32)" cannot be used to initialize an entity of type "const void (*)(YM2612 *, Channel *, s32 **, s32)"
+..\VGMPlayerLib\ym2612.c(254): warning:  #144-D: a value of type "void (*)(YM2612 *, Channel *, s32 **, s32)" cannot be used to initialize an entity of type "const void (*)(YM2612 *, Channel *, s32 **, s32)"
+..\VGMPlayerLib\ym2612.c(255): warning:  #144-D: a value of type "void (*)(YM2612 *, Channel *, s32 **, s32)" cannot be used to initialize an entity of type "const void (*)(YM2612 *, Channel *, s32 **, s32)"
+..\VGMPlayerLib\ym2612.c(256): warning:  #144-D: a value of type "void (*)(YM2612 *, Channel *, s32 **, s32)" cannot be used to initialize an entity of type "const void (*)(YM2612 *, Channel *, s32 **, s32)"
+..\VGMPlayerLib\ym2612.c(257): warning:  #144-D: a value of type "void (*)(YM2612 *, Channel *, s32 **, s32)" cannot be used to initialize an entity of type "const void (*)(YM2612 *, Channel *, s32 **, s32)"
+..\VGMPlayerLib\ym2612.c(258): warning:  #144-D: a value of type "void (*)(YM2612 *, Channel *, s32 **, s32)" cannot be used to initialize an entity of type "const void (*)(YM2612 *, Channel *, s32 **, s32)"
+..\VGMPlayerLib\ym2612.c(259): warning:  #144-D: a value of type "void (*)(YM2612 *, Channel *, s32 **, s32)" cannot be used to initialize an entity of type "const void (*)(YM2612 *, Channel *, s32 **, s32)"
+..\VGMPlayerLib\ym2612.c(260): warning:  #144-D: a value of type "void (*)(YM2612 *, Channel *, s32 **, s32)" cannot be used to initialize an entity of type "const void (*)(YM2612 *, Channel *, s32 **, s32)"
+..\VGMPlayerLib\ym2612.c(264): warning:  #815-D: type qualifier on return type is meaningless
+..\VGMPlayerLib\ym2612.c(266): warning:  #144-D: a value of type "void (*)(Slot *)" cannot be used to initialize an entity of type "const void (*)(Slot *)"
+..\VGMPlayerLib\ym2612.c(267): warning:  #144-D: a value of type "void (*)(Slot *)" cannot be used to initialize an entity of type "const void (*)(Slot *)"
+..\VGMPlayerLib\ym2612.c(268): warning:  #144-D: a value of type "void (*)(Slot *)" cannot be used to initialize an entity of type "const void (*)(Slot *)"
+..\VGMPlayerLib\ym2612.c(269): warning:  #144-D: a value of type "void (*)(Slot *)" cannot be used to initialize an entity of type "const void (*)(Slot *)"
+..\VGMPlayerLib\ym2612.c(270): warning:  #144-D: a value of type "void (*)(Slot *)" cannot be used to initialize an entity of type "const void (*)(Slot *)"
+..\VGMPlayerLib\ym2612.c(271): warning:  #144-D: a value of type "void (*)(Slot *)" cannot be used to initialize an entity of type "const void (*)(Slot *)"
+..\VGMPlayerLib\ym2612.c(272): warning:  #144-D: a value of type "void (*)(Slot *)" cannot be used to initialize an entity of type "const void (*)(Slot *)"
+..\VGMPlayerLib\ym2612.c(273): warning:  #144-D: a value of type "void (*)(Slot *)" cannot be used to initialize an entity of type "const void (*)(Slot *)"
+..\VGMPlayerLib\ym2612.c(428): warning:  #1293-D: assignment in condition
+..\VGMPlayerLib\ym2612.c(433): warning:  #513-D: a value of type "u32 *" cannot be assigned to an entity of type "s32 *"
+..\VGMPlayerLib\ym2612.c(458): warning:  #513-D: a value of type "u32 *" cannot be assigned to an entity of type "s32 *"
+..\VGMPlayerLib\ym2612.c(460): warning:  #513-D: a value of type "u32 *" cannot be assigned to an entity of type "s32 *"
+..\VGMPlayerLib\ym2612.c(469): warning:  #1293-D: assignment in condition
+..\VGMPlayerLib\ym2612.c(475): warning:  #513-D: a value of type "u32 *" cannot be assigned to an entity of type "s32 *"
+..\VGMPlayerLib\ym2612.c(477): warning:  #513-D: a value of type "u32 *" cannot be assigned to an entity of type "s32 *"
+..\VGMPlayerLib\ym2612.c(487): warning:  #513-D: a value of type "u32 *" cannot be assigned to an entity of type "s32 *"
+..\VGMPlayerLib\ym2612.c(489): warning:  #513-D: a value of type "u32 *" cannot be assigned to an entity of type "s32 *"
+..\VGMPlayerLib\ym2612.c(500): warning:  #513-D: a value of type "u32 *" cannot be assigned to an entity of type "s32 *"
+..\VGMPlayerLib\ym2612.c(773): error:  #134: expected a field name
+..\VGMPlayerLib\ym2612.c(1258): warning:  #1293-D: assignment in condition
+..\VGMPlayerLib\ym2612.c(1277): warning:  #1293-D: assignment in condition
+..\VGMPlayerLib\ym2612.c(1296): warning:  #1293-D: assignment in condition
+..\VGMPlayerLib\ym2612.c(1315): warning:  #1293-D: assignment in condition
+..\VGMPlayerLib\ym2612.c(1334): warning:  #1293-D: assignment in condition
+..\VGMPlayerLib\ym2612.c(1353): warning:  #1293-D: assignment in condition
+..\VGMPlayerLib\ym2612.c(1372): warning:  #1293-D: assignment in condition
+..\VGMPlayerLib\ym2612.c(1391): warning:  #1293-D: assignment in condition
+..\VGMPlayerLib\ym2612.c(1585): warning:  #1293-D: assignment in condition
+..\VGMPlayerLib\ym2612.c(1606): warning:  #1293-D: assignment in condition
+..\VGMPlayerLib\ym2612.c(1627): warning:  #1293-D: assignment in condition
+..\VGMPlayerLib\ym2612.c(1648): warning:  #1293-D: assignment in condition
+..\VGMPlayerLib\ym2612.c(1668): warning:  #1293-D: assignment in condition
+..\VGMPlayerLib\ym2612.c(1688): warning:  #1293-D: assignment in condition
+..\VGMPlayerLib\ym2612.c(1710): warning:  #1293-D: assignment in condition
+..\VGMPlayerLib\ym2612.c(1730): warning:  #1293-D: assignment in condition
+..\VGMPlayerLib\ym2612.c(1748): error:  #268: declaration may not appear after executable statement in block
+..\VGMPlayerLib\ym2612.c(1760): error:  #268: declaration may not appear after executable statement in block
+..\VGMPlayerLib\ym2612.c(1748): warning:  #177-D: variable "a" was declared but never referenced
+..\VGMPlayerLib\ym2612.c(1970): error:  #134: expected a field name
+..\VGMPlayerLib\ym2612.c(2184): error:  #134: expected a field name
+..\VGMPlayerLib\ym2612.c(2188): warning:  #1-D: last line of file ends without a newline
+Target not created

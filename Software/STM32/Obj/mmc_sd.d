@@ -1,0 +1,13 @@
+.\Obj\mmc_sd.o: HWModule\mmc_sd.c
+.\Obj\mmc_sd.o: ./HAL/sys.h
+.\Obj\mmc_sd.o: ./CMSIS/stm32f10x.h
+.\Obj\mmc_sd.o: ./CMSIS/core_cm3.h
+.\Obj\mmc_sd.o: E:\Keil\ARM\ARMCC\bin\..\include\stdint.h
+.\Obj\mmc_sd.o: ./CMSIS/system_stm32f10x.h
+.\Obj\mmc_sd.o: ./Users/stm32f10x_conf.h
+.\Obj\mmc_sd.o: ./Drivers/inc/stm32f10x_gpio.h
+.\Obj\mmc_sd.o: ./CMSIS/stm32f10x.h
+.\Obj\mmc_sd.o: ./Drivers/inc/stm32f10x_rcc.h
+.\Obj\mmc_sd.o: ./Drivers/inc/misc.h
+.\Obj\mmc_sd.o: HWModule\mmc_sd.h
+.\Obj\mmc_sd.o: ./HAL/spi.h

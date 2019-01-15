@@ -1,0 +1,17 @@
+.\Obj\fattest.o: FATFS\src\fattest.c
+.\Obj\fattest.o: C:\Keil\ARM\ARMCC\bin\..\include\string.h
+.\Obj\fattest.o: FATFS\src\exfuns.h
+.\Obj\fattest.o: ./CMSIS/stm32f10x.h
+.\Obj\fattest.o: ./CMSIS/core_cm3.h
+.\Obj\fattest.o: C:\Keil\ARM\ARMCC\bin\..\include\stdint.h
+.\Obj\fattest.o: ./CMSIS/system_stm32f10x.h
+.\Obj\fattest.o: ./Users/Src/stm32f10x_conf.h
+.\Obj\fattest.o: ./Drivers/inc/stm32f10x_gpio.h
+.\Obj\fattest.o: ./CMSIS/stm32f10x.h
+.\Obj\fattest.o: ./Drivers/inc/stm32f10x_rcc.h
+.\Obj\fattest.o: ./Drivers/inc/misc.h
+.\Obj\fattest.o: FATFS\src\ff.h
+.\Obj\fattest.o: FATFS\src\integer.h
+.\Obj\fattest.o: FATFS\src\ffconf.h
+.\Obj\fattest.o: FATFS\src\fattester.h
+.\Obj\fattest.o: ./HAL/malloc.h

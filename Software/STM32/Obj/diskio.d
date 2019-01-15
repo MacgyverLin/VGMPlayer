@@ -1,0 +1,15 @@
+.\Obj\diskio.o: FATFS\src\diskio.c
+.\Obj\diskio.o: FATFS\src\diskio.h
+.\Obj\diskio.o: FATFS\src\integer.h
+.\Obj\diskio.o: ./HWModule/mmc_sd.h
+.\Obj\diskio.o: ./HAL/sys.h
+.\Obj\diskio.o: ./CMSIS/stm32f10x.h
+.\Obj\diskio.o: ./CMSIS/core_cm3.h
+.\Obj\diskio.o: E:\Keil\ARM\ARMCC\bin\..\include\stdint.h
+.\Obj\diskio.o: ./CMSIS/system_stm32f10x.h
+.\Obj\diskio.o: ./Users/stm32f10x_conf.h
+.\Obj\diskio.o: ./Drivers/inc/stm32f10x_gpio.h
+.\Obj\diskio.o: ./CMSIS/stm32f10x.h
+.\Obj\diskio.o: ./Drivers/inc/stm32f10x_rcc.h
+.\Obj\diskio.o: ./Drivers/inc/misc.h
+.\Obj\diskio.o: ./HAL/malloc.h

@@ -1,0 +1,17 @@
+.\Obj\ym2612.o: ..\VGMPlayerLib\ym2612.c
+.\Obj\ym2612.o: E:\Keil\ARM\ARMCC\bin\..\include\stdio.h
+.\Obj\ym2612.o: E:\Keil\ARM\ARMCC\bin\..\include\stdlib.h
+.\Obj\ym2612.o: E:\Keil\ARM\ARMCC\bin\..\include\math.h
+.\Obj\ym2612.o: E:\Keil\ARM\ARMCC\bin\..\include\string.h
+.\Obj\ym2612.o: ..\VGMPlayerLib\ym2612.h
+.\Obj\ym2612.o: ..\VGMPlayerLib\vgmdef.h
+.\Obj\ym2612.o: ./CMSIS/stm32f10x.h
+.\Obj\ym2612.o: ./CMSIS/core_cm3.h
+.\Obj\ym2612.o: E:\Keil\ARM\ARMCC\bin\..\include\stdint.h
+.\Obj\ym2612.o: ./CMSIS/system_stm32f10x.h
+.\Obj\ym2612.o: ./Users/stm32f10x_conf.h
+.\Obj\ym2612.o: ./Drivers/inc/stm32f10x_gpio.h
+.\Obj\ym2612.o: ./CMSIS/stm32f10x.h
+.\Obj\ym2612.o: ./Drivers/inc/stm32f10x_rcc.h
+.\Obj\ym2612.o: ./Drivers/inc/misc.h
+.\Obj\ym2612.o: E:\Keil\ARM\ARMCC\bin\..\include\assert.h

@@ -1,0 +1,15 @@
+.\Obj\platform.o: ..\VGMPlayerLib\Platform.cpp
+.\Obj\platform.o: ..\VGMPlayerLib\Platform.h
+.\Obj\platform.o: ..\VGMPlayerLib\vgmdef.h
+.\Obj\platform.o: ./CMSIS/stm32f10x.h
+.\Obj\platform.o: ./CMSIS/core_cm3.h
+.\Obj\platform.o: E:\Keil\ARM\ARMCC\bin\..\include\stdint.h
+.\Obj\platform.o: ./CMSIS/system_stm32f10x.h
+.\Obj\platform.o: ./Users/stm32f10x_conf.h
+.\Obj\platform.o: ./Drivers/inc/stm32f10x_gpio.h
+.\Obj\platform.o: ./CMSIS/stm32f10x.h
+.\Obj\platform.o: ./Drivers/inc/stm32f10x_rcc.h
+.\Obj\platform.o: ./Drivers/inc/misc.h
+.\Obj\platform.o: E:\Keil\ARM\ARMCC\bin\..\include\assert.h
+.\Obj\platform.o: E:\Keil\ARM\ARMCC\bin\..\include\string.h
+.\Obj\platform.o: ./HWModule/VGMBoard.h
