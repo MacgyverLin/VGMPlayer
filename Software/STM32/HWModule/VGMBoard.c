@@ -20,13 +20,19 @@ void VGMBoard_SetData(u8 data)
 	IO_WRITE(D7, data & 0x80);
 }
 
+#define TEST_YM2151
 void VGMBoard_InitYMClock()
 {
 	IO_WRITE(YM_CLK_CS, 0);
 	IO_DELAY_US(10);
 
+#ifdef TEST_YM2151
+	SPI2_ReadWriteByte(0xBC);
+	SPI2_ReadWriteByte(0xFC);	
+#else
 	SPI2_ReadWriteByte(0xCE);
 	SPI2_ReadWriteByte(0x40);
+#endif
 
 	IO_WRITE(YM_CLK_CS, 1);
 	IO_DELAY_US(10);

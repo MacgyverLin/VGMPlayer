@@ -1309,7 +1309,7 @@
   )
 
   (module Capacitor_SMD:C_0805_2012Metric (layer F.Cu) (tedit 5C3C1930) (tstamp 5C4AC867)
-    (at 62.1792 27.178 270)
+    (at 61.95568 27.13228 270)
     (descr "Capacitor SMD 0805 (2012 Metric), square (rectangular) end terminal, IPC_7351 nominal, (Body size source: https://docs.google.com/spreadsheets/d/1BsfQQcO9C6DZCsRaXUlFlo91Tg2WpOkGARC1WS5S8t0/edit?usp=sharing), generated with kicad-footprint-generator")
     (tags capacitor)
     (path /5C119526)
@@ -2186,7 +2186,7 @@
   )
 
   (module Capacitor_THT:CP_Radial_D4.0mm_P1.50mm (layer F.Cu) (tedit 5C3C1916) (tstamp 5C3EECFE)
-    (at 59.3852 26.67 180)
+    (at 59.16168 26.62428 180)
     (descr "CP, Radial series, Radial, pin pitch=1.50mm, , diameter=4mm, Electrolytic Capacitor")
     (tags "CP Radial series Radial pin pitch 1.50mm  diameter 4mm Electrolytic Capacitor")
     (path /5C113481)
@@ -6116,7 +6116,7 @@
   )
 
   (module Package_SO:MSOP-8_3x3mm_P0.65mm (layer F.Cu) (tedit 5C3C1AD0) (tstamp 5C3EE114)
-    (at 59.9792 31.029)
+    (at 59.75568 30.98328)
     (descr "8-Lead Plastic Micro Small Outline Package (MS) [MSOP] (see Microchip Packaging Specification 00000049BS.pdf)")
     (tags "SSOP 0.65")
     (path /5C1B9B2C)
