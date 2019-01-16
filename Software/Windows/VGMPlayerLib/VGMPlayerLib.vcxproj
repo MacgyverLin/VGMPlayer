@@ -163,6 +163,7 @@
     <ClInclude Include="..\..\VGMPlayerLib\Observer.h" />
     <ClInclude Include="..\..\VGMPlayerLib\Platform.h" />
     <ClInclude Include="..\..\VGMPlayerLib\QSound.h" />
+    <ClInclude Include="..\..\VGMPlayerLib\ROM.h" />
     <ClInclude Include="..\..\VGMPlayerLib\SN76489.h" />
     <ClInclude Include="..\..\VGMPlayerLib\VGMAudioPlayer.h" />
     <ClInclude Include="..\..\VGMPlayerLib\VGMData.h" />
@@ -190,6 +191,7 @@
     <ClCompile Include="..\..\VGMPlayerLib\Observer.cpp" />
     <ClCompile Include="..\..\VGMPlayerLib\Platform.cpp" />
     <ClCompile Include="..\..\VGMPlayerLib\QSound.c" />
+    <ClCompile Include="..\..\VGMPlayerLib\ROM.cpp" />
     <ClCompile Include="..\..\VGMPlayerLib\SN76489.c" />
     <ClCompile Include="..\..\VGMPlayerLib\VGMAudioPlayer.cpp" />
     <ClCompile Include="..\..\VGMPlayerLib\VGMData.cpp" />
