@@ -1,0 +1,48 @@
+ Volume in drive E has no label.
+ Volume Serial Number is 0007-91B0
+
+ Directory of E:\Project\VGMPlayer\Software\Music\Dungeons_&_Dragons_-_Shadow_Over_Mystara_(CP_System_II)
+
+28/01/2015  21:43            39,452 01 Q Sound Logo.vgz
+16/02/2015  10:16            14,333 02 Welcome to The D & D world.vgz
+16/02/2015  10:16           291,929 03 Fanfare.vgz
+16/02/2015  10:16            43,591 04 Dungeons & Dragons.vgz
+16/02/2015  10:16           211,758 05 Moment to Decide.vgz
+16/02/2015  10:16           211,168 06 Prologue.vgz
+16/02/2015  10:16           353,756 07 The Journey.vgz
+16/02/2015  10:16           213,065 08 Book of Adventure.vgz
+16/02/2015  10:16           404,623 09 Battle at Trintan Village.vgz
+16/02/2015  10:16           316,264 10 Disaster Begins.vgz
+16/02/2015  10:16           247,131 11 War Cry.vgz
+16/02/2015  10:16           202,326 12 Mission.vgz
+16/02/2015  10:16           264,730 13 Head Down Vesuvia River.vgz
+16/02/2015  10:16           312,898 14 Ambush.vgz
+16/02/2015  10:16            69,078 15 Spirit ~Theme~.vgz
+16/02/2015  10:16           326,347 16 In Imminent Danger.vgz
+16/02/2015  10:16           308,102 17 Heavy Battle Tank Juggernaut.vgz
+16/02/2015  10:16           289,489 18 Relief.vgz
+16/02/2015  10:16           317,254 19 Shadow Elf in The Harsh Fight.vgz
+16/02/2015  10:16           361,621 20 Rival Tel'Arin.vgz
+16/02/2015  10:16           314,999 21 Wheel of Fortune Tel'Eleron.vgz
+16/02/2015  10:16           175,212 22 Silence.vgz
+16/02/2015  10:16           239,782 23 That Which Sleeps in The Rotting Sea.vgz
+16/02/2015  10:16           495,068 24 Corpses and Treasure.vgz
+16/02/2015  10:16           352,711 25 Eyes Glinting in Darkness.vgz
+16/02/2015  10:16            46,429 26 People of Foreign Lands.vgz
+16/02/2015  10:16           340,654 27 Bridge of Trees.vgz
+16/02/2015  10:16           293,164 28 To the Dark King's Throne of Darkness.vgz
+16/02/2015  10:16           444,823 29 Harsh Prison.vgz
+16/02/2015  10:16           193,998 30 Lost Forest.vgz
+16/02/2015  10:16           278,927 31 Forest of Bewitchment.vgz
+16/02/2015  10:16           361,375 32 Excessive Feast.vgz
+16/02/2015  10:16            37,371 33 Sounds of Healing.vgz
+16/02/2015  10:16           297,478 34 Mysterious Stone.vgz
+16/02/2015  10:16           259,055 35 Lost World.vgz
+16/02/2015  10:16           396,847 36 Flying Palateum.vgz
+16/02/2015  10:16           334,270 37 War of Spiral.vgz
+16/02/2015  10:16           383,392 38 The True Shape of The Nightmare.vgz
+16/02/2015  10:16           385,370 39 The Final Decisive Battle.vgz
+16/02/2015  10:16           414,718 40 Epiloge.vgz
+16/02/2015  10:16            29,163 41 Our Divine Protection ~First Child Amidst Death~.vgz
+              41 File(s)     10,873,721 bytes
+               0 Dir(s)  208,940,310,528 bytes free

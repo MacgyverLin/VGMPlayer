@@ -75,6 +75,8 @@ enum VGMCommand
 	OKIM6258_WRITE = 0xB7,				// aa dd
 	OKIM6295_WRITE = 0xB8,				// aa dd
 	HUC6280_WRITE = 0xB9, 				// aa dd
+
+	QSOUND_WRITE = 0xC4,				// mmll rr
 };
 
 
@@ -438,6 +440,7 @@ protected:
 protected:
 	void handleDataBlocks();
 	void handleK053260ROM(s32 skipByte0x66, s32 blockType, s32 blockSize);
+	void handleQSoundROM(s32 skipByte0x66, s32 blockType, s32 blockSize);
 	
 	u32 updateSamples(u32 updateSampleCounts);
 	void handleEndOfSound();

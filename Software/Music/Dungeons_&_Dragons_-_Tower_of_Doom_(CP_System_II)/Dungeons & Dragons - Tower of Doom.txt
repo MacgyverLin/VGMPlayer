@@ -1,0 +1,89 @@
+***********************************************
+* VGM music package                           *
+* http://vgm.mdscene.net/                     *
+***********************************************
+Game name:           Dungeons & Dragons:
+                     Tower of Doom
+System:              CP System II
+Music hardware:      QSound
+
+Music author:        Isao Abe, Takayuki Iwai,
+                     Hideki Okugawa
+Game developer:      Capcom
+Game publisher:      Capcom
+Game release date:   1994
+
+Package created by:  2ch-H
+Package version:     1.00
+
+Song list, in approximate game order:
+Song name                           Length:
+                                    Total  Loop
+01 Q Sound Logo                     0:09   -
+02 Dungeons & Dragons               0:03   -
+03 Welcome to The D & D World
+   (Credit)                         0:02   -
+04 Opening                          0:22   0:16
+05 Character Select                 0:07   0:04
+06 Name Entry                       0:42   0:36
+07 BGM3 ~Wilderness, Road, Mountain
+   Road~                            0:31   0:24
+08 Battle Theme 1 ~Road, Forest,
+   Mountain Road~                   0:49   0:43
+09 Demo 1                           0:22   0:19
+10 BGM1 ~Cave, Abandoned Mine~      0:19   0:16
+11 Battle Theme 3 ~Cave, Dungeon~   0:58   0:48
+12 Boss Battle 1 ~Ogre~             1:05   0:37
+13 Stage Clear                      0:15   0:13
+14 Level Up                         0:05   -
+15 Shop 1 ~Marie, Naomi, Claire,
+   Lina Shop~                       0:24   0:24
+16 BGM4 ~Forest, Cave~              0:31   0:29
+17 BGM5 ~Fort~                      0:11   0:08
+18 Battle Theme 2 ~Urban Warfare ,
+   Fort~                            0:35   0:26
+19 Boss Battle 2 ~Manticore,
+   Displacer~                       1:22   1:18
+20 Continue                         0:30   0:03
+21 Game Over                        0:03   -
+22 Map Screen                       0:07   -
+23 Demo 3                           0:27   0:25
+24 Shop 2 ~Ned, Euclid Shop~        0:23   0:12
+25 Battle Theme 4 ~Ship~            0:54   0:40
+26 Boss Battle 3 ~Troll, Beholder~  0:39   0:36
+27 Demo 2                           0:08   0:07
+28 BGM2 ~Swamp, Underground
+   Waterway~                        0:21   0:20
+29 Boss Battle 4 ~Black Dragon~     1:07   0:52
+30 New Mission                      0:25   0:25
+31 BGM7 ~Dungeon~                   0:27   0:22
+32 Boss Battle 5 ~Shadow Elf~       0:43   0:32
+33 Boss Battle 6 ~Red Dragon~       0:44   0:37
+34 BGM6 ~Sable Tower~               0:27   0:26
+35 Battle Theme 5 ~Sable Tower~     0:50   0:44
+36 BGM8 ~Audience with Lich~        0:35   0:31
+37 Boss Battle 7 ~Lich~             0:46   0:35
+38 All Clear                        0:18   0:13
+39 Ending                           1:02   -
+40 Epilogue                         0:52   -
+41 Thank You                        0:01   -
+
+Total Length                       20:44  35:24
+
+
+Notes:
+Track Names are used in Dungeons & Dragons:
+ Chronicles of Mystara OST "Reborn" Tracks.
+
+This pack was made using M1 VGM mod v0.7.9a1
+and MAME0156 VGM mod.
+
+
+Size reduction:
+1. vgm_sro: 175 MB -> 17 MB (9.8 %)
+2. vgm_cmp: 17 MB -> 7.09 MB (41.7 %)
+Total: 175 MB -> 7.09 MB (4 %)
+
+
+Package history:
+1.00 2015-01-29 2ch-H: Initial release.

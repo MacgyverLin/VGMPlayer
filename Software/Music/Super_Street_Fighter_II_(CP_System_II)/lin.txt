@@ -1,0 +1,79 @@
+ Volume in drive E has no label.
+ Volume Serial Number is 0007-91B0
+
+ Directory of E:\Project\VGMPlayer\Software\Music\Super_Street_Fighter_II_(CP_System_II)
+
+15/05/2012  18:51            50,832 01 QSound Logo.vgz
+15/05/2012  18:51           132,004 02a Opening Demo.vgz
+28/07/2012  15:45           199,855 02b Opening Demo.vgz
+15/05/2012  18:51             7,770 03 [SFX] Credit.vgz
+15/05/2012  18:51           135,237 04a Player Select.vgz
+28/07/2012  15:39           145,665 04b Player Select.vgz
+15/05/2012  18:51           114,597 05 Tournament.vgz
+15/05/2012  18:51           112,817 06 VS.vgz
+15/05/2012  18:51           143,306 07 Ken Stage I.vgz
+15/05/2012  18:51            88,520 08 Ken Stage II.vgz
+15/05/2012  18:51            82,448 09 Ken Ending I.vgz
+15/05/2012  18:51            38,691 10 Ken Ending II.vgz
+15/05/2012  18:51           156,997 11 Ryu Stage I.vgz
+15/05/2012  18:51            76,143 12 Ryu Stage II.vgz
+15/05/2012  18:51           170,301 13 Ryu Ending.vgz
+15/05/2012  18:51           147,343 14 Chun-Li Stage I.vgz
+15/05/2012  18:51            94,625 15 Chun-Li Stage II.vgz
+15/05/2012  18:51            85,291 16 Chun-Li Ending I.vgz
+15/05/2012  18:51           125,460 17 Chun-Li Ending II.vgz
+15/05/2012  18:51           122,251 18 Chun-Li Ending III.vgz
+15/05/2012  18:51           118,639 19 Bonus Stage.vgz
+15/05/2012  18:51           206,555 20 Dee Jay Stage I.vgz
+15/05/2012  18:51           106,614 21 Dee Jay Stage II.vgz
+15/05/2012  18:51           110,222 22 Dee Jay Ending.vgz
+15/05/2012  18:51           179,775 23 T. Hawk Stage I.vgz
+15/05/2012  18:51           122,833 24 T. Hawk Stage II.vgz
+15/05/2012  18:51            55,302 25 T. Hawk Ending.vgz
+15/05/2012  18:51           136,536 26 Fei Long Stage I.vgz
+15/05/2012  18:51            58,016 27 Fei Long Stage II.vgz
+15/05/2012  18:51           140,600 28 Fei Long Ending.vgz
+15/05/2012  18:51           168,799 29 Cammy Stage I.vgz
+15/05/2012  18:51           106,141 30 Cammy Stage II.vgz
+15/05/2012  18:51           182,654 31 Cammy Ending.vgz
+15/05/2012  18:51           124,370 32 E. Honda Stage I.vgz
+15/05/2012  18:51            71,468 33 E. Honda Stage II.vgz
+15/05/2012  18:51           129,479 34 E. Honda Ending.vgz
+15/05/2012  18:51           217,305 35 Guile Stage I.vgz
+15/05/2012  18:51            63,998 36 Guile Stage II.vgz
+15/05/2012  18:51            75,244 37 Guile Ending.vgz
+15/05/2012  19:20           144,258 38 Dhalsim Stage I.vgz
+15/05/2012  18:51           110,366 39 Dhalsim Stage II.vgz
+15/05/2012  18:51           104,355 40 Dhalsim Ending.vgz
+15/05/2012  18:51           190,847 41 Blanka Stage I.vgz
+15/05/2012  18:51            60,757 42 Blanka Stage II.vgz
+15/05/2012  18:51           107,605 43 Blanka Ending.vgz
+15/05/2012  18:51           150,212 44 Zangief Stage I.vgz
+15/05/2012  18:51            71,094 45 Zangief Stage II.vgz
+15/05/2012  18:51            90,301 46 Zangief Ending.vgz
+15/05/2012  18:51            83,682 47 Stage End.vgz
+15/05/2012  18:51            81,346 48 Continue.vgz
+15/05/2012  18:51            68,363 49 Here Comes A New Challenger.vgz
+15/05/2012  18:51           231,857 50 M. Bison Stage I.vgz
+15/05/2012  18:51           103,171 51 M. Bison Stage II.vgz
+15/05/2012  18:51           132,386 52 M. Bison Ending.vgz
+15/05/2012  18:51           173,728 53 Balrog Stage I.vgz
+15/05/2012  18:51            81,561 54 Balrog Stage II.vgz
+15/05/2012  18:51            97,978 55 Balrog Ending.vgz
+15/05/2012  18:51           196,666 56 Sagat Stage I.vgz
+15/05/2012  18:51            63,725 57 Sagat Stage II.vgz
+15/05/2012  18:51           131,694 58 Sagat Ending.vgz
+15/05/2012  18:51           201,698 59 Vega Stage I.vgz
+15/05/2012  18:51           105,516 60 Vega Stage II.vgz
+15/05/2012  18:51            72,113 61 Vega Ending.vgz
+28/07/2012  15:58           195,921 62 Gouki Stage I.vgz
+28/07/2012  15:58           152,992 63 Gouki Stage II.vgz
+15/05/2012  18:51            58,561 64 Congratulations.vgz
+15/05/2012  18:51           176,379 65 Credits Roll.vgz
+15/05/2012  18:51            67,366 66 Game Over.vgz
+15/05/2012  18:51            60,910 67 Ranking Display.vgz
+28/07/2012  15:39           136,769 68 Unused.vgz
+15/05/2012  18:51            18,635 69a QSound Logo 2.vgz
+28/07/2012  15:31            18,685 69b QSound Logo 2.vgz
+              72 File(s)      8,346,200 bytes
+               0 Dir(s)  208,940,314,624 bytes free

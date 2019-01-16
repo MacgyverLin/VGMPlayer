@@ -5,6 +5,7 @@
 #ifdef STM32
 #include "VGMBoard.h"
 #else
+#include "QSound.h"
 #include "K053260.h"
 #include "NESAPU.h"
 #include "NESFDSAPU.h"
@@ -168,6 +169,10 @@ boolean VGMData::open()
 	{
 		HUC6280_Initialize(0, header.HuC6280Clock, playInfo.sampleRate);
 	}
+	if (header.QSoundClock)
+	{
+		QSound_Initialize(0, header.QSoundClock, playInfo.sampleRate);
+	}
 #endif
 
 	return true;
@@ -202,6 +207,10 @@ void VGMData::close()
 	if (header.HuC6280Clock)
 	{
 		HUC6280_Shutdown(0);
+	}
+	if (header.QSoundClock)
+	{
+		QSound_Shutdown(0);
 	}
 #endif
 	onClose();
@@ -285,6 +294,8 @@ u32 VGMData::updateSamples(u32 updateSampleCounts)
 	}
 	if (header.HuC6280Clock)
 		HUC6280_Update(0, sampleBuffers, updateSampleCounts);
+	if (header.QSoundClock)
+		QSound_Update(0, sampleBuffers, updateSampleCounts);
 
 	bufferInfo.sampleIdx = bufferInfo.sampleIdx + updateSampleCounts;	// updated samples, sampleIdx+
 	assert(bufferInfo.sampleIdx <= VGM_SAMPLE_COUNT);
@@ -323,21 +334,42 @@ void VGMData::handleK053260ROM(s32 skipByte0x66, s32 blockType, s32 blockSize)
 #endif
 }
 
+void VGMData::handleQSoundROM(s32 skipByte0x66, s32 blockType, s32 blockSize)
+{
+#ifdef STM32
+#else	
+	unsigned int entireRomSize;
+	read(&entireRomSize, sizeof(entireRomSize));
+
+	unsigned int startAddress;
+	read(&startAddress, sizeof(startAddress));
+
+	vector<u8> romData;
+	romData.resize(blockSize - 8);
+	read(&romData[0], blockSize - 8);
+
+	QSound_SetROM(0, entireRomSize, startAddress, &romData[0], blockSize - 8);
+#endif
+}
+
 void VGMData::handleDataBlocks()
 {
-	unsigned char skipByte0x66;
-
+	u8 skipByte0x66;
 	read(&skipByte0x66, sizeof(skipByte0x66));
 
-	unsigned char blockType;
+	u8 blockType;
 	read(&blockType, sizeof(blockType));
 
-	unsigned int blockSize;
+	u32 blockSize;
 	read(&blockSize, sizeof(blockSize));
 
 	if (blockType == 0x8e)
 	{
 		handleK053260ROM(skipByte0x66, blockType, blockSize);
+	}
+	else if (blockType == 0x8f)
+	{
+		handleQSoundROM(skipByte0x66, blockType, blockSize);
 	}
 	else
 	{
@@ -373,10 +405,11 @@ boolean VGMData::update()
 			u8 pp;
 			u8 cc;
 			u8 ll;
+			u8 mm;
+			u8 rr;
 			u8 bb;
 			u32 ffffffff;
 			u32 aaaaaaaa;
-			u8 mm;
 			u32 llllllll;
 			u16 bbbb;
 			u8 ff;
@@ -566,6 +599,14 @@ boolean VGMData::update()
 #else				
 				//DACStartStreamFast(ss, bbbb, ff);
 #endif
+				break;
+
+			case QSOUND_WRITE:
+				read(&mm, sizeof(mm));
+				read(&ll, sizeof(ll));
+				read(&rr, sizeof(rr));
+
+				QSound_WriteRegister(0, rr, (((u32)mm<<8) | (u32)ll));
 				break;
 
 			case END_OF_SOUND:

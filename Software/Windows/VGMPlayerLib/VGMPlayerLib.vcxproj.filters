@@ -101,6 +101,9 @@
     <ClInclude Include="..\..\VGMPlayerLib\VGMPlayerLib.h">
       <Filter>Source Files\VGM</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\VGMPlayerLib\QSound.h">
+      <Filter>Source Files\chips</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\VGMPlayerLib\HuC6280.c">
@@ -162,6 +165,9 @@
     </ClCompile>
     <ClCompile Include="..\..\VGMPlayerLib\VGMSpectrumViewer.cpp">
       <Filter>Source Files\VGM\Observer</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\VGMPlayerLib\QSound.c">
+      <Filter>Source Files\chips</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>
