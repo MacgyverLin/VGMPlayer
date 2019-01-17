@@ -172,7 +172,7 @@
     <ClCompile Include="..\..\VGMPlayerLib\QSound.c">
       <Filter>Source Files\chips</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\VGMPlayerLib\ROM.cpp">
+    <ClCompile Include="..\..\VGMPlayerLib\ROM.c">
       <Filter>Source Files\chips</Filter>
     </ClCompile>
   </ItemGroup>

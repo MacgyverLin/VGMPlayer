@@ -191,7 +191,7 @@
     <ClCompile Include="..\..\VGMPlayerLib\Observer.cpp" />
     <ClCompile Include="..\..\VGMPlayerLib\Platform.cpp" />
     <ClCompile Include="..\..\VGMPlayerLib\QSound.c" />
-    <ClCompile Include="..\..\VGMPlayerLib\ROM.cpp" />
+    <ClCompile Include="..\..\VGMPlayerLib\ROM.c" />
     <ClCompile Include="..\..\VGMPlayerLib\SN76489.c" />
     <ClCompile Include="..\..\VGMPlayerLib\VGMAudioPlayer.cpp" />
     <ClCompile Include="..\..\VGMPlayerLib\VGMData.cpp" />
