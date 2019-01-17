@@ -34,20 +34,20 @@
   )
   (placement
     (component Connector_Audio:VGM_VR_SW
-      (place U12 108280 -119075 front 180 (PN R_POT_SW))
+      (place U12 100127 -119024 front 180 (PN R_POT_SW))
     )
     (component Connector_PinSocket_2.54mm:PinSocket_2x15_P2.54mm_Vertical
       (place J3 90525.6 -113538 front 270 (PN LCD_PORT))
     )
     (component Button_Switch_SMD:VGM_Button
-      (place SW1 69697.6 -119126 front 0 (PN Mode))
-      (place SW2 87884 -119126 front 0 (PN NEXT))
-      (place SW3 78790.8 -119126 front 0 (PN PREV))
-      (place SW4 96977.2 -119126 front 0 (PN SELECT))
-      (place SW5 56210.2 -119151 front 0 (PN PWR))
+      (place SW1 60756.8 -119126 front 0 (PN Mode))
+      (place SW2 78943.2 -119126 front 0 (PN NEXT))
+      (place SW3 69850 -119126 front 0 (PN PREV))
+      (place SW4 88036.4 -119126 front 0 (PN SELECT))
+      (place SW5 47269.4 -119151 front 0 (PN PWR))
     )
     (component Connector_Audio:VGMAudio_Jack
-      (place U6 115727 -115245 front 180 (PN "AUDIOJACK-VGM"))
+      (place U6 111049 -115367 front 180 (PN "AUDIOJACK-VGM"))
     )
     (component Connector_Card:SD_TE_2041021
       (place J2 45923.2 -86715.6 front 270 (PN SD_Card))
@@ -131,7 +131,7 @@
       (place C29 82549.2 -27203.4 front 0 (PN 10uF))
     )
     (component Connector_PinHeader_2.54mm:PinHeader_1x08_P2.54mm_Vertical
-      (place U2 49530 -96901 front 0 (PN SDCardModule))
+      (place U2 49555.4 -95681.8 front 0 (PN SDCardModule))
     )
     (component Connector_PinSocket_2.54mm:PinSocket_1x06_P2.54mm_Vertical
       (place U19 22275.8 -49479.2 front 0 (PN ESP8266Module))
