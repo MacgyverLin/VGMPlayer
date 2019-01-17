@@ -16,13 +16,13 @@ void QSound_Reset(u8 chipID)
 {
 }
 
-void QSound_WriteRegister(u8 chipID, u32 address, u8 data)
+void QSound_WriteRegister(u8 chipID, u32 address, u32 data)
 {
 }
 
 u8 QSound_ReadRegister(u8 chipID, u32 address)
 {
-	return -1;
+	return 0;
 }
 
 void QSound_Update(u8 chipID, s32** buffer, u32 length)
@@ -71,6 +71,7 @@ typedef struct
 QSound qSound[MAX_QSOUND];
 
 #define INTERPOLATE4PS_CUSTOM(fp, sN, s0, s1, s2, v) (((s32)((sN) * Precalc[(s32)(fp) * 4 + 0]) + (s32)((s0) * Precalc[(s32)(fp) * 4 + 1]) + (s32)((s1) * Precalc[(s32)(fp) * 4 + 2]) + (s32)((s2) * Precalc[(s32)(fp) * 4 + 3])) / (s32)(v))
+//#define INTERPOLATE4PS_CUSTOM(fp, sN, s0, s1, s2, v) (((s32)((sN) * Precalc[(s32)(fp<<2) + 0]) + (s32)((s0) * Precalc[(s32)(fp<<2) + 1]) + (s32)((s1) * Precalc[(s32)(fp<<2) + 2]) + (s32)((s2) * Precalc[(s32)(fp<<2) + 3])) >> 8)
 s16 Precalc[4096 * 4];
 
 s8 QSound_GetSample(u8 chipID, u32 address)

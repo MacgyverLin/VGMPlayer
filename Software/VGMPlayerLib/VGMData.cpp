@@ -622,8 +622,10 @@ boolean VGMData::update()
 				read(&mm, sizeof(mm));
 				read(&ll, sizeof(ll));
 				read(&rr, sizeof(rr));
-
+#ifdef STM32
+#else		
 				QSound_WriteRegister(0, rr, (((u32)mm<<8) | (u32)ll));
+#endif
 				break;
 
 			case END_OF_SOUND:

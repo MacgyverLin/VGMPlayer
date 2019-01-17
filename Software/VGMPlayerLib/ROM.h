@@ -13,7 +13,7 @@ typedef struct
 	u32 length;
 }ROM;
 
-ROM* ROM_Create();
+ROM* ROM_Create(void);
 void ROM_Release(ROM* rom);
 void ROM_LoadData(ROM* rom, u32 startAddress_, u8* data_, u32 length_, u32 totalROMLength_);
 u32 ROM_getTotalSize(ROM* rom);

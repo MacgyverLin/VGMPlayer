@@ -1,9 +1,12 @@
 #include "ROM.h"
-
+#include <malloc.h>
 ROM* ROM_Create()
 {
+#ifdef STM32
+	ROM* rom = (ROM*)mymalloc(sizeof(ROM));
+#else
 	ROM* rom = (ROM*)malloc(sizeof(ROM));
-
+#endif
 	rom->buffer = 0;
 	rom->length = 0;
 
@@ -16,13 +19,21 @@ void ROM_Release(ROM* rom)
 	{
 		if (rom->buffer)
 		{
+#ifdef STM32
+			myfree(rom->buffer);
+#else
 			free(rom->buffer);
+#endif
 			rom->buffer = 0;
 		}
 
 		rom->length = 0;
 
+#ifdef STM32
+		myfree(rom);
+#else
 		free(rom);
+#endif
 		rom = 0;
 	}
 }
@@ -31,10 +42,19 @@ void ROM_LoadData(ROM* rom, u32 startAddress_, u8* data_, u32 length_, u32 total
 {
 	if (rom->length != totalROMLength_)
 	{
-		u8 *newrom = malloc(totalROMLength_);
+#ifdef STM32
+		u8 *newrom = (u8 *)mymalloc(totalROMLength_);
+#else
+		u8 *newrom = (u8 *)malloc(totalROMLength_);
+#endif
 		if(rom->buffer)
 		{
 			memcpy(newrom, rom->buffer, rom->length);
+#ifdef STM32
+			myfree(rom->buffer);
+#else
+			free(rom->buffer);
+#endif
 		}
 
 		rom->buffer = newrom;
@@ -76,7 +96,7 @@ u8* ROM_getU8Ptr(ROM* rom, u32 address_)
 
 u16* ROM_getU16Ptr(ROM* rom, u32 address_)
 {
-	return (u16)(&rom->buffer[address_]);
+	return (u16*)(&rom->buffer[address_]);
 }
 
 u32* ROM_getU32Ptr(ROM* rom, u32 address_)
