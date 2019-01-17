@@ -13,6 +13,9 @@
 #endif
 using namespace std;
 
+#include "ROM.h"
+ROM* rom = 0;
+
 VGMData::VGMData(s32 channels_, s32 bitPerSample_, s32 sampleRate_)
 	: Obserable()
 {
@@ -34,10 +37,18 @@ VGMData::VGMData(s32 channels_, s32 bitPerSample_, s32 sampleRate_)
 
 	updateDataRequest = false;
 	updateSampleCounts = 0;
+
+	rom = ROM_Create();
 }
 
 VGMData::~VGMData()
 {
+	if(rom)
+	{
+		ROM_Release(rom);
+		
+		rom = 0;
+	}
 }
 
 u32 VGMData::getVersion()
@@ -158,6 +169,8 @@ boolean VGMData::open()
 	if (header.K053260Clock)
 	{
 		K053260_Initialize(0, header.K053260Clock, playInfo.sampleRate);
+
+		K053260_SetROM(0, rom);
 	}
 	if (header.NESAPUClock)
 	{
@@ -172,6 +185,8 @@ boolean VGMData::open()
 	if (header.QSoundClock)
 	{
 		QSound_Initialize(0, header.QSoundClock, playInfo.sampleRate);
+		
+		QSound_SetROM(0, rom);
 	}
 #endif
 
@@ -330,7 +345,7 @@ void VGMData::handleK053260ROM(s32 skipByte0x66, s32 blockType, s32 blockSize)
 	read(&romData[0], blockSize - 8);
 
 	// k053260_write_rom(0, entireRomSize, startAddress, blockSize - 8, romData);
-	K053260_SetROM(0, entireRomSize, startAddress, &romData[0], blockSize - 8);
+	ROM_LoadData(rom, startAddress, &romData[0], blockSize - 8, entireRomSize);
 #endif
 }
 
@@ -348,7 +363,9 @@ void VGMData::handleQSoundROM(s32 skipByte0x66, s32 blockType, s32 blockSize)
 	romData.resize(blockSize - 8);
 	read(&romData[0], blockSize - 8);
 
-	QSound_SetROM(0, entireRomSize, startAddress, &romData[0], blockSize - 8);
+	//QSound_SetROM(0, entireRomSize, startAddress, &romData[0], blockSize - 8);
+	//rom->addROMSegment(startAddress, &romData[0], blockSize - 8, entireRomSize);
+	ROM_LoadData(rom, startAddress, &romData[0], blockSize - 8, entireRomSize);
 #endif
 }
 

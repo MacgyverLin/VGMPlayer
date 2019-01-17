@@ -52,7 +52,7 @@ typedef struct
 
 	s8 nEndBuffer[8];				// Buffer to enable correct cubic interpolation
 
-	s8* PlayBank;					// Pointer to current bank
+	u32 PlayBank;					// Pointer to current bank
 }QSoundChannel;
 
 typedef struct
@@ -64,8 +64,7 @@ typedef struct
 	s32 interpolation;
 	QSoundChannel channels[16];
 	s32 panningVolumes[33];
-	s8 *rom;
-	u32 romLength;
+	ROM* rom;
 }QSound;
 
 #define MAX_QSOUND 2
@@ -73,6 +72,13 @@ QSound qSound[MAX_QSOUND];
 
 #define INTERPOLATE4PS_CUSTOM(fp, sN, s0, s1, s2, v) (((s32)((sN) * Precalc[(s32)(fp) * 4 + 0]) + (s32)((s0) * Precalc[(s32)(fp) * 4 + 1]) + (s32)((s1) * Precalc[(s32)(fp) * 4 + 2]) + (s32)((s2) * Precalc[(s32)(fp) * 4 + 3])) / (s32)(v))
 s16 Precalc[4096 * 4];
+
+s8 QSound_GetSample(u8 chipID, u32 address)
+{
+	QSound* ic = &qSound[chipID];
+
+	return *(s8*)ROM_getPtr(ic->rom, address);
+}
 
 // Routine used to precalculate the table used for interpolation
 s32 cmc_4p_Precalc()
@@ -100,11 +106,11 @@ void MapBank(u8 chipID, QSoundChannel* pc)
 
 	// Confirm whole bank is in range:
 	// If bank is out of range use bank 0 instead
-	if ((nBank + 0x10000) > ic->romLength)
+	//if ((nBank + 0x10000) > ic->romLength)
 	{
-		nBank = 0;
+		//nBank = 0;
 	}
-	pc->PlayBank = (s8*)ic->rom + nBank;
+	pc->PlayBank = nBank;
 }
 
 void UpdateEndBuffer(u8 chipID, QSoundChannel* pc)
@@ -118,7 +124,7 @@ void UpdateEndBuffer(u8 chipID, QSoundChannel* pc)
 		{
 			for (s32 i = 0; i < 4; i++) 
 			{
-				pc->nEndBuffer[i] = pc->PlayBank[(pc->nEnd >> 12) - 4 + i];
+				pc->nEndBuffer[i] = QSound_GetSample(chipID, pc->PlayBank + (pc->nEnd >> 12) - 4 + i);
 			}
 
 			if (pc->nLoop) 
@@ -129,7 +135,7 @@ void UpdateEndBuffer(u8 chipID, QSoundChannel* pc)
 					{
 						j = 0;
 					}
-					pc->nEndBuffer[i + 4] = pc->PlayBank[((pc->nEnd - pc->nLoop) >> 12) + j];
+					pc->nEndBuffer[i + 4] = QSound_GetSample(chipID, pc->PlayBank + ((pc->nEnd - pc->nLoop) >> 12) + j);
 				}
 			}
 			else 
@@ -163,14 +169,10 @@ s32 QSound_Initialize(u8 chipID, u32 clock, u32 sampleRate)
 	ic->Mmatrix = 0;
 	ic->interpolation = 3;
 	ic->rom = 0;
-	ic->romLength = 0;
 	for(s32 i = 0; i < 33; i++)
 	{
 		ic->panningVolumes[i] = (s32)((256.0f / sqrt(32.0f)) * sqrt((double)i));
 	}
-
-	//romLength = 0x10000 * 8;
-	//rom = (s8*)malloc(romLength);
 	
 	cmc_4p_Precalc();
 
@@ -188,7 +190,7 @@ void QSound_Reset(u8 chipID)
 	// Point all to bank 0
 	for (s32 i = 0; i < 16; i++)
 	{
-		ic->channels[i].PlayBank = (s8*)ic->rom;
+		ic->channels[i].PlayBank = 0;
 	}
 }
 
@@ -196,13 +198,6 @@ void QSound_Shutdown(u8 chipID)
 {
 	QSound* ic = &qSound[chipID];
 	ic->sampleRate = 0;
-
-	if(ic->rom)
-	{
-		free(ic->rom);
-		ic->rom = 0;
-		ic->romLength = 0;
-	}
 }
 
 void QSound_WriteRegister(u8 chipID, u32 address, u32 data)
@@ -346,7 +341,13 @@ void QSound_Update(u8 chipID, s32** buffer, u32 length)
 				while (ic->channels[c].nPos < 0x1000 && i)
 				{
 					s32 p = ic->channels[c].nPlayStart >> 12;
-					s32 s = INTERPOLATE4PS_CUSTOM(ic->channels[c].nPos, 0, ic->channels[c].PlayBank[p + 0], ic->channels[c].PlayBank[p + 1], ic->channels[c].PlayBank[p + 2], 256);
+					s32 s = INTERPOLATE4PS_CUSTOM(
+						ic->channels[c].nPos, 
+						0, 
+						QSound_GetSample(chipID, ic->channels[c].PlayBank + p + 0),
+						QSound_GetSample(chipID, ic->channels[c].PlayBank + p + 1),
+						QSound_GetSample(chipID, ic->channels[c].PlayBank + p + 2),
+						256);
 
 					*(lBuf++) += ((s * VolL) >> 8);
 					*(rBuf++) += ((s * VolR) >> 8);
@@ -371,7 +372,13 @@ void QSound_Update(u8 chipID, s32** buffer, u32 length)
 					if (ic->channels[c].nPos < ic->channels[c].nEnd)
 					{
 						s32 nIndex = 4 - ((ic->channels[c].nEnd - ic->channels[c].nPos) >> 12);
-						s = INTERPOLATE4PS_CUSTOM((ic->channels[c].nPos) & ((1 << 12) - 1), ic->channels[c].nEndBuffer[nIndex + 0], ic->channels[c].nEndBuffer[nIndex + 1], ic->channels[c].nEndBuffer[nIndex + 2], ic->channels[c].nEndBuffer[nIndex + 3], 256);
+						s = INTERPOLATE4PS_CUSTOM(
+							(ic->channels[c].nPos) & ((1 << 12) - 1), 
+							ic->channels[c].nEndBuffer[nIndex + 0], 
+							ic->channels[c].nEndBuffer[nIndex + 1], 
+							ic->channels[c].nEndBuffer[nIndex + 2], 
+							ic->channels[c].nEndBuffer[nIndex + 3], 
+							256);
 					}
 					else
 					{
@@ -395,7 +402,13 @@ void QSound_Update(u8 chipID, s32** buffer, u32 length)
 				else
 				{
 					p = (ic->channels[c].nPos >> 12) & 0xFFFF;
-					s = INTERPOLATE4PS_CUSTOM((ic->channels[c].nPos) & ((1 << 12) - 1), ic->channels[c].PlayBank[p + 0], ic->channels[c].PlayBank[p + 1], ic->channels[c].PlayBank[p + 2], ic->channels[c].PlayBank[p + 3], 256);
+					s = INTERPOLATE4PS_CUSTOM(
+						(ic->channels[c].nPos) & ((1 << 12) - 1), 
+						QSound_GetSample(chipID, ic->channels[c].PlayBank + p + 0),
+						QSound_GetSample(chipID, ic->channels[c].PlayBank + p + 1),
+						QSound_GetSample(chipID, ic->channels[c].PlayBank + p + 2),
+						QSound_GetSample(chipID, ic->channels[c].PlayBank + p + 3),
+						256);
 				}
 
 				// Add to the sound currently in the buffer
@@ -409,6 +422,7 @@ void QSound_Update(u8 chipID, s32** buffer, u32 length)
 	}
 }
 
+/*
 void QSound_SetROM(u8 chipID, u32 totalROMSize, u32 startAddress, u8 *rom, u32 nLen)
 {
 	QSound* ic = &qSound[chipID];
@@ -433,6 +447,14 @@ void QSound_SetROM(u8 chipID, u32 totalROMSize, u32 startAddress, u8 *rom, u32 n
 	}
 
 	memcpy(&ic->rom[startAddress], rom, nLen);
+}
+*/
+
+void QSound_SetROM(u8 chipID, ROM* rom)
+{
+	QSound* ic = &qSound[chipID];
+
+	ic->rom = rom;
 }
 
 #endif

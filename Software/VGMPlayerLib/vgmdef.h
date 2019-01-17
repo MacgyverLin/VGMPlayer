@@ -37,4 +37,7 @@ typedef double f64;
 #define VGMPlayer_MIN(a, b) ((a)<(b)) ? (a) : (b)
 #define VGMPlayer_MAX(a, b) ((a)>(b)) ? (a) : (b)
 
+typedef void* (*RomReadCallBack)(u8 chipID, u32 address);
+typedef void(*RomLoadCallBack)(u8 chipID, u32 startAddress, u8 *data, u32 length, u32 totalROMLength);
+
 #endif

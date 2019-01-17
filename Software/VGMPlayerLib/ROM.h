@@ -2,27 +2,32 @@
 #define _ROM_h_
 
 #include "vgmdef.h"
-#include "Array.h"
+#include "ROM.h"
+#ifdef __cplusplus
+extern "C" {
+#endif
 
-class ROM
+typedef struct
 {
-public:
-	ROM();
-	~ROM();
+	u8* buffer;
+	u32 length;
+}ROM;
 
-	void addROMSegment(u32 startAddress_, u32 length_, u8* data_, u32 wholeSize_);
-	
-	u8 getU8(u32 address_);
-	u16 getU16(u32 address_);
-	u32 getU32(u32 address_);
-	void get(u8* buffer_, u32 address_, u32 length_);
+ROM* ROM_Create();
+void ROM_Release(ROM* rom);
+void ROM_LoadData(ROM* rom, u32 startAddress_, u8* data_, u32 length_, u32 totalROMLength_);
+u32 ROM_getTotalSize(ROM* rom);
+u8 ROM_getU8(ROM* rom, u32 address_);
+u16 ROM_getU16(ROM* rom, u32 address_);
+u32 ROM_getU32(ROM* rom, u32 address_);
+void ROM_get(ROM* rom, u8* buffer_, u32 address_, u32 length_);
+u8* ROM_getU8Ptr(ROM* rom, u32 address_);
+u16* ROM_getU16Ptr(ROM* rom, u32 address_);
+u32* ROM_getU32Ptr(ROM* rom, u32 address_);
+void* ROM_getPtr(ROM* rom, u32 address_);
 
-	u8* getU8Ptr(u32 address_);
-	u16* getU16Ptr(u32 address_);
-	u32* getU32Ptr(u32 address_);
-	void* getPtr(u32 address_);
-private:
-	Vector<u8> buffer;
+#ifdef __cplusplus
 };
+#endif
 
 #endif

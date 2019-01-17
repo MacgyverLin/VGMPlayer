@@ -23,12 +23,15 @@ typedef struct{
 }Channel;
 
 typedef struct {
-	s32		mode;
-	s32		regs[0x30];
-	u8		*rom;
-	s32		rom_size;
-	u32		*delta_table;
-	Channel		channels[4];
+	s32				mode;
+	s32				regs[0x30];
+	u32				*delta_table;
+	Channel			channels[4];
+	ROM*			rom;
+	/*
+	u8				*rom;
+	s32				rom_size;
+	*/
 }K053260;
 
 #define K053260_CHIPS_COUNT 2
@@ -72,17 +75,19 @@ void check_bounds(u8 chipID, s32 channel)
 {
 	K053260* ic = &k053260Chips[chipID];
 
-	s32 channel_start = (ic->channels[channel].bank << 16) + ic->channels[channel].start;
-	s32 channel_end = channel_start + ic->channels[channel].size - 1;
+	u32 channel_start = (ic->channels[channel].bank << 16) + ic->channels[channel].start;
+	u32 channel_end = channel_start + ic->channels[channel].size - 1;
 
-	if (channel_start > ic->rom_size) {
+	if (channel_start > ROM_getTotalSize(ic->rom))
+	{
 		ic->channels[channel].play = 0;
 
 		return;
 	}
 
-	if (channel_end > ic->rom_size) {
-		ic->channels[channel].size = ic->rom_size - channel_start;
+	if (channel_end > ROM_getTotalSize(ic->rom))
+	{
+		ic->channels[channel].size = ROM_getTotalSize(ic->rom) - channel_start;
 	}
 }
 
@@ -98,7 +103,6 @@ s32 K053260_Initialize(u8 chipID, u32 clock, u32 sampleRate)
 
 	ic->mode = 0;
 	ic->rom = 0;
-	ic->rom_size = 0;
 
 	K053260_Reset(chipID);
 
@@ -269,6 +273,13 @@ void K053260_WriteRegister(u8 chipID, u32 address, u8 data)
 	}
 }
 
+inline s8 K053260_GetSample(u8 chipID, u32 address)
+{
+	K053260* ic = &k053260Chips[chipID];
+
+	return *(s8*)ROM_getPtr(ic->rom, address);
+}
+
 u8 K053260_ReadRegister(u8 chipID, u32 address)
 {
 	K053260* ic = &k053260Chips[chipID];
@@ -291,12 +302,12 @@ u8 K053260_ReadRegister(u8 chipID, u32 address)
 
 			ic->channels[0].pos += (1 << 16);
 
-			if (offs > (u32)ic->rom_size) {
+			if (offs > ROM_getTotalSize(ic->rom)) {
 
 				return 0;
 			}
 
-			return ic->rom[offs];
+			return K053260_GetSample(chipID, offs);
 		}
 		break;
 	}
@@ -309,7 +320,7 @@ void K053260_Update(u8 chipID, s32** buffer, u32 length)
 	static const s8 dpcmcnv[] = { 0,1,2,4,8,16,32,64, -128, -64, -32, -16, -8, -4, -2, -1 };
 
 	s32 lvol[4], rvol[4], play[4], loop[4], ppcm[4];
-	u8 *rom[4];
+	u32 romStartAddr[4];
 	u32 delta[4], end[4], pos[4];
 	s32 dataL, dataR;
 	s8 ppcm_data[4];
@@ -318,8 +329,10 @@ void K053260_Update(u8 chipID, s32** buffer, u32 length)
 
 	/* precache some values */
 	for (int i = 0; i < 4; i++) {
-		int address = ic->channels[i].start + (ic->channels[i].bank << 16) + 1;
-		rom[i] = &ic->rom[address];
+		u32 address = ic->channels[i].start + (ic->channels[i].bank << 16) + 1;
+		
+		romStartAddr[i] = address;
+
 		delta[i] = (ic->delta_table[ic->channels[i].rate] * nUpdateStep) >> 15;
 		lvol[i] = ic->channels[i].volume * ic->channels[i].pan;
 		rvol[i] = ic->channels[i].volume * (8 - ic->channels[i].pan);
@@ -360,11 +373,11 @@ void K053260_Update(u8 chipID, s32** buffer, u32 length)
 					{
 						s32 newdata;
 						if (pos[i] & 0x8000) {
-
-							newdata = ((rom[i][pos[i] >> BASE_SHIFT]) >> 4) & 0x0f; /*high nybble*/
+							newdata = (K053260_GetSample(chipID, ((romStartAddr[i] + (pos[i] >> BASE_SHIFT)))) >> 4) & 0x0f;
 						}
-						else {
-							newdata = ((rom[i][pos[i] >> BASE_SHIFT])) & 0x0f; /*low nybble*/
+						else
+						{
+							newdata = (K053260_GetSample(chipID, ((romStartAddr[i] + (pos[i] >> BASE_SHIFT))))     ) & 0x0f; /*low nybble*/
 						}
 
 						ppcm_data[i] += dpcmcnv[newdata];
@@ -374,13 +387,14 @@ void K053260_Update(u8 chipID, s32** buffer, u32 length)
 
 					pos[i] += delta[i];
 				}
-				else { /* PCM */
-					d = rom[i][pos[i] >> BASE_SHIFT];
-
+				else 
+				{ /* PCM */
+					d = K053260_GetSample(chipID, romStartAddr[i] + (pos[i] >> BASE_SHIFT));
 					pos[i] += delta[i];
 				}
 
-				if (ic->mode & 2) {
+				if (ic->mode & 2) 
+				{
 					dataL += (d * lvol[i]) >> 2;
 					dataR += (d * rvol[i]) >> 2;
 				}
@@ -428,6 +442,7 @@ void K053260_Update(u8 chipID, s32** buffer, u32 length)
 	}
 }
 
+/*
 void K053260_SetROM(u8 chipID, u32 totalROMSize, u32 startAddress, u8 *rom, u32 nLen)
 {
 	K053260* ic = &k053260Chips[chipID];
@@ -452,4 +467,12 @@ void K053260_SetROM(u8 chipID, u32 totalROMSize, u32 startAddress, u8 *rom, u32 
 	}
 
 	memcpy(&ic->rom[startAddress], rom, nLen);
+}
+*/
+
+void K053260_SetROM(u8 chipID, ROM* rom)
+{
+	K053260* ic = &k053260Chips[chipID];
+
+	ic->rom = rom;
 }

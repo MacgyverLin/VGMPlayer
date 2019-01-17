@@ -133,11 +133,11 @@ public:
 
 	void resize(u32 newsize_)
 	{
-		if (newsize_ <= _capacity)
+		if (newsize_ > _capacity)
 		{
 			expand(newsize_);
 		}
-		else if (newsize_ > _capacity)
+		else if (newsize_ < _capacity)
 		{
 			shrink(newsize_);
 		}
