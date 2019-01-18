@@ -561,16 +561,6 @@
               <FileType>8</FileType>
               <FilePath>.\Users\main.cpp</FilePath>
             </File>
-            <File>
-              <FileName>QSound.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\VGMPlayerLib\QSound.c</FilePath>
-            </File>
-            <File>
-              <FileName>ROM.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\VGMPlayerLib\ROM.c</FilePath>
-            </File>
           </Files>
         </Group>
         <Group>

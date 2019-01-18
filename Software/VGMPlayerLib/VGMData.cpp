@@ -10,11 +10,9 @@
 #include "NESAPU.h"
 #include "NESFDSAPU.h"
 #include "HuC6280.h"
-#endif
-using namespace std;
-
 #include "ROM.h"
 ROM* rom = 0;
+#endif
 
 VGMData::VGMData(s32 channels_, s32 bitPerSample_, s32 sampleRate_)
 	: Obserable()
@@ -37,18 +35,23 @@ VGMData::VGMData(s32 channels_, s32 bitPerSample_, s32 sampleRate_)
 
 	updateDataRequest = false;
 	updateSampleCounts = 0;
-
+#ifdef STM32
+#else
 	rom = ROM_Create();
+#endif
 }
 
 VGMData::~VGMData()
 {
+#ifdef STM32
+#else
 	if(rom)
 	{
 		ROM_Release(rom);
 		
 		rom = 0;
 	}
+#endif
 }
 
 u32 VGMData::getVersion()
