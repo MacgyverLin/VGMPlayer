@@ -16,8 +16,6 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "VGMPlayer", "VGMPlayer\VGMP
 		{5D9CF23A-72B0-4357-8018-D268F231B4EC} = {5D9CF23A-72B0-4357-8018-D268F231B4EC}
 	EndProjectSection
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "libjpeg", "libjpeg\libjpeg.vcxproj", "{677D7452-99C6-4F53-BAAD-FF26857A158F}"
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x64 = Debug|x64
@@ -50,14 +48,6 @@ Global
 		{B5EEB573-145B-4822-AFA9-408BBDD075B0}.Release|x64.Build.0 = Release|x64
 		{B5EEB573-145B-4822-AFA9-408BBDD075B0}.Release|x86.ActiveCfg = Release|Win32
 		{B5EEB573-145B-4822-AFA9-408BBDD075B0}.Release|x86.Build.0 = Release|Win32
-		{677D7452-99C6-4F53-BAAD-FF26857A158F}.Debug|x64.ActiveCfg = Debug|x64
-		{677D7452-99C6-4F53-BAAD-FF26857A158F}.Debug|x64.Build.0 = Debug|x64
-		{677D7452-99C6-4F53-BAAD-FF26857A158F}.Debug|x86.ActiveCfg = Debug|Win32
-		{677D7452-99C6-4F53-BAAD-FF26857A158F}.Debug|x86.Build.0 = Debug|Win32
-		{677D7452-99C6-4F53-BAAD-FF26857A158F}.Release|x64.ActiveCfg = Release|x64
-		{677D7452-99C6-4F53-BAAD-FF26857A158F}.Release|x64.Build.0 = Release|x64
-		{677D7452-99C6-4F53-BAAD-FF26857A158F}.Release|x86.ActiveCfg = Release|Win32
-		{677D7452-99C6-4F53-BAAD-FF26857A158F}.Release|x86.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
