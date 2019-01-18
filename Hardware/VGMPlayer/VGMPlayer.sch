@@ -930,8 +930,6 @@ F 3 "" H 4200 5100 50  0001 C CNN
 	1    4200 4400
 	1    0    0    -1  
 $EndComp
-Text GLabel 2550 3800 2    50   Input ~ 0
-YM_CLK
 $Comp
 L power:VDD #PWR043
 U 1 1 60CD2F89
@@ -2755,11 +2753,11 @@ F 3 "http://portal.fciconnect.com/Comergent//fci/drawing/10067847.pdf" H 16450 -
 	1    16450 -750
 	-1   0    0    1   
 $EndComp
-Text GLabel 17700 -900 2    50   Input ~ 0
+Text GLabel 17700 -1100 2    50   Input ~ 0
 SPI_MISO
 Text GLabel 17650 -500 2    50   Input ~ 0
 SPI_MOSI
-Text GLabel 17700 -800 2    50   Input ~ 0
+Text GLabel 17700 -900 2    50   Input ~ 0
 SPI_CLK
 Text GLabel 17650 -400 2    50   Input ~ 0
 SD_CS
@@ -2768,9 +2766,9 @@ Wire Wire Line
 Wire Wire Line
 	17650 -500 17350 -500
 Wire Wire Line
-	17700 -900 17350 -900
+	17700 -1100 17350 -1100
 Wire Wire Line
-	17700 -800 17350 -800
+	17700 -900 17350 -900
 Wire Wire Line
 	17450 -600 17350 -600
 $Comp
@@ -2798,9 +2796,7 @@ F 3 "" H 17550 -1300 50  0001 C CNN
 	1    0    0    -1  
 $EndComp
 Wire Wire Line
-	17550 -700 17350 -700
-Wire Wire Line
-	17550 -1300 17550 -700
+	17550 -800 17350 -800
 $Comp
 L Connector_Generic:Conn_02x15_Odd_Even J3
 U 1 1 5C4B3C35
@@ -2934,9 +2930,6 @@ Wire Wire Line
 	1150 4300 1400 4300
 Wire Wire Line
 	2450 3550 2450 4000
-Wire Wire Line
-	3000 1850 2850 1850
-Connection ~ 2850 1850
 Text GLabel 1700 750  0    50   Input ~ 0
 PWR_USB
 Wire Wire Line
@@ -2962,4 +2955,107 @@ F 3 "" H 10050 7000 50  0001 C CNN
 	1    10050 7000
 	1    0    0    -1  
 $EndComp
+$Comp
+L Device:Jumper_NC_Small JP1
+U 1 1 5C4C3F82
+P 10350 7200
+F 0 "JP1" V 10304 7274 50  0000 L CNN
+F 1 "Jumper_NC_Small" V 10395 7274 50  0000 L CNN
+F 2 "Jumper:SolderJumper-2_P1.3mm_Open_RoundedPad1.0x1.5mm" H 10350 7200 50  0001 C CNN
+F 3 "~" H 10350 7200 50  0001 C CNN
+	1    10350 7200
+	0    1    1    0   
+$EndComp
+Wire Wire Line
+	10050 7050 10350 7050
+Wire Wire Line
+	10350 7050 10350 7100
+Connection ~ 10050 7050
+Wire Wire Line
+	10350 7300 10350 7450
+Wire Wire Line
+	10350 7450 10050 7450
+Connection ~ 10050 7450
+Wire Wire Line
+	17550 -1300 17550 -800
+Wire Wire Line
+	17450 -600 17450 -1000
+Wire Wire Line
+	17450 -1000 17350 -1000
+Connection ~ 17450 -600
+Text GLabel 17250 6150 2    50   Input ~ 0
+SPI_MISO
+Text GLabel 17250 6250 2    50   Input ~ 0
+SPI_CLK
+Text GLabel 17250 6050 2    50   Input ~ 0
+SPI_MOSI
+$Comp
+L power:GND #PWR?
+U 1 1 5C67B3E5
+P 15500 6500
+F 0 "#PWR?" H 15500 6250 50  0001 C CNN
+F 1 "GND" H 15350 6450 50  0000 C CNN
+F 2 "" H 15500 6500 50  0001 C CNN
+F 3 "" H 15500 6500 50  0001 C CNN
+	1    15500 6500
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	17050 4550 17150 4550
+Wire Wire Line
+	17150 4550 17150 6500
+$Comp
+L power:VDD #PWR?
+U 1 1 5C67B3ED
+P 17300 4400
+F 0 "#PWR?" H 17300 4250 50  0001 C CNN
+F 1 "VDD" H 17200 4500 50  0000 C CNN
+F 2 "" H 17300 4400 50  0001 C CNN
+F 3 "" H 17300 4400 50  0001 C CNN
+	1    17300 4400
+	-1   0    0    -1  
+$EndComp
+Wire Wire Line
+	15500 6250 15500 6350
+Wire Wire Line
+	15500 6350 15650 6350
+Wire Wire Line
+	15500 6350 15500 6500
+Connection ~ 15500 6350
+Wire Wire Line
+	17050 6350 17250 6350
+Wire Wire Line
+	17250 6250 17050 6250
+Wire Wire Line
+	17250 6050 17050 6050
+$Comp
+L VGMPlayer-rescue:STM32F103XX U?
+U 1 1 5C67B41B
+P 16300 4350
+F 0 "U?" H 15900 4400 50  0000 C CNN
+F 1 "STM32F103XX" H 16250 4400 50  0000 C CNN
+F 2 "Package_DIP:DIP-40_W15.24mm_Socket" H 16300 4400 50  0001 C CNN
+F 3 "" H 16300 4400 50  0001 C CNN
+	1    16300 4350
+	1    0    0    -1  
+$EndComp
+Connection ~ 15500 6500
+Wire Wire Line
+	15650 6250 15500 6250
+Wire Wire Line
+	15500 6500 17150 6500
+Wire Wire Line
+	17300 4400 17300 4650
+Wire Wire Line
+	17300 4650 17050 4650
+Wire Wire Line
+	17050 6150 17250 6150
+Text GLabel 17250 6350 2    50   Input ~ 0
+SPI_CLK
+Text GLabel 15400 4250 0    50   Input ~ 0
+YM_MOL
+Text GLabel 15350 5850 0    50   Input ~ 0
+YM_MOR
+Text GLabel 2550 3800 2    50   Input ~ 0
+SN_CLK
 $EndSCHEMATC
