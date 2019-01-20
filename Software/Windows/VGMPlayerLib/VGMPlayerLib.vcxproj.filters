@@ -24,6 +24,9 @@
     <Filter Include="Source Files\chips">
       <UniqueIdentifier>{90b8fce6-c59a-40e9-954c-affc203e5044}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source Files\misc">
+      <UniqueIdentifier>{05b5b077-57a3-4c68-b7fc-8e1dc33a0d6c}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="stdafx.h">
