@@ -2831,10 +2831,8 @@ F 3 "" H 10050 6750 50  0001 C CNN
 $EndComp
 Wire Wire Line
 	10450 900  11350 900 
-Text GLabel 10700 1600 0    50   Output ~ 0
+Text GLabel 11000 1600 0    50   Output ~ 0
 ~RD
-Wire Wire Line
-	10550 1600 10450 1600
 Text GLabel 1000 4300 2    50   Output ~ 0
 ~RD
 Wire Wire Line
@@ -2859,7 +2857,7 @@ Wire Wire Line
 	17450 -1000 17350 -1000
 Connection ~ 17450 -600
 Text GLabel 2550 3800 2    50   Input ~ 0
-SN_CLK
+YM_CLK
 $Comp
 L Device:Jumper_NC_Small JP2
 U 1 1 5CC16697
@@ -3045,4 +3043,6 @@ Wire Wire Line
 Connection ~ 17450 -200
 Wire Wire Line
 	17450 -200 17450 -150
+Wire Wire Line
+	10450 1600 10850 1600
 $EndSCHEMATC
