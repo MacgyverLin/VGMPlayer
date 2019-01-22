@@ -1,0 +1,1 @@
+define("wkview:widget/common_toc/common/studyPopup/studyPopup.js",function(o,i,t){var e=o("wkcommon:widget/study/studyPopup/studyPopup.js"),s=o("wkcommon:widget/ui/lib/cookie/cookie.js"),n={init:function(o){var i=this;i.json=o,o.xpageSwitch&&o.shouldpop&&!+s.get("havesendipverify")&&!+s.get("studyPopClose")&&new e(i.json).init()}};t.exports=n});
