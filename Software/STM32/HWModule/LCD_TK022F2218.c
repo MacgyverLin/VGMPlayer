@@ -2,23 +2,22 @@
 #include "io.h"
 #include "LCD_TK022F2218.h"
 
-#define BLACK          0x0000
+#define BLACK         		 	0x0000
 
-#define DARK_BLUE           0x000F
-#define DARK_GREEN          0x03E0
-#define DARK_CYAN           (DARK_GREEN | DARK_BLUE)
-#define DARK_RED            0x7800
-#define DARK_MANGENTA       (DARK_RED | DARK_BLUE)
-#define DARK_YELLOW		      (DARK_RED | DARK_GREEN)
-#define GREY 			     			(DARK_RED | DARK_GREEN | DARK_BLUE)
-#define LIGHT_BLUE           0x001F
-#define LIGHT_GREEN          0x07E0
-#define LIGHT_CYAN           (LIGHT_GREEN | LIGHT_BLUE)
-#define LIGHT_RED            0xF800
-#define LIGHT_MANGENTA       (LIGHT_RED | LIGHT_BLUE)
-#define LIGHT_YELLOW		     (LIGHT_RED | LIGHT_GREEN)
-#define WHITE         			 (LIGHT_RED | LIGHT_GREEN | LIGHT_BLUE)
-
+#define DARK_BLUE           	0x000F
+#define DARK_GREEN          	0x03E0
+#define DARK_CYAN           	(DARK_GREEN | DARK_BLUE)
+#define DARK_RED            	0x7800
+#define DARK_MANGENTA       	(DARK_RED | DARK_BLUE)
+#define DARK_YELLOW		      	(DARK_RED | DARK_GREEN)
+#define GREY 			     	(DARK_RED | DARK_GREEN | DARK_BLUE)
+#define LIGHT_BLUE           	0x001F
+#define LIGHT_GREEN          	0x07E0
+#define LIGHT_CYAN           	(LIGHT_GREEN | LIGHT_BLUE)
+#define LIGHT_RED            	0xF800
+#define LIGHT_MANGENTA       	(LIGHT_RED | LIGHT_BLUE)
+#define LIGHT_YELLOW		    (LIGHT_RED | LIGHT_GREEN)
+#define WHITE         			(LIGHT_RED | LIGHT_GREEN | LIGHT_BLUE)
 
 void LCD_Config_GPIO(void);
 void LCD_Reset(void);
@@ -28,7 +27,7 @@ u8 LCD_ReadData(void);
 
 void LCD_Initialize(void);
 void LCD_DrawRect(u32 x, u32 y, u32 w, u32 h, u16 color);
-void LCD_DrawImage(u16 x, u16 y, u16 w, u16 h, const u8* filename);
+void LCD_DrawBMP(u32 x, u32 y, const u8* filename);
 
 void LCD_Config_GPIO(void)
 {
