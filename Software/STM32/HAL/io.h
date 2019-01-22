@@ -1,7 +1,6 @@
-#ifndef _8501_h_
-#define _8501_h_
+#ifndef _IO_h_
+#define _IO_h_
 	
-#include "delay.h"
 #include "stm32f10x.h"
 
 #ifdef __cplusplus 
@@ -26,8 +25,8 @@ void pinMode(const GPIO* gpio, int mode);
 #define IO_MODE(n, v) pinMode((&(n)), (v))
 #define IO_WRITE(n, v) (((v)==0) ? GPIO_ResetBits(n.type, n.pin) : GPIO_SetBits(n.type, n.pin))
 #define IO_READ(n) GPIO_ReadInputDataBit(n.type, n.pin)
-#define IO_DELAY_MS(ms) delay_ms((ms))
-#define IO_DELAY_US(us) delay_us((us))
+//#define IO_DELAY_MS(ms) delay_ms((ms))
+//#define IO_DELAY_US(us) delay_us((us))
 
 // emulate 8051
 extern const GPIO PORT_A0;
@@ -78,27 +77,27 @@ extern const GPIO PORT_B15;
 #define D6					PORT_A6		// P1.6
 #define D7					PORT_A7		// P1.7
 #define YM_CS				PORT_B0		// P3.2
-#define YM_WR				PORT_B1		// P3.3
-#define YM_A0				PORT_B10	// P3.5
-#define YM_A1				PORT_B11	// P3.6
+#define WR					PORT_B1		// P3.3
+#define A0					PORT_B10	// P3.5
+#define A1					PORT_B11	// P3.6
 
 #define SN_CLK_CS		PORT_B9  //  P0.4
 #define SN_WR				PORT_B8  //  P0.2
-#define I2C_DAT			PORT_B7  /// P2.0
-#define I2C_CLK			PORT_B6  /// P2.1
+#define RD					PORT_B7  /// P2.0
+#define LCD_CS			PORT_B6  /// P2.1
 #define SD_CS				PORT_B5  /// P0.6
 #define YM_CLK_CS		PORT_B4  //  P0.3 // 
-#define PWR_HOLD		PORT_B3  /// P0.7 //
-#define STOP				PORT_A15 /// P2.2 //
-#define NEXT_PAUSE	PORT_A12 /// P2.3
-#define PREV_RESUME	PORT_A11 /// P2.4
+#define VGM_CS			PORT_B3  /// P0.7 //
+#define BUTTON_MODE	PORT_A15 /// P2.2 //
+#define BUTTON_NEXT	PORT_A12 /// P2.3
+#define BUTTON_PREV	PORT_A11 /// P2.4
 #define RXD					PORT_A10 //  P3.0
 #define TXD					PORT_A9  //  P3.1
-#define PLAY				PORT_A8  /// P2.5
+#define BUTTON_SEL	PORT_A8  /// P2.5
 #define SPI_MOSI		PORT_B15 //  P0.1
 #define SPI_MISO		PORT_B14 /// P0.5
 #define SPI_CLK			PORT_B13 //  P0.0
-#define YM_IC				PORT_B12 //  P3.7
+#define RESET				PORT_B12 //  P3.7
 
 #ifdef __cplusplus 
 };

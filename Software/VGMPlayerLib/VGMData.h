@@ -399,7 +399,7 @@ public:
 		boolean needQueueOutputSamples;
 	};
 	VGMData(s32 channels_, s32 bitPerSample_, s32 sampleRate_);
-	virtual ~VGMData();
+	~VGMData();
 
 	u32 getVersion();
 

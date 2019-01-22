@@ -140,15 +140,20 @@ const char* getNextMusic()
 		return "Street_Fighter_II_Champion_Edition_(CP_System)/45 Game Over.vgm";
 	case 32: 
 		return "Street_Fighter_II_Champion_Edition_(CP_System)/46 Ranking Display.vgm";
+	default:
 	case 33: 
 		return "Street_Fighter_II_Champion_Edition_(CP_System)/47 Unused.vgm";
 	};
 };
 
+#include <LCD_TK022F2218.h>
+
 int main()
 {
 	if (!Platform::initialize())
 		return false;
+	
+	LCD_Initialize();
 
 	bool quit = false;
 	while (!quit)

@@ -431,6 +431,11 @@
               <FileType>1</FileType>
               <FilePath>.\Drivers\src\stm32f10x_usart.c</FilePath>
             </File>
+            <File>
+              <FileName>stm32f10x_tim.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\Drivers\src\stm32f10x_tim.c</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>
@@ -465,6 +470,11 @@
               <FileName>io.c</FileName>
               <FileType>1</FileType>
               <FilePath>.\HAL\io.c</FilePath>
+            </File>
+            <File>
+              <FileName>wave.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\HAL\wave.c</FilePath>
             </File>
           </Files>
         </Group>
