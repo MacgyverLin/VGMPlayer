@@ -471,11 +471,6 @@
               <FileType>1</FileType>
               <FilePath>.\HAL\io.c</FilePath>
             </File>
-            <File>
-              <FileName>wave.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>.\HAL\wave.c</FilePath>
-            </File>
           </Files>
         </Group>
         <Group>
@@ -510,6 +505,11 @@
               <FileName>ym2612.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\VGMPlayerLib\ym2612.c</FilePath>
+            </File>
+            <File>
+              <FileName>LCD.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\HWModule\LCD.c</FilePath>
             </File>
           </Files>
         </Group>
