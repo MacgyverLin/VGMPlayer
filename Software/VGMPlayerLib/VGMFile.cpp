@@ -40,7 +40,7 @@ VGMFile::VGMFile(const char* path_, s32 channels_, s32 bitPerSample_, s32 sample
 
 	strncpy(impl->path, path_, MAX_PATH);
 #ifdef STM32
-	impl->opened = false;
+	impl->opened = FALSE;
 #else	
 	impl->file = 0;
 	impl->gzFile = 0;
@@ -55,7 +55,7 @@ VGMFile::~VGMFile()
 		if(impl->opened)
 		{
 			f_close(&impl->fil);
-			impl->opened = false;
+			impl->opened = FALSE;
 		}
 #else
 #endif
@@ -70,7 +70,7 @@ boolean VGMFile::onOpen()
 	boolean isvgm = (strstr(impl->path, ".vgm") != 0);
 	if (!isvgz && !isvgm)
 	{
-		return false;
+		return FALSE;
 	}
 
 #ifdef STM32
@@ -84,26 +84,26 @@ boolean VGMFile::onOpen()
 	else// if (isvgz)
 	{
 		// printf("vgz is not supported for STM32 platform");
-		return false;
+		return FALSE;
 	}
 #else
 	if(isvgm)
 	{
 		impl->file = fopen(impl->path, "rb");
 		if(!impl->file)
-			return false;
+			return FALSE;
 	}
 	else// if (isvgz)
 	{
 		impl->gzFile = gzopen(impl->path, "r");
 		if (!impl->gzFile)
-			return false;
+			return FALSE;
 	}
 #endif
 
 	notifyOpen();
 
-	return true;
+	return TRUE;
 }
 
 void VGMFile::onClose()
@@ -114,7 +114,7 @@ void VGMFile::onClose()
 	if (impl->opened)
 	{
 		f_close(&impl->fil);
-		impl->opened = false;
+		impl->opened = FALSE;
 	}
 #else
 	if (impl->file)
@@ -148,7 +148,7 @@ void VGMFile::onResume()
 
 boolean VGMFile::onUpdate()
 {
-	return true;
+	return TRUE;
 }
 
 s32 VGMFile::onRead(void *buffer, u32 size)

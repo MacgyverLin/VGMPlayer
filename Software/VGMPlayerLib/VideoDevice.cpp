@@ -43,7 +43,7 @@ boolean VideoDevice::open(const string& name_, u32 x_, u32 y_, u32 width_, u32 h
 	{
 		// Display error message
 		//	printf("Window could not be created! SDL_Error: %s\n", SDL_GetError());
-		return false;
+		return FALSE;
 	}
 
 	// Create OpenGL context
@@ -52,7 +52,7 @@ boolean VideoDevice::open(const string& name_, u32 x_, u32 y_, u32 width_, u32 h
 	{
 		// Display error message
 		//printf("OpenGL context could not be created! SDL Error: %s\n", SDL_GetError());
-		return false;
+		return FALSE;
 	}
 
 	SDL_GL_SetSwapInterval(1);
@@ -61,7 +61,7 @@ boolean VideoDevice::open(const string& name_, u32 x_, u32 y_, u32 width_, u32 h
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE);
 #endif
 
-	return true;
+	return TRUE;
 }
 
 void VideoDevice::close()
@@ -90,7 +90,7 @@ void VideoDevice::makeCurrent()
 boolean VideoDevice::isCurrent()
 {
 #ifdef STM32
-	return true;
+	return TRUE;
 #else	
 	SDL_GLContext currentGLContext = SDL_GL_GetCurrentContext();
 

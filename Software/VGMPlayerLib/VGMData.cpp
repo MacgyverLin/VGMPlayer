@@ -17,8 +17,8 @@ ROM* rom = 0;
 VGMData::VGMData(s32 channels_, s32 bitPerSample_, s32 sampleRate_)
 	: Obserable()
 {
-	playInfo.paused = true;
-	playInfo.playing = false;
+	playInfo.paused = TRUE;
+	playInfo.playing = FALSE;
 	playInfo.channels = channels_;
 	playInfo.bitPerSamples = bitPerSample_;
 	playInfo.sampleRate = sampleRate_;
@@ -30,10 +30,10 @@ VGMData::VGMData(s32 channels_, s32 bitPerSample_, s32 sampleRate_)
 	bufferInfo.samplesR.resize(VGM_SAMPLE_COUNT);
 	bufferInfo.outputSamples.resize(VGM_SAMPLE_COUNT);
 
-	bufferInfo.needQueueOutputSamples = false;
+	bufferInfo.needQueueOutputSamples = FALSE;
 #endif
 
-	updateDataRequest = false;
+	updateDataRequest = FALSE;
 	updateSampleCounts = 0;
 #ifdef STM32
 #else
@@ -61,28 +61,28 @@ u32 VGMData::getVersion()
 
 void VGMData::play()
 {
-	playInfo.playing = true;
+	playInfo.playing = TRUE;
 
 	notifyPlay();
 }
 
 void VGMData::stop()
 {
-	playInfo.playing = false;
+	playInfo.playing = FALSE;
 
 	notifyStop();
 }
 
 void VGMData::pause()
 {
-	playInfo.paused = true;
+	playInfo.paused = TRUE;
 
 	notifyPause();
 }
 
 void VGMData::resume()
 {
-	playInfo.paused = false;
+	playInfo.paused = FALSE;
 
 	notifyResume();
 }
@@ -99,7 +99,7 @@ boolean VGMData::isPaused()
 
 void VGMData::requestUpdateData()
 {
-	updateDataRequest = true;
+	updateDataRequest = TRUE;
 }
 
 const VGMHeader& VGMData::getHeader() const
@@ -127,7 +127,7 @@ boolean VGMData::open()
 	memset(&header, 0, sizeof(header));
 	if (read(&header, 0x38) != 0x38)
 	{
-		return false;
+		return FALSE;
 	}
 
 	if (header.ID[0] != 'V' ||
@@ -137,7 +137,7 @@ boolean VGMData::open()
 	{
 		//vgm_log("Data is not a .vgm format");
 
-		return false;
+		return FALSE;
 	}
 
 	// seek to first data
@@ -193,7 +193,7 @@ boolean VGMData::open()
 	}
 #endif
 
-	return true;
+	return TRUE;
 }
 
 void VGMData::close()
@@ -320,7 +320,7 @@ u32 VGMData::updateSamples(u32 updateSampleCounts)
 	if (bufferInfo.sampleIdx == VGM_SAMPLE_COUNT)
 	{
 		bufferInfo.sampleIdx = 0;
-		bufferInfo.needQueueOutputSamples = true;
+		bufferInfo.needQueueOutputSamples = TRUE;
 
 		fillOutputBuffer();
 	}
@@ -638,28 +638,28 @@ boolean VGMData::update()
 				{
 					seekSet(header.loopOffset + 0x1c);
 					//printf("Loop();\n");
-					return false;
+					return FALSE;
 				}
 				else
 				{
 					//printf("END_OF_SOUND();\n");
-					return false;
+					return FALSE;
 				}
 				break;
 
 			default:
 				//printf("UnHandled Command: 0x%02x\n", command);
-				return false;
+				return FALSE;
 			};
 		}
 
-		updateDataRequest = false;
+		updateDataRequest = FALSE;
 	}
 
 	notifyUpdate();
 #ifdef STM32
 #else
-	bufferInfo.needQueueOutputSamples = false;
+	bufferInfo.needQueueOutputSamples = FALSE;
 #endif
-	return true;
+	return TRUE;
 }

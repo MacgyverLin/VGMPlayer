@@ -47,7 +47,7 @@ AudioDevice::~AudioDevice()
 boolean AudioDevice::open(s32 channels_, s32 bitsPerSample_, s32 sampleRate_, s32 bufferCount_)
 {
 #ifdef STM32
-	return true;
+	return TRUE;
 #else		
 	ALuint error = 0;
 

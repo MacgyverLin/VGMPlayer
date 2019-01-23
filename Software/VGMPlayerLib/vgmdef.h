@@ -5,7 +5,12 @@
 #include <stm32f10x.h>
 #include <assert.h>
 #include <string.h>
-typedef unsigned char boolean;
+#ifndef FALSE
+typedef int boolean;
+#define FALSE 0
+#define TRUE 1
+#endif
+
 typedef float f32;
 typedef double f64;
 #else
@@ -23,10 +28,6 @@ typedef unsigned char u8;
 typedef float f32;
 typedef double f64;
 #endif
-
-#define True 1
-#define False 0
-
 
 #define vgm_log printf
 #define VGM_SAMPLE_COUNT		882 // NTSC FRAME
