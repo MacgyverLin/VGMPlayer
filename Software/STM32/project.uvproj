@@ -507,9 +507,9 @@
               <FilePath>..\VGMPlayerLib\ym2612.c</FilePath>
             </File>
             <File>
-              <FileName>LCD_TK022F2218.c</FileName>
+              <FileName>LCD2.c</FileName>
               <FileType>1</FileType>
-              <FilePath>.\HWModule\LCD_TK022F2218.c</FilePath>
+              <FilePath>.\HWModule\LCD2.c</FilePath>
             </File>
           </Files>
         </Group>

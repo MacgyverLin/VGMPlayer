@@ -146,7 +146,7 @@ const char* getNextMusic()
 	};
 };
 
-#include <LCD.h>
+#include <LCD_TK022F2218.h>
 
 int main()
 {
