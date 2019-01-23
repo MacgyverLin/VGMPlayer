@@ -496,8 +496,11 @@ void LCD_LoadPalette(PixelFormat format)
 	u32 i;
 	switch(format)
 	{
-		case PF_RGB666:
 		case PF_RGB888:
+#ifdef LCD_TK022F2218
+		// assert("PF_RGB888 not supported");
+#endif		
+		case PF_RGB666:
 		{
 			LCD_WriteCommand0(0x2D);
 			for (i = 0; i <64; i++)
@@ -513,6 +516,15 @@ void LCD_LoadPalette(PixelFormat format)
 		
 		case PF_RGB565:
 		{
+			#ifdef LCD_TK022F2218
+			LCD_WriteCommand0(0x2D);
+			for(i=0;i<32;i++)  
+				WriteData(i*2);  // RED 
+			for(i=0;i<64;i++) 
+				WriteData(i*1);   // Green  
+			for(i=0;i<32;i++) 
+				WriteData(i*2);  // Blue  
+			#else
 			LCD_WriteCommand0(0x2D);
 			for (i = 0; i <64; i++)
 			{
@@ -531,12 +543,17 @@ void LCD_LoadPalette(PixelFormat format)
 					LCD_WriteData(i * 8);
 				else
 					LCD_WriteData(0);
-			}
+			}			
+			#endif
 		}
 		break;
 		
 		case PF_RGB444:
 		{
+#ifdef LCD_TK022F2218
+#else
+		// assert("PF_RGB444 niot supported");
+#endif		
 		}
 		break;			
 	}
@@ -921,25 +938,28 @@ void LCD_SetPixelFormat(PixelFormat pixelFormat)
 
 	switch(pixelFormat)
 	{
+		case PF_RGB888:
 #ifdef LCD_TK022F2218
-		case PF_RGB444:
-			data = 0x33;
-		break;	
+			// assert("PF_RGB888 not supported");
 #else
-#endif
+			data = 0x77;
+#endif		
+		break;
+
+		default:
 		case PF_RGB565:
 			data = 0x55;
 		break;
 		case PF_RGB666:
 			data = 0x66;
 		break;
-#ifdef LCD_TK022F2218		
+		case PF_RGB444:
+#ifdef LCD_TK022F2218
+			data = 0x33;
 #else
-		case PF_RGB888:
-		default:	
-			data = 0x77;
-		break;
-#endif
+			// assert("PF_RGB888 not supported");	
+#endif				
+		break;	
 	};
 
 	LCD_WriteCommand0(0x3A);
