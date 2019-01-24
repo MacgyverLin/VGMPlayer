@@ -47,7 +47,7 @@ typedef enum
 {
 	PF_RGB444 = 0,  // 12 bit format
 	PF_RGB565,		 // 16 bit format
-	PF_RGB666,		 // 18 bit format
+	//PF_RGB666,		 // 18 bit format
 	PF_RGB888,		 // 24 bit format
 }PixelFormat;
 
@@ -500,6 +500,7 @@ void LCD_LoadPalette(PixelFormat format)
 #ifdef LCD_TK022F2218
 		assert(0 && "PF_RGB888 not supported");
 #endif		
+		/*
 		case PF_RGB666:
 		{
 			LCD_StartWritePalette();
@@ -519,6 +520,7 @@ void LCD_LoadPalette(PixelFormat format)
 			}
 		}
 		break;
+		*/
 		
 		case PF_RGB565:
 		{
@@ -987,9 +989,11 @@ void LCD_SetPixelFormat(PixelFormat pixelFormat)
 		case PF_RGB565:
 			data = 0x55;
 		break;
+		/*
 		case PF_RGB666:
 			data = 0x66;
 		break;
+		*/
 		case PF_RGB444:
 #ifdef LCD_TK022F2218
 			data = 0x33;
