@@ -343,14 +343,14 @@
             <PlainCh>0</PlainCh>
             <Ropi>0</Ropi>
             <Rwpi>0</Rwpi>
-            <wLevel>0</wLevel>
+            <wLevel>1</wLevel>
             <uThumb>0</uThumb>
             <uSurpInc>0</uSurpInc>
             <VariousControls>
               <MiscControls></MiscControls>
               <Define>STM32,STM32F10X_MD,USE_STDPERIPH_DRIVER</Define>
               <Undefine></Undefine>
-              <IncludePath>./CMSIS;./Drivers/inc;./Startup;./HAL;./HWModule;./FATFS/src; ./Users; ../VGMPlayerLib</IncludePath>
+              <IncludePath>./CMSIS;./Drivers/inc;./Startup;./HAL;./HWModule;./FATFS/src; ./libjpeg; ../VGMPlayerLib; ./Users</IncludePath>
             </VariousControls>
           </Cads>
           <Aads>
@@ -511,6 +511,11 @@
               <FileType>1</FileType>
               <FilePath>.\HWModule\LCD2.c</FilePath>
             </File>
+            <File>
+              <FileName>JPEG.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\HWModule\JPEG.c</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>
@@ -595,6 +600,246 @@
               <FileName>malloc.c</FileName>
               <FileType>1</FileType>
               <FilePath>.\HAL\malloc.c</FilePath>
+            </File>
+          </Files>
+        </Group>
+        <Group>
+          <GroupName>libjpeg</GroupName>
+          <Files>
+            <File>
+              <FileName>jaricom.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\libjpeg\jaricom.c</FilePath>
+            </File>
+            <File>
+              <FileName>jcapimin.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\libjpeg\jcapimin.c</FilePath>
+            </File>
+            <File>
+              <FileName>jcapistd.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\libjpeg\jcapistd.c</FilePath>
+            </File>
+            <File>
+              <FileName>jcarith.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\libjpeg\jcarith.c</FilePath>
+            </File>
+            <File>
+              <FileName>jccoefct.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\libjpeg\jccoefct.c</FilePath>
+            </File>
+            <File>
+              <FileName>jccolor.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\libjpeg\jccolor.c</FilePath>
+            </File>
+            <File>
+              <FileName>jcdctmgr.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\libjpeg\jcdctmgr.c</FilePath>
+            </File>
+            <File>
+              <FileName>jchuff.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\libjpeg\jchuff.c</FilePath>
+            </File>
+            <File>
+              <FileName>jcinit.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\libjpeg\jcinit.c</FilePath>
+            </File>
+            <File>
+              <FileName>jcmainct.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\libjpeg\jcmainct.c</FilePath>
+            </File>
+            <File>
+              <FileName>jcmarker.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\libjpeg\jcmarker.c</FilePath>
+            </File>
+            <File>
+              <FileName>jcmaster.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\libjpeg\jcmaster.c</FilePath>
+            </File>
+            <File>
+              <FileName>jcomapi.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\libjpeg\jcomapi.c</FilePath>
+            </File>
+            <File>
+              <FileName>jcparam.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\libjpeg\jcparam.c</FilePath>
+            </File>
+            <File>
+              <FileName>jcprepct.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\libjpeg\jcprepct.c</FilePath>
+            </File>
+            <File>
+              <FileName>jcsample.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\libjpeg\jcsample.c</FilePath>
+            </File>
+            <File>
+              <FileName>jctrans.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\libjpeg\jctrans.c</FilePath>
+            </File>
+            <File>
+              <FileName>jdapimin.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\libjpeg\jdapimin.c</FilePath>
+            </File>
+            <File>
+              <FileName>jdapistd.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\libjpeg\jdapistd.c</FilePath>
+            </File>
+            <File>
+              <FileName>jdarith.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\libjpeg\jdarith.c</FilePath>
+            </File>
+            <File>
+              <FileName>jdatadst.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\libjpeg\jdatadst.c</FilePath>
+            </File>
+            <File>
+              <FileName>jdatasrc.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\libjpeg\jdatasrc.c</FilePath>
+            </File>
+            <File>
+              <FileName>jdcoefct.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\libjpeg\jdcoefct.c</FilePath>
+            </File>
+            <File>
+              <FileName>jdcolor.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\libjpeg\jdcolor.c</FilePath>
+            </File>
+            <File>
+              <FileName>jddctmgr.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\libjpeg\jddctmgr.c</FilePath>
+            </File>
+            <File>
+              <FileName>jdhuff.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\libjpeg\jdhuff.c</FilePath>
+            </File>
+            <File>
+              <FileName>jdinput.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\libjpeg\jdinput.c</FilePath>
+            </File>
+            <File>
+              <FileName>jdmainct.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\libjpeg\jdmainct.c</FilePath>
+            </File>
+            <File>
+              <FileName>jdmarker.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\libjpeg\jdmarker.c</FilePath>
+            </File>
+            <File>
+              <FileName>jdmaster.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\libjpeg\jdmaster.c</FilePath>
+            </File>
+            <File>
+              <FileName>jdmerge.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\libjpeg\jdmerge.c</FilePath>
+            </File>
+            <File>
+              <FileName>jdpostct.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\libjpeg\jdpostct.c</FilePath>
+            </File>
+            <File>
+              <FileName>jdsample.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\libjpeg\jdsample.c</FilePath>
+            </File>
+            <File>
+              <FileName>jdtrans.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\libjpeg\jdtrans.c</FilePath>
+            </File>
+            <File>
+              <FileName>jerror.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\libjpeg\jerror.c</FilePath>
+            </File>
+            <File>
+              <FileName>jfdctflt.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\libjpeg\jfdctflt.c</FilePath>
+            </File>
+            <File>
+              <FileName>jfdctfst.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\libjpeg\jfdctfst.c</FilePath>
+            </File>
+            <File>
+              <FileName>jfdctint.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\libjpeg\jfdctint.c</FilePath>
+            </File>
+            <File>
+              <FileName>jidctflt.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\libjpeg\jidctflt.c</FilePath>
+            </File>
+            <File>
+              <FileName>jidctfst.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\libjpeg\jidctfst.c</FilePath>
+            </File>
+            <File>
+              <FileName>jidctint.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\libjpeg\jidctint.c</FilePath>
+            </File>
+            <File>
+              <FileName>jmemansi.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\libjpeg\jmemansi.c</FilePath>
+            </File>
+            <File>
+              <FileName>jmemmgr.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\libjpeg\jmemmgr.c</FilePath>
+            </File>
+            <File>
+              <FileName>jquant1.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\libjpeg\jquant1.c</FilePath>
+            </File>
+            <File>
+              <FileName>jquant2.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\libjpeg\jquant2.c</FilePath>
+            </File>
+            <File>
+              <FileName>jutils.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\libjpeg\jutils.c</FilePath>
+            </File>
+            <File>
+              <FileName>transupp.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\libjpeg\transupp.c</FilePath>
             </File>
           </Files>
         </Group>

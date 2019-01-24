@@ -1,9 +1,9 @@
 #include <stm32f10x.h>
 #include "io.h"
 #include "LCD2.h"
-#include "JPEG.h"
+//#include "JPEG.h"
 
-#define CLK_E
+//#define CLK_E
 
 #define BLACK         		 	0x0000
 #define DARK_BLUE           	0x0000007F
@@ -41,8 +41,7 @@
 
 #define RGB888(r, g, b) ((r<<16) | (g<<8) | (b))
 #define RGB565(r, g, b) (((((u32)r)<<8)&0xf800) | ((((u32)g)<<3)&0x07e0) | ((((u32)b)>>3)&0x001f))
-#define RGB444(r, g, b) (((r&0x0f)<<8)  | ((g&0x0f)<<4) | (b&0x0f))
-
+#define RGB444(r, g, b) (((((u32)r)<<4)&0x0f00) | ((((u32)g)   )&0x00f0) | ((((u32)b)>>4)&0x000f))
 
 typedef enum
 {
@@ -499,49 +498,63 @@ void LCD_LoadPalette(PixelFormat format)
 	{
 		case PF_RGB888:
 #ifdef LCD_TK022F2218
-		// assert("PF_RGB888 not supported");
+		assert(0 && "PF_RGB888 not supported");
 #endif		
 		case PF_RGB666:
 		{
-			LCD_WriteCommand0(0x2D);
+			LCD_StartWritePalette();
 			for (i = 0; i <64; i++)
-				LCD_WriteData(i * 4);
+			{
+				LCD_WriteData(i<<2);
+			}
 
 			for (i = 0; i <64; i++)
-				LCD_WriteData(i * 4);
+			{
+				LCD_WriteData(i<<2);
+			}
 
 			for (i = 0; i <64; i++)
-				LCD_WriteData(i * 4);
+			{
+				LCD_WriteData(i<<2);
+			}
 		}
 		break;
 		
 		case PF_RGB565:
 		{
 			#ifdef LCD_TK022F2218
-			LCD_WriteCommand0(0x2D);
-			for(i=0;i<32;i++)  
-				WriteData(i*2);  // RED 
-			for(i=0;i<64;i++) 
-				WriteData(i*1);   // Green  
+			LCD_StartWritePalette();
 			for(i=0;i<32;i++) 
-				WriteData(i*2);  // Blue  
+			{
+				LCD_WriteData(i<<1);  // RED 
+			}
+			for(i=0;i<64;i++) 
+			{
+				LCD_WriteData(i);   // Green  
+			}
+			for(i=0;i<32;i++) 
+			{
+				LCD_WriteData(i<<1);  // Blue  
+			}
 			#else
-			LCD_WriteCommand0(0x2D);
+			LCD_StartWritePalette();
 			for (i = 0; i <64; i++)
 			{
 				if(i<32)
-					LCD_WriteData(i * 8);
+					LCD_WriteData(i<<3);
 				else
 					LCD_WriteData(0);
 			}
 
 			for (i = 0; i <64; i++)
-				LCD_WriteData(i * 4);
+			{
+				LCD_WriteData(i<<2);
+			}
 
 			for (i = 0; i <64; i++)
 			{
 				if(i<32)
-					LCD_WriteData(i * 8);
+					LCD_WriteData(i<<3);
 				else
 					LCD_WriteData(0);
 			}			
@@ -552,8 +565,30 @@ void LCD_LoadPalette(PixelFormat format)
 		case PF_RGB444:
 		{
 #ifdef LCD_TK022F2218
+			LCD_StartWritePalette();
+			for(i=0;i<32;i++)  
+			{
+				if(i<16)
+					LCD_WriteData(i<<1);  // RED 
+				else
+					LCD_WriteData(0);				
+			}
+			for(i=0;i<64;i++) 
+			{
+				if(i<16)
+					LCD_WriteData(i<<1);  // RED 
+				else
+					LCD_WriteData(0);				
+			}
+			for(i=0;i<32;i++) 
+			{
+				if(i<16)
+					LCD_WriteData(i<<1);  // BLUE 
+				else
+					LCD_WriteData(0);
+			}
 #else
-		// assert("PF_RGB444 niot supported");
+		assert(0 && "PF_RGB444 niot supported");
 #endif		
 		}
 		break;			
@@ -563,72 +598,74 @@ void LCD_LoadPalette(PixelFormat format)
 void LCD_SetRegisters()
 {
 #ifdef LCD_TK022F2218	
-	LCD_WriteCommand(0xCB);
+	LCD_WriteCommand0(0xCB);
 	LCD_WriteData(0x39);
 	LCD_WriteData(0x2C);
 	LCD_WriteData(0x00);
 	LCD_WriteData(0x34);
 	LCD_WriteData(0x02);
 
-	LCD_WriteCommand(0xCF);
+	LCD_WriteCommand0(0xCF);
 	LCD_WriteData(0x00);
 	LCD_WriteData(0XC1);
 	LCD_WriteData(0X30);
 
-	LCD_WriteCommand(0xE8);
+	LCD_WriteCommand0(0xE8);
 	LCD_WriteData(0x85);
 	LCD_WriteData(0x00);
 	LCD_WriteData(0x78);
 
-	LCD_WriteCommand(0xEA);
+	LCD_WriteCommand0(0xEA);
 	LCD_WriteData(0x00);
 	LCD_WriteData(0x00);
 
-	LCD_WriteCommand(0xED);
+	LCD_WriteCommand0(0xED);
 	LCD_WriteData(0x64);
 	LCD_WriteData(0x03);
 	LCD_WriteData(0X12);
 	LCD_WriteData(0X81);
 
-	LCD_WriteCommand(0xF7);
+	LCD_WriteCommand0(0xF7);
 	LCD_WriteData(0x20);
 
 
-	LCD_WriteCommand(0xC0);    //Power control 
+	LCD_WriteCommand0(0xC0);    //Power control 
 	LCD_WriteData(0x23);   //VRH[5:0] 
 
-	LCD_WriteCommand(0xC1);    //Power control 
+	LCD_WriteCommand0(0xC1);    //Power control 
 	LCD_WriteData(0x10);   //SAP[2:0];BT[3:0] 
 
-	LCD_WriteCommand(0xC5);    //VCM control 
+	LCD_WriteCommand0(0xC5);    //VCM control 
 	LCD_WriteData(0x3e); //对比度调节
 	LCD_WriteData(0x28);
 
-	LCD_WriteCommand(0xC7);    //VCM control2 
+	LCD_WriteCommand0(0xC7);    //VCM control2 
 	LCD_WriteData(0x00);  //--
 
-	LCD_WriteCommand(0x21);
-	LCD_WriteCommand(0x36);    // Memory Access Control 
-	LCD_WriteData(0xC8);
-	LCD_WriteCommand(0x3A);
-	LCD_WriteData(0x55);
+	LCD_WriteCommand0(0x21);
 
-	LCD_WriteCommand(0xB1);
+	LCD_WriteCommand0(0x36);    // Memory Access Control 
+	LCD_WriteData(0xC8);
+
+	//LCD_WriteCommand0(0x3A);
+	//LCD_WriteData(0x55);
+
+	LCD_WriteCommand0(0xB1);
 	LCD_WriteData(0x00);
 	LCD_WriteData(0x18);
 
-	LCD_WriteCommand(0xB6);    // Display Function Control 
+	LCD_WriteCommand0(0xB6);    // Display Function Control 
 	LCD_WriteData(0x08);
 	LCD_WriteData(0x82);
 	LCD_WriteData(0x27);
 
-	LCD_WriteCommand(0xF2);    // 3Gamma Function Disable 
+	LCD_WriteCommand0(0xF2);    // 3Gamma Function Disable 
 	LCD_WriteData(0x00);
 
-	LCD_WriteCommand(0x26);    //Gamma curve selected 
+	LCD_WriteCommand0(0x26);    //Gamma curve selected 
 	LCD_WriteData(0x01);
 
-	LCD_WriteCommand(0xE0);    //Set Gamma 
+	LCD_WriteCommand0(0xE0);    //Set Gamma 
 	LCD_WriteData(0x0F);
 	LCD_WriteData(0x31);
 	LCD_WriteData(0x2B);
@@ -645,7 +682,7 @@ void LCD_SetRegisters()
 	LCD_WriteData(0x09);
 	LCD_WriteData(0x00);
 
-	LCD_WriteCommand(0XE1);    //Set Gamma 
+	LCD_WriteCommand0(0XE1);    //Set Gamma 
 	LCD_WriteData(0x00);
 	LCD_WriteData(0x0E);
 	LCD_WriteData(0x14);
@@ -662,8 +699,7 @@ void LCD_SetRegisters()
 	LCD_WriteData(0x36);
 	LCD_WriteData(0x0F);
 
-	LCD_WriteCommand(0x11);    //Exit Sleep 
-	LCD_WriteCommand(0x29);    //Display on 
+	LCD_WriteCommand0(0x11);    //Exit Sleep 
 	delay_us(120);
 #else
 	LCD_WriteCommand0(0xB9);  // SET password
@@ -981,14 +1017,17 @@ void LCD_Initialize(void)
 
 	LCD_SetRegisters();
 
+#ifdef COLOR888
+	LCD_LoadPalette(PF_RGB888);
+	LCD_SetPixelFormat(PF_RGB888);
+#endif	
 #ifdef COLOR565	
 	LCD_LoadPalette(PF_RGB565);	
 	LCD_SetPixelFormat(PF_RGB565);
-	//LCD_SetPixelFormat(PF_RGB444);	
-	//LCD_SetPixelFormat(PF_RGB666);
-#else
-	LCD_LoadPalette(PF_RGB888);
-	LCD_SetPixelFormat(PF_RGB888);
+#endif
+#ifdef COLOR444
+	LCD_LoadPalette(PF_RGB444);
+	LCD_SetPixelFormat(PF_RGB444);
 #endif	
 	//LCD_SetAddressMode(0, 1, 0);
 	LCD_SetDisplayOn();
@@ -1038,41 +1077,6 @@ void LCD_WR_REG(u8 address, u8 data)
 	LCD_WriteData(data);
 }
 
-void LCD_DrawRect565(u32 x, u32 y, u32 w, u32 h, u8 r, u8 g, u8 b)
-{
-	u16 d0;
-	u16 d1;
-	u16 d2;
-	u32 count = w * h;
-	u32 xEnd = x + w - 1;
-	u32 yEnd = y + h - 1;
-	u32 color = RGB565(r, g, b);
-	u16 d = GET_DATA() & 0xff00;
-	d1 = d | (color >> 8);
-	d0 = d | (color & 0xff);
-
-	LCD_SetColumnAddress(x, xEnd);
-	LCD_SetRowAddress(y, yEnd);
-	LCD_StartWriteMemory();
-
-	////////////////////////////////////////////////////
-	IO_WRITE(A0, 1);
-	IO_WRITE(LCD_CS, 0);
-	while(count--)
-	{
-		SET_DATA(d1);
-
-		TOGGLE_WR();
-
-		SET_DATA(d0);
-
-		TOGGLE_WR();
-	}
-
-	IO_WRITE(LCD_CS, 1);
-	//////////////////////////////////////////////////////
-}
-
 void LCD_DrawRect888(u32 x, u32 y, u32 w, u32 h, u8 r, u8 g, u8 b)
 {
 	u16 d0;
@@ -1114,8 +1118,84 @@ void LCD_DrawRect888(u32 x, u32 y, u32 w, u32 h, u8 r, u8 g, u8 b)
 	//////////////////////////////////////////////////////
 }
 
+void LCD_DrawRect565(u32 x, u32 y, u32 w, u32 h, u8 r, u8 g, u8 b)
+{
+	u16 d0;
+	u16 d1;
+	u16 d2;
+	u32 count = w * h;
+	u32 xEnd = x + w - 1;
+	u32 yEnd = y + h - 1;
+	u32 color = RGB565(r, g, b);
+	u16 d = GET_DATA() & 0xff00;
+	d1 = d | (color >> 8);
+	d0 = d | (color & 0xff);
+
+	LCD_SetColumnAddress(x, xEnd);
+	LCD_SetRowAddress(y, yEnd);
+	LCD_StartWriteMemory();
+
+	////////////////////////////////////////////////////
+	IO_WRITE(A0, 1);
+	IO_WRITE(LCD_CS, 0);
+	while(count--)
+	{
+		SET_DATA(d1);
+
+		TOGGLE_WR();
+
+		SET_DATA(d0);
+
+		TOGGLE_WR();
+	}
+
+	IO_WRITE(LCD_CS, 1);
+	//////////////////////////////////////////////////////
+}
+
+void LCD_DrawRect444(u32 x, u32 y, u32 w, u32 h, u8 r, u8 g, u8 b)
+{
+	u16 d0;
+	u16 d1;
+	u16 d2;
+	u32 count = w * h / 2;
+	u32 xEnd = x + w - 1;
+	u32 yEnd = y + h - 1;
+	u32 color = RGB444(r, g, b);
+	u16 d = GET_DATA() & 0xff00;
+	d2 = d | (r & 0xf0) | (g >> 4);
+	d1 = d | (b & 0xf0) | (r >> 4);
+	d0 = d | (g & 0xf0) | (b >> 4);
+	
+	LCD_SetColumnAddress(x, xEnd);
+	LCD_SetRowAddress(y, yEnd);
+	LCD_StartWriteMemory();
+
+	////////////////////////////////////////////////////
+	IO_WRITE(A0, 1);
+	IO_WRITE(LCD_CS, 0);
+	while(count--)
+	{
+		SET_DATA(d2);
+
+		TOGGLE_WR();
+
+		SET_DATA(d1);
+
+		TOGGLE_WR();
+
+		SET_DATA(d0);
+
+		TOGGLE_WR();
+	}
+
+	IO_WRITE(LCD_CS, 1);
+	//////////////////////////////////////////////////////
+}
+
 void LCD_DrawJPEG888(u32 x, u32 y, const u8* filename)
 {
+	/*
 	JPEG* jpeg = JPEG_Open(filename);
 
 	char* buffer = (char*)malloc(jpeg->cinfo.output_components*jpeg->cinfo.output_width);
@@ -1125,10 +1205,12 @@ void LCD_DrawJPEG888(u32 x, u32 y, const u8* filename)
 	free(buffer);
 
 	JPEG_Close(jpeg);
+	*/
 }
 
 void LCD_DrawJPEG565(u32 x, u32 y, const u8* filename)
 {
+	/*
 	JPEG* jpeg = JPEG_Open(filename);
 
 	char* buffer = (char*)malloc(jpeg->cinfo.output_components*jpeg->cinfo.output_width);
@@ -1138,4 +1220,5 @@ void LCD_DrawJPEG565(u32 x, u32 y, const u8* filename)
 	free(buffer);
 
 	JPEG_Close(jpeg);	
+	*/
 }
