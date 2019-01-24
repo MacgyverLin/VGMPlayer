@@ -2,6 +2,7 @@
 #include "io.h"
 #include "LCD2.h"
 //#include "JPEG.h"
+#include <ff.h>
 
 //#define CLK_E
 
@@ -38,10 +39,6 @@
 #define	SET_DATA(data) D0.type->ODR = data
 #define	GET_DATA() ((u16)D0.type->ODR)
 #endif
-
-#define RGB888(r, g, b) ((r<<16) | (g<<8) | (b))
-#define RGB565(r, g, b) (((((u32)r)<<8)&0xf800) | ((((u32)g)<<3)&0x07e0) | ((((u32)b)>>3)&0x001f))
-#define RGB444(r, g, b) (((((u32)r)<<4)&0x0f00) | ((((u32)g)   )&0x00f0) | ((((u32)b)>>4)&0x000f))
 
 typedef enum
 {
@@ -571,21 +568,21 @@ void LCD_LoadPalette(PixelFormat format)
 			for(i=0;i<32;i++)  
 			{
 				if(i<16)
-					LCD_WriteData(i<<1);  // RED 
+					LCD_WriteData(i<<2);  // RED 
 				else
 					LCD_WriteData(0);				
 			}
 			for(i=0;i<64;i++) 
 			{
 				if(i<16)
-					LCD_WriteData(i<<1);  // RED 
+					LCD_WriteData(i<<2);  // RED 
 				else
 					LCD_WriteData(0);				
 			}
 			for(i=0;i<32;i++) 
 			{
 				if(i<16)
-					LCD_WriteData(i<<1);  // BLUE 
+					LCD_WriteData(i<<2);  // BLUE 
 				else
 					LCD_WriteData(0);
 			}
@@ -1015,6 +1012,8 @@ void LCD_TurnOnDisplay(void)
 void LCD_Initialize(void)
 {
 	u32 w = 0;
+	u32 x = 0;
+	u32 y = 0;
 
 	LCD_Config_GPIO();
 	LCD_Reset();
@@ -1038,6 +1037,18 @@ void LCD_Initialize(void)
 	//LCD_SetDisplayOff();
 	delay_us(120);
 
+	LCD_DrawRect(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT, 0x00, 0x00, 0x00);
+	for(x=0; x<320; x+=60)
+	{
+		for(y=0; y<240; y+=45)		
+		{
+			LCD_DrawImage(x, y, "1.bmp");
+		}
+	}
+	while (1)
+	{
+	};
+		
 	while (1)
 	{
 		LCD_DrawRect(w, w, SCREEN_WIDTH - w * 2, SCREEN_HEIGHT - w * 2, 0x00, 0x00, 0x00); w += 5;
@@ -1074,11 +1085,24 @@ void LCD_Initialize(void)
 	}
 }
 
-void LCD_WR_REG(u8 address, u8 data)
+void LCD_BeginDrawRect(u32 x, u32 y, u32 w, u32 h, u16* d, u32* count)
 {
-	LCD_WriteCommand0(address);
+	u32 xEnd = x + w - 1;
+	u32 yEnd = y + h - 1;
+	*d = GET_DATA() & 0xff00;
+	*count = w * h;
 
-	LCD_WriteData(data);
+	LCD_SetColumnAddress(x, xEnd);
+	LCD_SetRowAddress(y, yEnd);
+	LCD_StartWriteMemory();
+
+	IO_WRITE(A0, 1);
+	IO_WRITE(LCD_CS, 0);
+}
+
+void LCD_EndDrawRect()
+{
+	IO_WRITE(LCD_CS, 1);	
 }
 
 void LCD_DrawRect888(u32 x, u32 y, u32 w, u32 h, u8 r, u8 g, u8 b)
@@ -1086,22 +1110,13 @@ void LCD_DrawRect888(u32 x, u32 y, u32 w, u32 h, u8 r, u8 g, u8 b)
 	u16 d0;
 	u16 d1;
 	u16 d2;
-	u32 count = w * h;
-	u32 xEnd = x + w - 1;
-	u32 yEnd = y + h - 1;
-	u32 color = RGB888(r, g, b);
-	u16 d = GET_DATA() & 0xff00;
+	u16 d;
+	u32 count;
 	
+	LCD_BeginDrawRect(x, y, w, h, &d, &count);
 	d2 = d | r;
 	d1 = d | g;
 	d0 = d | b;
-	LCD_SetColumnAddress(x, xEnd);
-	LCD_SetRowAddress(y, yEnd);
-	LCD_StartWriteMemory();
-
-	////////////////////////////////////////////////////
-	IO_WRITE(A0, 1);
-	IO_WRITE(LCD_CS, 0);
 
 	while(count--)
 	{
@@ -1118,8 +1133,7 @@ void LCD_DrawRect888(u32 x, u32 y, u32 w, u32 h, u8 r, u8 g, u8 b)
 		TOGGLE_WR();
 	}
 
-	IO_WRITE(LCD_CS, 1);
-	//////////////////////////////////////////////////////
+	LCD_EndDrawRect();
 }
 
 void LCD_DrawRect565(u32 x, u32 y, u32 w, u32 h, u8 r, u8 g, u8 b)
@@ -1127,21 +1141,13 @@ void LCD_DrawRect565(u32 x, u32 y, u32 w, u32 h, u8 r, u8 g, u8 b)
 	u16 d0;
 	u16 d1;
 	u16 d2;
-	u32 count = w * h;
-	u32 xEnd = x + w - 1;
-	u32 yEnd = y + h - 1;
-	u32 color = RGB565(r, g, b);
-	u16 d = GET_DATA() & 0xff00;
-	d1 = d | (color >> 8);
-	d0 = d | (color & 0xff);
+	u16 d;
+	u32 count;
+	LCD_BeginDrawRect(x, y, w, h, &d, &count);
 
-	LCD_SetColumnAddress(x, xEnd);
-	LCD_SetRowAddress(y, yEnd);
-	LCD_StartWriteMemory();
+	d1 = d | ((((u32)r)   ) & 0xf8) | ((((u32)g)>>5) & 0x07); 
+	d0 = d | ((((u32)g)<<3) & 0xe0) | ((((u32)b)>>3) & 0x1f);
 
-	////////////////////////////////////////////////////
-	IO_WRITE(A0, 1);
-	IO_WRITE(LCD_CS, 0);
 	while(count--)
 	{
 		SET_DATA(d1);
@@ -1153,8 +1159,7 @@ void LCD_DrawRect565(u32 x, u32 y, u32 w, u32 h, u8 r, u8 g, u8 b)
 		TOGGLE_WR();
 	}
 
-	IO_WRITE(LCD_CS, 1);
-	//////////////////////////////////////////////////////
+	LCD_EndDrawRect();
 }
 
 void LCD_DrawRect444(u32 x, u32 y, u32 w, u32 h, u8 r, u8 g, u8 b)
@@ -1162,22 +1167,13 @@ void LCD_DrawRect444(u32 x, u32 y, u32 w, u32 h, u8 r, u8 g, u8 b)
 	u16 d0;
 	u16 d1;
 	u16 d2;
-	u32 count = w * h / 2;
-	u32 xEnd = x + w - 1;
-	u32 yEnd = y + h - 1;
-	u32 color = RGB444(r, g, b);
-	u16 d = GET_DATA() & 0xff00;
+	u16 d;
+	u32 count;
+	LCD_BeginDrawRect(x, y, w, h, &d, &count);
 	d2 = d | (r & 0xf0) | (g >> 4);
 	d1 = d | (b & 0xf0) | (r >> 4);
 	d0 = d | (g & 0xf0) | (b >> 4);
-	
-	LCD_SetColumnAddress(x, xEnd);
-	LCD_SetRowAddress(y, yEnd);
-	LCD_StartWriteMemory();
 
-	////////////////////////////////////////////////////
-	IO_WRITE(A0, 1);
-	IO_WRITE(LCD_CS, 0);
 	while(count--)
 	{
 		SET_DATA(d2);
@@ -1193,27 +1189,196 @@ void LCD_DrawRect444(u32 x, u32 y, u32 w, u32 h, u8 r, u8 g, u8 b)
 		TOGGLE_WR();
 	}
 
+	LCD_EndDrawRect();
+}
+
+typedef __packed struct
+{
+	u8  id[2];
+	u32 totalsize;
+	u16 reserved1;
+	u16 reserved2;
+	u32 offset;
+	
+	u32 size;				/* Info Header size in bytes */ 
+	u32 width;				/* Width of image */ 
+	u32 height;				/* Height of image */ 
+	u16 planes;				/* Number of colour planes */ 
+	u16 bits; 				/* Bits per pixel */ 
+	u32 compression; 		/* Compression type */ 
+	u32 imagesize;	 		/* Image size in bytes */ 
+	u32 xresolution;		/* Pixels per meter */ 
+	u32 yresolution; 		/* Pixels per meter */ 
+	u32 ncolours; 			/* Number of colours */ 
+	u32 importantcolours; 	/* Important colours */ 		
+}BmpHeader;
+
+#include "bmp.h"
+typedef struct
+{
+	const u8* start;
+	u32 current;	
+	u32 size;
+}FILE;
+
+s8 open(FILE* file, const char* filename, int test)
+{
+	file->start = __bmp;
+	file->current = 0;
+	file->size = __bmp_size;
+
+	return 0;
+}
+
+void close(FILE* file)
+{
+	file->start = 0;
+	file->current = 0;
+	file->size = 0;
+}
+
+u32 tell(FILE* file)
+{
+	return file->current;
+}
+
+void read(FILE* file, u8* buffer, u32 btr, u32* br)
+{
+	if(file->current + btr > file->size)
+		btr = file->size - file->current;
+		
+	memcpy(buffer, &file->start[file->current], btr);
+	file->current += btr;
+	
+	if(br)
+		*br = btr;
+}
+
+u32 seek(FILE* file, int offset)
+{
+	file->current = offset;
+	
+	return file->current;
+}
+
+s8 LCD_BeginDrawImage(FILE* file, BmpHeader* header, const char* filename, u32 x, u32 y, u16* d, u32* count)
+{
+	u32 xEnd;
+	u32 yEnd;
+	
+	u32 br;
+	s8 res = open(file, filename, FA_OPEN_ALWAYS | FA_READ);
+	if(res!=0)
+		return 0;
+	
+	read(file, (u8*)header, sizeof(BmpHeader), &br);
+	if(header->id[0]!=0x42 || header->id[1]!=0x4D || header->bits!=24)
+	{
+		close(file);
+		return 0;
+	}
+	
+	seek(file, header->offset);
+	
+	*count = header->width * header->height;
+	xEnd = x + header->width - 1;
+	yEnd = y + header->height - 1;
+	*d = GET_DATA() & 0xff00;
+
+	////////////////////////////////////////////////////
+	LCD_SetColumnAddress(x, xEnd);
+	LCD_SetRowAddress(y, yEnd);
+	LCD_StartWriteMemory();
+
+	IO_WRITE(A0, 1);
+	IO_WRITE(LCD_CS, 0);
+	
+	return -1;
+}
+
+void LCD_EndDrawImage(FILE* file)
+{
 	IO_WRITE(LCD_CS, 1);
-	//////////////////////////////////////////////////////
+	fclose(file);	
 }
 
-void LCD_DrawJPEG888(u32 x, u32 y, const u8* filename)
+void LCD_DrawImage888(u32 x, u32 y, const u8* filename)
 {
-	/*
-	JPEG* jpeg = JPEG_Open(filename);
-
-	char* buffer = (char*)malloc(jpeg->cinfo.output_components*jpeg->cinfo.output_width);
-	
-	JPEG_DecodeScanLine(jpeg, &buffer);
-	
-	free(buffer);
-
-	JPEG_Close(jpeg);
-	*/
 }
 
-void LCD_DrawJPEG565(u32 x, u32 y, const u8* filename)
+void LCD_DrawImage565(u32 x, u32 y, const u8* filename)
 {
+	u16 d;
+	u16 d0;
+	u16 d1;
+	u16 d2;
+	u32 count;
+	u8 buf[3];
+	u32 color;
+
+	FILE file;
+	BmpHeader header;
+	LCD_BeginDrawImage(&file, &header, filename, x, y, &d, &count);
+	
+	while(count--)
+	{
+		read(&file, buf, 3, 0);
+		
+		color = RGB565(buf[2], buf[1], buf[0]);
+		d1 = d | (color >> 8); 			// ((((u32)g)<<3) & 0xe0) | ((((u32)b)>>3) & 0x1f)
+		d0 = d | (color & 0xff);		// ((((u32)r)<<8)&0xf800) | ((((u32)g)>>5) & 0x07)  
+		
+		SET_DATA(d1);
+
+		TOGGLE_WR();
+
+		SET_DATA(d0);
+
+		TOGGLE_WR();
+	}
+	
+	LCD_EndDrawImage(&file);
+}
+
+void LCD_DrawImage444(u32 x, u32 y, const u8* filename)
+{
+	u16 d;
+	u16 d0;
+	u16 d1;
+	u16 d2;
+	u32 count;
+	u8 buf[6];
+	u32 color;
+	
+	FILE file;
+	BmpHeader header;
+	LCD_BeginDrawImage(&file, &header, filename, x, y, &d, &count);
+
+	count>>=1;
+	while(count--)
+	{
+		read(&file, buf, 6, 0);
+		
+		d2 = d | (buf[2] & 0xf0) | (buf[1] >> 4);
+		d1 = d | (buf[0] & 0xf0) | (buf[5] >> 4);
+		d0 = d | (buf[4] & 0xf0) | (buf[3] >> 4);
+		
+		SET_DATA(d2);
+
+		TOGGLE_WR();
+
+		SET_DATA(d1);
+
+		TOGGLE_WR();
+
+		SET_DATA(d0);
+
+		TOGGLE_WR();
+	}
+
+	LCD_EndDrawImage(&file);
+}
+
 	/*
 	JPEG* jpeg = JPEG_Open(filename);
 
@@ -1225,4 +1390,3 @@ void LCD_DrawJPEG565(u32 x, u32 y, const u8* filename)
 
 	JPEG_Close(jpeg);	
 	*/
-}
