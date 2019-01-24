@@ -81,22 +81,22 @@ extern const GPIO PORT_B15;
 #define A0					PORT_B10	// P3.5
 #define A1					PORT_B11	// P3.6
 
-#define SN_CLK_CS		PORT_B9  //  P0.4
+#define SN_CLK_CS			PORT_B9  //  P0.4
 #define SN_WR				PORT_B8  //  P0.2
 #define RD					PORT_B7  /// P2.0
-#define LCD_CS			PORT_B6  /// P2.1
+#define LCD_CS				PORT_B6  /// P2.1
 #define SD_CS				PORT_B5  /// P0.6
-#define YM_CLK_CS		PORT_B4  //  P0.3 // 
-#define VGM_CS			PORT_B3  /// P0.7 //
-#define BUTTON_MODE	PORT_A15 /// P2.2 //
-#define BUTTON_NEXT	PORT_A12 /// P2.3
-#define BUTTON_PREV	PORT_A11 /// P2.4
+#define YM_CLK_CS			PORT_B4  //  P0.3 // 
+#define VGM_CS				PORT_B3  /// P0.7 //
+#define BUTTON_MODE			PORT_A15 /// P2.2 //
+#define BUTTON_NEXT			PORT_A12 /// P2.3
+#define BUTTON_PREV			PORT_A11 /// P2.4
 #define RXD					PORT_A10 //  P3.0
 #define TXD					PORT_A9  //  P3.1
-#define BUTTON_SEL	PORT_A8  /// P2.5
-#define SPI_MOSI		PORT_B15 //  P0.1
-#define SPI_MISO		PORT_B14 /// P0.5
-#define SPI_CLK			PORT_B13 //  P0.0
+#define BUTTON_SEL			PORT_A8  /// P2.5
+#define SPI_MOSI			PORT_B15 //  P0.1
+#define SPI_MISO			PORT_B14 /// P0.5
+#define SPI_CLK				PORT_B13 //  P0.0
 #define RESET				PORT_B12 //  P3.7
 
 #ifdef __cplusplus 

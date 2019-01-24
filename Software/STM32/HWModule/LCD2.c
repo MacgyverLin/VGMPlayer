@@ -1011,10 +1011,6 @@ void LCD_TurnOnDisplay(void)
 
 void LCD_Initialize(void)
 {
-	u32 w = 0;
-	u32 x = 0;
-	u32 y = 0;
-
 	LCD_Config_GPIO();
 	LCD_Reset();
 
@@ -1036,7 +1032,15 @@ void LCD_Initialize(void)
 	LCD_SetDisplayOn();
 	//LCD_SetDisplayOff();
 	delay_us(120);
+}
 
+void LCD_Test(void)
+{
+	u32 w = 0;
+	u32 x = 0;
+	u32 y = 0;
+
+	
 	LCD_DrawRect(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT, 0x00, 0x00, 0x00);
 	for(x=0; x<320; x+=60)
 	{
@@ -1082,7 +1086,7 @@ void LCD_Initialize(void)
 		LCD_DrawRect(w, w, SCREEN_WIDTH - w * 2, SCREEN_HEIGHT - w * 2, 0xff, 0xff, 0xff); w += 5;
 		delay_ms(20000);
 		w = 0;
-	}
+	}	
 }
 
 void LCD_BeginDrawRect(u32 x, u32 y, u32 w, u32 h, u16* d, u32* count)

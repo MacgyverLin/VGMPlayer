@@ -230,19 +230,6 @@ void VGMBoard_WriteSN76489(u8 data)
 	delay_us(DATA_SETUP_TIME);
 }
 
-void VGMBoard_WriteLCD(u8 data)
-{
-	/////////////////////////
-	VGMBoard_SetData(data);
-	delay_us(DATA_SETUP_TIME);
-
-	IO_WRITE(SN_WR, 0);
-	delay_us(DATA_SETUP_TIME);
-
-	IO_WRITE(SN_WR, 1);
-	delay_us(DATA_SETUP_TIME);
-}
-
 s32 VGMBoard_Initialize(u32 clock, u32 sampleRate)
 {
 	//SystemInit();

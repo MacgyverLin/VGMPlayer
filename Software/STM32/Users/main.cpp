@@ -3,6 +3,9 @@
 #include "VGMFile.h"
 #include "VGMAudioPlayer.h"
 #include "VGMWaveFormViewer.h"
+#include <lcd2.h>
+#include <timer.h>
+#include <dma.h>
 
 /*
 const char* getNextMusic()
@@ -146,14 +149,39 @@ const char* getNextMusic()
 	};
 };
 
-#include <LCD_TK022F2218.h>
-
 int main()
 {
 	if (!Platform::initialize())
 		return false;
+
+	//u32 sampleRate = 44100;
+	u32 sampleRate = 22050;
+	//u32 sampleRate = 11025;
+	u32 bpp = 10;
+	//u32 bpp = 11;
+	//u32 bpp = 12;
+	u32 max = 1024;//512//pow(2, bpp);
+	//u32 max = 2048;//1024//pow(2, bpp);
+	//u32 max = 4096;//2048//pow(2, bpp);	
+	u32 interruptsPerUpdate = 3.18877551; // 1.594387755 // 72*1000*1000 / max / sampleRate;
+
+	TIMER_Initialize(max, 0); 	// Frequency is 720kHz: Tout = (arr+1)(psc+1)/TClk, assume APB1 no prescale, TClk 72Mhz
+								// 72000000/(99+1) = 720KHZ, no prescale clock
+	GPIOB->BRR = GPIO_Pin_1;
+	//TIMER_PWM_Initialize(1);
+	//TIMER_PWM_Initialize(2);
+	TIMER_PWM_Initialize(3);
+	//TIMER_PWM_Initialize(4);
+	//DMA_Initialize();
+	
+	NVIC_Initialize();
+	//while(1)
+	{
+	}
+	TIMER_Test();
 	
 	LCD_Initialize();
+	LCD_Test();	
 
 	bool quit = false;
 	while (!quit)

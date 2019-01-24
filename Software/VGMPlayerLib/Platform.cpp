@@ -25,7 +25,7 @@ bool Platform::initialize()
 	if (SDL_Init(SDL_INIT_VIDEO) < 0)
 	{
 		// Display error message
-		printf("SDL could not initialize! SDL_Error: %s\n", SDL_GetError());
+		//printf("SDL could not initialize! SDL_Error: %s\n", SDL_GetError());
 		return false;
 	}
 

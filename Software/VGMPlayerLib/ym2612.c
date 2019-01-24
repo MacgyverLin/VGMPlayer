@@ -356,10 +356,6 @@ void CALC_FINC_SL(YM2612 *ym2612, Slot *SL, s32 finc, s32 kc)
 
 	ksr = kc >> SL->KSR_S;  // keycode atténuation
 
-#if YM_DEBUG_LEVEL > 1
-	fprintf(debug_file, "FINC = %d  SL->Finc = %d\n", finc, SL->Finc);
-#endif
-
 	if (SL->KSR != ksr)      // si le KSR a chang?alors
 	{            // les différents taux pour l'enveloppe sont mis ?jour
 		SL->KSR = ksr;

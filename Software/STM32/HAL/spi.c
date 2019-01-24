@@ -4,7 +4,7 @@
 #define SPI2_PORT GPIOB
 #define SPI2_MOSI GPIO_Pin_15
 #define SPI2_MISO GPIO_Pin_14
-#define SPI2_SCK 	GPIO_Pin_13
+#define SPI2_SCK  GPIO_Pin_13
 #define SPI2_NSS  GPIO_Pin_12
 
 void SPI2_Init(void)
@@ -68,10 +68,10 @@ void SPI2_Init(void)
 	SPI2_ReadWriteByte(0xff);//启动传输(主要作用：维持MOSI为高)		 	
 }   
 
-//SPI1 速度设置函数
-//SpeedSet:0~7
-//SPI速度=fAPB2/2^(SpeedSet+1)
-//APB2时钟一般为72Mhz
+// SPI1 速度设置函数
+// SpeedSet:0~7
+// SPI速度=fAPB2/2^(SpeedSet+1)
+// APB2时钟一般为72Mhz
 void SPI2_SetSpeed(u8 SpeedSet)
 {
 	SpeedSet &= 0X07;			//限制范围

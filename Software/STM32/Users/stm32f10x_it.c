@@ -23,6 +23,8 @@
 
 /* Includes ------------------------------------------------------------------*/
 #include "stm32f10x_it.h"
+#include <stm32f10x_dma.h>
+#include <stm32f10x_tim.h>
 
 /** @addtogroup STM32F10x_StdPeriph_Examples
   * @{
@@ -163,5 +165,60 @@ void SysTick_Handler(void)
 /**
   * @}
   */
+
+u32 counter = 0;
+u8 led = 0;
+
+//u32 sampleRate = 44100;
+u32 sampleRate = 22050;
+//u32 sampleRate = 11025;
+u32 bpp = 10;//9
+//u32 bpp = 11;//10
+//u32 bpp = 12;//11
+u32 max = 1024;//512//pow(2, bpp);
+//u32 max = 2048;//1024//pow(2, bpp);
+//u32 max = 4096;//2048//pow(2, bpp);
+u32 interruptsPerUpdate = 3.18877551; // 1.594387755 // 72*1000*1000 / max / sampleRate;
+
+void TIM3_IRQHandler( void )   // ????,???50US
+{
+	TIM_ClearITPendingBit( TIM3, TIM_IT_CC3 );
+	// #define TIM_IT_CC1                         ((uint16_t)0x0002)
+	// #define TIM_IT_CC2                         ((uint16_t)0x0004)
+	// #define TIM_IT_CC3                         ((uint16_t)0x0008)
+	// #define TIM_IT_CC4                         ((uint16_t)0x0010)
+	
+	if(counter++>=interruptsPerUpdate)
+	{
+		counter = 0;
+		led = 1 - led;
+		if(led)
+			GPIOB->BSRR = GPIO_Pin_1;
+		else
+			GPIOB->BRR = GPIO_Pin_1;
+	}
+}
+
+/******************************************************************************/
+void DMA1_Channel2_IRQHandler( void )
+{
+	DMA_ClearITPendingBit( DMA1_IT_TC2 );
+
+	GPIOB->BSRR = GPIO_Pin_1;
+}  
+
+void DMA1_Channel3_IRQHandler( void )
+{
+	DMA_ClearITPendingBit( DMA1_IT_TC3 );
+
+	//GPIOB->BSRR = GPIO_Pin_1;
+}  
+
+void DMA1_Channel6_IRQHandler( void )
+{
+	DMA_ClearITPendingBit( DMA1_IT_TC6 );
+
+	//GPIOB->BSRR = GPIO_Pin_1;
+}  
 
 /******************* (C) COPYRIGHT 2011 STMicroelectronics *****END OF FILE****/

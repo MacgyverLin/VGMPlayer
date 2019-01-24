@@ -9,6 +9,7 @@ extern "C" {
 #endif
 
 void LCD_Initialize(void);
+void LCD_Test(void);
 
 void LCD_DrawRect888(u32 x, u32 y, u32 w, u32 h, u8 r, u8 g, u8 b);
 void LCD_DrawRect565(u32 x, u32 y, u32 w, u32 h, u8 r, u8 g, u8 b);
