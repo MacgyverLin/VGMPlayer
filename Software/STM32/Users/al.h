@@ -4,7 +4,7 @@
 #if defined(__cplusplus)
 extern "C" {
 #endif
-
+	
 #ifndef AL_API
  #if defined(AL_LIBTYPE_STATIC)
   #define AL_API
@@ -388,7 +388,6 @@ typedef void ALvoid;
 #define AL_RENDERER                              0xB003
 /** Context string: Space-separated extension list. */
 #define AL_EXTENSIONS                            0xB004
-
 
 /**
  * Doppler scale.

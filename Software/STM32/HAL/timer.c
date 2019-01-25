@@ -1,23 +1,56 @@
 #include "timer.h"
 #include <stm32f10x_tim.h>
 #include <stm32f10x_gpio.h>
+#include <misc.h>
 
-void TIMER_Initialize(u16 arr, u16 psc)
+void (*updateCallBack)(void) = 0;
+
+int TIM3_IT_Update_CallBack_Interval;
+void TIM3_IT_Update_CallBack(void)
+{
+	if(updateCallBack)
+	{
+		updateCallBack();
+	}
+}
+
+void TIMER_Initialize(u16 arr, u16 psc, void (*updateCallBack_)(void))
 {
     TIM_TimeBaseInitTypeDef     TIM_TimeBaseInitStructure;
-
+	NVIC_InitTypeDef 			NVIC_InitStructure;	
+	
     RCC_APB1PeriphClockCmd(RCC_APB1Periph_TIM3,  ENABLE);
-    
+    TIM_ITConfig(TIM3, TIM_IT_Update, DISABLE);	
+	//TIM_ITConfig(TIM3, TIM_IT_CC3, DISABLE);	
+	
     TIM_TimeBaseInitStructure.TIM_Period	    = arr;
     TIM_TimeBaseInitStructure.TIM_Prescaler	    = psc;
     TIM_TimeBaseInitStructure.TIM_CounterMode   = TIM_CounterMode_Up;
     TIM_TimeBaseInitStructure.TIM_ClockDivision = TIM_CKD_DIV1;
     TIM_TimeBaseInit(TIM3, &TIM_TimeBaseInitStructure);
 
-	TIM_ClearFlag(TIM3, TIM_FLAG_CC3);
-	TIM_ITConfig(TIM3, TIM_IT_CC3, ENABLE);
+	NVIC_InitStructure.NVIC_IRQChannel = TIM3_IRQn;
+	NVIC_InitStructure.NVIC_IRQChannelPreemptionPriority = 1;
+	NVIC_InitStructure.NVIC_IRQChannelSubPriority = 0;
+	NVIC_InitStructure.NVIC_IRQChannelCmd = ENABLE;
+	NVIC_Init(&NVIC_InitStructure);	
+
+	updateCallBack = updateCallBack_;
 	
-    TIM_Cmd(TIM3, ENABLE);
+	TIM_ClearFlag(TIM3, TIM_FLAG_Update);
+	TIM_ITConfig(TIM3, TIM_IT_Update, ENABLE);
+	//TIM_ClearFlag(TIM3, TIM_FLAG_CC3);
+	//TIM_ITConfig(TIM3, TIM_IT_CC3, ENABLE);
+}
+
+void TIMER_Start()
+{
+	TIM_Cmd(TIM3, ENABLE);
+}
+
+void TIMER_Stop()
+{
+	TIM_Cmd(TIM3, DISABLE);
 }
 
 void TIMER_PWM_Initialize(u32 channel)
@@ -64,7 +97,7 @@ void TIMER_PWM_Initialize(u32 channel)
 	}	
 
 	/////////////////////////////////////////////////////////////
-	TIM_OCInitStructure.TIM_OCMode			=	TIM_OCMode_PWM2;        // CNT>CCR active
+	TIM_OCInitStructure.TIM_OCMode			=	TIM_OCMode_PWM1;        // CNT<CCR active
 	TIM_OCInitStructure.TIM_OutputState		=	TIM_OutputState_Enable;
 	TIM_OCInitStructure.TIM_OCPolarity		=	TIM_OCPolarity_High;	// active is High
 	if(channel==1)

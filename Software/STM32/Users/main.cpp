@@ -4,8 +4,7 @@
 #include "VGMAudioPlayer.h"
 #include "VGMWaveFormViewer.h"
 #include <lcd2.h>
-#include <timer.h>
-#include <dma.h>
+#include "AudioDevice.h"
 
 /*
 const char* getNextMusic()
@@ -149,11 +148,75 @@ const char* getNextMusic()
 	};
 };
 
+#include <timer.h>
+
+void initAudio(f32 freq1, f32 freq2)
+{
+
+}
+
+void filloutputBuffer(AudioDevice* audioDevice)
+{
+	u16 testAudio[VGM_SAMPLE_COUNT*2];
+	u32 i;
+	float ratio1 = 1.0f / VGM_SAMPLE_COUNT * 1000 / 60.0f * 2.0 * 3.1416;
+	float ratio2 = 1.0f / VGM_SAMPLE_COUNT * 2000 / 60.0f * 2.0 * 3.1416;
+	float ang1 = 0;
+	float ang2 = 0;
+	for(i=0; i<VGM_SAMPLE_COUNT; i+=1)
+	{
+		ang1 += ratio1;
+		ang2 += ratio2;
+		testAudio[(i<<1) + 0] = 16384 * sin(ang1) + 16384;
+		testAudio[(i<<1) + 1] = 16384 * sin(ang2) + 16384;
+	}	
+	
+	//memset(&testAudio[0], 0, VGM_SAMPLE_COUNT * 2);
+	if (!audioDevice->queue(&testAudio[0], VGM_SAMPLE_COUNT * 2 * 2))
+		return;
+
+	if (audioDevice->getDeviceState() != 3)
+	{
+		audioDevice->play();
+		//outputDevice.setVolume(1.0);
+		//outputDevice.setPlayRate(1.0);
+	}
+}
+
 int main()
 {
+	u32 bufferCount = 4;
+	
 	if (!Platform::initialize())
 		return false;
 
+	initAudio(1, 2);
+	
+	AudioDevice audioDevice;
+	boolean ok = audioDevice.open(2, 16, 22050, bufferCount);
+	if(ok)
+	{
+		//audioDevice.play();
+		while(1)
+		{
+			audioDevice.setVolume(1.0f);
+			float volume = audioDevice.getVolume();
+			audioDevice.setPlayRate(1.09);
+			float playrate = audioDevice.getPlayRate();
+			
+			if(audioDevice.getQueued()<bufferCount/2)
+			{
+				filloutputBuffer(&audioDevice);
+			}
+
+			audioDevice.update();
+		};
+		
+		audioDevice.stop();	
+		audioDevice.close();
+	}
+	
+	/*
 	//u32 sampleRate = 44100;
 	u32 sampleRate = 22050;
 	//u32 sampleRate = 11025;
@@ -174,14 +237,20 @@ int main()
 	//TIMER_PWM_Initialize(4);
 	//DMA_Initialize();
 	
-	NVIC_Initialize();
+	TIMER_Start();
+	TIMER_Stop();
+	TIMER_Start();
+	
+	//NVIC_Initialize();
 	//while(1)
 	{
 	}
-	TIMER_Test();
+
+	TIMER_Test();	
+	*/
 	
-	LCD_Initialize();
-	LCD_Test();	
+	//LCD_Initialize();
+	//LCD_Test();	
 
 	bool quit = false;
 	while (!quit)

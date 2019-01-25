@@ -1,13 +1,13 @@
 #ifndef _SPI_H_
 #define _SPI_H_
 
+#include "vgmdef.h"
+
 #ifdef __cplusplus 
 extern "C"
 {
 #endif
 	
-#include "sys.h"
-
 // SPI总线速度设置  
 #define SPI_SPEED_2   		0
 #define SPI_SPEED_4   		1

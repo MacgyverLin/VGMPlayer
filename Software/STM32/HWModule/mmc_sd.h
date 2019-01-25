@@ -1,7 +1,7 @@
 #ifndef _MMC_SD_H_
 #define _MMC_SD_H_	
 
-#include "sys.h"	 
+#include "vgmdef.h"
 #include <stm32f10x.h>
 
 #ifdef __cplusplus 

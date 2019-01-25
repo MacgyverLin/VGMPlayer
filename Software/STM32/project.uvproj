@@ -166,7 +166,7 @@
             <DriverSelection>4100</DriverSelection>
           </Flash1>
           <Flash2>STLink\ST-LINKIII-KEIL.dll</Flash2>
-          <Flash3></Flash3>
+          <Flash3>"" ()</Flash3>
           <Flash4></Flash4>
         </Utilities>
         <TargetArmAds>
@@ -343,7 +343,7 @@
             <PlainCh>0</PlainCh>
             <Ropi>0</Ropi>
             <Rwpi>0</Rwpi>
-            <wLevel>1</wLevel>
+            <wLevel>0</wLevel>
             <uThumb>0</uThumb>
             <uSurpInc>0</uSurpInc>
             <VariousControls>
@@ -467,11 +467,6 @@
               <FilePath>.\HAL\spi.c</FilePath>
             </File>
             <File>
-              <FileName>sys.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>.\HAL\sys.c</FilePath>
-            </File>
-            <File>
               <FileName>io.c</FileName>
               <FileType>1</FileType>
               <FilePath>.\HAL\io.c</FilePath>
@@ -520,11 +515,6 @@
               <FileName>ym2612.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\VGMPlayerLib\ym2612.c</FilePath>
-            </File>
-            <File>
-              <FileName>LCD2.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>.\HWModule\LCD2.c</FilePath>
             </File>
           </Files>
         </Group>
@@ -585,6 +575,16 @@
               <FileName>main.cpp</FileName>
               <FileType>8</FileType>
               <FilePath>.\Users\main.cpp</FilePath>
+            </File>
+            <File>
+              <FileName>al.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\Users\al.c</FilePath>
+            </File>
+            <File>
+              <FileName>alc.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\Users\alc.c</FilePath>
             </File>
           </Files>
         </Group>

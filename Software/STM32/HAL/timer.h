@@ -8,7 +8,9 @@ extern "C"
 {
 #endif
 
-extern void TIMER_Initialize(u16 arr, u16 psc);
+extern void TIMER_Initialize(u16 arr, u16 psc, void (*updateCallBack_)(void));
+extern void TIMER_Start(void);
+extern void TIMER_Stop(void);
 
 extern void TIMER_PWM_Initialize(u32 channel);
 extern void TIMER_PWM_SetDuty(u32 channel, u32 ccr);

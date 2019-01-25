@@ -26,7 +26,7 @@ void NVIC_Initialize(void)
 	NVIC_InitStructure.NVIC_IRQChannelPreemptionPriority = 1;
 	NVIC_InitStructure.NVIC_IRQChannelSubPriority = 0;
 	NVIC_InitStructure.NVIC_IRQChannelCmd = ENABLE;
-	NVIC_Init(&NVIC_InitStructure);
+	//NVIC_Init(&NVIC_InitStructure);
 }
 
 u8 buffer[10] = { 0, 10, 20, 30, 40, 50, 60, 70, 80, 90 };

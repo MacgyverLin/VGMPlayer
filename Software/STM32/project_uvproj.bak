@@ -166,7 +166,7 @@
             <DriverSelection>4100</DriverSelection>
           </Flash1>
           <Flash2>STLink\ST-LINKIII-KEIL.dll</Flash2>
-          <Flash3></Flash3>
+          <Flash3>"" ()</Flash3>
           <Flash4></Flash4>
         </Utilities>
         <TargetArmAds>
@@ -343,7 +343,7 @@
             <PlainCh>0</PlainCh>
             <Ropi>0</Ropi>
             <Rwpi>0</Rwpi>
-            <wLevel>1</wLevel>
+            <wLevel>0</wLevel>
             <uThumb>0</uThumb>
             <uSurpInc>0</uSurpInc>
             <VariousControls>
@@ -436,6 +436,11 @@
               <FileType>1</FileType>
               <FilePath>.\Drivers\src\stm32f10x_tim.c</FilePath>
             </File>
+            <File>
+              <FileName>stm32f10x_dma.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\Drivers\src\stm32f10x_dma.c</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>
@@ -462,14 +467,19 @@
               <FilePath>.\HAL\spi.c</FilePath>
             </File>
             <File>
-              <FileName>sys.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>.\HAL\sys.c</FilePath>
-            </File>
-            <File>
               <FileName>io.c</FileName>
               <FileType>1</FileType>
               <FilePath>.\HAL\io.c</FilePath>
+            </File>
+            <File>
+              <FileName>dma.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\HAL\dma.c</FilePath>
+            </File>
+            <File>
+              <FileName>timer.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\HAL\timer.c</FilePath>
             </File>
           </Files>
         </Group>
@@ -505,11 +515,6 @@
               <FileName>ym2612.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\VGMPlayerLib\ym2612.c</FilePath>
-            </File>
-            <File>
-              <FileName>LCD2.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>.\HWModule\LCD2.c</FilePath>
             </File>
           </Files>
         </Group>

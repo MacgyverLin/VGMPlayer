@@ -30,7 +30,11 @@ typedef double f64;
 #endif
 
 #define vgm_log printf
+#ifdef STM32
+#define VGM_SAMPLE_COUNT		441 // NTSC FRAME
+#else
 #define VGM_SAMPLE_COUNT		882 // NTSC FRAME
+#endif
 #define VGM_OUTPUT_BUFFER_COUNT 4   // 64 Frames
 #define NO_CLAMP
 #define PI 3.141592654f

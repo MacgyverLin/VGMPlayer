@@ -1,6 +1,7 @@
 #ifndef __DELAY_H
 #define __DELAY_H 			   
-#include "sys.h"  
+
+#include "vgmdef.h"
 
 #ifdef __cplusplus 
 extern "C"

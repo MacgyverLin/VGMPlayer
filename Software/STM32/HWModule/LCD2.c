@@ -596,7 +596,7 @@ void LCD_LoadPalette(PixelFormat format)
 
 void LCD_SetRegisters()
 {
-#ifdef LCD_TK022F2218	
+#ifdef LCD_TK022F2218
 	LCD_WriteCommand0(0xCB);
 	LCD_WriteData(0x39);
 	LCD_WriteData(0x2C);
@@ -1217,7 +1217,6 @@ typedef __packed struct
 	u32 importantcolours; 	/* Important colours */ 		
 }BmpHeader;
 
-#include "bmp.h"
 typedef struct
 {
 	const u8* start;
@@ -1225,11 +1224,16 @@ typedef struct
 	u32 size;
 }FILE;
 
+#if 0
+#include "bmp.h"
+#endif
 s8 open(FILE* file, const char* filename, int test)
 {
+#if 0	
 	file->start = __bmp;
 	file->current = 0;
 	file->size = __bmp_size;
+#endif
 
 	return 0;
 }
