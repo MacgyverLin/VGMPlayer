@@ -409,10 +409,10 @@
       <FileType>2</FileType>
       <tvExp>0</tvExp>
       <Focus>0</Focus>
-      <ColumnNumber>23</ColumnNumber>
+      <ColumnNumber>40</ColumnNumber>
       <tvExpOptDlg>0</tvExpOptDlg>
-      <TopLine>123</TopLine>
-      <CurrentLine>132</CurrentLine>
+      <TopLine>122</TopLine>
+      <CurrentLine>133</CurrentLine>
       <bDave2>0</bDave2>
       <PathWithFileName>.\StartUp\startup_stm32f10x_md.s</PathWithFileName>
       <FilenameWithoutPath>startup_stm32f10x_md.s</FilenameWithoutPath>
@@ -435,7 +435,7 @@
       <Focus>0</Focus>
       <ColumnNumber>0</ColumnNumber>
       <tvExpOptDlg>0</tvExpOptDlg>
-      <TopLine>190</TopLine>
+      <TopLine>186</TopLine>
       <CurrentLine>197</CurrentLine>
       <bDave2>0</bDave2>
       <PathWithFileName>.\HAL\delay.c</PathWithFileName>
@@ -619,8 +619,8 @@
       <Focus>0</Focus>
       <ColumnNumber>0</ColumnNumber>
       <tvExpOptDlg>0</tvExpOptDlg>
-      <TopLine>16</TopLine>
-      <CurrentLine>25</CurrentLine>
+      <TopLine>1320</TopLine>
+      <CurrentLine>1321</CurrentLine>
       <bDave2>0</bDave2>
       <PathWithFileName>.\HWModule\LCD2.c</PathWithFileName>
       <FilenameWithoutPath>LCD2.c</FilenameWithoutPath>
@@ -723,7 +723,7 @@
       <Focus>0</Focus>
       <ColumnNumber>0</ColumnNumber>
       <tvExpOptDlg>0</tvExpOptDlg>
-      <TopLine>446</TopLine>
+      <TopLine>447</TopLine>
       <CurrentLine>457</CurrentLine>
       <bDave2>0</bDave2>
       <PathWithFileName>..\VGMPlayerLib\VGMData.cpp</PathWithFileName>
@@ -753,10 +753,10 @@
       <FileType>8</FileType>
       <tvExp>0</tvExp>
       <Focus>0</Focus>
-      <ColumnNumber>13</ColumnNumber>
+      <ColumnNumber>8</ColumnNumber>
       <tvExpOptDlg>0</tvExpOptDlg>
-      <TopLine>69</TopLine>
-      <CurrentLine>70</CurrentLine>
+      <TopLine>164</TopLine>
+      <CurrentLine>185</CurrentLine>
       <bDave2>0</bDave2>
       <PathWithFileName>..\VGMPlayerLib\VGMFile.cpp</PathWithFileName>
       <FilenameWithoutPath>VGMFile.cpp</FilenameWithoutPath>
@@ -801,10 +801,10 @@
       <FileType>8</FileType>
       <tvExp>0</tvExp>
       <Focus>0</Focus>
-      <ColumnNumber>35</ColumnNumber>
+      <ColumnNumber>0</ColumnNumber>
       <tvExpOptDlg>0</tvExpOptDlg>
       <TopLine>358</TopLine>
-      <CurrentLine>385</CurrentLine>
+      <CurrentLine>369</CurrentLine>
       <bDave2>0</bDave2>
       <PathWithFileName>.\Users\main.cpp</PathWithFileName>
       <FilenameWithoutPath>main.cpp</FilenameWithoutPath>
@@ -875,8 +875,8 @@
       <Focus>0</Focus>
       <ColumnNumber>0</ColumnNumber>
       <tvExpOptDlg>0</tvExpOptDlg>
-      <TopLine>3261</TopLine>
-      <CurrentLine>3276</CurrentLine>
+      <TopLine>2535</TopLine>
+      <CurrentLine>2548</CurrentLine>
       <bDave2>0</bDave2>
       <PathWithFileName>.\FATFS\src\ff.c</PathWithFileName>
       <FilenameWithoutPath>ff.c</FilenameWithoutPath>

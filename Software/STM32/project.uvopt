@@ -801,10 +801,10 @@
       <FileType>8</FileType>
       <tvExp>0</tvExp>
       <Focus>0</Focus>
-      <ColumnNumber>0</ColumnNumber>
+      <ColumnNumber>20</ColumnNumber>
       <tvExpOptDlg>0</tvExpOptDlg>
-      <TopLine>358</TopLine>
-      <CurrentLine>369</CurrentLine>
+      <TopLine>367</TopLine>
+      <CurrentLine>389</CurrentLine>
       <bDave2>0</bDave2>
       <PathWithFileName>.\Users\main.cpp</PathWithFileName>
       <FilenameWithoutPath>main.cpp</FilenameWithoutPath>
