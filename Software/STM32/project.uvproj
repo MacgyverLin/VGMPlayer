@@ -516,6 +516,11 @@
               <FileType>1</FileType>
               <FilePath>..\VGMPlayerLib\ym2612.c</FilePath>
             </File>
+            <File>
+              <FileName>LCD2.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\HWModule\LCD2.c</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>
@@ -605,11 +610,6 @@
               <FileName>unicode.c</FileName>
               <FileType>1</FileType>
               <FilePath>.\FATFS\option\unicode.c</FilePath>
-            </File>
-            <File>
-              <FileName>malloc.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>.\HAL\malloc.c</FilePath>
             </File>
           </Files>
         </Group>

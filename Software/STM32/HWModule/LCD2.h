@@ -7,6 +7,14 @@
 #ifdef __cplusplus
 extern "C" {
 #endif
+	
+#ifdef LCD_TK022F2218
+#define SCREEN_WIDTH  320
+#define SCREEN_HEIGHT 240
+#else
+#define SCREEN_WIDTH  480
+#define SCREEN_HEIGHT 800
+#endif
 
 void LCD_Initialize(void);
 void LCD_Test(void);
@@ -14,9 +22,9 @@ void LCD_Test(void);
 void LCD_DrawRect888(u32 x, u32 y, u32 w, u32 h, u8 r, u8 g, u8 b);
 void LCD_DrawRect565(u32 x, u32 y, u32 w, u32 h, u8 r, u8 g, u8 b);
 void LCD_DrawRect444(u32 x, u32 y, u32 w, u32 h, u8 r, u8 g, u8 b);
-void LCD_DrawImage888(u32 x, u32 y, const u8* filename);
-void LCD_DrawImage565(u32 x, u32 y, const u8* filename);
-void LCD_DrawImage444(u32 x, u32 y, const u8* filename);
+void LCD_DrawImage888(u32 x, u32 y, const char* filename);
+void LCD_DrawImage565(u32 x, u32 y, const char* filename);
+void LCD_DrawImage444(u32 x, u32 y, const char* filename);
 	
 #define LCD_TK022F2218
 

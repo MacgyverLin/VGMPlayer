@@ -273,15 +273,23 @@ DWORD get_fattime (void)
 {				 
 	return 0;
 }			 
-//动态分配内存
+
 void *ff_memalloc (UINT size)			
 {
+#ifdef USE_MYMEM	
 	return (void*)mymalloc(size);
+#else
+	return (void*)malloc(size);
+#endif
 }
-//释放内存
+
 void ff_memfree (void* mf)		 
 {
+#ifdef USE_MYMEM	
 	myfree(mf);
+#else
+	free(mf);
+#endif
 }
 
 #endif

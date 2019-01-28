@@ -20,6 +20,8 @@
 #ifdef __cplusplus
 extern "C" {
 #endif
+	
+// #define USE_MYMEM
 
 #include "integer.h"	/* Basic integer types */
 #include "ffconf.h"		/* FatFs configuration options */

@@ -3242,22 +3242,28 @@ FRESULT f_readdir (
 	FRESULT res;
 	DEF_NAMEBUF;
 
-
 	res = validate(dp);						/* Check validity of the object */
-	if (res == FR_OK) {
-		if (!fno) {
+	if (res == FR_OK) 
+	{
+		if (!fno) 
+		{
 			res = dir_sdi(dp, 0);			/* Rewind the directory object */
-		} else {
+		} 
+		else 
+		{
 			INIT_BUF(*dp);
 			res = dir_read(dp, 0);			/* Read an item */
-			if (res == FR_NO_FILE) {		/* Reached end of directory */
+			if (res == FR_NO_FILE) 			/* Reached end of directory */
+			{								
 				dp->sect = 0;
 				res = FR_OK;
 			}
-			if (res == FR_OK) {				/* A valid entry is found */
+			if (res == FR_OK) 
+			{								/* A valid entry is found */
 				get_fileinfo(dp, fno);		/* Get the object information */
 				res = dir_next(dp, 0);		/* Increment index for next */
-				if (res == FR_NO_FILE) {
+				if(res == FR_NO_FILE)
+				{
 					dp->sect = 0;
 					res = FR_OK;
 				}

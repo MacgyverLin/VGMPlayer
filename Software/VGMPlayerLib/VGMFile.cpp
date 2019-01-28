@@ -76,7 +76,7 @@ boolean VGMFile::onOpen()
 #ifdef STM32
 	if(isvgm)
 	{
-		u8 res = f_open(&impl->fil, (const TCHAR*)impl->path, FA_OPEN_ALWAYS | FA_READ);
+		u8 res = f_open(&impl->fil, (const TCHAR*)impl->path, FA_READ);
 		impl->opened = (res==FR_OK);
 
 		return impl->opened;

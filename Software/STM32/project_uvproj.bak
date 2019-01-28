@@ -576,6 +576,16 @@
               <FileType>8</FileType>
               <FilePath>.\Users\main.cpp</FilePath>
             </File>
+            <File>
+              <FileName>al.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\Users\al.c</FilePath>
+            </File>
+            <File>
+              <FileName>alc.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\Users\alc.c</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>
@@ -595,11 +605,6 @@
               <FileName>unicode.c</FileName>
               <FileType>1</FileType>
               <FilePath>.\FATFS\option\unicode.c</FilePath>
-            </File>
-            <File>
-              <FileName>malloc.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>.\HAL\malloc.c</FilePath>
             </File>
           </Files>
         </Group>

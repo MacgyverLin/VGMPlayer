@@ -228,7 +228,7 @@ void VGMBoard_WriteSN76489(u8 data)
 
 	IO_WRITE(SN_WR, 1);
 	delay_us(DATA_SETUP_TIME);
-}
+} 
 
 s32 VGMBoard_Initialize(u32 clock, u32 sampleRate)
 {
@@ -241,9 +241,10 @@ s32 VGMBoard_Initialize(u32 clock, u32 sampleRate)
 	VGMBoard_InitSNClock(); // generate 3.57Mhz	
 	
 	SPI2_SetSpeed(SPI_SPEED_2);
-	
+#ifdef USE_MYMEM
  	mem_init();	// initialize malloc
- 	/*
+#else
+#endif 	
 	while(SD_Initialize()) // initialize SDCard
 	{
 			// USART1_printf("SD Card Error!");
@@ -252,7 +253,6 @@ s32 VGMBoard_Initialize(u32 clock, u32 sampleRate)
 	}
 	
 	f_mount(&fs, (const TCHAR*)"0:", 0);
-	*/
 	
 	return -1;
 }

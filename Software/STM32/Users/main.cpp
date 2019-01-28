@@ -14,7 +14,7 @@ const char* getNextMusic()
 	{
 		currentMusic=0;
 	}
-	
+
 	switch (currentMusic++)
 	{
 	case 0:
@@ -64,7 +64,6 @@ const char* getNextMusic()
 		return "0:/ThunderForce3/22 - Game Over.vgm";
 	};
 }
-*/
 
 const char* getNextMusic()
 {
@@ -73,81 +72,83 @@ const char* getNextMusic()
 	{
 		currentMusic=0;
 	}
-	
+
 	switch (currentMusic++)
 	{
 	case 0:
 		return "Street_Fighter_II_Champion_Edition_(CP_System)/01 Title.vgm";
-	case 1: 
+	case 1:
 		return "Street_Fighter_II_Champion_Edition_(CP_System)/02 Credit.vgm";
-	case 2: 
+	case 2:
 		return "Street_Fighter_II_Champion_Edition_(CP_System)/03 Player Select.vgm";
-	case 3: 
+	case 3:
 		return "Street_Fighter_II_Champion_Edition_(CP_System)/04 VS.vgm";
-	case 4: 
+	case 4:
 		return "Street_Fighter_II_Champion_Edition_(CP_System)/05 Japan (Ryu) I.vgm";
-	case 5: 
+	case 5:
 		return "Street_Fighter_II_Champion_Edition_(CP_System)/06 Japan (Ryu) II.vgm";
-	case 6: 
+	case 6:
 		return "Street_Fighter_II_Champion_Edition_(CP_System)/07 Stage End.vgm";
-	case 7: 
+	case 7:
 		return "Street_Fighter_II_Champion_Edition_(CP_System)/08 Brazil (Blanka) I.vgm";
-	case 8: 
+	case 8:
 		return "Street_Fighter_II_Champion_Edition_(CP_System)/09 Brazil (Blanka) II.vgm";
-	case 9: 
+	case 9:
 		return "Street_Fighter_II_Champion_Edition_(CP_System)/12 China (Chun Li) I.vgm";
-	case 10: 
+	case 10:
 		return "Street_Fighter_II_Champion_Edition_(CP_System)/13 China (Chun Li) II.vgm";
-	case 11: 
+	case 11:
 		return "Street_Fighter_II_Champion_Edition_(CP_System)/14 Bonus Stage.vgm";
-	case 12: 
+	case 12:
 		return "Street_Fighter_II_Champion_Edition_(CP_System)/15 Here Comes A New Challenger.vgm";
-	case 13: 
+	case 13:
 		return "Street_Fighter_II_Champion_Edition_(CP_System)/22 India (Dhalsim) I.vgm";
-	case 14: 
+	case 14:
 		return "Street_Fighter_II_Champion_Edition_(CP_System)/23 India (Dhalsim) II.vgm";
-	case 15: 
+	case 15:
 		return "Street_Fighter_II_Champion_Edition_(CP_System)/26 Spain (Vega) I.vgm";
-	case 16: 
+	case 16:
 		return "Street_Fighter_II_Champion_Edition_(CP_System)/27 Spain (Vega) II.vgm";
-	case 17: 
+	case 17:
 		return "Street_Fighter_II_Champion_Edition_(CP_System)/28 Thailand (Sagat) I.vgm";
-	case 18: 
+	case 18:
 		return "Street_Fighter_II_Champion_Edition_(CP_System)/29 Thailand (Sagat) II.vgm";
-	case 19: 
+	case 19:
 		return "Street_Fighter_II_Champion_Edition_(CP_System)/32 Ending (Ryu).vgm";
-	case 20: 
+	case 20:
 		return "Street_Fighter_II_Champion_Edition_(CP_System)/33 Ending (Blanka).vgm";
-	case 21: 
+	case 21:
 		return "Street_Fighter_II_Champion_Edition_(CP_System)/34 Ending (Guile).vgm";
-	case 22: 
+	case 22:
 		return "Street_Fighter_II_Champion_Edition_(CP_System)/35 Ending (Chun Li) I.vgm";
-	case 23: 
+	case 23:
 		return "Street_Fighter_II_Champion_Edition_(CP_System)/36 Ending (Chun Li) II.vgm";
-	case 24: 
+	case 24:
 		return "Street_Fighter_II_Champion_Edition_(CP_System)/38 Ending (Ken) I.vgm";
-	case 25: 
+	case 25:
 		return "Street_Fighter_II_Champion_Edition_(CP_System)/39 Ending (Ken) II.vgm";
-	case 26: 
+	case 26:
 		return "Street_Fighter_II_Champion_Edition_(CP_System)/40 Ending (Zangief).vgm";
-	case 27: 
+	case 27:
 		return "Street_Fighter_II_Champion_Edition_(CP_System)/41 Ending (Dhalsim).vgm";
-	case 28: 
+	case 28:
 		return "Street_Fighter_II_Champion_Edition_(CP_System)/42 Ending (four bosses).vgm";
-	case 29: 
+	case 29:
 		return "Street_Fighter_II_Champion_Edition_(CP_System)/43 Credits Roll.vgm";
-	case 30: 
+	case 30:
 		return "Street_Fighter_II_Champion_Edition_(CP_System)/44 Continue.vgm";
-	case 31: 
+	case 31:
 		return "Street_Fighter_II_Champion_Edition_(CP_System)/45 Game Over.vgm";
-	case 32: 
+	case 32:
 		return "Street_Fighter_II_Champion_Edition_(CP_System)/46 Ranking Display.vgm";
 	default:
-	case 33: 
+	case 33:
 		return "Street_Fighter_II_Champion_Edition_(CP_System)/47 Unused.vgm";
 	};
 };
+*/
 
+/*
 #include <timer.h>
 
 void initAudio(f32 freq1, f32 freq2)
@@ -169,8 +170,8 @@ void filloutputBuffer(AudioDevice* audioDevice)
 		ang2 += ratio2;
 		testAudio[(i<<1) + 0] = 16384 * sin(ang1) + 16384;
 		testAudio[(i<<1) + 1] = 16384 * sin(ang2) + 16384;
-	}	
-	
+	}
+
 	//memset(&testAudio[0], 0, VGM_SAMPLE_COUNT * 2);
 	if (!audioDevice->queue(&testAudio[0], VGM_SAMPLE_COUNT * 2 * 2))
 		return;
@@ -182,16 +183,20 @@ void filloutputBuffer(AudioDevice* audioDevice)
 		//outputDevice.setPlayRate(1.0);
 	}
 }
+*/
 
-int main()
+void LCDTest()
 {
-	u32 bufferCount = 4;
-	
-	if (!Platform::initialize())
-		return false;
+	//LCD_Initialize();
+	//LCD_Test();	
+}
 
+void PWMTest()
+{
+	/*
+	u32 bufferCount = 4;
 	initAudio(1, 2);
-	
+
 	AudioDevice audioDevice;
 	boolean ok = audioDevice.open(2, 16, 22050, bufferCount);
 	if(ok)
@@ -203,7 +208,7 @@ int main()
 			float volume = audioDevice.getVolume();
 			audioDevice.setPlayRate(1.09);
 			float playrate = audioDevice.getPlayRate();
-			
+
 			if(audioDevice.getQueued()<bufferCount/2)
 			{
 				filloutputBuffer(&audioDevice);
@@ -211,11 +216,11 @@ int main()
 
 			audioDevice.update();
 		};
-		
-		audioDevice.stop();	
+
+		audioDevice.stop();
 		audioDevice.close();
 	}
-	
+
 	/*
 	//u32 sampleRate = 44100;
 	u32 sampleRate = 22050;
@@ -225,7 +230,7 @@ int main()
 	//u32 bpp = 12;
 	u32 max = 1024;//512//pow(2, bpp);
 	//u32 max = 2048;//1024//pow(2, bpp);
-	//u32 max = 4096;//2048//pow(2, bpp);	
+	//u32 max = 4096;//2048//pow(2, bpp);
 	u32 interruptsPerUpdate = 3.18877551; // 1.594387755 // 72*1000*1000 / max / sampleRate;
 
 	TIMER_Initialize(max, 0); 	// Frequency is 720kHz: Tout = (arr+1)(psc+1)/TClk, assume APB1 no prescale, TClk 72Mhz
@@ -236,76 +241,244 @@ int main()
 	TIMER_PWM_Initialize(3);
 	//TIMER_PWM_Initialize(4);
 	//DMA_Initialize();
-	
+
 	TIMER_Start();
 	TIMER_Stop();
 	TIMER_Start();
-	
+
 	//NVIC_Initialize();
 	//while(1)
 	{
 	}
 
-	TIMER_Test();	
+	TIMER_Test();
 	*/
-	
-	//LCD_Initialize();
-	//LCD_Test();	
+}
 
-	bool quit = false;
-	while (!quit)
-	{
-		const char* filename = getNextMusic();
-
-		VGMFile vgmFile(filename, 2, 16, 44100);
-		VGMAudioPlayer vgmAudioPlayer;
-		vgmFile.attach(vgmAudioPlayer);
 #ifdef STM32
+#include <ff.h>
+enum SearchResult
+{
+	SR_OK = 0,
+	SR_ERROR = 1,
+	SR_NO_FILE = 2,
+};
+
+DIR dirSearchHandle;
+FILINFO dirSearchInfo;
+SearchResult beginSearchDirectory(char* path)
+{
+	FRESULT res = f_opendir(&dirSearchHandle, path);			/* Open the directory */
+	if (res == FR_OK)
+	{
+		return SR_OK;
+	}
+	else
+	{
+		return SR_ERROR;
+	}
+}
+
+SearchResult getNextDirectory(char* directory, int size)
+{
+	FRESULT res;
+
+	dirSearchInfo.lfname = directory;
+	dirSearchInfo.lfsize = size;
+	res = f_readdir(&dirSearchHandle, &dirSearchInfo);			/* Read a directory item */
+	if (res != FR_OK)
+		return SR_ERROR;
+
+	if (!(dirSearchInfo.fattrib & AM_DIR)) // skip if is not directory
+		return getNextDirectory(directory, size);
+
+	if (dirSearchInfo.lfname[0] == 0)
+	{
+		return SR_NO_FILE;
+	}
+
+	return SR_OK;
+}
+
+SearchResult rewindDirectory()
+{
+	f_readdir(&dirSearchHandle, 0); // rewind
+}
+
+void endSearchDirectory()
+{
+	f_closedir(&dirSearchHandle);
+}
+
+////////////////////////////////////////////////
+DIR fileSearchHandle;
+FILINFO fileSearchInfo;
+
+SearchResult beginSearchFile(char* path)
+{
+	FRESULT res = f_opendir(&fileSearchHandle, path);			/* Open the directory */
+	if (res == FR_OK)
+	{
+		return SR_OK;
+	}
+	else
+	{
+		return SR_ERROR;
+	}
+}
+
+bool isExt(const char* path, const char* ext)
+{
+	return (strstr(path, ext) != 0);
+}
+
+SearchResult getNextFile(char* directory, int size, const char* ext)
+{
+	FRESULT res;
+
+	fileSearchInfo.lfname = directory;
+	fileSearchInfo.lfsize = size;
+	res = f_readdir(&fileSearchHandle, &fileSearchInfo);			/* Read a directory item */
+	if (res != FR_OK)
+		return SR_ERROR;
+
+	if(fileSearchInfo.lfname[0] == 0)
+		return SR_NO_FILE;
+	
+	if ((fileSearchInfo.fattrib & AM_DIR)) // skip if is directory
+		return getNextFile(directory, size, ext);
+	
+	if(!isExt(fileSearchInfo.lfname, ext))
+		return getNextFile(directory, size, ext);
+
+	return SR_OK;
+}
+
+void endSearchFile()
+{
+	f_closedir(&fileSearchHandle);
+}
+
+void loadBmp(const char* directory)
+{
+	char path[256];
+	
+	strncpy(path, directory, 256);
+	strcat(path, "/Title.bmp");
+	
+	LCD_DrawImage(0, 0, path);
+}
+
 #else
-		VGMWaveFormViewer vgmWaveFormViewer1("Waveform Viewer", 40, 40, 640, 480, VGMWaveFormViewer::Skin());
-		VGMSpectrumViewer vgmWaveFormViewer2("Frequency Viewer", 40 + 640, 40, 640, 480, VGMSpectrumViewer::Skin());
-		//VGMFireSpectrumViewer vgmWaveFormViewer3("Frequency Viewer", 40 + 640 * 2, 40, 320, 240, VGMFireSpectrumViewer::Skin());\
-		vgmFile.attach(vgmWaveFormViewer1);
-		vgmFile.attach(vgmWaveFormViewer2);
-		//vgmFile.attach(vgmWaveFormViewer3);
-#endif
-		if (!vgmFile.open())
-		{
-			return -1;
-		}
-
-#if 0
-		const VGMHeader& header = vgmFile.getHeader();
-		printf("Now Playing <<%s>>\n", filename);
-		printf("EOFOffset=%08x\n", header.EOFOffset);
-		printf("version=%08x\n", header.version);
-		printf("GD3Offset=%08x\n", header.GD3Offset);
-		printf("totalSamples=%08x\n", header.totalSamples);
-		printf("loopOffset=%08x\n", header.loopOffset);
-		printf("loopSamples=%08x\n", header.loopSamples);
-		printf("Rate=%08x\n", header.Rate);
 #endif
 
+int main()
+{
+	char path[256];
+	int len;
+	SearchResult sr;
+
+	if (!Platform::initialize())
+		return false;
+
+	LCD_Initialize();
+	LCD_DrawRect(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT, 0x00, 0x00, 0x00);	
+	//LCD_Test();		
+	
+	// LCDTest();
+	// PWMTest();	
+
+	
+	strcpy(path, "YM2151");
+	if (beginSearchDirectory(path) == SR_OK)
+	{
 		while (1)
 		{
-			quit = !Platform::update();
+			strcpy(path, "YM2151");
+			strcat(path, "/");
+			len = strlen(path);
 
-			if (vgmAudioPlayer.getQueued() < VGM_OUTPUT_BUFFER_COUNT / 2)
+			SearchResult sr = getNextDirectory(&path[len], 256 - len);
+			if (sr == SR_ERROR)
 			{
-				// printf("vgmDataOpenALPlayer.getQueued() %d\n", vgmAudioPlayer.getQueued());
-				vgmFile.requestUpdateData();
+				endSearchDirectory();
+				return -1;
 			}
-
-			if (!vgmFile.update())
+			if (sr == SR_NO_FILE)
 			{
-				break;
+				rewindDirectory();
+				continue;
 			}
-		}
+			
+			loadBmp(path);
+			
+			if (beginSearchFile(path) == SR_OK)
+			{
+				strcat(path, "/");
+				len = strlen(path);
+				
+				while (1)
+				{
+					SearchResult sr = getNextFile(&path[len], 256 - len, ".vgm");
+					if (sr == SR_ERROR)
+					{
+						endSearchFile();
+						return -1;
+					}
+					if (sr == SR_NO_FILE)
+					{
+						break;
+					}
 
-		vgmFile.close();
+					// printf("%s/%s %s\n", path, fno.fname, fno.lfname);
+					VGMFile vgmFile(path, 2, 16, 44100);
+					VGMAudioPlayer vgmAudioPlayer;
+					vgmFile.attach(vgmAudioPlayer);
+#ifdef STM32
+#else
+					//VGMWaveFormViewer vgmWaveFormViewer1("Waveform Viewer", 40, 40, 640, 480, VGMWaveFormViewer::Skin());
+					//VGMSpectrumViewer vgmWaveFormViewer2("Frequency Viewer", 40 + 640, 40, 640, 480, VGMSpectrumViewer::Skin());
+					//VGMFireSpectrumViewer vgmWaveFormViewer3("Frequency Viewer", 40 + 640 * 2, 40, 320, 240, VGMFireSpectrumViewer::Skin());\
+						//vgmFile.attach(vgmWaveFormViewer1);
+						//vgmFile.attach(vgmWaveFormViewer2);
+						//vgmFile.attach(vgmWaveFormViewer3);
+#endif
+					if (!vgmFile.open())
+					{
+						return -1;
+					}
+
+					while (1)
+					{
+						if (!Platform::update())
+							return -1;
+
+						if (vgmAudioPlayer.getQueued() < VGM_OUTPUT_BUFFER_COUNT / 2)
+						{
+							// printf("vgmDataOpenALPlayer.getQueued() %d\n", vgmAudioPlayer.getQueued());
+							vgmFile.requestUpdateData();
+						}
+
+						if (!vgmFile.update())
+						{
+							break;
+						}
+					}
+
+					vgmFile.close();
+				}
+
+
+				endSearchFile();
+			}
+		};
+
+		endSearchDirectory();
 	}
 
 	Platform::terminate();
 
-	return 0;
+	while (1)
+	{
+	};
 }

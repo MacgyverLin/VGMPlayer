@@ -22,14 +22,6 @@
 #define LIGHT_YELLOW		    (LIGHT_RED | LIGHT_GREEN)
 #define WHITE         			(LIGHT_RED | LIGHT_GREEN | LIGHT_BLUE)
 
-#ifdef LCD_TK022F2218
-#define SCREEN_WIDTH  320
-#define SCREEN_HEIGHT 240
-#else
-#define SCREEN_WIDTH  480
-#define SCREEN_HEIGHT 800
-#endif
-
 #ifdef CLK_E
 #define TOGGLE_WR() WR.type->BRR = WR.pin; RD.type->BSRR = RD.pin;	RD.type->BRR = RD.pin
 #define	SET_DATA(data) D0.type->ODR = data
@@ -1217,6 +1209,7 @@ typedef __packed struct
 	u32 importantcolours; 	/* Important colours */ 		
 }BmpHeader;
 
+#if 0
 typedef struct
 {
 	const u8* start;
@@ -1224,16 +1217,13 @@ typedef struct
 	u32 size;
 }FILE;
 
-#if 0
 #include "bmp.h"
-#endif
+
 s8 open(FILE* file, const char* filename, int test)
 {
-#if 0	
 	file->start = __bmp;
 	file->current = 0;
 	file->size = __bmp_size;
-#endif
 
 	return 0;
 }
@@ -1268,25 +1258,26 @@ u32 seek(FILE* file, int offset)
 	
 	return file->current;
 }
+#endif
 
-s8 LCD_BeginDrawImage(FILE* file, BmpHeader* header, const char* filename, u32 x, u32 y, u16* d, u32* count)
+s8 LCD_BeginDrawImage(FIL* file, BmpHeader* header, const char* filename, u32 x, u32 y, u16* d, u32* count)
 {
 	u32 xEnd;
 	u32 yEnd;
 	
 	u32 br;
-	s8 res = open(file, filename, FA_OPEN_ALWAYS | FA_READ);
+	u8 res = f_open(file, (const TCHAR*)filename, FA_READ);
 	if(res!=0)
 		return 0;
 	
-	read(file, (u8*)header, sizeof(BmpHeader), &br);
+	f_read(file, (u8*)header, sizeof(BmpHeader), &br);
 	if(header->id[0]!=0x42 || header->id[1]!=0x4D || header->bits!=24)
 	{
-		close(file);
+		f_close(file);
 		return 0;
 	}
 	
-	seek(file, header->offset);
+	f_lseek(file, header->offset);
 	
 	*count = header->width * header->height;
 	xEnd = x + header->width - 1;
@@ -1304,17 +1295,17 @@ s8 LCD_BeginDrawImage(FILE* file, BmpHeader* header, const char* filename, u32 x
 	return -1;
 }
 
-void LCD_EndDrawImage(FILE* file)
+void LCD_EndDrawImage(FIL* file)
 {
 	IO_WRITE(LCD_CS, 1);
-	fclose(file);	
+	f_close(file);
 }
 
-void LCD_DrawImage888(u32 x, u32 y, const u8* filename)
+void LCD_DrawImage888(u32 x, u32 y, const char* filename)
 {
 }
 
-void LCD_DrawImage565(u32 x, u32 y, const u8* filename)
+void LCD_DrawImage565(u32 x, u32 y, const char* filename)
 {
 	u16 d;
 	u16 d0;
@@ -1323,14 +1314,15 @@ void LCD_DrawImage565(u32 x, u32 y, const u8* filename)
 	u32 count;
 	u8 buf[3];
 	u32 color;
+	u32 br;
 
-	FILE file;
+	FIL file;
 	BmpHeader header;
 	LCD_BeginDrawImage(&file, &header, filename, x, y, &d, &count);
 	
 	while(count--)
 	{
-		read(&file, buf, 3, 0);
+		f_read(&file, buf, 3, &br);
 		
 		color = RGB565(buf[2], buf[1], buf[0]);
 		d1 = d | (color >> 8); 			// ((((u32)g)<<3) & 0xe0) | ((((u32)b)>>3) & 0x1f)
@@ -1348,7 +1340,7 @@ void LCD_DrawImage565(u32 x, u32 y, const u8* filename)
 	LCD_EndDrawImage(&file);
 }
 
-void LCD_DrawImage444(u32 x, u32 y, const u8* filename)
+void LCD_DrawImage444(u32 x, u32 y, const char* filename)
 {
 	u16 d;
 	u16 d0;
@@ -1357,15 +1349,16 @@ void LCD_DrawImage444(u32 x, u32 y, const u8* filename)
 	u32 count;
 	u8 buf[6];
 	u32 color;
+	u32 br;
 	
-	FILE file;
+	FIL file;
 	BmpHeader header;
 	LCD_BeginDrawImage(&file, &header, filename, x, y, &d, &count);
 
 	count>>=1;
 	while(count--)
 	{
-		read(&file, buf, 6, 0);
+		f_read(&file, buf, 6, &br);
 		
 		d2 = d | (buf[2] & 0xf0) | (buf[1] >> 4);
 		d1 = d | (buf[0] & 0xf0) | (buf[5] >> 4);
