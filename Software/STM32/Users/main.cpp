@@ -3,150 +3,11 @@
 #include "VGMFile.h"
 #include "VGMAudioPlayer.h"
 #include "VGMWaveFormViewer.h"
+#ifdef STM32
 #include <lcd2.h>
+#else
+#endif
 #include "AudioDevice.h"
-
-/*
-const char* getNextMusic()
-{
-	static u32 currentMusic = 6;
-	if(currentMusic>=22)
-	{
-		currentMusic=0;
-	}
-
-	switch (currentMusic++)
-	{
-	case 0:
-		return "0:/ThunderForce3/01 - The Wind Blew All Day Long (Opening Theme).vgm";
-	case 1:
-		return "0:/ThunderForce3/02 - Beyond the Peace (Stage Select).vgm";
-	case 2:
-		return "0:/ThunderForce3/03 - Back to the Fire (Stage 1 - Hydra).vgm";
-	case 3:
-		return "0:/ThunderForce3/04 - Gargoyle (Stage 1 Boss).vgm";
-	case 4:
-		return "0:/ThunderForce3/05 - Venus Fire (Stage 2 - Gorgon).vgm";
-	case 5:
-		return "0:/ThunderForce3/06 - Twin Vulcan (Stage 2 Boss).vgm";
-	case 6:
-		return "0:/ThunderForce3/07 - The Grubby Dark Blue (Stage 3 - Seiren).vgm";
-	case 7:
-		return "0:/ThunderForce3/08 - King Fish (Stage 3 Boss).vgm";
-	case 8:
-		return "0:/ThunderForce3/09 - Truth (Stage 4 - Haides).vgm";
-	case 9:
-		return "0:/ThunderForce3/10 - G Lobster (Stage 4 Boss).vgm";
-	case 10:
-		return "0:/ThunderForce3/11 - Final Take a Chance (Stage 5 - Ellis).vgm";
-	case 11:
-		return "0:/ThunderForce3/12 - Mobile Fort (Stage 5 Boss).vgm";
-	case 12:
-		return "0:/ThunderForce3/13 - His Behavior Inspired Us With Distrust (Stage 6 - Cerberus).vgm";
-	case 13:
-		return "0:/ThunderForce3/14 - Hunger Made Them Desperate (Stage 7 - Orn Base).vgm";
-	case 14:
-		return "0:/ThunderForce3/15 - Off Luck (Stage 7 Boss).vgm";
-	case 15:
-		return "0:/ThunderForce3/16 - Final Moment (Stage 8 - Orn Core).vgm";
-	case 16:
-		return "0:/ThunderForce3/17 - Be Menaced by Orn (Stage 8 Boss).vgm";
-	case 17:
-		return "0:/ThunderForce3/18 - Stage Clear.vgm";
-	case 18:
-		return "0:/ThunderForce3/19 - A War Without the End (Ending).vgm";
-	case 19:
-		return "0:/ThunderForce3/20 - Present (Staff Roll).vgm";
-	case 20:
-		return "0:/ThunderForce3/21 - Continue.vgm";
-	case 21:
-	default:
-		return "0:/ThunderForce3/22 - Game Over.vgm";
-	};
-}
-
-const char* getNextMusic()
-{
-	static u32 currentMusic = 0;
-	if(currentMusic>=34)
-	{
-		currentMusic=0;
-	}
-
-	switch (currentMusic++)
-	{
-	case 0:
-		return "Street_Fighter_II_Champion_Edition_(CP_System)/01 Title.vgm";
-	case 1:
-		return "Street_Fighter_II_Champion_Edition_(CP_System)/02 Credit.vgm";
-	case 2:
-		return "Street_Fighter_II_Champion_Edition_(CP_System)/03 Player Select.vgm";
-	case 3:
-		return "Street_Fighter_II_Champion_Edition_(CP_System)/04 VS.vgm";
-	case 4:
-		return "Street_Fighter_II_Champion_Edition_(CP_System)/05 Japan (Ryu) I.vgm";
-	case 5:
-		return "Street_Fighter_II_Champion_Edition_(CP_System)/06 Japan (Ryu) II.vgm";
-	case 6:
-		return "Street_Fighter_II_Champion_Edition_(CP_System)/07 Stage End.vgm";
-	case 7:
-		return "Street_Fighter_II_Champion_Edition_(CP_System)/08 Brazil (Blanka) I.vgm";
-	case 8:
-		return "Street_Fighter_II_Champion_Edition_(CP_System)/09 Brazil (Blanka) II.vgm";
-	case 9:
-		return "Street_Fighter_II_Champion_Edition_(CP_System)/12 China (Chun Li) I.vgm";
-	case 10:
-		return "Street_Fighter_II_Champion_Edition_(CP_System)/13 China (Chun Li) II.vgm";
-	case 11:
-		return "Street_Fighter_II_Champion_Edition_(CP_System)/14 Bonus Stage.vgm";
-	case 12:
-		return "Street_Fighter_II_Champion_Edition_(CP_System)/15 Here Comes A New Challenger.vgm";
-	case 13:
-		return "Street_Fighter_II_Champion_Edition_(CP_System)/22 India (Dhalsim) I.vgm";
-	case 14:
-		return "Street_Fighter_II_Champion_Edition_(CP_System)/23 India (Dhalsim) II.vgm";
-	case 15:
-		return "Street_Fighter_II_Champion_Edition_(CP_System)/26 Spain (Vega) I.vgm";
-	case 16:
-		return "Street_Fighter_II_Champion_Edition_(CP_System)/27 Spain (Vega) II.vgm";
-	case 17:
-		return "Street_Fighter_II_Champion_Edition_(CP_System)/28 Thailand (Sagat) I.vgm";
-	case 18:
-		return "Street_Fighter_II_Champion_Edition_(CP_System)/29 Thailand (Sagat) II.vgm";
-	case 19:
-		return "Street_Fighter_II_Champion_Edition_(CP_System)/32 Ending (Ryu).vgm";
-	case 20:
-		return "Street_Fighter_II_Champion_Edition_(CP_System)/33 Ending (Blanka).vgm";
-	case 21:
-		return "Street_Fighter_II_Champion_Edition_(CP_System)/34 Ending (Guile).vgm";
-	case 22:
-		return "Street_Fighter_II_Champion_Edition_(CP_System)/35 Ending (Chun Li) I.vgm";
-	case 23:
-		return "Street_Fighter_II_Champion_Edition_(CP_System)/36 Ending (Chun Li) II.vgm";
-	case 24:
-		return "Street_Fighter_II_Champion_Edition_(CP_System)/38 Ending (Ken) I.vgm";
-	case 25:
-		return "Street_Fighter_II_Champion_Edition_(CP_System)/39 Ending (Ken) II.vgm";
-	case 26:
-		return "Street_Fighter_II_Champion_Edition_(CP_System)/40 Ending (Zangief).vgm";
-	case 27:
-		return "Street_Fighter_II_Champion_Edition_(CP_System)/41 Ending (Dhalsim).vgm";
-	case 28:
-		return "Street_Fighter_II_Champion_Edition_(CP_System)/42 Ending (four bosses).vgm";
-	case 29:
-		return "Street_Fighter_II_Champion_Edition_(CP_System)/43 Credits Roll.vgm";
-	case 30:
-		return "Street_Fighter_II_Champion_Edition_(CP_System)/44 Continue.vgm";
-	case 31:
-		return "Street_Fighter_II_Champion_Edition_(CP_System)/45 Game Over.vgm";
-	case 32:
-		return "Street_Fighter_II_Champion_Edition_(CP_System)/46 Ranking Display.vgm";
-	default:
-	case 33:
-		return "Street_Fighter_II_Champion_Edition_(CP_System)/47 Unused.vgm";
-	};
-};
-*/
 
 /*
 #include <timer.h>
@@ -342,13 +203,13 @@ SearchResult getNextFile(char* directory, int size, const char* ext)
 	if (res != FR_OK)
 		return SR_ERROR;
 
-	if(fileSearchInfo.lfname[0] == 0)
+	if (fileSearchInfo.lfname[0] == 0)
 		return SR_NO_FILE;
-	
+
 	if ((fileSearchInfo.fattrib & AM_DIR)) // skip if is directory
 		return getNextFile(directory, size, ext);
-	
-	if(!isExt(fileSearchInfo.lfname, ext))
+
+	if (!isExt(fileSearchInfo.lfname, ext))
 		return getNextFile(directory, size, ext);
 
 	return SR_OK;
@@ -362,14 +223,123 @@ void endSearchFile()
 void loadBmp(const char* directory)
 {
 	char path[256];
-	
+
 	strncpy(path, directory, 256);
 	strcat(path, "/Title.bmp");
-	
+
 	LCD_DrawImage(0, 0, path);
 }
 
 #else
+
+enum SearchResult
+{
+	SR_OK = 0,
+	SR_ERROR = 1,
+	SR_NO_FILE = 2,
+};
+
+HANDLE dirSearchHandle;
+SearchResult beginSearchDirectory(char* path)
+{
+	WIN32_FIND_DATA FindFileData;
+	HANDLE dirSearchHandle = FindFirstFile(path, &FindFileData);
+	if(dirSearchHandle != INVALID_HANDLE_VALUE)
+	{
+		return SR_OK;
+	}
+	else
+	{
+		return SR_ERROR;
+	}
+}
+
+SearchResult getNextDirectory(char* directory, int size)
+{
+	WIN32_FIND_DATA ffd;
+	HRESULT res = FindNextFile(dirSearchHandle, &ffd);
+	if(!res)
+	{
+		if(GetLastError() == ERROR_NO_MORE_FILES)
+			return SR_NO_FILE;
+		else
+			return SR_ERROR;
+	}
+	
+	if(!(ffd.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY))
+		return getNextDirectory(directory, size);
+
+	return SR_OK;
+}
+
+SearchResult rewindDirectory()
+{
+	//f_readdir(&dirSearchHandle, 0); // rewind
+	return SR_OK;
+}
+
+void endSearchDirectory()
+{
+	FindClose(dirSearchHandle);
+}
+
+////////////////////////////////////////////////
+HANDLE fileSearchHandle;
+SearchResult beginSearchFile(char* path)
+{
+	WIN32_FIND_DATA FindFileData;
+	HANDLE fileSearchHandle = FindFirstFile(path, &FindFileData);
+	if (fileSearchHandle != INVALID_HANDLE_VALUE)
+	{
+		return SR_OK;
+	}
+	else
+	{
+		return SR_ERROR;
+	}
+}
+
+bool isExt(const char* path, const char* ext)
+{
+	return (strstr(path, ext) != 0);
+}
+
+SearchResult getNextFile(char* directory, int size, const char* ext)
+{
+	WIN32_FIND_DATA ffd;
+	HRESULT res = FindNextFile(fileSearchHandle, &ffd);
+	if (!res)
+	{
+		if (GetLastError() == ERROR_NO_MORE_FILES)
+			return SR_NO_FILE;
+		else
+			return SR_ERROR;
+	}
+
+	if (ffd.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY)
+		return getNextDirectory(directory, size);
+
+	if (!isExt(ffd.cFileName, ext))
+		return getNextFile(directory, size, ext);
+
+	return SR_OK;
+}
+
+void endSearchFile()
+{
+	FindClose(fileSearchHandle);
+}
+
+void loadBmp(const char* directory)
+{
+	char path[256];
+
+	strncpy(path, directory, 256);
+	strcat(path, "/Title.bmp");
+
+	//LCD_DrawImage(0, 0, path);
+}
+
 #endif
 
 int main()
@@ -381,14 +351,13 @@ int main()
 	if (!Platform::initialize())
 		return false;
 
+#ifdef STM32
 	LCD_Initialize();
-	LCD_DrawRect(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT, 0x00, 0x00, 0x00);	
-	//LCD_Test();		
-	
-	// LCDTest();
+	LCD_DrawRect(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT, 0x00, 0x00, 0x00);
 	// PWMTest();	
+#else
+#endif
 
-	
 	strcpy(path, "YM2151");
 	if (beginSearchDirectory(path) == SR_OK)
 	{
@@ -409,14 +378,14 @@ int main()
 				rewindDirectory();
 				continue;
 			}
-			
+
 			loadBmp(path);
-			
+
 			if (beginSearchFile(path) == SR_OK)
 			{
 				strcat(path, "/");
 				len = strlen(path);
-				
+
 				while (1)
 				{
 					SearchResult sr = getNextFile(&path[len], 256 - len, ".vgm");
