@@ -101,9 +101,9 @@ void VGMBoard_InitIO()
 	// reset signal
 	delay_us(100);
 	IO_WRITE(RESET, 0);
-	delay_us(100);
+	delay_us(1000);
 	IO_WRITE(RESET, 1);
-	delay_us(100);
+	delay_us(1000);
 }
 
 void VGMBoard_InitSPI2()

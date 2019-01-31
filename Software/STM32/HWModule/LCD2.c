@@ -5,6 +5,12 @@
 #include <ff.h>
 
 //#define CLK_E
+#define SLOW_LCD
+#ifdef SLOW_LCD
+#define DELAY_TEST() delay_us(1);
+#else
+#define DELAY_TEST()
+#endif
 
 #define BLACK         		 	0x0000
 #define DARK_BLUE           	0x0000007F
@@ -27,7 +33,7 @@
 #define	SET_DATA(data) D0.type->ODR = data
 #define	GET_DATA() ((u16)D0.type->ODR)
 #else
-#define TOGGLE_WR() WR.type->BRR = WR.pin;	WR.type->BSRR = WR.pin
+#define TOGGLE_WR() WR.type->BRR = WR.pin; WR.type->BSRR = WR.pin;
 #define	SET_DATA(data) D0.type->ODR = data
 #define	GET_DATA() ((u16)D0.type->ODR)
 #endif
@@ -115,7 +121,9 @@ void LCD_WriteData(u8 data)
 	LCD_CS.type->BRR = LCD_CS.pin;
 
 	A0.type->BSRR = A0.pin;
+	
 	D0.type->ODR = (D0.type->ODR & 0x0000ff00) | data;
+	
 	WR.type->BRR = WR.pin;
 	WR.type->BSRR = WR.pin;
 
@@ -636,7 +644,7 @@ void LCD_SetRegisters()
 	LCD_WriteCommand0(0x21);
 
 	LCD_WriteCommand0(0x36);    // Memory Access Control 
-	LCD_WriteData(0xC8);
+	LCD_WriteData(0x80 | 0x08); //0x11001100
 
 	//LCD_WriteCommand0(0x3A);
 	//LCD_WriteData(0x55);
