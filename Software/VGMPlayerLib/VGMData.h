@@ -75,6 +75,7 @@ enum VGMCommand
 	OKIM6258_WRITE = 0xB7,				// aa dd
 	OKIM6295_WRITE = 0xB8,				// aa dd
 	HUC6280_WRITE = 0xB9, 				// aa dd
+	SEGA_PCM = 0xC0,					// bbaa dd Sega PCM, write value dd to memory offset aabb
 
 	QSOUND_WRITE = 0xC4,				// mmll rr
 };

@@ -631,6 +631,16 @@ boolean VGMData::update()
 #endif
 				break;
 
+			case SEGA_PCM:
+				read(&ll, sizeof(ll));
+				read(&ll, sizeof(ll));
+				read(&dd, sizeof(dd));
+#ifdef STM32
+#else		
+				//SEGAPCM_WriteRegister(hh, ll, dd);
+#endif
+				break;
+
 			case END_OF_SOUND:
 				handleEndOfSound();
 
