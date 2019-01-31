@@ -6,6 +6,7 @@
 #include "VGMBoard.h"
 #else
 #include "QSound.h"
+#include "SEGAPCM.h"
 #include "K053260.h"
 #include "NESAPU.h"
 #include "NESFDSAPU.h"
@@ -191,6 +192,12 @@ boolean VGMData::open()
 		
 		QSound_SetROM(0, rom);
 	}
+	if (header.SegaPCMclock)
+	{
+		SEGAPCM_Initialize(0, header.SegaPCMclock, playInfo.sampleRate);
+
+		SEGAPCM_SetROM(0, rom);
+	}
 #endif
 
 	return TRUE;
@@ -229,6 +236,10 @@ void VGMData::close()
 	if (header.QSoundClock)
 	{
 		QSound_Shutdown(0);
+	}
+	if (header.SegaPCMclock)
+	{
+		SEGAPCM_Shutdown(0);
 	}
 #endif
 	onClose();
@@ -314,6 +325,8 @@ u32 VGMData::updateSamples(u32 updateSampleCounts)
 		HUC6280_Update(0, sampleBuffers, updateSampleCounts);
 	if (header.QSoundClock)
 		QSound_Update(0, sampleBuffers, updateSampleCounts);
+	if (header.SegaPCMclock)
+		SEGAPCM_Update(0, sampleBuffers, updateSampleCounts);
 
 	bufferInfo.sampleIdx = bufferInfo.sampleIdx + updateSampleCounts;	// updated samples, sampleIdx+
 	assert(bufferInfo.sampleIdx <= VGM_SAMPLE_COUNT);
@@ -372,6 +385,25 @@ void VGMData::handleQSoundROM(s32 skipByte0x66, s32 blockType, s32 blockSize)
 #endif
 }
 
+void VGMData::handleSEGAPCMROM(s32 skipByte0x66, s32 blockType, s32 blockSize)
+{
+#ifdef STM32
+#else	
+	unsigned int entireRomSize;
+	read(&entireRomSize, sizeof(entireRomSize));
+
+	unsigned int startAddress;
+	read(&startAddress, sizeof(startAddress));
+
+	vector<u8> romData;
+	romData.resize(blockSize - 8);
+	read(&romData[0], blockSize - 8);
+
+	// k053260_write_rom(0, entireRomSize, startAddress, blockSize - 8, romData);
+	ROM_LoadData(rom, startAddress, &romData[0], blockSize - 8, entireRomSize);
+#endif
+}
+
 void VGMData::handleDataBlocks()
 {
 	u8 skipByte0x66;
@@ -383,7 +415,11 @@ void VGMData::handleDataBlocks()
 	u32 blockSize;
 	read(&blockSize, sizeof(blockSize));
 
-	if (blockType == 0x8e)
+	if (blockType == 0x80)
+	{
+		handleSEGAPCMROM(skipByte0x66, blockType, blockSize);
+	}
+	else if (blockType == 0x8e)
 	{
 		handleK053260ROM(skipByte0x66, blockType, blockSize);
 	}
@@ -425,6 +461,7 @@ boolean VGMData::update()
 			u8 pp;
 			u8 cc;
 			u8 ll;
+			u8 uu;
 			u8 mm;
 			u8 rr;
 			u8 bb;
@@ -633,11 +670,11 @@ boolean VGMData::update()
 
 			case SEGA_PCM:
 				read(&ll, sizeof(ll));
-				read(&ll, sizeof(ll));
+				read(&uu, sizeof(uu));
 				read(&dd, sizeof(dd));
 #ifdef STM32
 #else		
-				//SEGAPCM_WriteRegister(hh, ll, dd);
+				SEGAPCM_WriteRegister(0, (((u32)uu)<<8) | ((u32)ll), dd);
 #endif
 				break;
 

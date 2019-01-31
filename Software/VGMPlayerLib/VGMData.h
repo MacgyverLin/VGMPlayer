@@ -442,6 +442,7 @@ protected:
 	void handleDataBlocks();
 	void handleK053260ROM(s32 skipByte0x66, s32 blockType, s32 blockSize);
 	void handleQSoundROM(s32 skipByte0x66, s32 blockType, s32 blockSize);
+	void handleSEGAPCMROM(s32 skipByte0x66, s32 blockType, s32 blockSize);
 	
 	u32 updateSamples(u32 updateSampleCounts);
 	void handleEndOfSound();

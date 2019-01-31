@@ -42,19 +42,12 @@ void ROM_LoadData(ROM* rom, u32 startAddress_, u8* data_, u32 length_, u32 total
 {
 	if (rom->length != totalROMLength_)
 	{
-#ifdef STM32
-		u8 *newrom = (u8 *)mymalloc(totalROMLength_);
-#else
 		u8 *newrom = (u8 *)malloc(totalROMLength_);
-#endif
+		memset(newrom, 0, totalROMLength_);
 		if(rom->buffer)
 		{
 			memcpy(newrom, rom->buffer, rom->length);
-#ifdef STM32
-			myfree(rom->buffer);
-#else
 			free(rom->buffer);
-#endif
 		}
 
 		rom->buffer = newrom;
