@@ -1,3 +1,0 @@
-(sym_lib_table
-  (lib (name NOCPU)(type Legacy)(uri ${KIPRJMOD}/NOCPU.lib)(options "")(descr ""))
-)
