@@ -110,6 +110,9 @@
     <ClInclude Include="..\..\VGMPlayerLib\ROM.h">
       <Filter>Source Files\chips</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\VGMPlayerLib\SEGAPCM.h">
+      <Filter>Source Files\chips</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\VGMPlayerLib\HuC6280.c">
@@ -176,6 +179,9 @@
       <Filter>Source Files\chips</Filter>
     </ClCompile>
     <ClCompile Include="..\..\VGMPlayerLib\ROM.c">
+      <Filter>Source Files\chips</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\VGMPlayerLib\SEGAPCM.c">
       <Filter>Source Files\chips</Filter>
     </ClCompile>
   </ItemGroup>

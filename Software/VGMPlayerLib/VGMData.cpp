@@ -415,6 +415,9 @@ void VGMData::handleDataBlocks()
 	u32 blockSize;
 	read(&blockSize, sizeof(blockSize));
 
+#ifdef STM32
+	seekCur(blockSize);
+#else	
 	if (blockType == 0x80)
 	{
 		handleSEGAPCMROM(skipByte0x66, blockType, blockSize);
@@ -431,6 +434,7 @@ void VGMData::handleDataBlocks()
 	{
 		seekCur(blockSize);
 	}
+#endif
 }
 
 boolean VGMData::update()
