@@ -50,12 +50,16 @@ u8 SEGAPCM_ReadRegister(u8 chipID, u32 address)
 	return ic->ram[address & 0x07ff];
 }
 
+#if 0
 void SEGAPCM_Update(u8 chipID, s32** buffer, u32 length)
 {
 	INT32 Channel;
 	SEGAPCM* ic = &segapcm[chipID];
 
+	//u32 bank = BANK_256;
+	//u32 bank = BANK_512;
 	u32 bank = BANK_12M;
+	//u32 bank = BANK_12M;
 	ic->bankshift = bank;
 	s32 Mask;
 	s32 RomMask;
@@ -118,8 +122,7 @@ void SEGAPCM_Update(u8 chipID, s32** buffer, u32 length)
 		rBuf[i] += r;
 	}
 }
-
-#if 0
+#else
 void SEGAPCM_Update(u8 chipID, s32** buffer, u32 length)
 {
 	INT32 Channel;
@@ -173,8 +176,8 @@ void SEGAPCM_Update(u8 chipID, s32** buffer, u32 length)
 
 				v = Rom[Addr >> 8] - 0x80;
 
-				lBuf[i] += v * Regs[2];
-				rBuf[i] += v * Regs[3];
+				lBuf[i] += v * Regs[2] * 2;
+				rBuf[i] += v * Regs[3] * 2;
 				Addr = (Addr + ((Regs[7] * ic->UpdateStep) >> 16)) & 0xffffff;
 			}
 
