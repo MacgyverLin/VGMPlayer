@@ -1,4 +1,4 @@
-(pcb C:\Project\VGMPlayer\Hardware\VGMPlayer\VGMPlayer.dsn
+(pcb E:\Project\VGMPlayer\Hardware\VGMPlayer\VGMPlayer.dsn
   (parser
     (string_quote ")
     (space_in_quoted_tokens on)
@@ -33,7 +33,8 @@
     )
   )
   (placement
-    (component Capacitor_SMD:C_0805_2012Metric
+    (component Resistor_SMD:R_0805_2012Metric
+      (place R30 75516.5 -118110 front 180 (PN TBD))
       (place C101 81747.4 -34056.3 front 90 (PN TBD))
       (place R103 42600.9 -37444.7 front 180 (PN TBD))
       (place R100 95290.6 -38610.5 front 0 (PN TBD))
@@ -77,19 +78,20 @@
       (place R11 97129.4 -43546.8 front 270 (PN 11k))
       (place R4 83792.3 -34010.2 front 270 (PN 2.2k))
     )
-    (component Capacitor_SMD:C_0805_2012Metric::1
+    (component Resistor_SMD:R_0805_2012Metric::1
+      (place R29 75516.5 -116078 front 180 (PN TBD))
       (place C100 95377 -34488.1 front 180 (PN TBD))
       (place R102 42600.9 -40970.2 front 180 (PN TBD))
       (place R101 85760.6 -34073.9 front 270 (PN TBD))
     )
     (component Capacitor_THT:CP_Radial_D8.0mm_P3.50mm
-      (place C10 46766.5 -69156.6 front 180 (PN 1000uF))
+      (place C10 77724 -112014 front 90 (PN 1000uF))
     )
     (component Connector_Audio:VGM_VR_SW
       (place U12 118013 -30789.9 front 270 (PN R_POT_SW))
     )
     (component Connector_PinSocket_2.54mm:PinSocket_2x15_P2.54mm_Vertical
-      (place J3 67350.6 -118897 front 180 (PN LCD_PORT))
+      (place J3 67350.6 -118135 front 180 (PN LCD_PORT))
     )
     (component Button_Switch_SMD:VGM_Button
       (place SW1 117292 -90269.1 front 90 (PN Mode))
@@ -175,7 +177,7 @@
     )
   )
   (library
-    (image Capacitor_SMD:C_0805_2012Metric
+    (image Resistor_SMD:R_0805_2012Metric
       (outline (path signal 50  1680 -950  -1680 -950))
       (outline (path signal 50  1680 950  1680 -950))
       (outline (path signal 50  -1680 950  1680 950))
@@ -189,7 +191,7 @@
       (pin RoundRect[T]Pad_975x1400_244.678_um 2 937.5 0)
       (pin RoundRect[T]Pad_975x1400_244.678_um 1 -937.5 0)
     )
-    (image Capacitor_SMD:C_0805_2012Metric::1
+    (image Resistor_SMD:R_0805_2012Metric::1
       (outline (path signal 100  -1000 -600  -1000 600))
       (outline (path signal 100  -1000 600  1000 600))
       (outline (path signal 100  1000 600  1000 -600))
@@ -1432,8 +1434,8 @@
       (pins U7-24 U5-24 U9-6)
     )
     (net +5V
-      (pins Q2-3 R23-2 R24-2 R25-2 R21-2 R22-2 R18-2 R19-2 R20-2 C24-1 C2-1 C3-1 C15-1
-        C14-1 L2-2 U14-4 U13-1 U8-16 U7-22 U4-6 U3-6)
+      (pins R29-1 Q2-3 R23-2 R24-2 R25-2 R21-2 R22-2 R18-2 R19-2 R20-2 C24-1 C2-1
+        C3-1 C15-1 C14-1 L2-2 U14-4 U13-1 U8-16 U7-22 U4-6 U3-6)
     )
     (net SN_CLK
       (pins U8-14 U10-6)
@@ -1537,7 +1539,7 @@
         U1-39 U1-19)
     )
     (net +3V3
-      (pins C10-1 J3-4 J3-2 J2-6 U2-7 U19-2 U11-2 U1-40)
+      (pins R30-1 J2-6 U2-7 U19-2 U11-2 U1-40)
     )
     (net "Net-(U13-Pad6)"
       (pins U13-6 U5-19)
@@ -1749,23 +1751,26 @@
     (net "Net-(U12-Pad7)"
       (pins U12-7)
     )
+    (net "Net-(C10-Pad1)"
+      (pins R30-2 R29-2 C10-1 J3-4 J3-2)
+    )
     (class kicad_default "" A0 A1 BUTTON_MODE BUTTON_NEXT BUTTON_PREV BUTTON_SELECT
-      D0 D1 D2 D3 D4 D5 D6 D7 "Net-(C11-Pad1)" "Net-(C11-Pad2)" "Net-(C12-Pad1)"
-      "Net-(C12-Pad2)" "Net-(C17-Pad1)" "Net-(C18-Pad1)" "Net-(C19-Pad1)"
-      "Net-(C19-Pad2)" "Net-(C20-Pad1)" "Net-(C20-Pad2)" "Net-(C21-Pad2)"
-      "Net-(C22-Pad2)" "Net-(C29-Pad1)" "Net-(C30-Pad2)" "Net-(C31-Pad2)"
-      "Net-(C5-Pad2)" "Net-(C6-Pad2)" "Net-(C7-Pad2)" "Net-(C8-Pad1)" "Net-(C8-Pad2)"
-      "Net-(C9-Pad1)" "Net-(C9-Pad2)" "Net-(D0-Pad2)" "Net-(D1-Pad2)" "Net-(D2-Pad2)"
-      "Net-(D3-Pad2)" "Net-(D4-Pad2)" "Net-(D5-Pad2)" "Net-(D6-Pad2)" "Net-(D7-Pad2)"
-      "Net-(J1-Pad2)" "Net-(J1-Pad3)" "Net-(J1-Pad4)" "Net-(J2-Pad1)" "Net-(J2-Pad10)"
-      "Net-(J2-Pad5)" "Net-(J3-Pad10)" "Net-(J3-Pad11)" "Net-(J3-Pad12)" "Net-(J3-Pad13)"
-      "Net-(J3-Pad14)" "Net-(J3-Pad15)" "Net-(J3-Pad16)" "Net-(J3-Pad18)"
-      "Net-(J3-Pad3)" "Net-(J3-Pad5)" "Net-(J3-Pad6)" "Net-(J3-Pad7)" "Net-(J3-Pad8)"
-      "Net-(J3-Pad9)" "Net-(Q1-Pad1)" "Net-(Q1-Pad3)" "Net-(Q2-Pad2)" "Net-(R1-Pad1)"
-      "Net-(R1-Pad2)" "Net-(R15-Pad1)" "Net-(R15-Pad2)" "Net-(R16-Pad1)" "Net-(R16-Pad2)"
-      "Net-(R17-Pad1)" "Net-(R17-Pad2)" "Net-(R5-Pad1)" "Net-(R6-Pad1)" "Net-(U1-Pad1)"
-      "Net-(U1-Pad17)" "Net-(U1-Pad18)" "Net-(U1-Pad2)" "Net-(U1-Pad3)" "Net-(U1-Pad4)"
-      "Net-(U10-Pad5)" "Net-(U11-Pad1)" "Net-(U11-Pad6)" "Net-(U12-Pad7)"
+      D0 D1 D2 D3 D4 D5 D6 D7 "Net-(C10-Pad1)" "Net-(C11-Pad1)" "Net-(C11-Pad2)"
+      "Net-(C12-Pad1)" "Net-(C12-Pad2)" "Net-(C17-Pad1)" "Net-(C18-Pad1)"
+      "Net-(C19-Pad1)" "Net-(C19-Pad2)" "Net-(C20-Pad1)" "Net-(C20-Pad2)"
+      "Net-(C21-Pad2)" "Net-(C22-Pad2)" "Net-(C29-Pad1)" "Net-(C30-Pad2)"
+      "Net-(C31-Pad2)" "Net-(C5-Pad2)" "Net-(C6-Pad2)" "Net-(C7-Pad2)" "Net-(C8-Pad1)"
+      "Net-(C8-Pad2)" "Net-(C9-Pad1)" "Net-(C9-Pad2)" "Net-(D0-Pad2)" "Net-(D1-Pad2)"
+      "Net-(D2-Pad2)" "Net-(D3-Pad2)" "Net-(D4-Pad2)" "Net-(D5-Pad2)" "Net-(D6-Pad2)"
+      "Net-(D7-Pad2)" "Net-(J1-Pad2)" "Net-(J1-Pad3)" "Net-(J1-Pad4)" "Net-(J2-Pad1)"
+      "Net-(J2-Pad10)" "Net-(J2-Pad5)" "Net-(J3-Pad10)" "Net-(J3-Pad11)" "Net-(J3-Pad12)"
+      "Net-(J3-Pad13)" "Net-(J3-Pad14)" "Net-(J3-Pad15)" "Net-(J3-Pad16)"
+      "Net-(J3-Pad18)" "Net-(J3-Pad3)" "Net-(J3-Pad5)" "Net-(J3-Pad6)" "Net-(J3-Pad7)"
+      "Net-(J3-Pad8)" "Net-(J3-Pad9)" "Net-(Q1-Pad1)" "Net-(Q1-Pad3)" "Net-(Q2-Pad2)"
+      "Net-(R1-Pad1)" "Net-(R1-Pad2)" "Net-(R15-Pad1)" "Net-(R15-Pad2)" "Net-(R16-Pad1)"
+      "Net-(R16-Pad2)" "Net-(R17-Pad1)" "Net-(R17-Pad2)" "Net-(R5-Pad1)" "Net-(R6-Pad1)"
+      "Net-(U1-Pad1)" "Net-(U1-Pad17)" "Net-(U1-Pad18)" "Net-(U1-Pad2)" "Net-(U1-Pad3)"
+      "Net-(U1-Pad4)" "Net-(U10-Pad5)" "Net-(U11-Pad1)" "Net-(U11-Pad6)" "Net-(U12-Pad7)"
       "Net-(U12-Pad8)" "Net-(U13-Pad12)" "Net-(U13-Pad13)" "Net-(U13-Pad14)"
       "Net-(U13-Pad2)" "Net-(U13-Pad4)" "Net-(U13-Pad5)" "Net-(U13-Pad6)"
       "Net-(U19-Pad1)" "Net-(U19-Pad6)" "Net-(U2-Pad6)" "Net-(U3-Pad1)" "Net-(U3-Pad8)"
