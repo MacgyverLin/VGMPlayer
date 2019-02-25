@@ -358,12 +358,21 @@ int main()
 #else
 #endif
 
+#ifdef TEST_YM2151	
 	strcpy(path, "YM2151");
+#else
+	strcpy(path, "YM2612");
+#endif
+	
 	if (beginSearchDirectory(path) == SR_OK)
 	{
 		while (1)
 		{
+#ifdef TEST_YM2151	
 			strcpy(path, "YM2151");
+#else
+			strcpy(path, "YM2612");
+#endif		
 			strcat(path, "/");
 			len = strlen(path);
 

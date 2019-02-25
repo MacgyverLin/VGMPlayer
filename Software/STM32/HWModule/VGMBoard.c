@@ -112,7 +112,6 @@ void VGMBoard_InitSPI2()
 	SPI2_SetSpeed(SPI_SPEED_256);
 }
 
-#define TEST_YM2151
 void VGMBoard_InitYMClock()
 {
 	IO_WRITE(YM_CLK_CS, 0);

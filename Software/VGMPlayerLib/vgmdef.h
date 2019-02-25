@@ -1,6 +1,8 @@
 #ifndef _VGMDef_h_
 #define _VGMDef_h_
 
+//#define TEST_YM2151
+
 #ifdef STM32
 #include <stm32f10x.h>
 #include <assert.h>
