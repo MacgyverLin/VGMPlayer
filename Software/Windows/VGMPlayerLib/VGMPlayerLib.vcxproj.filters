@@ -113,6 +113,9 @@
     <ClInclude Include="..\..\VGMPlayerLib\SEGAPCM.h">
       <Filter>Source Files\chips</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\VGMPlayerLib\VGMMultiChannelWaveFormViewer.h">
+      <Filter>Source Files\VGM\Observer</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\VGMPlayerLib\HuC6280.c">
@@ -183,6 +186,9 @@
     </ClCompile>
     <ClCompile Include="..\..\VGMPlayerLib\SEGAPCM.c">
       <Filter>Source Files\chips</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\VGMPlayerLib\VGMMultiChannelWaveFormViewer.cpp">
+      <Filter>Source Files\VGM\Observer</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

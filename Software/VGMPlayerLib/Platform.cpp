@@ -33,6 +33,24 @@ bool Platform::initialize()
 #endif
 }
 
+static bool oldkeyStates[10] = {};
+static bool keyStates[10] = {};
+
+bool Platform::getKeyDown(int key)
+{
+	return !oldkeyStates[key] && keyStates[key];
+}
+
+bool Platform::getKeyUp(int key)
+{
+	return oldkeyStates[key] && !keyStates[key];
+}
+
+bool Platform::getKey(int key)
+{
+	return oldkeyStates[key] && keyStates[key];
+}
+
 bool Platform::update()
 {
 #ifdef STM32
@@ -49,6 +67,15 @@ bool Platform::update()
 		{
 			return false;
 		}
+	}
+
+
+	const Uint8* state = SDL_GetKeyboardState(NULL);
+
+	for (int i = 0; i < 10; i++)
+	{
+		oldkeyStates[i] = keyStates[i];
+		keyStates[i] = state[SDL_SCANCODE_1 + i];
 	}
 	
 	return true;

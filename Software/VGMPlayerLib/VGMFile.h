@@ -8,7 +8,7 @@ class VGMFileImpl;
 class VGMFile : public VGMData
 {
 public:
-	VGMFile(const char* path_, s32 channels_, s32 bitPerSample_, s32 sampleRate_);
+	VGMFile(const char* path_, const char* texturePath_, s32 channels_, s32 bitPerSample_, s32 sampleRate_);
 	~VGMFile();
 protected:
 	virtual boolean onOpen();

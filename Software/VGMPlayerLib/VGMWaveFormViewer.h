@@ -12,7 +12,7 @@ public:
 	{
 	public:
 		Skin(u8 numChannels_ = 2,
-			const Color& bgColor_ = Color(0.0f, 0.0f, 0.0f, 1.0f), const Color& gridColor_ = Color(0.0f, 0.2f, 0.2f, 1.0f), const Color& axisColor_ = Color(0.0f, 0.5f, 0.5f, 1.0f),
+			const Color& bgColor_ = Color(0.5f, 0.5f, 0.5f, 1.0f), const Color& gridColor_ = Color(0.0f, 0.2f, 0.2f, 1.0f), const Color& axisColor_ = Color(0.3f, 0.3f, 0.3f, 1.0f),
 			const Color& leftColor_ = Color(0.0f, 0.5f, 0.0f, 1.0f), const Color& rightColor_ = Color(0.0f, 0.5f, 0.5f, 1.0f))
 		: numChannels(numChannels_)
 		, bgColor(bgColor_)
@@ -24,6 +24,7 @@ public:
 		}
 
 		u8 numChannels;
+		float waveScale;
 		Color bgColor;
 		Color gridColor;
 		Color axisColor;
@@ -31,7 +32,7 @@ public:
 		Color rightColor;
 	};
 	VGMWaveFormViewer(const string& name_, 
-					 u32 x_, u32 y_, u32 width_, u32 height_, const Skin& skin_);
+					 u32 x_, u32 y_, u32 width_, u32 height_, float waveScale_, const Skin& skin_);
 	virtual ~VGMWaveFormViewer();
 protected:
 	virtual void onNotifySomething(Obserable& vgmData);
@@ -53,8 +54,11 @@ private:
 	u32 y;
 	u32 width;
 	u32 height;
+	float waveScale;
 	Skin skin;
 	vector<f32> max;
+
+	Texture2D texture;
 };
 
 #endif

@@ -23,32 +23,32 @@
     <ProjectGuid>{5D9CF23A-72B0-4357-8018-D268F231B4EC}</ProjectGuid>
     <Keyword>Win32Proj</Keyword>
     <RootNamespace>VGMPlayerLib</RootNamespace>
-    <WindowsTargetPlatformVersion>10.0.16299.0</WindowsTargetPlatformVersion>
+    <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
     <ConfigurationType>StaticLibrary</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
-    <PlatformToolset>v141</PlatformToolset>
+    <PlatformToolset>v142</PlatformToolset>
     <CharacterSet>NotSet</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
     <ConfigurationType>StaticLibrary</ConfigurationType>
     <UseDebugLibraries>false</UseDebugLibraries>
-    <PlatformToolset>v141</PlatformToolset>
+    <PlatformToolset>v142</PlatformToolset>
     <WholeProgramOptimization>true</WholeProgramOptimization>
     <CharacterSet>NotSet</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
     <ConfigurationType>StaticLibrary</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
-    <PlatformToolset>v141</PlatformToolset>
+    <PlatformToolset>v142</PlatformToolset>
     <CharacterSet>NotSet</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
     <ConfigurationType>StaticLibrary</ConfigurationType>
     <UseDebugLibraries>false</UseDebugLibraries>
-    <PlatformToolset>v141</PlatformToolset>
+    <PlatformToolset>v142</PlatformToolset>
     <WholeProgramOptimization>true</WholeProgramOptimization>
     <CharacterSet>NotSet</CharacterSet>
   </PropertyGroup>
@@ -90,7 +90,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS; WIN32;_DEBUG;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories> ../SDK/OpenAL/include; ../zlib; ../SDK/SDL/include; ../../VGMPlayerLib</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>../SDK/stb/include; ../SDK/OpenAL/include; ../zlib; ../SDK/SDL/include; ../../VGMPlayerLib</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -105,7 +105,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS; _DEBUG;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories> ../SDK/OpenAL/include; ../zlib; ../SDK/SDL/include; ../../VGMPlayerLib</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>../SDK/stb/include; ../SDK/OpenAL/include; ../zlib; ../SDK/SDL/include; ../../VGMPlayerLib</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -122,7 +122,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS; WIN32;NDEBUG;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories> ../SDK/OpenAL/include; ../zlib; ../SDK/SDL/include; ../../VGMPlayerLib</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>../SDK/stb/include; ../SDK/OpenAL/include; ../zlib; ../SDK/SDL/include; ../../VGMPlayerLib</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -141,7 +141,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS; NDEBUG;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories> ../SDK/OpenAL/include; ../zlib; ../SDK/SDL/include; ../../VGMPlayerLib</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>../SDK/stb/include; ../SDK/OpenAL/include; ../zlib; ../SDK/SDL/include; ../../VGMPlayerLib</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -171,6 +171,7 @@
     <ClInclude Include="..\..\VGMPlayerLib\VGMDataObverser.h" />
     <ClInclude Include="..\..\VGMPlayerLib\vgmdef.h" />
     <ClInclude Include="..\..\VGMPlayerLib\VGMFile.h" />
+    <ClInclude Include="..\..\VGMPlayerLib\VGMMultiChannelWaveFormViewer.h" />
     <ClInclude Include="..\..\VGMPlayerLib\VGMPlayerLib.h" />
     <ClInclude Include="..\..\VGMPlayerLib\VGMSpectrumViewer.h" />
     <ClInclude Include="..\..\VGMPlayerLib\VGMWaveFormViewer.h" />
@@ -199,6 +200,7 @@
     <ClCompile Include="..\..\VGMPlayerLib\VGMData.cpp" />
     <ClCompile Include="..\..\VGMPlayerLib\VGMDataObverser.cpp" />
     <ClCompile Include="..\..\VGMPlayerLib\VGMFile.cpp" />
+    <ClCompile Include="..\..\VGMPlayerLib\VGMMultiChannelWaveFormViewer.cpp" />
     <ClCompile Include="..\..\VGMPlayerLib\VGMSpectrumViewer.cpp" />
     <ClCompile Include="..\..\VGMPlayerLib\VGMWaveFormViewer.cpp" />
     <ClCompile Include="..\..\VGMPlayerLib\VideoDevice.cpp" />

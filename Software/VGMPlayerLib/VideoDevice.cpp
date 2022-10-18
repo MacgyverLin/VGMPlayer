@@ -7,8 +7,58 @@
 #include <SDL_opengl.h>
 #include <GL/glu.h>
 #include <GL/gl.h>
+
+#define STB_IMAGE_IMPLEMENTATION
+#include <stb_image.h>
+#define STB_IMAGE_WRITE_IMPLEMENTATION
+#include "stb_image_write.h"
+
 #endif
 
+
+Texture2D::Texture2D()
+: handle(0)
+{
+}
+
+Texture2D::~Texture2D()
+{
+	glDeleteTextures(1, &handle);
+}
+
+void Texture2D::Load(const char* path_)
+{
+	int width;
+	int height;
+	int nrComponents;
+	void *data = stbi_load(path_, &width, &height, &nrComponents, 0);
+	stbi__vertical_flip(data, width, height, nrComponents * 1);
+
+	if (data)
+	{
+		glGenTextures(1, &handle);
+
+		glBindTexture(GL_TEXTURE_2D, handle);
+
+		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, data);
+		//glGenerateMipmap(GL_TEXTURE_2D);
+	
+		stbi_image_free(data);
+	}
+}
+
+void Texture2D::Bind() const
+{
+	glBindTexture(GL_TEXTURE_2D, handle);
+
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_R, GL_CLAMP);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP);
+}
+
+//////////////////////////////////////////////////////////////////////////////////
 class VideoDeviceImpl
 {
 public:
@@ -38,7 +88,7 @@ boolean VideoDevice::open(const string& name_, u32 x_, u32 y_, u32 width_, u32 h
 #ifdef STM32
 #else	
 	// Create impl->window
-	impl->window = SDL_CreateWindow(name_.c_str(), x_, y_, width_, height_, SDL_WINDOW_OPENGL | SDL_WINDOW_SHOWN);
+	impl->window = SDL_CreateWindow(name_.c_str(), x_, y_, width_, height_, SDL_WINDOW_OPENGL | SDL_WINDOW_SHOWN | SDL_WINDOW_BORDERLESS);
 	if (impl->window == NULL)
 	{
 		// Display error message
@@ -115,41 +165,180 @@ void VideoDevice::clear(const Color& c)
 #endif
 }
 
-void VideoDevice::drawPoint(const Vertex& v, const Color& c)
+void VideoDevice::drawPoint(const Vector2& v, const Color& c)
 {
 #ifdef STM32
 #else		
+	glDisable(GL_TEXTURE_2D);
+	
+	glBegin(GL_POINTS);
+
 	glColor4f(c.r, c.g, c.b, c.a);
+	glVertex2fv((f32*)&v);
+	
+	glEnd();
+#endif
+}
+
+void VideoDevice::drawLine(const Vector2& v0, const Color& c0, const Vector2& v1, const Color& c1)
+{
+#ifdef STM32
+#else		
+	glDisable(GL_TEXTURE_2D);
+
+	glBegin(GL_LINES);
+
+	glColor4fv((f32*)&c0);
+	glVertex2fv((f32*)&v0);
+
+	glColor4fv((f32*)&c1);
+	glVertex2fv((f32*)&v1);
+
+	glEnd();
+#endif
+}
+
+void VideoDevice::drawWireTriangle(const Vector2& v0, const Color& c0, const Vector2& v1, const Color& c1, const Vector2& v2, const Color& c2)
+{
+#ifdef STM32
+#else		
+	glDisable(GL_TEXTURE_2D);
+
+	glBegin(GL_LINE_LOOP);
+
+	glColor4fv((f32*)&c0);
+	glVertex2fv((f32*)&v0);
+
+	glColor4fv((f32*)&c1);
+	glVertex2fv((f32*)&v1);
+
+	glColor4fv((f32*)&c2);
+	glVertex2fv((f32*)&v2);
+
+	glEnd();
+#endif
+}
+
+void VideoDevice::drawWireRectangle(const Vector2& v0, const Color& c0, const Vector2& v1, const Color& c1, const Vector2& v2, const Color& c2, const Vector2& v3, const Color& c3)
+{
+#ifdef STM32
+#else		
+	glDisable(GL_TEXTURE_2D);
+
+	glBegin(GL_LINES);
+
+	glColor4fv((f32*)&c0);
+	glVertex2fv((f32*)&v0);
+
+	glColor4fv((f32*)&c1);
+	glVertex2fv((f32*)&v1);
+
+	glColor4fv((f32*)&c2);
+	glVertex2fv((f32*)&v2);
+
+	glColor4fv((f32*)&c3);
+	glVertex2fv((f32*)&v3);
+
+	glEnd();
+#endif
+}
+
+void VideoDevice::drawWireCircle(const Vector2& center, f32 radius, const Color& c)
+{
+}
+
+void VideoDevice::drawSolidTriangle(const Vector2& v0, const Color& c0, const Vector2& v1, const Color& c1, const Vector2& v2, const Color& c2)
+{
+#ifdef STM32
+#else		
+	glDisable(GL_TEXTURE_2D);
+
+	glBegin(GL_TRIANGLES);
+
+	glColor4fv((f32*)&c0);
+	glVertex2fv((f32*)&v0);
+
+	glColor4fv((f32*)&c1);
+	glVertex2fv((f32*)&v1);
+
+	glColor4fv((f32*)&c2);
+	glVertex2fv((f32*)&v2);
+
+	glEnd();
+#endif
+}
+
+void VideoDevice::drawSolidRectangle(const Vector2& v0, const Color& c0, const Vector2& v1, const Color& c1, const Vector2& v2, const Color& c2, const Vector2& v3, const Color& c3)
+{
+#ifdef STM32
+#else		
+	glDisable(GL_TEXTURE_2D);
+
+	glBegin(GL_QUADS);
+
+	glColor4fv((f32*)&c0);
+	glVertex2fv((f32*)&v0);
+
+	glColor4fv((f32*)&c1);
+	glVertex2fv((f32*)&v1);
+
+	glColor4fv((f32*)&c2);
+	glVertex2fv((f32*)&v2);
+
+	glColor4fv((f32*)&c3);
+	glVertex2fv((f32*)&v3);
+
+	glEnd();
+#endif
+}
+
+void VideoDevice::drawSolidCircle(const Vector2& center, f32 radius, const Color& c)
+{
+}
+
+void VideoDevice::drawPrimitive(u32 primitive, const Vector2* vertices, const Color* colors, u32 count)
+{
+#ifdef STM32
+#else
+	glDisable(GL_TEXTURE_2D);
+
+	glVertexPointer(2, GL_FLOAT, 0, vertices);
+	glColorPointer(4, GL_FLOAT, 0, colors);
+
+	glDrawArrays(primitive, 0, count);
+#endif
+}
+
+/////////////////////////////////////////////////////////////////////////////////////////////
+void VideoDevice::drawTexPoint(const Texture2D& texture, const Vector2& v, const Color& c, const Vector2& t)
+{
+#ifdef STM32
+#else
+	glEnable(GL_TEXTURE_2D);
+	texture.Bind();
+
+	glTexCoord2fv((f32*)&t);
+	glColor4fv((f32*)&c);
 	glBegin(GL_POINTS);
 	glVertex2fv((f32*)&v);
 	glEnd();
 #endif
 }
 
-void VideoDevice::drawLine(const Vertex& v0, const Vertex& v1, const Color& c)
+void VideoDevice::drawTexLine(const Texture2D& texture, const Vector2& v0, const Color& c0, const Vector2& t0, const Vector2& v1, const Color& c1, const Vector2& t1)
 {
 #ifdef STM32
 #else		
+	glEnable(GL_TEXTURE_2D);
+	texture.Bind();
+
 	glBegin(GL_LINES);
 
-	glColor4fv((f32*)&c);
-
-	glVertex2fv((f32*)&v0);
-	glVertex2fv((f32*)&v1);
-
-	glEnd();
-#endif
-}
-
-void VideoDevice::drawLine(const Vertex& v0, const Color& c0, const Vertex& v1, const Color& c1)
-{
-#ifdef STM32
-#else		
-	glBegin(GL_LINES);
-
+	glTexCoord2fv((f32*)&t0);
 	glColor4fv((f32*)&c0);
 	glVertex2fv((f32*)&v0);
 
+	glTexCoord2fv((f32*)&t1);
 	glColor4fv((f32*)&c1);
 	glVertex2fv((f32*)&v1);
 
@@ -157,34 +346,24 @@ void VideoDevice::drawLine(const Vertex& v0, const Color& c0, const Vertex& v1, 
 #endif
 }
 
-void VideoDevice::drawWireTriangle(const Vertex& v0, const Vertex& v1, const Vertex& v2, const Color& c)
+void VideoDevice::drawTexWireTriangle(const Texture2D& texture, const Vector2& v0, const Color& c0, const Vector2& t0, const Vector2& v1, const Color& c1, const Vector2& t1, const Vector2& v2, const Color& c2, const Vector2& t2)
 {
 #ifdef STM32
 #else		
+	glEnable(GL_TEXTURE_2D);
+	texture.Bind();
+
 	glBegin(GL_LINE_LOOP);
 
-	glColor4fv((f32*)&c);
-
-	glVertex2fv((f32*)&v0);
-	glVertex2fv((f32*)&v1);
-	glVertex2fv((f32*)&v2);
-
-	glEnd();
-#endif
-}
-
-void VideoDevice::drawWireTriangle(const Vertex& v0, const Color& c0, const Vertex& v1, const Color& c1, const Vertex& v2, const Color& c2)
-{
-#ifdef STM32
-#else		
-	glBegin(GL_LINE_LOOP);
-
+	glTexCoord2fv((f32*)&t0);
 	glColor4fv((f32*)&c0);
 	glVertex2fv((f32*)&v0);
 
+	glTexCoord2fv((f32*)&t1);
 	glColor4fv((f32*)&c1);
 	glVertex2fv((f32*)&v1);
 
+	glTexCoord2fv((f32*)&t2);
 	glColor4fv((f32*)&c2);
 	glVertex2fv((f32*)&v2);
 
@@ -192,38 +371,32 @@ void VideoDevice::drawWireTriangle(const Vertex& v0, const Color& c0, const Vert
 #endif
 }
 
-void VideoDevice::drawWireRectangle(const Vertex& v0, const Vertex& v1, const Vertex& v2, const Vertex& v3, const Color& c)
+void VideoDevice::drawTexWireRectangle(const Texture2D& texture, 
+										const Vector2& v0, const Color& c0, const Vector2& t0, 
+										const Vector2& v1, const Color& c1, const Vector2& t1,
+										const Vector2& v2, const Color& c2, const Vector2& t2,
+										const Vector2& v3, const Color& c3, const Vector2& t3)
 {
 #ifdef STM32
 #else		
-	glBegin(GL_LINE);
+	glEnable(GL_TEXTURE_2D);
+	texture.Bind();
 
-	glColor4fv((f32*)&c);
-
-	glVertex2fv((f32*)&v0);
-	glVertex2fv((f32*)&v1);
-	glVertex2fv((f32*)&v2);
-	glVertex2fv((f32*)&v3);
-
-	glEnd();
-#endif
-}
-
-void VideoDevice::drawWireRectangle(const Vertex& v0, const Color& c0, const Vertex& v1, const Color& c1, const Vertex& v2, const Color& c2, const Vertex& v3, const Color& c3)
-{
-#ifdef STM32
-#else		
 	glBegin(GL_LINES);
 
+	glTexCoord2fv((f32*)&t0);
 	glColor4fv((f32*)&c0);
 	glVertex2fv((f32*)&v0);
 
+	glTexCoord2fv((f32*)&t1);
 	glColor4fv((f32*)&c1);
 	glVertex2fv((f32*)&v1);
 
+	glTexCoord2fv((f32*)&t2);
 	glColor4fv((f32*)&c2);
 	glVertex2fv((f32*)&v2);
 
+	glTexCoord2fv((f32*)&t3);
 	glColor4fv((f32*)&c3);
 	glVertex2fv((f32*)&v3);
 
@@ -231,41 +404,27 @@ void VideoDevice::drawWireRectangle(const Vertex& v0, const Color& c0, const Ver
 #endif
 }
 
-void VideoDevice::drawWireCircle(const Vertex& center, f32 radius, const Color& c)
-{
-}
-
-void VideoDevice::drawSolidTriangle(const Vertex& v0, const Vertex& v1, const Vertex& v2, const Color& c)
-{
-#ifdef STM32
-#else		
-	glBegin(GL_TRIANGLES);
-
-	glColor4fv((f32*)&c);
-	glVertex2fv((f32*)&v0);
-
-	glColor4fv((f32*)&c);
-	glVertex2fv((f32*)&v1);
-
-	glColor4fv((f32*)&c);
-	glVertex2fv((f32*)&v2);
-
-	glEnd();
-#endif
-}
-
-void VideoDevice::drawSolidTriangle(const Vertex& v0, const Color& c0, const Vertex& v1, const Color& c1, const Vertex& v2, const Color& c2)
+void VideoDevice::drawTexSolidTriangle(const Texture2D& texture,
+										const Vector2& v0, const Color& c0, const Vector2& t0,
+										const Vector2& v1, const Color& c1, const Vector2& t1,
+										const Vector2& v2, const Color& c2, const Vector2& t2)
 {
 #ifdef STM32
 #else		
+	glEnable(GL_TEXTURE_2D);
+	texture.Bind();
+
 	glBegin(GL_TRIANGLES);
 
+	glTexCoord2fv((f32*)&t0);
 	glColor4fv((f32*)&c0);
 	glVertex2fv((f32*)&v0);
 
+	glTexCoord2fv((f32*)&t1);
 	glColor4fv((f32*)&c1);
 	glVertex2fv((f32*)&v1);
 
+	glTexCoord2fv((f32*)&t2);
 	glColor4fv((f32*)&c2);
 	glVertex2fv((f32*)&v2);
 
@@ -273,38 +432,33 @@ void VideoDevice::drawSolidTriangle(const Vertex& v0, const Color& c0, const Ver
 #endif
 }
 
-void VideoDevice::drawSolidRectangle(const Vertex& v0, const Vertex& v1, const Vertex& v2, const Vertex& v3, const Color& c)
+
+void VideoDevice::drawTexSolidRectangle(const Texture2D& texture,
+	const Vector2& v0, const Color& c0, const Vector2& t0,
+	const Vector2& v1, const Color& c1, const Vector2& t1,
+	const Vector2& v2, const Color& c2, const Vector2& t2,
+	const Vector2& v3, const Color& c3, const Vector2& t3)
 {
 #ifdef STM32
 #else		
+	glEnable(GL_TEXTURE_2D);
+	texture.Bind();
+
 	glBegin(GL_QUADS);
 
-	glColor4fv((f32*)&c);
-
-	glVertex2fv((f32*)&v0);
-	glVertex2fv((f32*)&v1);
-	glVertex2fv((f32*)&v2);
-	glVertex2fv((f32*)&v3);
-
-	glEnd();
-#endif
-}
-
-void VideoDevice::drawSolidRectangle(const Vertex& v0, const Color& c0, const Vertex& v1, const Color& c1, const Vertex& v2, const Color& c2, const Vertex& v3, const Color& c3)
-{
-#ifdef STM32
-#else		
-	glBegin(GL_QUADS);
-
+	glTexCoord2fv((f32*)&t0);
 	glColor4fv((f32*)&c0);
 	glVertex2fv((f32*)&v0);
 
+	glTexCoord2fv((f32*)&t1);
 	glColor4fv((f32*)&c1);
 	glVertex2fv((f32*)&v1);
 
+	glTexCoord2fv((f32*)&t2);
 	glColor4fv((f32*)&c2);
 	glVertex2fv((f32*)&v2);
 
+	glTexCoord2fv((f32*)&t3);
 	glColor4fv((f32*)&c3);
 	glVertex2fv((f32*)&v3);
 
@@ -312,26 +466,16 @@ void VideoDevice::drawSolidRectangle(const Vertex& v0, const Color& c0, const Ve
 #endif
 }
 
-void VideoDevice::drawSolidCircle(const Vertex& center, f32 radius, const Color& c)
-{
-}
-
-void VideoDevice::drawPrimitive(u32 primitive, const Vertex* vertices, const Color& c, u32 count)
+void VideoDevice::drawTexPrimitive(const Texture2D& texture, u32 primitive, const Vector2* v, const Color* c, const Vector2* t, u32 count)
 {
 #ifdef STM32
 #else		
-	glVertexPointer(2, GL_FLOAT, 0, vertices);
+	glEnable(GL_TEXTURE_2D);
+	texture.Bind();
 
-	glDrawArrays(primitive, 0, count);
-#endif
-}
-
-void VideoDevice::drawPrimitive(u32 primitive, const Vertex* vertices, const Color* colors, u32 count)
-{
-#ifdef STM32
-#else		
-	glVertexPointer(2, GL_FLOAT, 0, vertices);
-	glColorPointer(4, GL_FLOAT, 0, colors);
+	glVertexPointer(2, GL_FLOAT, 0, v);
+	glColorPointer(4, GL_FLOAT, 0, c);
+	glTexCoordPointer(2, GL_FLOAT, 0, t);
 
 	glDrawArrays(primitive, 0, count);
 #endif

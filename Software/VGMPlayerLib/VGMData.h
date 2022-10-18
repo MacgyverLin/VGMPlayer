@@ -11,6 +11,7 @@
 #include "vgmdef.h"
 #include "Obserable.h"
 #include <vector>
+#include "VideoDevice.h"
 using namespace std;
 
 #define VGMPlayer_MIN(a, b) ((a)<(b)) ? (a) : (b)
@@ -372,34 +373,43 @@ public:
 		s32 channels;
 		s32 bitPerSamples;
 		s32 sampleRate;
+
+		char texturePath[256];
 	};
 #pragma pack (push,1)
-	class OutputSample
+	class OutputSamples
 	{
 	public:
-		s16 l;
-		s16 r;
-
-		s16 get(u8 idx)
+		void Set(int bufferSize)
 		{
-			if(idx==0)
-				return l;
-			else
-				return r;
+			this->bufferSize = bufferSize;
+			m.resize(bufferSize * 2);
 		}
+
+		s16& Get(int i, int channel)
+		{
+			return m[i * 2 + channel];
+		}
+
+		const s16& Get(int i, int channel) const
+		{
+			return m[i * 2 + channel];
+		}
+	private:
+		int bufferSize;
+		vector<s16> m;
 	};
 #pragma pack (pop)
 	class BufferInfo
 	{
 	public:
 		u32 sampleIdx;
-		vector<s32> samplesL;
-		vector<s32> samplesR;
-		vector<OutputSample> outputSamples;
+		vector<vector<s32>> channels;
+		OutputSamples outputSamples;
 		
 		boolean needQueueOutputSamples;
 	};
-	VGMData(s32 channels_, s32 bitPerSample_, s32 sampleRate_);
+	VGMData(const char* texturePath_, s32 channels_, s32 bitPerSample_, s32 sampleRate_);
 	~VGMData();
 
 	u32 getVersion();
@@ -420,6 +430,9 @@ public:
 	const VGMHeader& getHeader() const;
 	const VGMData::PlayInfo& getPlayInfo() const;
 	const VGMData::BufferInfo& getBufferInfo() const;
+
+	void setChannelEnable(u32 channel, bool enable);
+	u8 getChannelEnable(u32 channel);
 protected:
 	virtual s32 read(void *buffer, u32 size);
 	virtual s32 seekSet(u32 size);

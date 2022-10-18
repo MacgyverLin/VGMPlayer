@@ -25,22 +25,25 @@ typedef struct
 	u8	main_enable;
 	s32	main_frequency;
 	s32	main_addr;
-	
+
 	// For Effector(LFO) unit
 	u8	lfo_wavetable[64];
 	u8	lfo_enable;			// 0:Enable 1:Wavetable setup
 	s32	lfo_frequency;
 	s32	lfo_addr;
 	f32	lfo_phaseacc;
-	
+
 	// For Sweep unit
 	s32	sweep_bias;
-	
+
 	// Misc
 	s32	volume;
 	s32	freq;
 
 	u32	samplingRate;
+
+	u32 channel_enabled;
+	u32	channel_count;
 }NESFDSAPU;
 
 #define NESFDSAPU_CHIPS_COUNT 2
@@ -54,6 +57,8 @@ s32 NESFDSAPU_Initialize(u8 chipID, u32 clock, u32 sampleRate)
 
 	memset(ic, 0, sizeof(NESFDSAPU));
 	ic->samplingRate = sampleRate;
+	ic->channel_enabled = 0xffffffff;
+	ic->channel_count = 1;
 
 	return -1;
 }
@@ -72,6 +77,9 @@ void NESFDSAPU_Reset(u8 chipID)
 	u32 sampleRate = ic->samplingRate;
 	memset(ic, 0, sizeof(NESFDSAPU));
 	ic->samplingRate = sampleRate;
+
+	ic->channel_enabled = 0xffffffff;
+	ic->channel_count = 1;
 }
 
 void NESFDSAPU_WriteRegister(u8 chipID, u32 addr, u8 data)
@@ -119,8 +127,8 @@ void NESFDSAPU_WriteRegister(u8 chipID, u32 addr, u8 data)
 			break;
 
 		case	0x4083:	// Main Frequency(High)
-			ic->main_enable = (~data)&(1 << 7);
-			ic->envelope_enable = (~data)&(1 << 6);
+			ic->main_enable = (~data) & (1 << 7);
+			ic->envelope_enable = (~data) & (1 << 6);
 			if (!ic->main_enable)
 			{
 				ic->main_addr = 0;
@@ -135,7 +143,7 @@ void NESFDSAPU_WriteRegister(u8 chipID, u32 addr, u8 data)
 				ic->swpenv_gain = data & 0x3F;
 			}
 			ic->swpenv_decay = data & 0x3F;
-			ic->swpenv_phaseacc = ic->envelope_speed * (ic->swpenv_decay + 1) * ic->samplingRate / (232.0f*960.0f);			break;
+			ic->swpenv_phaseacc = ic->envelope_speed * (ic->swpenv_decay + 1) * ic->samplingRate / (232.0f * 960.0f);			break;
 
 		case	0x4085:	// Sweep Bias
 			if (data & 0x40)
@@ -207,11 +215,11 @@ u8 NESFDSAPU_ReadRegister(u8 chipID, u32 address)
 	return data;
 }
 
-void NESFDSAPU_Update(u8 chipID, s32** buffer, u32 length)
+void NESFDSAPU_Update(u8 chipID, s32 baseChannel, s32** buffer, u32 length)
 {
 	NESFDSAPU* ic = &nesfdsapuChips[chipID];
 
-	for(u32 i = 0; i < length; i++)
+	for (u32 sample = 0; sample < length; sample++)
 	{
 		// Envelope unit
 		if (ic->envelope_enable && ic->envelope_speed)
@@ -264,7 +272,7 @@ void NESFDSAPU_Update(u8 chipID, s32** buffer, u32 length)
 		if (ic->lfo_enable && ic->envelope_speed && ic->lfo_frequency)
 		{
 			static s32 tbl[8] = { 0, 1, 2, 4, 0, -4, -2, -1 };
-			ic->lfo_phaseacc -= (1789772.5f*(f32)(ic->lfo_frequency)) / 65536.0f;
+			ic->lfo_phaseacc -= (1789772.5f * (f32)(ic->lfo_frequency)) / 65536.0f;
 			while (ic->lfo_phaseacc < 0.0)
 			{
 				ic->lfo_phaseacc += (f32)ic->samplingRate;
@@ -298,31 +306,63 @@ void NESFDSAPU_Update(u8 chipID, s32** buffer, u32 length)
 			sub_freq = (ic->main_frequency) * sub_multi / 64;
 		}
 
-		// Main unit
-		s32 output = 0;
-		if (ic->main_enable && ic->main_frequency && !ic->wave_setup)
+		if ((ic->channel_enabled & (1 << (0 + baseChannel))) == 0)
 		{
-			s32 freq;
-			s32 main_addr_old = ic->main_addr;
-			freq = (s32)((ic->main_frequency + sub_freq) * 1789772.5f / 65536.0f);
-			ic->main_addr = (ic->main_addr + freq + 64 * ic->samplingRate) % (64 * ic->samplingRate);
-
-			if (main_addr_old > ic->main_addr)
-				ic->volume = (ic->volenv_gain < 0x21) ? ic->volenv_gain : 0x20;
-
-			output = ic->main_wavetable[(ic->main_addr / ic->samplingRate) & 0x3f] * 8 * ic->volume * ic->master_volume / 30;
-			if (ic->volume)
-				ic->freq = freq * 4;
-			else
-				ic->freq = 0;
+			buffer[((0 + baseChannel) << 1) + 0][sample] = 0;
+			buffer[((0 + baseChannel) << 1) + 1][sample] = 0;
 		}
 		else
 		{
-			ic->freq = 0;
-			output = 0;
-		}
+			// Main unit
+			s32 output = 0;
+			if (ic->main_enable && ic->main_frequency && !ic->wave_setup)
+			{
+				s32 freq;
+				s32 main_addr_old = ic->main_addr;
+				freq = (s32)((ic->main_frequency + sub_freq) * 1789772.5f / 65536.0f);
+				ic->main_addr = (ic->main_addr + freq + 64 * ic->samplingRate) % (64 * ic->samplingRate);
 
-		buffer[0][i] += output;
-		buffer[1][i] += output;
+				if (main_addr_old > ic->main_addr)
+					ic->volume = (ic->volenv_gain < 0x21) ? ic->volenv_gain : 0x20;
+
+				output = ic->main_wavetable[(ic->main_addr / ic->samplingRate) & 0x3f] * 8 * ic->volume * ic->master_volume / 30;
+				if (ic->volume)
+					ic->freq = freq * 4;
+				else
+					ic->freq = 0;
+			}
+			else
+			{
+				ic->freq = 0;
+				output = 0;
+			}
+
+			buffer[((0 + baseChannel) << 1) + 0][sample] = output;
+			buffer[((0 + baseChannel) << 1) + 1][sample] = output;
+		}
 	}
+}
+
+void NESFDSAPU_SetChannelEnable(u8 chipID, u8 channel, u8 enable)
+{
+	NESFDSAPU* ic = &nesfdsapuChips[chipID];
+
+	if (enable)
+		ic->channel_enabled |= (1 << channel);
+	else
+		ic->channel_enabled &= (~(1 << channel));
+}
+
+u8 NESFDSAPU_GetChannelEnable(u8 chipID, u8 channel)
+{
+	NESFDSAPU* ic = &nesfdsapuChips[chipID];
+
+	return (ic->channel_enabled & (1 << channel)) != 0;
+}
+
+u32 NESFDSAPU_GetChannelCount(u8 chipID)
+{
+	NESFDSAPU* ic = &nesfdsapuChips[chipID];
+
+	return ic->channel_count;
 }

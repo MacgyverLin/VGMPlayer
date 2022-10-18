@@ -16,12 +16,14 @@ using namespace std;
 #ifdef STM32
 #define MAX_PATH 256
 #else
+#include "VideoDevice.h"
 #endif
 
 class VGMFileImpl
 {
 public:
 	char path[MAX_PATH];
+
 #ifdef STM32
 	FIL fil;
 	boolean opened;
@@ -32,8 +34,8 @@ public:
 };
 
 /////////////////////////////////////////////////////////
-VGMFile::VGMFile(const char* path_, s32 channels_, s32 bitPerSample_, s32 sampleRate_)
-: VGMData(channels_, bitPerSample_, sampleRate_)
+VGMFile::VGMFile(const char* path_, const char* texturePath_, s32 channels_, s32 bitPerSample_, s32 sampleRate_)
+: VGMData(texturePath_, channels_, bitPerSample_, sampleRate_)
 , impl(0)
 {
 	impl = new VGMFileImpl();
@@ -100,7 +102,6 @@ boolean VGMFile::onOpen()
 			return FALSE;
 	}
 #endif
-
 	notifyOpen();
 
 	return TRUE;

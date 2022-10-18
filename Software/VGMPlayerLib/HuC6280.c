@@ -23,12 +23,15 @@ typedef struct {
 	s16 volume_table[32];
 	u32 noise_freq_tab[32];
 	u32 wave_freq_tab[4096];
+
+	u32 channel_enabled;
+	u32 channel_count;
 }HUC6280;
 
 #define HUC6280_CHIPS_COUNT 2
 static HUC6280 chips[HUC6280_CHIPS_COUNT];
 
-static void c6280_stream_update(u8 chipID, s32 **buffer, u32 length)
+static void c6280_stream_update(u8 chipID, s32 baseChannel, s32 **buffer, u32 length)
 {
 	HUC6280 *ic = &chips[chipID];
 
@@ -37,7 +40,7 @@ static void c6280_stream_update(u8 chipID, s32 **buffer, u32 length)
 		0x10, 0x13, 0x15, 0x17, 0x19, 0x1B, 0x1D, 0x1F
 	};
 	u32 ch;
-	u32 i;
+	u32 sample;
 
 	s32 lmal = (ic->balance >> 4) & 0x0F;
 	s32 rmal = (ic->balance >> 0) & 0x0F;
@@ -46,76 +49,84 @@ static void c6280_stream_update(u8 chipID, s32 **buffer, u32 length)
 	lmal = scale_tab[lmal];
 	rmal = scale_tab[rmal];
 
-	s32* lBuf = buffer[0];
-	s32* rBuf = buffer[1];
-
 	/* Clear buffer */
-	for(ch = 0; ch < 6; ch++)
+	for(ch = 0; ch < ic->channel_count; ch++)
 	{
-		/* Only look at enabled channels */
-		if(ic->channel[ch].control & 0x80)
+		if ((ic->channel_enabled & (1 << (ch + baseChannel))) == 0)
 		{
-			s32 lal = (ic->channel[ch].balance >> 4) & 0x0F;
-			s32 ral = (ic->channel[ch].balance >> 0) & 0x0F;
-			s32 al  = ic->channel[ch].control & 0x1F;
-
-			lal = scale_tab[lal];
-			ral = scale_tab[ral];
-
-			/* Calculate volume just as the patent says */
-			vll = (0x1F - lal) + (0x1F - al) + (0x1F - lmal);
-			if(vll > 0x1F)
-				vll = 0x1F;
-
-			vlr = (0x1F - ral) + (0x1F - al) + (0x1F - rmal);
-			if(vlr > 0x1F)
-				vlr = 0x1F;
-
-			vll = ic->volume_table[vll] << 2;
-			vlr = ic->volume_table[vlr] << 2;
-			
-			/* Check channel mode */
-			if((ch >= 4) && (ic->channel[ch].noise_control & 0x80))
+			for (sample = 0; sample < length; sample++)
 			{
-				/* Noise mode */
-				u32 step = ic->noise_freq_tab[(ic->channel[ch].noise_control & 0x1F) ^ 0x1F];
-				for(i=0; i<length; i++)
+				buffer[((ch + baseChannel) << 1) + 0][sample] = 0;
+				buffer[((ch + baseChannel) << 1) + 1][sample] = 0;
+			}
+		}
+		else
+		{
+			/* Only look at enabled channels */
+			if (ic->channel[ch].control & 0x80)
+			{
+				s32 lal = (ic->channel[ch].balance >> 4) & 0x0F;
+				s32 ral = (ic->channel[ch].balance >> 0) & 0x0F;
+				s32 al = ic->channel[ch].control & 0x1F;
+
+				lal = scale_tab[lal];
+				ral = scale_tab[ral];
+
+				/* Calculate volume just as the patent says */
+				vll = (0x1F - lal) + (0x1F - al) + (0x1F - lmal);
+				if (vll > 0x1F)
+					vll = 0x1F;
+
+				vlr = (0x1F - ral) + (0x1F - al) + (0x1F - rmal);
+				if (vlr > 0x1F)
+					vlr = 0x1F;
+
+				vll = ic->volume_table[vll] << 2;
+				vlr = ic->volume_table[vlr] << 2;
+
+				/* Check channel mode */
+				if ((ch >= 4) && (ic->channel[ch].noise_control & 0x80))
 				{
-					static s32 data = 0;
-					ic->channel[ch].noise_counter += step;
-					if(ic->channel[ch].noise_counter >= 0x800)
+					/* Noise mode */
+					u32 step = ic->noise_freq_tab[(ic->channel[ch].noise_control & 0x1F) ^ 0x1F];
+					for (sample = 0; sample < length; sample++)
 					{
-						data = (rand() & 1) ? 0x1F : 0;
+						static s32 data = 0;
+						ic->channel[ch].noise_counter += step;
+						if (ic->channel[ch].noise_counter >= 0x800)
+						{
+							data = (rand() & 1) ? 0x1F : 0;
+						}
+
+						ic->channel[ch].noise_counter &= 0x7FF;
+
+						buffer[((ch + baseChannel) << 1) + 0][sample] = (vll * (data - 16)) >> 2;
+						buffer[((ch + baseChannel) << 1) + 1][sample] = (vlr * (data - 16)) >> 2;
 					}
-
-					ic->channel[ch].noise_counter &= 0x7FF;
-
-					lBuf[i] += (vll * (data - 16));
-					rBuf[i] += (vlr * (data - 16));
 				}
-			}
-			else if(ic->channel[ch].control & 0x40)
-			{
-				/* DDA mode */
-				for(i = 0; i < length; i++)
+				else if (ic->channel[ch].control & 0x40)
 				{
-					lBuf[i] += (vll * (ic->channel[ch].dda - 16));
-					rBuf[i] += (vlr * (ic->channel[ch].dda - 16));
+					/* DDA mode */
+					for (sample = 0; sample < length; sample++)
+					{
+						buffer[((ch + baseChannel) << 1) + 0][sample] = (vll * (ic->channel[ch].dda - 16)) >> 2;
+						buffer[((ch + baseChannel) << 1) + 1][sample] = (vlr * (ic->channel[ch].dda - 16)) >> 2;
+					}
 				}
-			}
-			else
-			{
-				/* Waveform mode */
-				u32 step = ic->wave_freq_tab[ic->channel[ch].frequency];
-				for(i = 0; i < length; i++)
+				else
 				{
-					s32 offset = (ic->channel[ch].counter >> 12) & 0x1F;
-					ic->channel[ch].counter += step;
-					ic->channel[ch].counter &= 0x1FFFF;
-					s16 data = ic->channel[ch].waveform[offset];
-					
-					lBuf[i] += (vll * (data - 16));
-					rBuf[i] += (vlr * (data - 16));
+					/* Waveform mode */
+					u32 step = ic->wave_freq_tab[ic->channel[ch].frequency];
+					for (sample = 0; sample < length; sample++)
+					{
+						s32 offset = (ic->channel[ch].counter >> 12) & 0x1F;
+						ic->channel[ch].counter += step;
+						ic->channel[ch].counter &= 0x1FFFF;
+						s16 data = ic->channel[ch].waveform[offset];
+
+						buffer[((ch + baseChannel) << 1) + 0][sample] = (vll * (data - 16)) >> 2;
+						buffer[((ch + baseChannel) << 1) + 1][sample] = (vlr * (data - 16)) >> 2;
+					}
 				}
 			}
 		}
@@ -239,6 +250,9 @@ s32 HUC6280_Initialize(u8 chipID, u32 clock, u32 sampleRate)
 	}
 	ic->volume_table[31] = 0;
 
+	ic->channel_enabled = 0xffffffff;
+	ic->channel_count = 6;
+
 	return -1;
 }
 
@@ -256,12 +270,15 @@ void HUC6280_Reset(u8 chipID)
 	ic->lfo_frequency = 0;
 	ic->lfo_control = 0;
 	memset(ic->channel, 0, 8 * sizeof(Channel));
+
+	ic->channel_enabled = 0xffffffff;
+	ic->channel_count = 6;
 }
 
-void HUC6280_Update(u8 chipID, s32 **buffer, u32 length)
+void HUC6280_Update(u8 chipID, s32 baseChannel, s32 **buffer, u32 length)
 {
 	HUC6280 *ic = &chips[chipID];
-	c6280_stream_update(chipID, buffer, length);
+	c6280_stream_update(chipID, baseChannel, buffer, length);
 }
 
 u8 HUC6280_ReadRegister(u8 chipID, u32 address)
@@ -274,4 +291,28 @@ void HUC6280_WriteRegister(u8 chipID, u32 address, u8 data)
 	// h6280io_set_buffer(data);
 
 	c6280_write_internal(chipID, address, data);
+}
+
+void HUC6280_SetChannelEnable(u8 chipID, u8 channel, u8 enable)
+{
+	HUC6280* ic = &chips[chipID];
+
+	if (enable)
+		ic->channel_enabled |= (1 << channel);
+	else
+		ic->channel_enabled &= (~(1 << channel));
+}
+
+u8 HUC6280_GetChannelEnable(u8 chipID, u8 channel)
+{
+	HUC6280* ic = &chips[chipID];
+
+	return (ic->channel_enabled & (1 << channel)) != 0;
+}
+
+u32 HUC6280_GetChannelCount(u8 chipID)
+{
+	HUC6280* ic = &chips[chipID];
+
+	return ic->channel_count;
 }

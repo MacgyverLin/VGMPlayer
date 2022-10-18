@@ -3,13 +3,14 @@
 #include <GL/glu.h>
 #include <GL/gl.h>
 
-VGMSpectrumViewer::VGMSpectrumViewer(const string& name_, u32 x_, u32 y_, u32 width_, u32 height_, const Skin& skin_)
+VGMSpectrumViewer::VGMSpectrumViewer(const string& name_, u32 x_, u32 y_, u32 width_, u32 height_, float waveScale_, const Skin& skin_)
 	: VGMDataObverser()
 	, name(name_)
 	, x(x_)
 	, y(y_)
 	, width(width_)
 	, height(height_)
+	, waveScale(waveScale_)
 	, skin(skin_)
 {
 	maxLeft.resize(skin.numColumns * 2);
@@ -27,13 +28,14 @@ void VGMSpectrumViewer::onNotifySomething(Obserable& observable)
 
 void VGMSpectrumViewer::onNotifyOpen(Obserable& observable)
 {
-	VGMData& vgmData = (VGMData &)observable;
-
+	VGMData& vgmData = (VGMData&)observable;
 	const VGMHeader& header = vgmData.getHeader();
 	const VGMData::PlayInfo& playInfo = vgmData.getPlayInfo();
 	const VGMData::BufferInfo& bufferInfo = vgmData.getBufferInfo();
 
 	videoDevice.open(name.c_str(), x, y, width, height);
+
+	texture.Load(playInfo.texturePath);
 }
 
 void VGMSpectrumViewer::onNotifyClose(Obserable& observable)
@@ -76,6 +78,7 @@ void VGMSpectrumViewer::onNotifyUpdate(Obserable& observable)
 	if (bufferInfo.needQueueOutputSamples)
 	{
 		videoDevice.makeCurrent();
+
 		videoDevice.clear(skin.bgColor);
 
 		int fftSampleCount = skin.numColumns * 2;
@@ -104,7 +107,7 @@ void VGMSpectrumViewer::onNotifyUpdate(Obserable& observable)
 			left[i].imag = 0;
 			for (int j = 0; j < step; j++)
 			{
-				left[i].real += bufferInfo.outputSamples[(int)leftIdx + j].l;
+				left[i].real += bufferInfo.outputSamples.Get((int)leftIdx + j, 0);
 			}
 			left[i].real /= step;
 
@@ -120,7 +123,7 @@ void VGMSpectrumViewer::onNotifyUpdate(Obserable& observable)
 			right[i].imag = 0;
 			for (int j = 0; j < step; j++)
 			{
-				right[i].real += bufferInfo.outputSamples[(int)rightIdx + j].r;
+				right[i].real += bufferInfo.outputSamples.Get((int)rightIdx + j, 1);
 			}
 			right[i].real /= step;
 
@@ -146,19 +149,32 @@ void VGMSpectrumViewer::onNotifyUpdate(Obserable& observable)
 		}
 
 		/////////////////////////////////////////////////////////////////////
+		glViewport(0, 0, width, height);
+
+		glDisable(GL_BLEND);
+		videoDevice.drawTexSolidRectangle
+		(
+			texture,
+			Vector2(endX, startY), skin.bgColor, Vector2(0, 0),
+			Vector2(startX, startY), skin.bgColor, Vector2(1, 0),
+			Vector2(startX, endY), skin.bgColor, Vector2(1, 1),
+			Vector2(endX, endY), skin.bgColor, Vector2(0, 1)
+		);
+
 		glViewport(0, 0, width, height / 2);
 
+		glEnable(GL_BLEND);
 		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-		videoDevice.drawLine(Vertex(startX, 0), Vertex(endX, 0), skin.gridColor);
+		videoDevice.drawLine(Vector2(startX, 0), skin.gridColor, Vector2(endX, 0), skin.gridColor);
 		for (f32 i = startX; i < endX; i += stepX)
 		{
-			videoDevice.drawLine(Vertex(i, startY), Vertex(i, endY), skin.gridColor);
+			videoDevice.drawLine(Vector2(i, startY), skin.gridColor, Vector2(i, endY), skin.gridColor);
 		}
 		for (f32 i = startY; i < endY; i += stepY)
 		{
-			videoDevice.drawLine(Vertex(startX, i), Vertex(endX, i), skin.gridColor);
+			videoDevice.drawLine(Vector2(startX, i), skin.gridColor, Vector2(endX, i), skin.gridColor);
 		}
-		videoDevice.drawLine(Vertex(startX, 0.0f), Vertex(endX, 0.0f), skin.axisColor);
+		videoDevice.drawLine(Vector2(startX, 0.0f), skin.axisColor, Vector2(endX, 0.0f), skin.axisColor);
 
 		{
 			f32 bloom = 0.01f;
@@ -167,35 +183,35 @@ void VGMSpectrumViewer::onNotifyUpdate(Obserable& observable)
 			Color bottomColor = skin.leftColor; bottomColor.a = 0.9f;
 			for (s32 i = startX; i < endX; i++)
 			{
-				f32 y0 = abs(left[i].real) / (65536);
+				f32 y0 = abs(left[i].real) / (65536) * waveScale;
 				videoDevice.drawSolidRectangle(
-					Vertex(i + 0.1f, y0), topColor,
-					Vertex(i + 0.9f, y0), topColor,
-					Vertex(i + 0.9f, 0), bottomColor,
-					Vertex(i + 0.1f, 0), bottomColor);
+					Vector2(i + 0.1f, y0), topColor,
+					Vector2(i + 0.9f, y0), topColor,
+					Vector2(i + 0.9f, 0), bottomColor,
+					Vector2(i + 0.1f, 0), bottomColor);
 
-				y0 = abs(maxLeft[i]) / (65536);
+				y0 = abs(maxLeft[i]) / (65536) * waveScale;
 				videoDevice.drawSolidRectangle(
-					Vertex(i + 0.1f, y0 - bloom), topColor,
-					Vertex(i + 0.9f, y0 - bloom), topColor,
-					Vertex(i + 0.9f, y0 + bloom), bottomColor,
-					Vertex(i + 0.1f, y0 + bloom), bottomColor);
+					Vector2(i + 0.1f, y0 - bloom), topColor,
+					Vector2(i + 0.9f, y0 - bloom), topColor,
+					Vector2(i + 0.9f, y0 + bloom), bottomColor,
+					Vector2(i + 0.1f, y0 + bloom), bottomColor);
 			}
 		}
 
 		/////////////////////////////////////////////////////////////////////
 		glViewport(0, height / 2, width, height / 2);
 		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-		videoDevice.drawLine(Vertex(startX, 0), Vertex(endX, 0), skin.gridColor);
+		videoDevice.drawLine(Vector2(startX, 0), skin.gridColor, Vector2(endX, 0), skin.gridColor);
 		for (f32 i = startX; i < endX; i += stepX)
 		{
-			videoDevice.drawLine(Vertex(i, startY), Vertex(i, endY), skin.gridColor);
+			videoDevice.drawLine(Vector2(i, startY), skin.gridColor, Vector2(i, endY), skin.gridColor);
 		}
 		for (f32 i = startY; i < endY; i += stepY)
 		{
-			videoDevice.drawLine(Vertex(startX, i), Vertex(endX, i), skin.gridColor);
+			videoDevice.drawLine(Vector2(startX, i), skin.gridColor, Vector2(endX, i), skin.gridColor);
 		}
-		videoDevice.drawLine(Vertex(startX, 0.0f), Vertex(endX, 0.0f), skin.axisColor);
+		videoDevice.drawLine(Vector2(startX, 0.0f), skin.axisColor, Vector2(endX, 0.0f), skin.axisColor);
 
 		{
 			f32 bloom = 0.01f;
@@ -204,19 +220,19 @@ void VGMSpectrumViewer::onNotifyUpdate(Obserable& observable)
 			Color bottomColor = skin.rightColor; bottomColor.a = 0.9f;
 			for (s32 i = startX; i < endX; i++)
 			{
-				f32 y0 = abs(right[i].real) / (65536);
+				f32 y0 = abs(right[i].real) / (65536) * waveScale;
 				videoDevice.drawSolidRectangle(
-					Vertex(i + 0.1f, y0), topColor,
-					Vertex(i + 0.9f, y0), topColor,
-					Vertex(i + 0.9f, 0), bottomColor,
-					Vertex(i + 0.1f, 0), bottomColor);
+					Vector2(i + 0.1f, y0), topColor,
+					Vector2(i + 0.9f, y0), topColor,
+					Vector2(i + 0.9f, 0), bottomColor,
+					Vector2(i + 0.1f, 0), bottomColor);
 
-				y0 = abs(maxRight[i]) / (65536);
+				y0 = abs(maxRight[i]) / (65536) * waveScale;
 				videoDevice.drawSolidRectangle(
-					Vertex(i + 0.1f, y0 - bloom), topColor,
-					Vertex(i + 0.9f, y0 - bloom), topColor,
-					Vertex(i + 0.9f, y0 + bloom), bottomColor,
-					Vertex(i + 0.1f, y0 + bloom), bottomColor);
+					Vector2(i + 0.1f, y0 - bloom), topColor,
+					Vector2(i + 0.9f, y0 - bloom), topColor,
+					Vector2(i + 0.9f, y0 + bloom), bottomColor,
+					Vector2(i + 0.1f, y0 + bloom), bottomColor);
 			}
 		}
 

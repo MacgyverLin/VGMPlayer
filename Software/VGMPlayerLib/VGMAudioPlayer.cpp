@@ -78,8 +78,7 @@ void VGMAudioPlayer::onNotifyUpdate(Obserable& observable)
 
 	if (bufferInfo.needQueueOutputSamples)
 	{
-		if (!outputDevice.queue((void*)(&bufferInfo.outputSamples[0].l),
-			VGM_SAMPLE_COUNT * sizeof(VGMData::OutputSample)))
+		if (!outputDevice.queue((void*)(&bufferInfo.outputSamples.Get(0, 0)), VGM_SAMPLE_COUNT * (sizeof(s16) * 2) ))
 			return;
 
 		if (outputDevice.getDeviceState() != 3)

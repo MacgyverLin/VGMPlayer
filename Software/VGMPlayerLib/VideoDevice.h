@@ -6,10 +6,10 @@
 #include <algorithm>
 using namespace std;
 
-class Vertex
+class Vector2
 {
 public:
-	Vertex(f32 x_=0, f32 y_ = 0)
+	Vector2(f32 x_=0, f32 y_ = 0)
 	{
 		x = x_;
 		y = y_;
@@ -59,6 +59,18 @@ public:
 
 class VideoDeviceImpl;
 
+class Texture2D
+{
+public:
+	Texture2D();
+	~Texture2D();
+
+	void Load(const char* path_);
+	void Bind() const;
+private:
+	unsigned int handle;
+};
+
 class VideoDevice
 {
 public:
@@ -74,23 +86,42 @@ public:
 
 	void clear(const Color& c);
 
-	void drawPoint(const Vertex& v, const Color& c);
-	void drawLine(const Vertex& v0, const Vertex& v1, const Color& c);
-	void drawLine(const Vertex& v0, const Color& c0, const Vertex& v1, const Color& c1);
-	void drawWireTriangle(const Vertex& v0, const Vertex& v1, const Vertex& v2, const Color& c);
-	void drawWireTriangle(const Vertex& v0, const Color& c0, const Vertex& v1, const Color& c1, const Vertex& v2, const Color& c2);
-	void drawWireRectangle(const Vertex& v0, const Vertex& v1, const Vertex& v2, const Vertex& v3, const Color& c);
-	void drawWireRectangle(const Vertex& v0, const Color& c0, const Vertex& v1, const Color& c1, const Vertex& v2, const Color& c2, const Vertex& v3, const Color& c3);
-	void drawWireCircle(const Vertex& center, f32 radius, const Color& c);
+	void drawPoint(const Vector2& v, const Color& c);
+	void drawLine(const Vector2& v0, const Color& c0, const Vector2& v1, const Color& c1);
+	void drawWireTriangle(const Vector2& v0, const Color& c0, const Vector2& v1, const Color& c1, const Vector2& v2, const Color& c2);
+	void drawWireRectangle(const Vector2& v0, const Color& c0, const Vector2& v1, const Color& c1, const Vector2& v2, const Color& c2, const Vector2& v3, const Color& c3);
+	void drawWireCircle(const Vector2& center, f32 radius, const Color& c);
 
-	void drawSolidTriangle(const Vertex& v0, const Vertex& v1, const Vertex& v2, const Color& c);
-	void drawSolidTriangle(const Vertex& v0, const Color& c0, const Vertex& v1, const Color& c1, const Vertex& v2, const Color& c2);
-	void drawSolidRectangle(const Vertex& v0, const Vertex& v1, const Vertex& v2, const Vertex& v3, const Color& c);
-	void drawSolidRectangle(const Vertex& v0, const Color& c0, const Vertex& v1, const Color& c1, const Vertex& v2, const Color& c2, const Vertex& v3, const Color& c3);
-	void drawSolidCircle(const Vertex& center, f32 radius, const Color& c);
+	void drawSolidTriangle(const Vector2& v0, const Color& c0, const Vector2& v1, const Color& c1, const Vector2& v2, const Color& c2);
+	void drawSolidRectangle(const Vector2& v0, const Color& c0, const Vector2& v1, const Color& c1, const Vector2& v2, const Color& c2, const Vector2& v3, const Color& c3);
+	void drawSolidCircle(const Vector2& center, f32 radius, const Color& c);
 
-	void drawPrimitive(u32 primitive, const Vertex* vertices, const Color& c, u32 count);
-	void drawPrimitive(u32 primitive, const Vertex* vertices, const Color* colors, u32 count);
+	void drawPrimitive(u32 primitive, const Vector2* vertices, const Color* colors, u32 count);
+
+	//////////////////////////////////////////////////////////////
+	void drawTexPoint(const Texture2D& texture, const Vector2& v, const Color& c, const Vector2& t);
+	void drawTexLine(const Texture2D& texture, const Vector2& v0, const Color& c0, const Vector2& t0, const Vector2& v1, const Color& c1, const Vector2& t1);
+	void drawTexWireTriangle(const Texture2D& texture, 
+								const Vector2& v0, const Color& c0, const Vector2& t0, 
+							    const Vector2& v1, const Color& c1, const Vector2& t1, 
+								const Vector2& v2, const Color& c2, const Vector2& t2);
+	void drawTexWireRectangle(const Texture2D& texture, 
+								const Vector2& v0, const Color& c0, const Vector2& t0, 
+								const Vector2& v1, const Color& c1, const Vector2& t1, 
+								const Vector2& v2, const Color& c2, const Vector2& t2,
+								const Vector2& v3, const Color& c3, const Vector2& t3);
+
+	void drawTexSolidTriangle(const Texture2D& texture, 
+								const Vector2& v0, const Color& c0, const Vector2& t0, 
+								const Vector2& v1, const Color& c1, const Vector2& t1, 
+								const Vector2& v2, const Color& c2, const Vector2& t2);
+	void drawTexSolidRectangle(const Texture2D& texture, 
+								const Vector2& v0, const Color& c0, const Vector2& t0, 
+								const Vector2& v1, const Color& c1, const Vector2& t1, 
+								const Vector2& v2, const Color& c2, const Vector2& t2, 
+								const Vector2& v3, const Color& c3, const Vector2& t4);
+
+	void drawTexPrimitive(const Texture2D& texture, u32 primitive, const Vector2* v, const Color* c, const Vector2* t, u32 count);
 protected:
 private:
 ////////////////////////////////////////////////////////////////////////////

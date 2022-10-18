@@ -15,7 +15,7 @@
 ROM* rom = 0;
 #endif
 
-VGMData::VGMData(s32 channels_, s32 bitPerSample_, s32 sampleRate_)
+VGMData::VGMData(const char* texturePath_, s32 channels_, s32 bitPerSample_, s32 sampleRate_)
 	: Obserable()
 {
 	playInfo.paused = TRUE;
@@ -24,12 +24,16 @@ VGMData::VGMData(s32 channels_, s32 bitPerSample_, s32 sampleRate_)
 	playInfo.bitPerSamples = bitPerSample_;
 	playInfo.sampleRate = sampleRate_;
 
+	strncpy(playInfo.texturePath, texturePath_, 256);
 #ifdef STM32
 #else
 	bufferInfo.sampleIdx = 0;
-	bufferInfo.samplesL.resize(VGM_SAMPLE_COUNT);
-	bufferInfo.samplesR.resize(VGM_SAMPLE_COUNT);
-	bufferInfo.outputSamples.resize(VGM_SAMPLE_COUNT);
+
+	bufferInfo.channels.resize(2);
+	for (int i = 0; i < bufferInfo.channels.size(); i++)
+		bufferInfo.channels[i].resize(VGM_SAMPLE_COUNT);
+
+	bufferInfo.outputSamples.Set(VGM_SAMPLE_COUNT);
 
 	bufferInfo.needQueueOutputSamples = FALSE;
 #endif
@@ -156,49 +160,71 @@ boolean VGMData::open()
 	if (byteRemained > 0)
 		read((u8*)(&header) + 0x38, byteRemained);
 
+	int channelsCount = 0;
 	if (header.YM2612Clock)
 	{
 		YM2612_Initialize(0, header.YM2612Clock, playInfo.sampleRate);
+
+		channelsCount += YM2612_GetChannelCount(0);
 	}
 	if (header.SN76489Clock)
 	{
 		SN76489_Initialize(0, header.SN76489Clock, playInfo.sampleRate);
+
+		channelsCount += SN76489_GetChannelCount(0);
 	}
 	if (header.YM2151Clock)
 	{
 		YM2151_Initialize(0, header.YM2151Clock, playInfo.sampleRate);
+
+		channelsCount += YM2151_GetChannelCount(0);
 	}
 #ifdef STM32
 #else	
 	if (header.K053260Clock)
 	{
 		K053260_Initialize(0, header.K053260Clock, playInfo.sampleRate);
-
 		K053260_SetROM(0, rom);
+
+		channelsCount += K053260_GetChannelCount(0);
 	}
 	if (header.NESAPUClock)
 	{
 		NESAPU_Initialize(0, header.NESAPUClock & 0x7fffffff, playInfo.sampleRate);
-		if ((header.NESAPUClock & 0x80000000) != 0)
-			NESFDSAPU_Initialize(0, (header.NESAPUClock & 0x7fffffff), playInfo.sampleRate);
+
+		channelsCount += NESAPU_GetChannelCount(0);
+	}
+	if ((header.NESAPUClock & 0x80000000) != 0)
+	{
+		NESFDSAPU_Initialize(0, (header.NESAPUClock & 0x7fffffff), playInfo.sampleRate);
+
+		channelsCount += NESFDSAPU_GetChannelCount(0);
 	}
 	if (header.HuC6280Clock)
 	{
 		HUC6280_Initialize(0, header.HuC6280Clock, playInfo.sampleRate);
+
+		channelsCount += HUC6280_GetChannelCount(0);
 	}
 	if (header.QSoundClock)
 	{
 		QSound_Initialize(0, header.QSoundClock, playInfo.sampleRate);
-		
 		QSound_SetROM(0, rom);
+
+		channelsCount += QSound_GetChannelCount(0);
 	}
 	if (header.SegaPCMclock)
 	{
 		SEGAPCM_Initialize(0, header.SegaPCMclock, playInfo.sampleRate);
-
 		SEGAPCM_SetROM(0, rom);
+
+		channelsCount += SEGAPCM_GetChannelCount(0);
 	}
 #endif
+
+	bufferInfo.channels.resize(channelsCount * 2);
+	for (int i = 0; i < bufferInfo.channels.size(); i++)
+		bufferInfo.channels[i].resize(VGM_SAMPLE_COUNT);
 
 	return TRUE;
 }
@@ -245,7 +271,7 @@ void VGMData::close()
 	onClose();
 }
 
-s32 VGMData::read(void *buffer, u32 size)
+s32 VGMData::read(void* buffer, u32 size)
 {
 	return onRead(buffer, size);
 }
@@ -264,33 +290,112 @@ void VGMData::fillOutputBuffer()
 {
 #ifdef STM32
 #else
-	int i, out_L, out_R;
-	short *dest = (short *)(&bufferInfo.outputSamples[0]);
-	s32* l = &bufferInfo.samplesL[0];
-	s32* r = &bufferInfo.samplesR[0];
+	s16* dest = (s16*)(&bufferInfo.outputSamples.Get(0, 0));
 
-	for (i = 0; i < VGM_SAMPLE_COUNT; i++) // always fill by fix size VGM_SAMPLE_COUNT
+	int div = bufferInfo.channels.size() / 2;
+
+	for (s32 i = 0; i < VGM_SAMPLE_COUNT; i++) // always fill by fix size VGM_SAMPLE_COUNT
 	{
-		out_L = l[i];
-		out_R = r[i];
-		r[i] = 0;
-		l[i] = 0;
+		s32 outL = 0;
+		for (int ch = 0; ch < bufferInfo.channels.size()/2; ch++)
+		{
+			outL += bufferInfo.channels[(ch << 1) + 0][i];
+		}
+		outL = outL / div;
 
-		if (out_L < -0x7FFF)
-			*dest++ = -0x7FFF;
-		else if (out_L > 0x7FFF)
-			*dest++ = 0x7FFF;
-		else
-			*dest++ = out_L;
+		s32 outR = 0;
+		for (int ch = 0; ch < bufferInfo.channels.size() / 2; ch++)
+		{
+			outR += bufferInfo.channels[(ch << 1) + 1][i];
+		}
+		outR = outR / div;
 
-		if (out_R < -0x7FFF)
-			*dest++ = -0x7FFF;
-		else if (out_R > 0x7FFF)
-			*dest++ = 0x7FFF;
-		else
-			*dest++ = out_R;
+		*dest++ = outL;
+		*dest++ = outR;
 	}
 #endif
+}
+
+u8 VGMData::getChannelEnable(u32 channel)
+{
+	if (header.YM2612Clock)
+	{
+		return YM2612_GetChannelEnable(0, channel);
+	}
+	if (header.SN76489Clock)
+	{
+		return SN76489_GetChannelEnable(0, channel);
+	}
+	if (header.YM2151Clock)
+	{
+		return YM2151_GetChannelEnable(0, channel);
+	}
+	if (header.K053260Clock)
+	{
+		return K053260_GetChannelEnable(0, channel);
+	}
+	if (header.NESAPUClock)
+	{
+		return NESAPU_GetChannelEnable(0, channel);
+	}
+	if (header.NESAPUClock & 0x80000000)
+	{
+		return NESFDSAPU_GetChannelEnable(0, channel);
+	}
+	if (header.HuC6280Clock)
+	{
+		return HUC6280_GetChannelEnable(0, channel);
+	}
+	if (header.QSoundClock)
+	{
+		return QSound_GetChannelEnable(0, channel);
+	}
+	if (header.SegaPCMclock)
+	{
+		return SEGAPCM_GetChannelEnable(0, channel);
+	}
+	else
+		return 0;
+}
+
+void VGMData::setChannelEnable(u32 channel, bool enable)
+{
+	if (header.YM2612Clock)
+	{
+		YM2612_SetChannelEnable(0, channel, enable);
+	}
+	if (header.SN76489Clock)
+	{
+		SN76489_SetChannelEnable(0, channel, enable);
+	}
+	if (header.YM2151Clock)
+	{
+		YM2151_SetChannelEnable(0, channel, enable);
+	}
+	if (header.K053260Clock)
+	{
+		K053260_SetChannelEnable(0, channel, enable);
+	}
+	if (header.NESAPUClock)
+	{
+		NESAPU_SetChannelEnable(0, channel, enable);
+	}
+	if (header.NESAPUClock & 0x80000000)
+	{
+		NESFDSAPU_SetChannelEnable(0, channel, enable);
+	}
+	if (header.HuC6280Clock)
+	{
+		HUC6280_SetChannelEnable(0, channel, enable);
+	}
+	if (header.QSoundClock)
+	{
+		QSound_SetChannelEnable(0, channel, enable);
+	}
+	if (header.SegaPCMclock)
+	{
+		SEGAPCM_SetChannelEnable(0, channel, enable);
+	}
 }
 
 u32 VGMData::updateSamples(u32 updateSampleCounts)
@@ -302,33 +407,72 @@ u32 VGMData::updateSamples(u32 updateSampleCounts)
 	if (updateSampleCounts == 0)
 		return 0;
 
-	s32* sampleBuffers[2];
-	sampleBuffers[0] = &bufferInfo.samplesL[bufferInfo.sampleIdx];
-	sampleBuffers[1] = &bufferInfo.samplesR[bufferInfo.sampleIdx];
+	vector<s32*> sampleBuffers;
+	sampleBuffers.resize(bufferInfo.channels.size());
+	for (int i = 0; i < bufferInfo.channels.size(); i++)
+	{
+		sampleBuffers[i] = &bufferInfo.channels[i][bufferInfo.sampleIdx];
+	}
 
-	assert(bufferInfo.samplesL.size() == VGM_SAMPLE_COUNT);
+	int baseChannel = 0;
 	if (header.YM2612Clock)
-		YM2612_Update(0, sampleBuffers, updateSampleCounts);
+	{
+		YM2612_Update(0, baseChannel, &sampleBuffers[0], updateSampleCounts);
+
+		baseChannel += YM2612_GetChannelCount(0);
+	}
 	if (header.SN76489Clock)
-		SN76489_Update(0, sampleBuffers, updateSampleCounts);
+	{
+		SN76489_Update(0, baseChannel, &sampleBuffers[0], updateSampleCounts);
+
+		baseChannel += SN76489_GetChannelCount(0);
+	}
 	if (header.YM2151Clock)
-		YM2151_Update(0, sampleBuffers, updateSampleCounts);
+	{
+		YM2151_Update(0, baseChannel, &sampleBuffers[0], updateSampleCounts);
+
+		baseChannel += YM2151_GetChannelCount(0);
+	}
 	if (header.K053260Clock)
-		K053260_Update(0, sampleBuffers, updateSampleCounts);
+	{
+		K053260_Update(0, baseChannel, &sampleBuffers[0], updateSampleCounts);
+
+		baseChannel += K053260_GetChannelCount(0);
+	}
 	if (header.NESAPUClock)
 	{
-		NESAPU_Update(0, sampleBuffers, updateSampleCounts);
-		if (header.NESAPUClock & 0x80000000)
-			NESFDSAPU_Update(0, sampleBuffers, updateSampleCounts);
+		NESAPU_Update(0, baseChannel, &sampleBuffers[0], updateSampleCounts);
+
+		baseChannel += NESAPU_GetChannelCount(0);
+	}
+	if(header.NESAPUClock & 0x80000000)
+	{
+		NESFDSAPU_Update(0, baseChannel, &sampleBuffers[0], updateSampleCounts);
+
+		baseChannel += NESFDSAPU_GetChannelCount(0);
 	}
 	if (header.HuC6280Clock)
-		HUC6280_Update(0, sampleBuffers, updateSampleCounts);
+	{
+		HUC6280_Update(0, baseChannel, &sampleBuffers[0], updateSampleCounts);
+
+		baseChannel += HUC6280_GetChannelCount(0);
+	}
 	if (header.QSoundClock)
-		QSound_Update(0, sampleBuffers, updateSampleCounts);
+	{
+		QSound_Update(0, baseChannel, &sampleBuffers[0], updateSampleCounts);
+
+		baseChannel += QSound_GetChannelCount(0);
+	}
 	if (header.SegaPCMclock)
-		SEGAPCM_Update(0, sampleBuffers, updateSampleCounts);
+	{
+		SEGAPCM_Update(0, baseChannel, &sampleBuffers[0], updateSampleCounts);
+
+		baseChannel += SEGAPCM_GetChannelCount(0);
+	}
+
 
 	bufferInfo.sampleIdx = bufferInfo.sampleIdx + updateSampleCounts;	// updated samples, sampleIdx+
+
 	assert(bufferInfo.sampleIdx <= VGM_SAMPLE_COUNT);
 	if (bufferInfo.sampleIdx == VGM_SAMPLE_COUNT)
 	{
@@ -439,9 +583,9 @@ void VGMData::handleDataBlocks()
 
 boolean VGMData::update()
 {
-	if(updateDataRequest)
+	if (updateDataRequest)
 	{
-		if(updateSampleCounts > 0)
+		if (updateSampleCounts > 0)
 		{
 #ifdef STM32
 			s32 nnnn = VGMBoard_UpdateSamples(updateSampleCounts);
@@ -479,8 +623,8 @@ boolean VGMData::update()
 			{
 			case YM2612_PORT0_WRITE:
 				read(&aa, sizeof(aa));
-				read(&dd, sizeof(dd));			
-		
+				read(&dd, sizeof(dd));
+
 				YM2612_WriteRegister(0, 0, aa);
 				YM2612_WriteRegister(0, 1, dd);
 				break;
@@ -668,7 +812,7 @@ boolean VGMData::update()
 				read(&rr, sizeof(rr));
 #ifdef STM32
 #else		
-				QSound_WriteRegister(0, rr, (((u32)mm<<8) | (u32)ll));
+				QSound_WriteRegister(0, rr, (((u32)mm << 8) | (u32)ll));
 #endif
 				break;
 
@@ -678,7 +822,7 @@ boolean VGMData::update()
 				read(&dd, sizeof(dd));
 #ifdef STM32
 #else		
-				SEGAPCM_WriteRegister(0, (((u32)uu)<<8) | ((u32)ll), dd);
+				SEGAPCM_WriteRegister(0, (((u32)uu) << 8) | ((u32)ll), dd);
 #endif
 				break;
 

@@ -26,7 +26,7 @@ u8 SN76489_ReadRegister(u8 chipID, u32 address)
 	return 1;
 }
 
-void SN76489_Update(u8 chipID, s32 **buffers, u32 length)
+void SN76489_Update(u8 chipID, s32 **buffer, u32 length)
 {
 }
 	
@@ -50,6 +50,9 @@ typedef struct
 	u32 PSG_Volume_Table[16];
 	u32 PSG_Noise_Step_Table[4];
 	u32 PSG_Save[8];
+
+	u32 channel_enabled;
+	u32	channel_count;
 }SN76489;
 
 #define MAX_OUTPUT 0x4FFF
@@ -69,7 +72,6 @@ s32 SN76489_Initialize(u8 chipID, u32 clock, u32 sampleRate)
 	for (i = 1; i < 1024; i++)
 	{
 		// Step calculation
-
 		out = (f64)(clock) / (f64)(i << 4);		// out = frequency
 		out /= (f64)(sampleRate);
 		out *= 65536.0;
@@ -129,11 +131,17 @@ s32 SN76489_Initialize(u8 chipID, u32 clock, u32 sampleRate)
 		ic->PSG_Save[i + 1] = 0x0F;			// volume = OFF
 	}
 
+	SN76489_Reset(chipID);
+
 	return -1;
 }
 
 void SN76489_Reset(u8 chipID)
 {
+	SN76489* ic = &sn76489Chips[chipID];
+
+	ic->channel_enabled = 0xffffffff;
+	ic->channel_count = 4;
 }
 
 void SN76489_Shutdown(void)
@@ -211,143 +219,129 @@ u8 SN76489_ReadRegister(u8 chipID, u32 address)
 	return 0;
 }
 
-void SN76489_Update_Sin(u8 chipID, s32 **buffers, u32 length)
+void SN76489_Update(u8 chipID, s32 baseChannel, s32** buffer, u32 length)
 {
+	int samnple, ch;
+	int cur_cnt, cur_step, cur_vol;
 	SN76489* ic = &sn76489Chips[chipID];
 
-	int i, j, out;
-	int cur_cnt, cur_step, cur_vol;
-	unsigned int *sin_t;
-
-	for (j = 2; j >= 0; j--)
+	for (ch = 2; ch >= 0; ch--)
 	{
-		if (ic->Volume[j])
+		if ((ic->channel_enabled & (1 << (ch + baseChannel))) == 0)
 		{
-			cur_cnt = ic->Counter[j];
-			cur_step = ic->CntStep[j];
-			sin_t = ic->PSG_SIN_Table[ic->Register[(j << 1) + 1]];
-
-			for (i = 0; i < length; i++)
+			for (int sample = 0; sample < length; sample++)
 			{
-				out = sin_t[(cur_cnt = (cur_cnt + cur_step) & 0x1FFFF) >> 8];
-
-				buffers[0][i] += out;
-				buffers[1][i] += out;
+				buffer[((ch + baseChannel) << 1) + 0][sample] = 0;
+				buffer[((ch + baseChannel) << 1) + 1][sample] = 0;
 			}
-
-			ic->Counter[j] = cur_cnt;
 		}
 		else
-			ic->Counter[j] += ic->CntStep[j] * length;
-	}
-	
-	// Channel 3 - Noise
-	if (cur_vol = ic->Volume[3])
-	{
-		cur_cnt = ic->Counter[3];
-		cur_step = ic->CntStep[3];
-
-		for (i = 0; i < length; i++)
 		{
-			cur_cnt += cur_step;
-
-			if (ic->Noise & 1)
+			if (cur_vol = ic->Volume[ch])
 			{
-				buffers[0][i] += cur_vol;
-				buffers[1][i] += cur_vol;
-
-				if (cur_cnt & 0x10000)
+				if ((cur_step = ic->CntStep[ch]) < 0x10000)
 				{
-					cur_cnt &= 0xFFFF;
-					ic->Noise = (ic->Noise ^ ic->Noise_Type) >> 1;
-				}
-			}
-			else if (cur_cnt & 0x10000)
-			{
-				cur_cnt &= 0xFFFF;
-				ic->Noise >>= 1;
-			}
-		}
+					cur_cnt = ic->Counter[ch];
 
-		ic->Counter[3] = cur_cnt;
-	}
-	else
-		ic->Counter[3] += ic->CntStep[3] * length;
-}
-
-void SN76489_Update(u8 chipID, s32 **buffers, u32 length)
-{
-	int i, j;
-	int cur_cnt, cur_step, cur_vol;
-	SN76489* ic = &sn76489Chips[chipID];
-
-	for (j = 2; j >= 0; j--)
-	{
-		if (cur_vol = ic->Volume[j])
-		{
-			if ((cur_step = ic->CntStep[j]) < 0x10000)
-			{
-				cur_cnt = ic->Counter[j];
-
-				for (i = 0; i < length; i++)
-				{
-					if ((cur_cnt += cur_step) & 0x10000)
+					for (samnple = 0; samnple < length; samnple++)
 					{
-						buffers[0][i] += cur_vol;
-						buffers[1][i] += cur_vol;
+						if ((cur_cnt += cur_step) & 0x10000)
+						{
+							buffer[((ch + baseChannel) << 1) + 0][samnple] = cur_vol;
+							buffer[((ch + baseChannel) << 1) + 1][samnple] = cur_vol;
+							//buffer[0][i] += cur_vol;
+							//buffer[1][i] += cur_vol;
+						}
+					}
+
+					ic->Counter[ch] = cur_cnt;
+				}
+				else
+				{
+					for (samnple = 0; samnple < length; samnple++)
+					{
+						buffer[((ch + baseChannel) << 1) + 0][samnple] = cur_vol;
+						buffer[((ch + baseChannel) << 1) + 1][samnple] = cur_vol;
+						//buffer[0][i] += cur_vol;
+						//buffer[1][i] += cur_vol;
 					}
 				}
-
-				ic->Counter[j] = cur_cnt;
 			}
 			else
 			{
-				for (i = 0; i < length; i++)
-				{
-					buffers[0][i] += cur_vol;
-					buffers[1][i] += cur_vol;
-				}
+				ic->Counter[ch] += ic->CntStep[ch] * length;
 			}
-		}
-		else
-		{
-			ic->Counter[j] += ic->CntStep[j] * length;
 		}
 	}
 
 	// Channel 3 - Noise
 
-	if (cur_vol = ic->Volume[3])
+	if ((ic->channel_enabled & (1 << (3 + baseChannel))) == 0)
 	{
-		cur_cnt = ic->Counter[3];
-		cur_step = ic->CntStep[3];
-
-		for (i = 0; i < length; i++)
+		for (int sample = 0; sample < length; sample++)
 		{
-			cur_cnt += cur_step;
-
-			if (ic->Noise & 1)
-			{
-				buffers[0][i] += cur_vol;
-				buffers[1][i] += cur_vol;
-
-				if (cur_cnt & 0x10000)
-				{
-					cur_cnt &= 0xFFFF;
-					ic->Noise = (ic->Noise ^ ic->Noise_Type) >> 1;
-				}
-			}
-			else if (cur_cnt & 0x10000)
-			{
-				cur_cnt &= 0xFFFF;
-				ic->Noise >>= 1;
-			}
+			buffer[((3 + baseChannel) << 1) + 0][sample] = 0;
+			buffer[((3 + baseChannel) << 1) + 1][sample] = 0;
 		}
-
-		ic->Counter[3] = cur_cnt;
 	}
 	else
-		ic->Counter[3] += ic->CntStep[3] * length;
+	{
+		if (cur_vol = ic->Volume[3])
+		{
+			cur_cnt = ic->Counter[3];
+			cur_step = ic->CntStep[3];
+
+			for (samnple = 0; samnple < length; samnple++)
+			{
+				cur_cnt += cur_step;
+
+				if (ic->Noise & 1)
+				{
+					buffer[((3 + baseChannel) << 1) + 0][samnple] = cur_vol;
+					buffer[((3 + baseChannel) << 1) + 1][samnple] = cur_vol;
+
+					if (cur_cnt & 0x10000)
+					{
+						cur_cnt &= 0xFFFF;
+						ic->Noise = (ic->Noise ^ ic->Noise_Type) >> 1;
+					}
+				}
+				else if (cur_cnt & 0x10000)
+				{
+					cur_cnt &= 0xFFFF;
+					ic->Noise >>= 1;
+				}
+			}
+
+			ic->Counter[3] = cur_cnt;
+		}
+		else
+			ic->Counter[3] += ic->CntStep[3] * length;
+	}
+}
+
+void SN76489_SetChannelEnable(u8 chipID, u8 channel, u8 enable)
+{
+	SN76489* ic = &sn76489Chips[chipID];
+
+	if (enable)
+		ic->channel_enabled |= (1 << channel);
+	else
+		ic->channel_enabled &= (~(1 << channel));
+}
+
+u8 SN76489_GetChannelEnable(u8 chipID, u8 channel)
+{
+	SN76489* ic = &sn76489Chips[chipID];
+
+	return (ic->channel_enabled & (1 << channel)) != 0;
+}
+
+u32 SN76489_GetChannelCount(u8 chipID)
+{
+	SN76489* ic = &sn76489Chips[chipID];
+
+	return ic->channel_count;
 }
 
 #endif

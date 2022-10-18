@@ -32,6 +32,8 @@ typedef struct {
 	u8				*rom;
 	s32				rom_size;
 	*/
+	u32				channel_enabled;
+	u32				channel_count;
 }K053260;
 
 #define K053260_CHIPS_COUNT 2
@@ -130,11 +132,13 @@ void K053260_Shutdown(u8 chipID)
 		ic->delta_table = 0;
 	}
 
+	/*
 	if (ic->rom)
 	{
 		free(ic->rom);
 		ic->rom = 0;
 	}
+	*/
 
 	nUpdateStep = 0;
 }
@@ -157,6 +161,9 @@ void K053260_Reset(u8 chipID)
 		ic->channels[i].ppcm = 0;
 		ic->channels[i].ppcm_data = 0;
 	}
+
+	ic->channel_enabled = 0xffffffff;
+	ic->channel_count = 4;
 }
 
 void K053260_WriteRegister(u8 chipID, u32 address, u8 data)
@@ -315,20 +322,20 @@ u8 K053260_ReadRegister(u8 chipID, u32 address)
 	return ic->regs[address];
 }
 
-void K053260_Update(u8 chipID, s32** buffer, u32 length)
+void K053260_Update(u8 chipID, s32 baseChannel, s32** buffer, u32 length)
 {
 	static const s8 dpcmcnv[] = { 0,1,2,4,8,16,32,64, -128, -64, -32, -16, -8, -4, -2, -1 };
 
 	s32 lvol[4], rvol[4], play[4], loop[4], ppcm[4];
 	u32 romStartAddr[4];
 	u32 delta[4], end[4], pos[4];
-	s32 dataL, dataR;
 	s8 ppcm_data[4];
 	s8 d;
 	K053260* ic = &k053260Chips[chipID];
 
 	/* precache some values */
-	for (int i = 0; i < 4; i++) {
+	for (int i = 0; i < ic->channel_count; i++)
+	{
 		u32 address = ic->channels[i].start + (ic->channels[i].bank << 16) + 1;
 		
 		romStartAddr[i] = address;
@@ -346,92 +353,71 @@ void K053260_Update(u8 chipID, s32** buffer, u32 length)
 			delta[i] /= 2;
 	}
 
-	for (u32 j = 0; j < length; j++) {
-
-		dataL = dataR = 0;
-
-		for (int i = 0; i < 4; i++) {
-			/* see if the voice is on */
-			if (play[i]) {
-				/* see if we're done */
-				if ((pos[i] >> BASE_SHIFT) >= end[i]) {
-
-					ppcm_data[i] = 0;
-					if (loop[i])
-						pos[i] = 0;
-					else {
-						play[i] = 0;
-						continue;
-					}
-				}
-
-				if (ppcm[i]) { /* Packed PCM */
-							   /* we only update the signal if we're starting or a real sound sample has gone by */
-							   /* this is all due to the dynamic sample rate convertion */
-					if (pos[i] == 0 || ((pos[i] ^ (pos[i] - delta[i])) & 0x8000) == 0x8000)
-
+	for (u32 sample = 0; sample < length; sample++) 
+	{
+		for (int ch = 0; ch < ic->channel_count; ch++)
+		{
+			if ((ic->channel_enabled & (1 << (ch + baseChannel))) == 0)
+			{
+				buffer[((ch + baseChannel) << 1) + 0][sample] = 0;
+				buffer[((ch + baseChannel) << 1) + 1][sample] = 0;
+			}
+			else
+			{
+				/* see if the voice is on */
+				if (play[ch]) {
+					/* see if we're done */
+					if ((pos[ch] >> BASE_SHIFT) >= end[ch])
 					{
-						s32 newdata;
-						if (pos[i] & 0x8000) {
-							newdata = (K053260_GetSample(chipID, ((romStartAddr[i] + (pos[i] >> BASE_SHIFT)))) >> 4) & 0x0f;
-						}
-						else
-						{
-							newdata = (K053260_GetSample(chipID, ((romStartAddr[i] + (pos[i] >> BASE_SHIFT))))     ) & 0x0f; /*low nybble*/
-						}
 
-						ppcm_data[i] += dpcmcnv[newdata];
+						ppcm_data[ch] = 0;
+						if (loop[ch])
+							pos[ch] = 0;
+						else {
+							play[ch] = 0;
+							continue;
+						}
 					}
 
-					d = ppcm_data[i];
+					if (ppcm[ch]) { /* Packed PCM */
+								   /* we only update the signal if we're starting or a real sound sample has gone by */
+								   /* this is all due to the dynamic sample rate convertion */
+						if (pos[ch] == 0 || ((pos[ch] ^ (pos[ch] - delta[ch])) & 0x8000) == 0x8000)
 
-					pos[i] += delta[i];
-				}
-				else 
-				{ /* PCM */
-					d = K053260_GetSample(chipID, romStartAddr[i] + (pos[i] >> BASE_SHIFT));
-					pos[i] += delta[i];
-				}
+						{
+							s32 newdata;
+							if (pos[ch] & 0x8000) {
+								newdata = (K053260_GetSample(chipID, ((romStartAddr[ch] + (pos[ch] >> BASE_SHIFT)))) >> 4) & 0x0f;
+							}
+							else
+							{
+								newdata = (K053260_GetSample(chipID, ((romStartAddr[ch] + (pos[ch] >> BASE_SHIFT))))) & 0x0f; /*low nybble*/
+							}
 
-				if (ic->mode & 2) 
-				{
-					dataL += (d * lvol[i]) >> 2;
-					dataR += (d * rvol[i]) >> 2;
+							ppcm_data[ch] += dpcmcnv[newdata];
+						}
+
+						d = ppcm_data[ch];
+
+						pos[ch] += delta[ch];
+					}
+					else
+					{ /* PCM */
+						/* PCM */
+						d = K053260_GetSample(chipID, romStartAddr[ch] + (pos[ch] >> BASE_SHIFT));
+						pos[ch] += delta[ch];
+					}
+
+					buffer[((ch + baseChannel) << 1) + 0][sample] = 0;
+					buffer[((ch + baseChannel) << 1) + 1][sample] = 0;
+					if (ic->mode & 2)
+					{
+						buffer[((ch + baseChannel) << 1) + 0][sample] = ((d * lvol[ch]) >> 2);
+						buffer[((ch + baseChannel) << 1) + 1][sample] = ((d * rvol[ch]) >> 2);
+					}
 				}
 			}
 		}
-
-#ifdef NO_CLAMP
-		buffer[0][j] += (dataL + dataR) >> 1;
-		buffer[1][j] += (dataL + dataR) >> 1;
-#else
-		dataL = limit(dataL, MAXOUT, MINOUT);
-		dataR = limit(dataR, MAXOUT, MINOUT);
-
-		s32 nLeftSample = 0, nRightSample = 0;
-
-		if ((ic->output_dir[BURN_SND_K053260_ROUTE_1] & BURN_SND_ROUTE_LEFT) == BURN_SND_ROUTE_LEFT) {
-			nLeftSample += (s32)(dataL * ic->gain[BURN_SND_K053260_ROUTE_1]);
-		}
-		if ((ic->output_dir[BURN_SND_K053260_ROUTE_1] & BURN_SND_ROUTE_RIGHT) == BURN_SND_ROUTE_RIGHT) {
-			nRightSample += (s32)(dataL * ic->gain[BURN_SND_K053260_ROUTE_1]);
-		}
-
-		if ((ic->output_dir[BURN_SND_K053260_ROUTE_2] & BURN_SND_ROUTE_LEFT) == BURN_SND_ROUTE_LEFT) {
-			nLeftSample += (s32)(dataR * ic->gain[BURN_SND_K053260_ROUTE_2]);
-		}
-		if ((ic->output_dir[BURN_SND_K053260_ROUTE_2] & BURN_SND_ROUTE_RIGHT) == BURN_SND_ROUTE_RIGHT) {
-			nRightSample += (s32)(dataR * ic->gain[BURN_SND_K053260_ROUTE_2]);
-		}
-
-		nLeftSample = BURN_SND_CLIP(nLeftSample);
-		nRightSample = BURN_SND_CLIP(nRightSample);
-
-		//			pBuf[0] += nLeftSample;
-		//			pBuf[1] += nRightSample;
-		buffer[0][j] = BURN_SND_CLIP(buffer[0][j] + nLeftSample);
-		buffer[1][j] = BURN_SND_CLIP(buffer[1][j] + nRightSample);
-#endif
 	}
 
 	/* update the regs now */
@@ -475,4 +461,28 @@ void K053260_SetROM(u8 chipID, ROM* rom)
 	K053260* ic = &k053260Chips[chipID];
 
 	ic->rom = rom;
+}
+
+void K053260_SetChannelEnable(u8 chipID, u8 channel, u8 enable)
+{
+	K053260* ic = &k053260Chips[chipID];
+
+	if (enable)
+		ic->channel_enabled |= (1 << channel);
+	else
+		ic->channel_enabled &= (~(1 << channel));
+}
+
+u8 K053260_GetChannelEnable(u8 chipID, u8 channel)
+{
+	K053260* ic = &k053260Chips[chipID];
+
+	return (ic->channel_enabled & (1 << channel)) != 0;
+}
+
+u32 K053260_GetChannelCount(u8 chipID)
+{
+	K053260* ic = &k053260Chips[chipID];
+
+	return ic->channel_count;
 }

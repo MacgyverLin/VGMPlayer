@@ -13,7 +13,7 @@ public:
 	public:
 		Skin(u8 numColumns_ = 16,
 			 u8 numChannels_ = 2,
-			const Color& bgColor_ = Color(0.0f, 0.0f, 0.0f, 1.0f), const Color& gridColor_ = Color(0.0f, 0.2f, 0.2f, 1.0f), const Color& axisColor_ = Color(0.9f, 0.9f, 0.9f, 1.0f),
+			const Color& bgColor_ = Color(0.5f, 0.5f, 0.5f, 1.0f), const Color& gridColor_ = Color(0.0f, 0.2f, 0.2f, 1.0f), const Color& axisColor_ = Color(0.3f, 0.3f, 0.3f, 1.0f),
 			const Color& leftColor_ = Color(0.3f, 1.0f, 0.3f, 1.0f), const Color& rightColor_ = Color(0.3f, 1.0f, 1.0f, 1.0f))
 			: numColumns(numColumns_)
 			, numChannels(numChannels_)
@@ -33,8 +33,7 @@ public:
 		Color leftColor;
 		Color rightColor;
 	};
-	VGMSpectrumViewer(const string& name_, u32 x_, u32 y_, u32 width_, u32 height_, 
-					   const Skin& skin_);
+	VGMSpectrumViewer(const string& name_, u32 x_, u32 y_, u32 width_, u32 height_, float waveScale_, const Skin& skin_);
 	virtual ~VGMSpectrumViewer();
 protected:
 	virtual void onNotifySomething(Obserable& vgmData);
@@ -56,10 +55,13 @@ private:
 	u32 y;
 	u32 width;
 	u32 height;
+	float waveScale;
 	Skin skin;
 
 	vector<f32> maxLeft;
 	vector<f32> maxRight;
+
+	Texture2D texture;
 };
 
 #endif

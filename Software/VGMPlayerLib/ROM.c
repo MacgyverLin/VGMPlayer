@@ -7,8 +7,7 @@ ROM* ROM_Create()
 #else
 	ROM* rom = (ROM*)malloc(sizeof(ROM));
 #endif
-	rom->buffer = 0;
-	rom->length = 0;
+	memset(rom, 0, sizeof(ROM));
 
 	return rom;
 }
@@ -42,18 +41,19 @@ void ROM_LoadData(ROM* rom, u32 startAddress_, u8* data_, u32 length_, u32 total
 {
 	if (rom->length != totalROMLength_)
 	{
-		u8 *newrom = (u8 *)malloc(totalROMLength_);
-		memset(newrom, 0, totalROMLength_);
 		if(rom->buffer)
 		{
-			memcpy(newrom, rom->buffer, rom->length);
-			free(rom->buffer);
+			rom->buffer = realloc(rom->buffer, totalROMLength_);
+		}
+		else
+		{
+			rom->buffer = malloc(totalROMLength_);
 		}
 
-		rom->buffer = newrom;
 		rom->length = totalROMLength_;
 	}
 
+	assert(startAddress_ + length_ <= totalROMLength_);
 	memcpy(&rom->buffer[startAddress_], data_, length_);
 }
 

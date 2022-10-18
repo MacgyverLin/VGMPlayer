@@ -65,6 +65,9 @@ typedef struct
 	QSoundChannel channels[16];
 	s32 panningVolumes[33];
 	ROM* rom;
+
+	u32 channel_enabled;
+	u32	channel_count;
 }QSound;
 
 #define MAX_QSOUND 2
@@ -193,6 +196,9 @@ void QSound_Reset(u8 chipID)
 	{
 		ic->channels[i].PlayBank = 0;
 	}
+
+	ic->channel_enabled = 0xffffffff;
+	ic->channel_count = 16;
 }
 
 void QSound_Shutdown(u8 chipID)
@@ -320,104 +326,122 @@ void QSound_WriteRegister(u8 chipID, u32 address, u32 data)
 	}
 }
 
-void QSound_Update(u8 chipID, s32** buffer, u32 length)
+void QSound_Update(u8 chipID, s32 baseChannel, s32** buffer, u32 length)
 {
 	QSound* ic = &qSound[chipID];
 
 	// Go through all channels
-	for (s32 c = 0; c < 16; c++)
+	for (s32 ch = 0; ch < ic->channel_count; ch++)
 	{
-		// If the channel is playing, add the samples to the buffer
-		if (ic->channels[c].bKey)
+		if ((ic->channel_enabled & (1 << (ch + baseChannel))) == 0)
 		{
-			s32 VolL = (ic->channels[c].nMasterVolume * ic->channels[c].nVolume[0]) >> 11;
-			s32 VolR = (ic->channels[c].nMasterVolume * ic->channels[c].nVolume[1]) >> 11;
-			s32 *lBuf = buffer[0];
-			s32 *rBuf = buffer[1];
-			s32 i = length;
-
-			// handle 1st sample
-			if (ic->channels[c].bKey & 2)
+			for (int sample = 0; sample < length; sample++)
 			{
-				while (ic->channels[c].nPos < 0x1000 && i)
-				{
-					s32 p = ic->channels[c].nPlayStart >> 12;
-					s32 s = INTERPOLATE4PS_CUSTOM(
-						ic->channels[c].nPos, 
-						0, 
-						QSound_GetSample(chipID, ic->channels[c].PlayBank + p + 0),
-						QSound_GetSample(chipID, ic->channels[c].PlayBank + p + 1),
-						QSound_GetSample(chipID, ic->channels[c].PlayBank + p + 2),
-						256);
-
-					*(lBuf++) += ((s * VolL) >> 8);
-					*(rBuf++) += ((s * VolR) >> 8);
-
-					ic->channels[c].nPos += ic->channels[c].nAdvance;				// increment sample position based on pitch
-					i--;
-				}
-				if (i > 0)
-				{
-					ic->channels[c].bKey &= ~2;
-					ic->channels[c].nPos = (ic->channels[c].nPos & 0x0FFF) + ic->channels[c].nPlayStart;
-				}
+				buffer[((ch + baseChannel) << 1) + 0][sample] = 0;
+				buffer[((ch + baseChannel) << 1) + 1][sample] = 0;
 			}
-
-			while (i > 0)
+		}
+		else
+		{
+			// If the channel is playing, add the samples to the buffer
+			if (ic->channels[ch].bKey)
 			{
-				s32 s, p;
+				s32 VolL = (ic->channels[ch].nMasterVolume * ic->channels[ch].nVolume[0]) >> 11;
+				s32 VolR = (ic->channels[ch].nMasterVolume * ic->channels[ch].nVolume[1]) >> 11;
+				//s32 *lBuf = buffer[0];
+				//s32 *rBuf = buffer[1];
+				s32 i = length;
+				int idx = 0;
 
-				// Check for end of sample
-				if (ic->channels[c].nPos >= (ic->channels[c].nEnd - 0x3000))
+				// handle 1st sample
+				if (ic->channels[ch].bKey & 2)
 				{
-					if (ic->channels[c].nPos < ic->channels[c].nEnd)
+					while (ic->channels[ch].nPos < 0x1000 && i)
 					{
-						s32 nIndex = 4 - ((ic->channels[c].nEnd - ic->channels[c].nPos) >> 12);
-						s = INTERPOLATE4PS_CUSTOM(
-							(ic->channels[c].nPos) & ((1 << 12) - 1), 
-							ic->channels[c].nEndBuffer[nIndex + 0], 
-							ic->channels[c].nEndBuffer[nIndex + 1], 
-							ic->channels[c].nEndBuffer[nIndex + 2], 
-							ic->channels[c].nEndBuffer[nIndex + 3], 
+						s32 p = ic->channels[ch].nPlayStart >> 12;
+						s32 s = INTERPOLATE4PS_CUSTOM(
+							ic->channels[ch].nPos,
+							0,
+							QSound_GetSample(chipID, ic->channels[ch].PlayBank + p + 0),
+							QSound_GetSample(chipID, ic->channels[ch].PlayBank + p + 1),
+							QSound_GetSample(chipID, ic->channels[ch].PlayBank + p + 2),
 							256);
+
+						int sample = length - i;
+						buffer[((ch + baseChannel) << 1) + 0][sample] = ((s * VolL) >> 6);
+						buffer[((ch + baseChannel) << 1) + 1][sample] = ((s * VolR) >> 6);
+						//*(lBuf++) += ((s * VolL) >> 8);
+						//*(rBuf++) += ((s * VolR) >> 8);
+
+						ic->channels[ch].nPos += ic->channels[ch].nAdvance;				// increment sample position based on pitch
+						i--;
 					}
-					else
+					if (i > 0)
 					{
-						if(ic->channels[c].nLoop)
-						{					// Loop sample
-							if(ic->channels[c].nLoop <= 0x1000)
-							{		// Don't play, but leave bKey on
-								ic->channels[c].nPos = ic->channels[c].nEnd - 0x1000;
-								break;
-							}
-							ic->channels[c].nPos -= ic->channels[c].nLoop;
-							continue;
+						ic->channels[ch].bKey &= ~2;
+						ic->channels[ch].nPos = (ic->channels[ch].nPos & 0x0FFF) + ic->channels[ch].nPlayStart;
+					}
+				}
+
+				while (i > 0)
+				{
+					s32 s, p;
+
+					// Check for end of sample
+					if (ic->channels[ch].nPos >= (ic->channels[ch].nEnd - 0x3000))
+					{
+						if (ic->channels[ch].nPos < ic->channels[ch].nEnd)
+						{
+							s32 nIndex = 4 - ((ic->channels[ch].nEnd - ic->channels[ch].nPos) >> 12);
+							s = INTERPOLATE4PS_CUSTOM(
+								(ic->channels[ch].nPos) & ((1 << 12) - 1),
+								ic->channels[ch].nEndBuffer[nIndex + 0],
+								ic->channels[ch].nEndBuffer[nIndex + 1],
+								ic->channels[ch].nEndBuffer[nIndex + 2],
+								ic->channels[ch].nEndBuffer[nIndex + 3],
+								256);
 						}
 						else
 						{
-							ic->channels[c].bKey = 0;					// Stop playing
-							break;
+							if (ic->channels[ch].nLoop)
+							{					// Loop sample
+								if (ic->channels[ch].nLoop <= 0x1000)
+								{		// Don't play, but leave bKey on
+									ic->channels[ch].nPos = ic->channels[ch].nEnd - 0x1000;
+									break;
+								}
+								ic->channels[ch].nPos -= ic->channels[ch].nLoop;
+								continue;
+							}
+							else
+							{
+								ic->channels[ch].bKey = 0;					// Stop playing
+								break;
+							}
 						}
 					}
-				}
-				else
-				{
-					p = (ic->channels[c].nPos >> 12) & 0xFFFF;
-					s = INTERPOLATE4PS_CUSTOM(
-						(ic->channels[c].nPos) & ((1 << 12) - 1), 
-						QSound_GetSample(chipID, ic->channels[c].PlayBank + p + 0),
-						QSound_GetSample(chipID, ic->channels[c].PlayBank + p + 1),
-						QSound_GetSample(chipID, ic->channels[c].PlayBank + p + 2),
-						QSound_GetSample(chipID, ic->channels[c].PlayBank + p + 3),
-						256);
-				}
+					else
+					{
+						p = (ic->channels[ch].nPos >> 12) & 0xFFFF;
+						s = INTERPOLATE4PS_CUSTOM(
+							(ic->channels[ch].nPos) & ((1 << 12) - 1),
+							QSound_GetSample(chipID, ic->channels[ch].PlayBank + p + 0),
+							QSound_GetSample(chipID, ic->channels[ch].PlayBank + p + 1),
+							QSound_GetSample(chipID, ic->channels[ch].PlayBank + p + 2),
+							QSound_GetSample(chipID, ic->channels[ch].PlayBank + p + 3),
+							256);
+					}
 
-				// Add to the sound currently in the buffer
-				*(lBuf++) += ((s * VolL) >> 8);
-				*(rBuf++) += ((s * VolR) >> 8);
+					// Add to the sound currently in the buffer
+					int sample = length - i;
+					buffer[((ch + baseChannel) << 1) + 0][sample] = ((s * VolL) >> 6);
+					buffer[((ch + baseChannel) << 1) + 1][sample] = ((s * VolR) >> 6);
+					//*(lBuf++) += ((s * VolL) >> 8);
+					//*(rBuf++) += ((s * VolR) >> 8);
 
-				ic->channels[c].nPos += ic->channels[c].nAdvance;				// increment sample position based on pitch
-				i--;
+					ic->channels[ch].nPos += ic->channels[ch].nAdvance;				// increment sample position based on pitch
+					i--;
+				}
 			}
 		}
 	}
@@ -456,6 +480,30 @@ void QSound_SetROM(u8 chipID, ROM* rom)
 	QSound* ic = &qSound[chipID];
 
 	ic->rom = rom;
+}
+
+void QSound_SetChannelEnable(u8 chipID, u8 channel, u8 enable)
+{
+	QSound* ic = &qSound[chipID];
+
+	if (enable)
+		ic->channel_enabled |= (1 << channel);
+	else
+		ic->channel_enabled &= (~(1 << channel));
+}
+
+u8 QSound_GetChannelEnable(u8 chipID, u8 channel)
+{
+	QSound* ic = &qSound[chipID];
+
+	return (ic->channel_enabled & (1 << channel)) != 0;
+}
+
+u32 QSound_GetChannelCount(u8 chipID)
+{
+	QSound* ic = &qSound[chipID];
+
+	return ic->channel_count;
 }
 
 #endif

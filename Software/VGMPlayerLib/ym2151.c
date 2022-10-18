@@ -26,7 +26,7 @@ u8 YM2151_ReadRegister(u8 chipID, u32 address)
 	return -1;
 }
 
-void YM2151_Update(u8 chipID, s32** buffer, u32 length)
+void YM2151_Update(u8 chipID, s32 baseChannel, s32** buffer, u32 length)
 {
 }
 
@@ -172,6 +172,9 @@ typedef struct
 	s32			chanout[8];
 	s32			m2, c1, c2;				/* Phase Modulation input for operators 2,3,4 */
 	s32			mem;					/* one sample delay memory */
+
+	u32			channel_enabled;
+	u32			channel_count;
 }YM2151;
 
 #define FREQ_SH			16  /* 16.16 fixed point (frequency calculations) */
@@ -1536,6 +1539,9 @@ void YM2151_Reset(u8 chipID)
 	{
 		YM2151_WriteRegister(chipID, i, 0);
 	}
+
+	ic->channel_enabled = 0xffffffff;
+	ic->channel_count = 8;
 }
 
 void YM2151_WriteRegister(u8 chipID, u32 r, u8 v)
@@ -1825,15 +1831,17 @@ u8 YM2151_ReadRegister(u8 chipID, u32 address)
 	return ic->status;
 }
 
-void YM2151_Update(u8 chipID, s32 **buffers, u32 length)
+void YM2151_Update(u8 chipID, s32 baseChannel, s32 **buffer, u32 length)
 {
-	s32 i;
+	s32 sample;
 	s32 outl, outr;
-	s32 *bufL, *bufR;
+	//s32 *bufL, *bufR;
 	YM2151* ic = &ym2151Chips[chipID];
 
-	bufL = buffers[0];
-	bufR = buffers[1];
+	int ch;
+
+	//bufL = buffer[0];
+	//bufR = buffer[1];
 
 	if (ic->tim_B)
 	{
@@ -1853,7 +1861,7 @@ void YM2151_Update(u8 chipID, s32 **buffers, u32 length)
 		}
 	}
 
-	for (i = 0; i < length; i++)
+	for (sample = 0; sample < length; sample++)
 	{
 		advance_eg(ic);
 
@@ -1883,39 +1891,23 @@ void YM2151_Update(u8 chipID, s32 **buffers, u32 length)
 		chan7_calc(ic);
 		SAVE_SINGLE_CHANNEL(7)
 
-		outl = ic->chanout[0] & ic->pan[0];
-		outr = ic->chanout[0] & ic->pan[1];
-		outl += (ic->chanout[1] & ic->pan[2]);
-		outr += (ic->chanout[1] & ic->pan[3]);
-		outl += (ic->chanout[2] & ic->pan[4]);
-		outr += (ic->chanout[2] & ic->pan[5]);
-		outl += (ic->chanout[3] & ic->pan[6]);
-		outr += (ic->chanout[3] & ic->pan[7]);
-		outl += (ic->chanout[4] & ic->pan[8]);
-		outr += (ic->chanout[4] & ic->pan[9]);
-		outl += (ic->chanout[5] & ic->pan[10]);
-		outr += (ic->chanout[5] & ic->pan[11]);
-		outl += (ic->chanout[6] & ic->pan[12]);
-		outr += (ic->chanout[6] & ic->pan[13]);
-		outl += (ic->chanout[7] & ic->pan[14]);
-		outr += (ic->chanout[7] & ic->pan[15]);
+		outl = 0;
+		outr = 0;
+		for (ch = 0; ch < ic->channel_count; ch++)
+		{
+			if ((ic->channel_enabled & (1 << (ch + baseChannel))) == 0)
+			{
+				buffer[(ch << 1) + baseChannel + 0][sample] = 0;
+				buffer[(ch << 1) + baseChannel + 1][sample] = 0;
+			}
+			else
+			{
+				buffer[(ch << 1) + baseChannel + 0][sample] = ic->chanout[ch] & ic->pan[ch * 2];
+				buffer[(ch << 1) + baseChannel + 1][sample] = ic->chanout[ch] & ic->pan[ch * 2 + 1];
+			}
+		}
 
-#ifdef NO_CLAMP
-		bufL[i] += outl;
-		bufR[i] += outr;
-#else
-		if (outl > MAXOUT)
-			outl = MAXOUT;
-		else if (outl < MINOUT)
-			outl = MINOUT;
-		if (outr > MAXOUT)
-			outr = MAXOUT;
-		else if (outr < MINOUT)
-			outr = MINOUT;
 
-		bufL[i] += outl;
-		bufR[i] += outr;
-#endif
 		SAVE_ALL_CHANNELS()
 
 		/* calculate timer A */
@@ -1941,6 +1933,30 @@ void YM2151_Update(u8 chipID, s32 **buffers, u32 length)
 
 		advance(ic);
 	}
+}
+
+void YM2151_SetChannelEnable(u8 chipID, u8 channel, u8 enable)
+{
+	YM2151* ic = &ym2151Chips[chipID];
+
+	if (enable)
+		ic->channel_enabled |= (1 << channel);
+	else
+		ic->channel_enabled &= (~(1 << channel));
+}
+
+u8 YM2151_GetChannelEnable(u8 chipID, u8 channel)
+{
+	YM2151* ic = &ym2151Chips[chipID];
+
+	return (ic->channel_enabled & (1 << channel)) != 0;
+}
+
+u32 YM2151_GetChannelCount(u8 chipID)
+{
+	YM2151* ic = &ym2151Chips[chipID];
+
+	return ic->channel_count;
 }
 
 #endif
