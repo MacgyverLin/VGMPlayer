@@ -13,7 +13,7 @@ public:
 	public:
 		Skin(u8 numColumns_ = 16,
 			 u8 numChannels_ = 2,
-			const Color& bgColor_ = Color(0.5f, 0.5f, 0.5f, 1.0f), const Color& gridColor_ = Color(0.0f, 0.2f, 0.2f, 1.0f), const Color& axisColor_ = Color(0.3f, 0.3f, 0.3f, 1.0f),
+			const Color& bgColor_ = Color(0.3f, 0.3f, 0.3f, 1.0f), const Color& gridColor_ = Color(0.0f, 0.2f, 0.2f, 1.0f), const Color& axisColor_ = Color(0.3f, 0.3f, 0.3f, 1.0f),
 			const Color& leftColor_ = Color(0.3f, 1.0f, 0.3f, 1.0f), const Color& rightColor_ = Color(0.3f, 1.0f, 1.0f, 1.0f))
 			: numColumns(numColumns_)
 			, numChannels(numChannels_)

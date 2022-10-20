@@ -88,11 +88,12 @@ boolean AudioDevice::open(s32 channels_, s32 bitsPerSample_, s32 sampleRate_, s3
 	alDeleteSources(1, &test[1]);
 	*/
 	
-	// sources
-	alGenSources(1, &impl->outSource);
 	alSpeedOfSound(1.0);
 	alDopplerVelocity(1.0);
 	alDopplerFactor(1.0);
+
+	// sources
+	alGenSources(1, &impl->outSource);
 	alSourcei(impl->outSource, AL_LOOPING, AL_FALSE);
 	alSourcef(impl->outSource, AL_PITCH, impl->playRate);
 	alSourcef(impl->outSource, AL_GAIN, impl->volume);
