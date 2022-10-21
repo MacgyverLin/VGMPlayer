@@ -25,8 +25,8 @@ bool Platform::Initialize()
 	return true;
 }
 
-static bool oldkeyStates[10] = {};
-static bool keyStates[10] = {};
+static bool oldkeyStates[256] = {};
+static bool keyStates[256] = {};
 
 bool Platform::getKeyDown(int key)
 {
@@ -58,11 +58,10 @@ bool Platform::Update()
 
 
 	const Uint8* state = SDL_GetKeyboardState(NULL);
-
-	for (int i = 0; i < 10; i++)
+	for (int i = 0; i < 256; i++)
 	{
 		oldkeyStates[i] = keyStates[i];
-		keyStates[i] = state[SDL_SCANCODE_1 + i];
+		keyStates[i] = state[i];
 	}
 	
 	return true;

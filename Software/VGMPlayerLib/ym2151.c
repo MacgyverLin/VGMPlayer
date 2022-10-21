@@ -1798,7 +1798,7 @@ u8 YM2151_ReadRegister(u8 chipID, u32 address)
 	return ic->status;
 }
 
-void YM2151_Update(u8 chipID, s32 baseChannel, s32 **buffer, u32 length)
+void YM2151_Update(u8 chipID, s32 **buffer, u32 length)
 {
 	s32 sample;
 	s32 outl, outr;
@@ -1862,15 +1862,15 @@ void YM2151_Update(u8 chipID, s32 baseChannel, s32 **buffer, u32 length)
 		outr = 0;
 		for (ch = 0; ch < ic->channel_count; ch++)
 		{
-			if ((ic->channel_enabled & (1 << (ch + baseChannel))) == 0)
+			if ((ic->channel_enabled & (1 << (ch))) == 0)
 			{
-				buffer[(ch << 1) + baseChannel + 0][sample] = 0;
-				buffer[(ch << 1) + baseChannel + 1][sample] = 0;
+				buffer[(ch << 1) + 0][sample] = 0;
+				buffer[(ch << 1) + 1][sample] = 0;
 			}
 			else
 			{
-				buffer[(ch << 1) + baseChannel + 0][sample] = ic->chanout[ch] & ic->pan[ch * 2];
-				buffer[(ch << 1) + baseChannel + 1][sample] = ic->chanout[ch] & ic->pan[ch * 2 + 1];
+				buffer[(ch << 1) + 0][sample] = ic->chanout[ch] & ic->pan[ch * 2];
+				buffer[(ch << 1) + 1][sample] = ic->chanout[ch] & ic->pan[ch * 2 + 1];
 			}
 		}
 

@@ -59,7 +59,7 @@ u8 SEGAPCM_ReadRegister(u8 chipID, u32 address)
 	return ic->ram[address & 0x07ff];
 }
 
-void SEGAPCM_Update(u8 chipID, s32 baseChannel, s32** buffer, u32 length)
+void SEGAPCM_Update(u8 chipID, s32** buffer, u32 length)
 {
 	INT32 ch;
 	SEGAPCM* ic = &segapcm[chipID];
@@ -84,12 +84,12 @@ void SEGAPCM_Update(u8 chipID, s32 baseChannel, s32** buffer, u32 length)
 
 	for (ch = 0; ch < ic->channel_count; ch++)
 	{
-		if ((ic->channel_enabled & (1 << (ch + baseChannel))) == 0)
+		if ((ic->channel_enabled & (1 << (ch))) == 0)
 		{
 			for (int sample = 0; sample < length; sample++)
 			{
-				buffer[((ch + baseChannel) << 1) + 0][sample] = 0;
-				buffer[((ch + baseChannel) << 1) + 1][sample] = 0;
+				buffer[((ch) << 1) + 0][sample] = 0;
+				buffer[((ch) << 1) + 1][sample] = 0;
 			}
 		}
 		else
@@ -123,8 +123,8 @@ void SEGAPCM_Update(u8 chipID, s32 baseChannel, s32** buffer, u32 length)
 					v = Rom[Addr >> 8] - 0x80;
 
 
-					buffer[((ch + baseChannel) << 1) + 0][sample] = v * Regs[2] * 2;
-					buffer[((ch + baseChannel) << 1) + 1][sample] = v * Regs[3] * 2;
+					buffer[((ch) << 1) + 0][sample] = v * Regs[2] * 2;
+					buffer[((ch) << 1) + 1][sample] = v * Regs[3] * 2;
 					//lBuf[i] += v * Regs[2] * 2;
 					//rBuf[i] += v * Regs[3] * 2;
 					Addr = (Addr + ((Regs[7] * ic->UpdateStep) >> 16)) & 0xffffff;

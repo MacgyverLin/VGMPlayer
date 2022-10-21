@@ -338,42 +338,42 @@ u32 VGMData::HandleUpdateSamples(u32 updateSampleCounts)
 {
 	updateSampleCounts = systemChannels.BeginUpdateSamples(updateSampleCounts);
 
-	int baseChannel = 0;
+	int currentChannel = 0;
 	if (header.YM2612Clock)
 	{
-		baseChannel = systemChannels.HandleUpdateSamples(YM2612_Update, YM2612_GetChannelCount, 0, baseChannel, updateSampleCounts);
+		currentChannel = systemChannels.HandleUpdateSamples(YM2612_Update, YM2612_GetChannelCount, 0, currentChannel, updateSampleCounts);
 	}
 	if (header.SN76489Clock)
 	{
-		baseChannel = systemChannels.HandleUpdateSamples(SN76489_Update, SN76489_GetChannelCount, 0, baseChannel, updateSampleCounts);
+		currentChannel = systemChannels.HandleUpdateSamples(SN76489_Update, SN76489_GetChannelCount, 0, currentChannel, updateSampleCounts);
 	}
 	if (header.YM2151Clock)
 	{
-		baseChannel = systemChannels.HandleUpdateSamples(YM2151_Update, YM2151_GetChannelCount, 0, baseChannel, updateSampleCounts);
+		currentChannel = systemChannels.HandleUpdateSamples(YM2151_Update, YM2151_GetChannelCount, 0, currentChannel, updateSampleCounts);
 	}
 	if (header.K053260Clock)
 	{
-		baseChannel = systemChannels.HandleUpdateSamples(K053260_Update, K053260_GetChannelCount, 0, baseChannel, updateSampleCounts);
+		currentChannel = systemChannels.HandleUpdateSamples(K053260_Update, K053260_GetChannelCount, 0, currentChannel, updateSampleCounts);
 	}
 	if (header.NESAPUClock)
 	{
-		baseChannel = systemChannels.HandleUpdateSamples(NESAPU_Update, NESAPU_GetChannelCount, 0, baseChannel, updateSampleCounts);
+		currentChannel = systemChannels.HandleUpdateSamples(NESAPU_Update, NESAPU_GetChannelCount, 0, currentChannel, updateSampleCounts);
 	}
 	if(header.NESAPUClock & 0x80000000)
 	{
-		baseChannel = systemChannels.HandleUpdateSamples(NESFDSAPU_Update, NESFDSAPU_GetChannelCount, 0, baseChannel, updateSampleCounts);
+		currentChannel = systemChannels.HandleUpdateSamples(NESFDSAPU_Update, NESFDSAPU_GetChannelCount, 0, currentChannel, updateSampleCounts);
 	}
 	if (header.HuC6280Clock)
 	{
-		baseChannel = systemChannels.HandleUpdateSamples(HUC6280_Update, HUC6280_GetChannelCount, 0, baseChannel, updateSampleCounts);
+		currentChannel = systemChannels.HandleUpdateSamples(HUC6280_Update, HUC6280_GetChannelCount, 0, currentChannel, updateSampleCounts);
 	}
 	if (header.QSoundClock)
 	{
-		baseChannel = systemChannels.HandleUpdateSamples(QSound_Update, QSound_GetChannelCount, 0, baseChannel, updateSampleCounts);
+		currentChannel = systemChannels.HandleUpdateSamples(QSound_Update, QSound_GetChannelCount, 0, currentChannel, updateSampleCounts);
 	}
 	if (header.SegaPCMclock)
 	{
-		baseChannel = systemChannels.HandleUpdateSamples(SEGAPCM_Update, SEGAPCM_GetChannelCount, 0, baseChannel, updateSampleCounts);
+		currentChannel = systemChannels.HandleUpdateSamples(SEGAPCM_Update, SEGAPCM_GetChannelCount, 0, currentChannel, updateSampleCounts);
 	}
 
 	systemChannels.EndUpdateSamples(updateSampleCounts);

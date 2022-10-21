@@ -294,19 +294,19 @@ void QSound_WriteRegister(u8 chipID, u32 address, u32 data)
 	}
 }
 
-void QSound_Update(u8 chipID, s32 baseChannel, s32** buffer, u32 length)
+void QSound_Update(u8 chipID, s32** buffer, u32 length)
 {
 	QSound* ic = &qSound[chipID];
 
 	// Go through all channels
 	for (s32 ch = 0; ch < ic->channel_count; ch++)
 	{
-		if ((ic->channel_enabled & (1 << (ch + baseChannel))) == 0)
+		if ((ic->channel_enabled & (1 << (ch))) == 0)
 		{
 			for (int sample = 0; sample < length; sample++)
 			{
-				buffer[((ch + baseChannel) << 1) + 0][sample] = 0;
-				buffer[((ch + baseChannel) << 1) + 1][sample] = 0;
+				buffer[((ch) << 1) + 0][sample] = 0;
+				buffer[((ch) << 1) + 1][sample] = 0;
 			}
 		}
 		else
@@ -336,8 +336,8 @@ void QSound_Update(u8 chipID, s32 baseChannel, s32** buffer, u32 length)
 							256);
 
 						int sample = length - i;
-						buffer[((ch + baseChannel) << 1) + 0][sample] = ((s * VolL) >> 6);
-						buffer[((ch + baseChannel) << 1) + 1][sample] = ((s * VolR) >> 6);
+						buffer[((ch) << 1) + 0][sample] = ((s * VolL) >> 6);
+						buffer[((ch) << 1) + 1][sample] = ((s * VolR) >> 6);
 						//*(lBuf++) += ((s * VolL) >> 8);
 						//*(rBuf++) += ((s * VolR) >> 8);
 
@@ -402,8 +402,8 @@ void QSound_Update(u8 chipID, s32 baseChannel, s32** buffer, u32 length)
 
 					// Add to the sound currently in the buffer
 					int sample = length - i;
-					buffer[((ch + baseChannel) << 1) + 0][sample] = ((s * VolL) >> 6);
-					buffer[((ch + baseChannel) << 1) + 1][sample] = ((s * VolR) >> 6);
+					buffer[((ch) << 1) + 0][sample] = ((s * VolL) >> 6);
+					buffer[((ch) << 1) + 1][sample] = ((s * VolR) >> 6);
 					//*(lBuf++) += ((s * VolL) >> 8);
 					//*(rBuf++) += ((s * VolR) >> 8);
 

@@ -459,11 +459,11 @@ public:
 			return updateSampleCounts;
 		}
 
-		int HandleUpdateSamples(void (*chipUpdate)(u8, s32, s32**, u32),
-						   u32 (*chipGetChannelCount)(u8),
-						   u8 chipID, s32 baseChannel, u32 length)
+		int HandleUpdateSamples(void (*chipUpdate)(u8, s32**, u32),
+								u32 (*chipGetChannelCount)(u8),
+								u8 chipID, s32 baseChannel, u32 length)
 		{
-			chipUpdate(chipID, baseChannel, &channelsSampleBuffers[0], length);
+			chipUpdate(chipID, &channelsSampleBuffers[baseChannel], length);
 
 			baseChannel += chipGetChannelCount(chipID);
 

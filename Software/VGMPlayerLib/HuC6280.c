@@ -31,7 +31,7 @@ typedef struct {
 #define HUC6280_CHIPS_COUNT 2
 static HUC6280 chips[HUC6280_CHIPS_COUNT];
 
-static void c6280_stream_update(u8 chipID, s32 baseChannel, s32 **buffer, u32 length)
+static void c6280_stream_update(u8 chipID, s32 **buffer, u32 length)
 {
 	HUC6280 *ic = &chips[chipID];
 
@@ -52,12 +52,12 @@ static void c6280_stream_update(u8 chipID, s32 baseChannel, s32 **buffer, u32 le
 	/* Clear buffer */
 	for(ch = 0; ch < ic->channel_count; ch++)
 	{
-		if ((ic->channel_enabled & (1 << (ch + baseChannel))) == 0)
+		if ((ic->channel_enabled & (1 << (ch))) == 0)
 		{
 			for (sample = 0; sample < length; sample++)
 			{
-				buffer[((ch + baseChannel) << 1) + 0][sample] = 0;
-				buffer[((ch + baseChannel) << 1) + 1][sample] = 0;
+				buffer[((ch) << 1) + 0][sample] = 0;
+				buffer[((ch) << 1) + 1][sample] = 0;
 			}
 		}
 		else
@@ -100,8 +100,8 @@ static void c6280_stream_update(u8 chipID, s32 baseChannel, s32 **buffer, u32 le
 
 						ic->channel[ch].noise_counter &= 0x7FF;
 
-						buffer[((ch + baseChannel) << 1) + 0][sample] = (vll * (data - 16)) >> 2;
-						buffer[((ch + baseChannel) << 1) + 1][sample] = (vlr * (data - 16)) >> 2;
+						buffer[((ch) << 1) + 0][sample] = (vll * (data - 16)) >> 2;
+						buffer[((ch) << 1) + 1][sample] = (vlr * (data - 16)) >> 2;
 					}
 				}
 				else if (ic->channel[ch].control & 0x40)
@@ -109,8 +109,8 @@ static void c6280_stream_update(u8 chipID, s32 baseChannel, s32 **buffer, u32 le
 					/* DDA mode */
 					for (sample = 0; sample < length; sample++)
 					{
-						buffer[((ch + baseChannel) << 1) + 0][sample] = (vll * (ic->channel[ch].dda - 16)) >> 2;
-						buffer[((ch + baseChannel) << 1) + 1][sample] = (vlr * (ic->channel[ch].dda - 16)) >> 2;
+						buffer[((ch) << 1) + 0][sample] = (vll * (ic->channel[ch].dda - 16)) >> 2;
+						buffer[((ch) << 1) + 1][sample] = (vlr * (ic->channel[ch].dda - 16)) >> 2;
 					}
 				}
 				else
@@ -124,8 +124,8 @@ static void c6280_stream_update(u8 chipID, s32 baseChannel, s32 **buffer, u32 le
 						ic->channel[ch].counter &= 0x1FFFF;
 						s16 data = ic->channel[ch].waveform[offset];
 
-						buffer[((ch + baseChannel) << 1) + 0][sample] = (vll * (data - 16)) >> 2;
-						buffer[((ch + baseChannel) << 1) + 1][sample] = (vlr * (data - 16)) >> 2;
+						buffer[((ch) << 1) + 0][sample] = (vll * (data - 16)) >> 2;
+						buffer[((ch) << 1) + 1][sample] = (vlr * (data - 16)) >> 2;
 					}
 				}
 			}
@@ -275,10 +275,10 @@ void HUC6280_Reset(u8 chipID)
 	ic->channel_count = 6;
 }
 
-void HUC6280_Update(u8 chipID, s32 baseChannel, s32 **buffer, u32 length)
+void HUC6280_Update(u8 chipID, s32 **buffer, u32 length)
 {
 	HUC6280 *ic = &chips[chipID];
-	c6280_stream_update(chipID, baseChannel, buffer, length);
+	c6280_stream_update(chipID, buffer, length);
 }
 
 u8 HUC6280_ReadRegister(u8 chipID, u32 address)

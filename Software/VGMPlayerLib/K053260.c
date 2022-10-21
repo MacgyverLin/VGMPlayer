@@ -322,7 +322,7 @@ u8 K053260_ReadRegister(u8 chipID, u32 address)
 	return ic->regs[address];
 }
 
-void K053260_Update(u8 chipID, s32 baseChannel, s32** buffer, u32 length)
+void K053260_Update(u8 chipID, s32** buffer, u32 length)
 {
 	static const s8 dpcmcnv[] = { 0,1,2,4,8,16,32,64, -128, -64, -32, -16, -8, -4, -2, -1 };
 
@@ -357,10 +357,10 @@ void K053260_Update(u8 chipID, s32 baseChannel, s32** buffer, u32 length)
 	{
 		for (int ch = 0; ch < ic->channel_count; ch++)
 		{
-			if ((ic->channel_enabled & (1 << (ch + baseChannel))) == 0)
+			if ((ic->channel_enabled & (1 << (ch))) == 0)
 			{
-				buffer[((ch + baseChannel) << 1) + 0][sample] = 0;
-				buffer[((ch + baseChannel) << 1) + 1][sample] = 0;
+				buffer[((ch) << 1) + 0][sample] = 0;
+				buffer[((ch) << 1) + 1][sample] = 0;
 			}
 			else
 			{
@@ -408,12 +408,12 @@ void K053260_Update(u8 chipID, s32 baseChannel, s32** buffer, u32 length)
 						pos[ch] += delta[ch];
 					}
 
-					buffer[((ch + baseChannel) << 1) + 0][sample] = 0;
-					buffer[((ch + baseChannel) << 1) + 1][sample] = 0;
+					buffer[((ch) << 1) + 0][sample] = 0;
+					buffer[((ch) << 1) + 1][sample] = 0;
 					if (ic->mode & 2)
 					{
-						buffer[((ch + baseChannel) << 1) + 0][sample] = ((d * lvol[ch]) >> 2);
-						buffer[((ch + baseChannel) << 1) + 1][sample] = ((d * rvol[ch]) >> 2);
+						buffer[((ch) << 1) + 0][sample] = ((d * lvol[ch]) >> 2);
+						buffer[((ch) << 1) + 1][sample] = ((d * rvol[ch]) >> 2);
 					}
 				}
 			}

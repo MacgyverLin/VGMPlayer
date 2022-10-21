@@ -13,7 +13,7 @@ void QSound_Shutdown(u8 chipID);
 void QSound_Reset(u8 chipID);
 void QSound_WriteRegister(u8 chipID, u32 address, u32 data);
 u8 QSound_ReadRegister(u8 chipID, u32 address);
-void QSound_Update(u8 chipID, s32 baseChannel, s32** buffer, u32 length);
+void QSound_Update(u8 chipID, s32** buffer, u32 length);
 void QSound_SetROM(u8 chipID, ROM* rom);
 
 void QSound_SetChannelEnable(u8 chipID, u8 channel, u8 enable);

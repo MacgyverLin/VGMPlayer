@@ -549,65 +549,65 @@ void apu_regwrite(u8 chipID, u32 address, u8 value)
 }
 
 /* UPDATE SOUND BUFFER USING CURRENT DATA */
-void apu_update(u8 chipID, s32 baseChannel, s32** buffer, u32 samples)
+void apu_update(u8 chipID, s32** buffer, u32 samples)
 {
 	NESAPU *ic = &nesapuChips[chipID];
 
 	for (u32 sample = 0; sample < samples; sample++)
 	{
-		if((ic->channel_enabled & (1<<(0 + baseChannel)))!=0)
+		if((ic->channel_enabled & (1<<(0)))!=0)
 		{
-			buffer[((0 + baseChannel) << 1) + 0][sample] = apu_square(chipID, &ic->APU.squ[0]) << 8;
-			buffer[((0 + baseChannel) << 1) + 1][sample] = buffer[((0 + baseChannel) << 1) + 0][sample];
+			buffer[((0) << 1) + 0][sample] = apu_square(chipID, &ic->APU.squ[0]) << 8;
+			buffer[((0) << 1) + 1][sample] = buffer[((0) << 1) + 0][sample];
 		}
 		else
 		{
-			buffer[((0 + baseChannel) << 1) + 0][sample] = 0;
-			buffer[((0 + baseChannel) << 1) + 1][sample] = 0;
+			buffer[((0) << 1) + 0][sample] = 0;
+			buffer[((0) << 1) + 1][sample] = 0;
 		}
 		
-		if ((ic->channel_enabled & (1 << (1 + baseChannel))) != 0)
+		if ((ic->channel_enabled & (1 << (1))) != 0)
 		{
-			buffer[((1 + baseChannel) << 1) + 0][sample] = apu_square(chipID, &ic->APU.squ[1]) << 8;
-			buffer[((1 + baseChannel) << 1) + 1][sample] = buffer[((1 + baseChannel) << 1) + 0][sample];
+			buffer[((1) << 1) + 0][sample] = apu_square(chipID, &ic->APU.squ[1]) << 8;
+			buffer[((1) << 1) + 1][sample] = buffer[((1) << 1) + 0][sample];
 		}
 		else
 		{
-			buffer[((1 + baseChannel) << 1) + 0][sample] = 0;
-			buffer[((1 + baseChannel) << 1) + 1][sample] = 0;
+			buffer[((1) << 1) + 0][sample] = 0;
+			buffer[((1) << 1) + 1][sample] = 0;
 		}
 
-		if ((ic->channel_enabled & (1 << (2 + baseChannel))) != 0)
+		if ((ic->channel_enabled & (1 << (2))) != 0)
 		{
-			buffer[((2 + baseChannel) << 1) + 0][sample] = apu_triangle(chipID, &ic->APU.tri) << 8;
-			buffer[((2 + baseChannel) << 1) + 1][sample] = buffer[((2 + baseChannel) << 1) + 0][sample];
+			buffer[((2) << 1) + 0][sample] = apu_triangle(chipID, &ic->APU.tri) << 8;
+			buffer[((2) << 1) + 1][sample] = buffer[((2) << 1) + 0][sample];
 		}
 		else
 		{
-			buffer[((2 + baseChannel) << 1) + 0][sample] = 0;
-			buffer[((2 + baseChannel) << 1) + 1][sample] = 0;
+			buffer[((2) << 1) + 0][sample] = 0;
+			buffer[((2) << 1) + 1][sample] = 0;
 		}
 
-		if ((ic->channel_enabled & (1 << (3 + baseChannel))) != 0)
+		if ((ic->channel_enabled & (1 << (3))) != 0)
 		{
-			buffer[((3 + baseChannel) << 1) + 0][sample] = apu_noise(chipID, &ic->APU.noi) << 8;
-			buffer[((3 + baseChannel) << 1) + 1][sample] = buffer[((3 + baseChannel) << 1) + 0][sample];
+			buffer[((3) << 1) + 0][sample] = apu_noise(chipID, &ic->APU.noi) << 8;
+			buffer[((3) << 1) + 1][sample] = buffer[((3) << 1) + 0][sample];
 		}
 		else
 		{
-			buffer[((3 + baseChannel) << 1) + 0][sample] = 0;
-			buffer[((3 + baseChannel) << 1) + 1][sample] = 0;
+			buffer[((3) << 1) + 0][sample] = 0;
+			buffer[((3) << 1) + 1][sample] = 0;
 		}
 		
-		if ((ic->channel_enabled & (1 << (4 + baseChannel))) != 0)
+		if ((ic->channel_enabled & (1 << (4))) != 0)
 		{
-			buffer[((4 + baseChannel) << 1) + 0][sample] = apu_dpcm(chipID, &ic->APU.dpcm) << 8;
-			buffer[((4 + baseChannel) << 1) + 1][sample] = buffer[((4 + baseChannel) << 1) + 0][sample];
+			buffer[((4) << 1) + 0][sample] = apu_dpcm(chipID, &ic->APU.dpcm) << 8;
+			buffer[((4) << 1) + 1][sample] = buffer[((4) << 1) + 0][sample];
 		}
 		else
 		{
-			buffer[((4 + baseChannel) << 1) + 0][sample] = 0;
-			buffer[((4 + baseChannel) << 1) + 1][sample] = 0;
+			buffer[((4) << 1) + 0][sample] = 0;
+			buffer[((4) << 1) + 1][sample] = 0;
 		}
 	}
 }

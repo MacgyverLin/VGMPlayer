@@ -187,7 +187,7 @@ u8 SN76489_ReadRegister(u8 chipID, u32 address)
 	return 0;
 }
 
-void SN76489_Update(u8 chipID, s32 baseChannel, s32** buffer, u32 length)
+void SN76489_Update(u8 chipID, s32** buffer, u32 length)
 {
 	int samnple, ch;
 	int cur_cnt, cur_step, cur_vol;
@@ -195,12 +195,12 @@ void SN76489_Update(u8 chipID, s32 baseChannel, s32** buffer, u32 length)
 
 	for (ch = 2; ch >= 0; ch--)
 	{
-		if ((ic->channel_enabled & (1 << (ch + baseChannel))) == 0)
+		if ((ic->channel_enabled & (1 << (ch))) == 0)
 		{
 			for (int sample = 0; sample < length; sample++)
 			{
-				buffer[((ch + baseChannel) << 1) + 0][sample] = 0;
-				buffer[((ch + baseChannel) << 1) + 1][sample] = 0;
+				buffer[((ch) << 1) + 0][sample] = 0;
+				buffer[((ch) << 1) + 1][sample] = 0;
 			}
 		}
 		else
@@ -215,8 +215,8 @@ void SN76489_Update(u8 chipID, s32 baseChannel, s32** buffer, u32 length)
 					{
 						if ((cur_cnt += cur_step) & 0x10000)
 						{
-							buffer[((ch + baseChannel) << 1) + 0][samnple] = cur_vol;
-							buffer[((ch + baseChannel) << 1) + 1][samnple] = cur_vol;
+							buffer[((ch) << 1) + 0][samnple] = cur_vol;
+							buffer[((ch) << 1) + 1][samnple] = cur_vol;
 							//buffer[0][i] += cur_vol;
 							//buffer[1][i] += cur_vol;
 						}
@@ -228,8 +228,8 @@ void SN76489_Update(u8 chipID, s32 baseChannel, s32** buffer, u32 length)
 				{
 					for (samnple = 0; samnple < length; samnple++)
 					{
-						buffer[((ch + baseChannel) << 1) + 0][samnple] = cur_vol;
-						buffer[((ch + baseChannel) << 1) + 1][samnple] = cur_vol;
+						buffer[((ch) << 1) + 0][samnple] = cur_vol;
+						buffer[((ch) << 1) + 1][samnple] = cur_vol;
 						//buffer[0][i] += cur_vol;
 						//buffer[1][i] += cur_vol;
 					}
@@ -244,12 +244,12 @@ void SN76489_Update(u8 chipID, s32 baseChannel, s32** buffer, u32 length)
 
 	// Channel 3 - Noise
 
-	if ((ic->channel_enabled & (1 << (3 + baseChannel))) == 0)
+	if ((ic->channel_enabled & (1 << (3))) == 0)
 	{
 		for (int sample = 0; sample < length; sample++)
 		{
-			buffer[((3 + baseChannel) << 1) + 0][sample] = 0;
-			buffer[((3 + baseChannel) << 1) + 1][sample] = 0;
+			buffer[((3) << 1) + 0][sample] = 0;
+			buffer[((3) << 1) + 1][sample] = 0;
 		}
 	}
 	else
@@ -265,8 +265,8 @@ void SN76489_Update(u8 chipID, s32 baseChannel, s32** buffer, u32 length)
 
 				if (ic->Noise & 1)
 				{
-					buffer[((3 + baseChannel) << 1) + 0][samnple] = cur_vol;
-					buffer[((3 + baseChannel) << 1) + 1][samnple] = cur_vol;
+					buffer[((3) << 1) + 0][samnple] = cur_vol;
+					buffer[((3) << 1) + 1][samnple] = cur_vol;
 
 					if (cur_cnt & 0x10000)
 					{

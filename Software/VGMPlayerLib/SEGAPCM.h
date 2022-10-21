@@ -20,7 +20,7 @@ void SEGAPCM_Shutdown(u8 chipID);
 void SEGAPCM_Reset(u8 chipID);
 void SEGAPCM_WriteRegister(u8 chipID, u32 address, u32 data);
 u8 SEGAPCM_ReadRegister(u8 chipID, u32 address);
-void SEGAPCM_Update(u8 chipID, s32 baseChannel, s32** buffer, u32 length);
+void SEGAPCM_Update(u8 chipID, s32** buffer, u32 length);
 void SEGAPCM_SetROM(u8 chipID, ROM* rom);
 
 void SEGAPCM_SetChannelEnable(u8 chipID, u8 channel, u8 enable);

@@ -215,7 +215,7 @@ u8 NESFDSAPU_ReadRegister(u8 chipID, u32 address)
 	return data;
 }
 
-void NESFDSAPU_Update(u8 chipID, s32 baseChannel, s32** buffer, u32 length)
+void NESFDSAPU_Update(u8 chipID, s32** buffer, u32 length)
 {
 	NESFDSAPU* ic = &nesfdsapuChips[chipID];
 
@@ -306,10 +306,10 @@ void NESFDSAPU_Update(u8 chipID, s32 baseChannel, s32** buffer, u32 length)
 			sub_freq = (ic->main_frequency) * sub_multi / 64;
 		}
 
-		if ((ic->channel_enabled & (1 << (0 + baseChannel))) == 0)
+		if ((ic->channel_enabled & (1 << (0))) == 0)
 		{
-			buffer[((0 + baseChannel) << 1) + 0][sample] = 0;
-			buffer[((0 + baseChannel) << 1) + 1][sample] = 0;
+			buffer[((0) << 1) + 0][sample] = 0;
+			buffer[((0) << 1) + 1][sample] = 0;
 		}
 		else
 		{
@@ -337,8 +337,8 @@ void NESFDSAPU_Update(u8 chipID, s32 baseChannel, s32** buffer, u32 length)
 				output = 0;
 			}
 
-			buffer[((0 + baseChannel) << 1) + 0][sample] = output;
-			buffer[((0 + baseChannel) << 1) + 1][sample] = output;
+			buffer[((0) << 1) + 0][sample] = output;
+			buffer[((0) << 1) + 1][sample] = output;
 		}
 	}
 }
