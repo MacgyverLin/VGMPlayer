@@ -1,15 +1,8 @@
 #include "AudioDevice.h"
-#ifdef STM32
-#include <Array.h>
-#include <stdlib.h>
-#include <al.h>
-#include <alc.h>
-#else
 #include <Array.h>
 #include <AL/al.h>
 #include <AL/alc.h>
 #include <vector>
-#endif
 using namespace std;
 
 class AudioDeviceImpl
@@ -49,7 +42,7 @@ AudioDevice::~AudioDevice()
 
 ALuint test[10];
 
-boolean AudioDevice::open(s32 channels_, s32 bitsPerSample_, s32 sampleRate_, s32 bufferCount_)
+boolean AudioDevice::Open(s32 channels_, s32 bitsPerSample_, s32 sampleRate_, s32 bufferCount_)
 {
 	ALuint error = 0;
 
@@ -111,7 +104,7 @@ boolean AudioDevice::open(s32 channels_, s32 bitsPerSample_, s32 sampleRate_, s3
 	return TRUE;
 }
 
-void AudioDevice::close()
+void AudioDevice::Close()
 {
 	if (impl->sndBuffers.size() != 0)
 	{
@@ -139,7 +132,7 @@ void AudioDevice::close()
 	}
 }
 
-s32 AudioDevice::play()
+s32 AudioDevice::Play()
 {
 	alSourcePlay(impl->outSource);
 
@@ -154,7 +147,7 @@ s32 AudioDevice::play()
 	return -1;
 }
 
-s32 AudioDevice::stop()
+s32 AudioDevice::Stop()
 {
 	alSourceStop(impl->outSource);
 
@@ -169,7 +162,7 @@ s32 AudioDevice::stop()
 	return -1;
 }
 
-s32 AudioDevice::getDeviceState()
+s32 AudioDevice::GetDeviceState()
 {
 	int sourceState;
 	alGetSourcei(impl->outSource, AL_SOURCE_STATE, &sourceState);
@@ -192,7 +185,7 @@ s32 AudioDevice::getDeviceState()
 	};
 }
 
-s32 AudioDevice::update()
+s32 AudioDevice::Update()
 {
 	int queuedBuffer;
 	int processed;
@@ -225,9 +218,7 @@ s32 AudioDevice::update()
 	return -1;
 }
 
-u32 entered = 0;
-
-s32 AudioDevice::queue(void* data_, int dataSize_)
+s32 AudioDevice::Queue(void* data_, int dataSize_)
 {
 	ALenum format = 0;
 	ALuint error = 0;
@@ -269,12 +260,6 @@ s32 AudioDevice::queue(void* data_, int dataSize_)
 		//printf("Error: bit per sample must be 8 or 16\n");
 		return 0;
 	}
-	
-	entered++;
-	if(entered==3)
-	{
-		entered = 0;
-	}
 
 	// fill data
 	// printf("soundDevice->WP %d\n", WP);
@@ -313,31 +298,31 @@ s32 AudioDevice::queue(void* data_, int dataSize_)
 	return -1;
 }
 
-s32 AudioDevice::getQueued()
+s32 AudioDevice::GetQueued()
 {
 	return impl->queuedBuffer;
 }
 
-void AudioDevice::setVolume(f32 volume_)
+void AudioDevice::SetVolume(f32 volume_)
 {
 	impl->volume = volume_;
 
 	alSourcef(impl->outSource, AL_GAIN, impl->volume);
 }
 
-f32 AudioDevice::getVolume()
+f32 AudioDevice::GetVolume()
 {
 	return impl->volume;
 }
 
-void AudioDevice::setPlayRate(f32 playRate_)
+void AudioDevice::SetPlayRate(f32 playRate_)
 {
 	impl->playRate = playRate_;
 
 	alSourcef(impl->outSource, AL_PITCH, impl->playRate);
 }
 
-f32 AudioDevice::getPlayRate()
+f32 AudioDevice::GetPlayRate()
 {
 	return impl->playRate;
 }

@@ -1,21 +1,14 @@
 #include "Platform.h"
 
-#ifdef STM32
-#include <VGMBoard.h>
-#else
 #include <stdio.h>
 #include <SDL_main.h>
 #include <SDL.h>
 #include <SDL_opengl.h>
 #include <GL/glu.h>
 #include <GL/gl.h>
-#endif
 
-bool Platform::initialize()
+bool Platform::Initialize()
 {
-#ifdef STM32
-	return VGMBoard_Initialize(0, 0);
-#else
 	//Use OpenGL 3.1 core
 	SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 3);
 	SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 1);
@@ -30,7 +23,6 @@ bool Platform::initialize()
 	}
 
 	return true;
-#endif
 }
 
 static bool oldkeyStates[10] = {};
@@ -51,13 +43,8 @@ bool Platform::getKey(int key)
 	return oldkeyStates[key] && keyStates[key];
 }
 
-bool Platform::update()
+bool Platform::Update()
 {
-#ifdef STM32
-	VGMBoard_Update();
-	
-	return true;
-#else	
 	SDL_Event sdlEvent;
 
 	while (SDL_PollEvent(&sdlEvent) != 0)
@@ -79,14 +66,9 @@ bool Platform::update()
 	}
 	
 	return true;
-#endif
 }
 
-void Platform::terminate()
+void Platform::Terminate()
 {
-#ifdef STM32
-	VGMBoard_Shutdown();
-#else	
 	SDL_Quit();
-#endif
 }

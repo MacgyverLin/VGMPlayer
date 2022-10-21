@@ -1,37 +1,5 @@
 #include "ym2612.h"
 
-#ifdef STM32
-#include <VGMBoard.h>
-
-s32 YM2612_Initialize(u8 chipID, u32 clock, u32 sampleRate)
-{
-	return -1;
-}
-
-void YM2612_Shutdown(u8 chipID)
-{
-}
-
-void YM2612_Reset(u8 chipID)
-{
-}
-
-void YM2612_WriteRegister(u8 chipID, u32 addr, u8 data)
-{
-	VGMBoard_WriteYM2612(addr, data);
-}
-
-u8 YM2612_ReadStatus(u8 chipID)
-{
-	return 0;
-}
-
-void YM2612_Update(u8 chipID, s32 baseChannel, s32** buffer, u32 length)
-{
-}
-
-#else
-
 #include <stdio.h>
 #include <stdlib.h>
 #include <math.h>
@@ -2278,5 +2246,3 @@ u32 YM2612_GetChannelCount(u8 chipID)
 
 	return ic->channel_count;
 }
-
-#endif

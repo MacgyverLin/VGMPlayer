@@ -21,65 +21,65 @@ VGMSpectrumViewer::~VGMSpectrumViewer()
 {
 }
 
-void VGMSpectrumViewer::onNotifySomething(Obserable& observable)
+void VGMSpectrumViewer::OnNotifySomething(Obserable& observable)
 {
 	VGMData& vgmData = (VGMData &)observable;
 }
 
-void VGMSpectrumViewer::onNotifyOpen(Obserable& observable)
+void VGMSpectrumViewer::OnNotifyOpen(Obserable& observable)
 {
 	VGMData& vgmData = (VGMData&)observable;
-	const VGMHeader& header = vgmData.getHeader();
-	const VGMData::PlayInfo& playInfo = vgmData.getPlayInfo();
-	const VGMData::BufferInfo& bufferInfo = vgmData.getBufferInfo();
+	const VGMHeader& header = vgmData.GetHeader();
+	const VGMData::Info& info = vgmData.GetInfo();
+	const VGMData::SystemChannels& systemChannels = vgmData.GetSystemChannels();
 
-	videoDevice.open(name.c_str(), x, y, width, height);
+	videoDevice.Open(name.c_str(), x, y, width, height);
 
-	texture.Load(playInfo.texturePath);
+	texture.Load(info.texturePath);
 }
 
-void VGMSpectrumViewer::onNotifyClose(Obserable& observable)
+void VGMSpectrumViewer::OnNotifyClose(Obserable& observable)
 {
 	VGMData& vgmData = (VGMData &)observable;
 
-	const VGMHeader& header = vgmData.getHeader();
-	const VGMData::PlayInfo& playInfo = vgmData.getPlayInfo();
-	const VGMData::BufferInfo& bufferInfo = vgmData.getBufferInfo();
+	const VGMHeader& header = vgmData.GetHeader();
+	const VGMData::Info& info = vgmData.GetInfo();
+	const VGMData::SystemChannels& systemChannels = vgmData.GetSystemChannels();
 
-	videoDevice.close();
+	videoDevice.Close();
 }
 
-void VGMSpectrumViewer::onNotifyPlay(Obserable& observable)
-{
-	VGMData& vgmData = (VGMData &)observable;
-}
-
-void VGMSpectrumViewer::onNotifyStop(Obserable& observable)
+void VGMSpectrumViewer::OnNotifyPlay(Obserable& observable)
 {
 	VGMData& vgmData = (VGMData &)observable;
 }
 
-void VGMSpectrumViewer::onNotifyPause(Obserable& observable)
+void VGMSpectrumViewer::OnNotifyStop(Obserable& observable)
 {
 	VGMData& vgmData = (VGMData &)observable;
 }
 
-void VGMSpectrumViewer::onNotifyResume(Obserable& observable)
+void VGMSpectrumViewer::OnNotifyPause(Obserable& observable)
 {
 	VGMData& vgmData = (VGMData &)observable;
 }
 
-void VGMSpectrumViewer::onNotifyUpdate(Obserable& observable)
+void VGMSpectrumViewer::OnNotifyResume(Obserable& observable)
 {
 	VGMData& vgmData = (VGMData &)observable;
-	const VGMData::PlayInfo& playInfo = vgmData.getPlayInfo();
-	const VGMData::BufferInfo& bufferInfo = vgmData.getBufferInfo();
+}
 
-	if (bufferInfo.needQueueOutputSamples)
+void VGMSpectrumViewer::OnNotifyUpdate(Obserable& observable)
+{
+	VGMData& vgmData = (VGMData &)observable;
+	const VGMData::Info& info = vgmData.GetInfo();
+	const VGMData::SystemChannels& systemChannels = vgmData.GetSystemChannels();
+
+	if (systemChannels.GetHasNewSamples())
 	{
-		videoDevice.makeCurrent();
+		videoDevice.MakeCurrent();
 
-		videoDevice.clear(skin.bgColor);
+		videoDevice.Clear(skin.bgColor);
 
 		int fftSampleCount = skin.numColumns * 2;
 		int startX = fftSampleCount / 2;
@@ -107,7 +107,7 @@ void VGMSpectrumViewer::onNotifyUpdate(Obserable& observable)
 			left[i].imag = 0;
 			for (int j = 0; j < step; j++)
 			{
-				left[i].real += bufferInfo.outputSamples.Get((int)leftIdx + j, 0);
+				left[i].real += systemChannels.GetOutputSample((int)leftIdx + j, 0);
 			}
 			left[i].real /= step;
 
@@ -123,7 +123,7 @@ void VGMSpectrumViewer::onNotifyUpdate(Obserable& observable)
 			right[i].imag = 0;
 			for (int j = 0; j < step; j++)
 			{
-				right[i].real += bufferInfo.outputSamples.Get((int)rightIdx + j, 1);
+				right[i].real += systemChannels.GetOutputSample((int)rightIdx + j, 1);
 			}
 			right[i].real /= step;
 
@@ -152,7 +152,7 @@ void VGMSpectrumViewer::onNotifyUpdate(Obserable& observable)
 		glViewport(0, 0, width, height);
 
 		glDisable(GL_BLEND);
-		videoDevice.drawTexSolidRectangle
+		videoDevice.DrawTexSolidRectangle
 		(
 			texture,
 			Vector2(endX, startY), skin.bgColor, Vector2(0, 0),
@@ -165,16 +165,16 @@ void VGMSpectrumViewer::onNotifyUpdate(Obserable& observable)
 
 		glEnable(GL_BLEND);
 		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-		videoDevice.drawLine(Vector2(startX, 0), skin.gridColor, Vector2(endX, 0), skin.gridColor);
+		videoDevice.DrawLine(Vector2(startX, 0), skin.gridColor, Vector2(endX, 0), skin.gridColor);
 		for (f32 i = startX; i < endX; i += stepX)
 		{
-			videoDevice.drawLine(Vector2(i, startY), skin.gridColor, Vector2(i, endY), skin.gridColor);
+			videoDevice.DrawLine(Vector2(i, startY), skin.gridColor, Vector2(i, endY), skin.gridColor);
 		}
 		for (f32 i = startY; i < endY; i += stepY)
 		{
-			videoDevice.drawLine(Vector2(startX, i), skin.gridColor, Vector2(endX, i), skin.gridColor);
+			videoDevice.DrawLine(Vector2(startX, i), skin.gridColor, Vector2(endX, i), skin.gridColor);
 		}
-		videoDevice.drawLine(Vector2(startX, 0.0f), skin.axisColor, Vector2(endX, 0.0f), skin.axisColor);
+		videoDevice.DrawLine(Vector2(startX, 0.0f), skin.axisColor, Vector2(endX, 0.0f), skin.axisColor);
 
 		{
 			f32 bloom = 0.01f;
@@ -184,14 +184,14 @@ void VGMSpectrumViewer::onNotifyUpdate(Obserable& observable)
 			for (s32 i = startX; i < endX; i++)
 			{
 				f32 y0 = abs(left[i].real) / (65536) * waveScale;
-				videoDevice.drawSolidRectangle(
+				videoDevice.DrawSolidRectangle(
 					Vector2(i + 0.1f, y0), topColor,
 					Vector2(i + 0.9f, y0), topColor,
 					Vector2(i + 0.9f, 0), bottomColor,
 					Vector2(i + 0.1f, 0), bottomColor);
 
 				y0 = abs(maxLeft[i]) / (65536) * waveScale;
-				videoDevice.drawSolidRectangle(
+				videoDevice.DrawSolidRectangle(
 					Vector2(i + 0.1f, y0 - bloom), topColor,
 					Vector2(i + 0.9f, y0 - bloom), topColor,
 					Vector2(i + 0.9f, y0 + bloom), bottomColor,
@@ -202,16 +202,16 @@ void VGMSpectrumViewer::onNotifyUpdate(Obserable& observable)
 		/////////////////////////////////////////////////////////////////////
 		glViewport(0, height / 2, width, height / 2);
 		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-		videoDevice.drawLine(Vector2(startX, 0), skin.gridColor, Vector2(endX, 0), skin.gridColor);
+		videoDevice.DrawLine(Vector2(startX, 0), skin.gridColor, Vector2(endX, 0), skin.gridColor);
 		for (f32 i = startX; i < endX; i += stepX)
 		{
-			videoDevice.drawLine(Vector2(i, startY), skin.gridColor, Vector2(i, endY), skin.gridColor);
+			videoDevice.DrawLine(Vector2(i, startY), skin.gridColor, Vector2(i, endY), skin.gridColor);
 		}
 		for (f32 i = startY; i < endY; i += stepY)
 		{
-			videoDevice.drawLine(Vector2(startX, i), skin.gridColor, Vector2(endX, i), skin.gridColor);
+			videoDevice.DrawLine(Vector2(startX, i), skin.gridColor, Vector2(endX, i), skin.gridColor);
 		}
-		videoDevice.drawLine(Vector2(startX, 0.0f), skin.axisColor, Vector2(endX, 0.0f), skin.axisColor);
+		videoDevice.DrawLine(Vector2(startX, 0.0f), skin.axisColor, Vector2(endX, 0.0f), skin.axisColor);
 
 		{
 			f32 bloom = 0.01f;
@@ -221,14 +221,14 @@ void VGMSpectrumViewer::onNotifyUpdate(Obserable& observable)
 			for (s32 i = startX; i < endX; i++)
 			{
 				f32 y0 = abs(right[i].real) / (65536) * waveScale;
-				videoDevice.drawSolidRectangle(
+				videoDevice.DrawSolidRectangle(
 					Vector2(i + 0.1f, y0), topColor,
 					Vector2(i + 0.9f, y0), topColor,
 					Vector2(i + 0.9f, 0), bottomColor,
 					Vector2(i + 0.1f, 0), bottomColor);
 
 				y0 = abs(maxRight[i]) / (65536) * waveScale;
-				videoDevice.drawSolidRectangle(
+				videoDevice.DrawSolidRectangle(
 					Vector2(i + 0.1f, y0 - bloom), topColor,
 					Vector2(i + 0.9f, y0 - bloom), topColor,
 					Vector2(i + 0.9f, y0 + bloom), bottomColor,
@@ -236,7 +236,7 @@ void VGMSpectrumViewer::onNotifyUpdate(Obserable& observable)
 			}
 		}
 
-		videoDevice.flush();
+		videoDevice.Flush();
 		glPopMatrix();
 	}
 }

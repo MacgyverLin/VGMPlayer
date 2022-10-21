@@ -1,36 +1,4 @@
 #include "QSound.h"
-
-#ifdef STM32
-#include <VGMBoard.h>
-
-s32 QSound_Initialize(u8 chipID, u32 clock, u32 sampleRate)
-{
-	return -1;
-}
-
-void QSound_Shutdown(u8 chipID)
-{
-}
-
-void QSound_Reset(u8 chipID)
-{
-}
-
-void QSound_WriteRegister(u8 chipID, u32 address, u32 data)
-{
-}
-
-u8 QSound_ReadRegister(u8 chipID, u32 address)
-{
-	return 0;
-}
-
-void QSound_Update(u8 chipID, s32** buffer, u32 length)
-{
-}
-
-#else
-
 #include "vgmdef.h"
 
 typedef struct 
@@ -505,5 +473,3 @@ u32 QSound_GetChannelCount(u8 chipID)
 
 	return ic->channel_count;
 }
-
-#endif

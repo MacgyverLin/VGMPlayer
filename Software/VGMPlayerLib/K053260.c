@@ -14,7 +14,7 @@ typedef struct{
 	u32		start;
 	u32		bank;
 	u32		volume;
-	s32		play;
+	s32		Play;
 	u32		pan;
 	u32		pos;
 	s32		loop;
@@ -82,7 +82,7 @@ void check_bounds(u8 chipID, s32 channel)
 
 	if (channel_start > ROM_getTotalSize(ic->rom))
 	{
-		ic->channels[channel].play = 0;
+		ic->channels[channel].Play = 0;
 
 		return;
 	}
@@ -154,7 +154,7 @@ void K053260_Reset(u8 chipID)
 		ic->channels[i].start = 0;
 		ic->channels[i].bank = 0;
 		ic->channels[i].volume = 0;
-		ic->channels[i].play = 0;
+		ic->channels[i].Play = 0;
 		ic->channels[i].pan = 0;
 		ic->channels[i].pos = 0;
 		ic->channels[i].loop = 0;
@@ -184,13 +184,13 @@ void K053260_WriteRegister(u8 chipID, u32 address, u8 data)
 		for (i = 0; i < 4; i++) {
 			if (t & (1 << i)) {
 				if (v & (1 << i)) {
-					ic->channels[i].play = 1;
+					ic->channels[i].Play = 1;
 					ic->channels[i].pos = 0;
 					ic->channels[i].ppcm_data = 0;
 					check_bounds(chipID, i);
 				}
 				else
-					ic->channels[i].play = 0;
+					ic->channels[i].Play = 0;
 			}
 		}
 
@@ -297,7 +297,7 @@ u8 K053260_ReadRegister(u8 chipID, u32 address)
 		s32 i, status = 0;
 
 		for (i = 0; i < 4; i++)
-			status |= ic->channels[i].play << i;
+			status |= ic->channels[i].Play << i;
 
 		return status;
 	}
@@ -326,7 +326,7 @@ void K053260_Update(u8 chipID, s32 baseChannel, s32** buffer, u32 length)
 {
 	static const s8 dpcmcnv[] = { 0,1,2,4,8,16,32,64, -128, -64, -32, -16, -8, -4, -2, -1 };
 
-	s32 lvol[4], rvol[4], play[4], loop[4], ppcm[4];
+	s32 lvol[4], rvol[4], Play[4], loop[4], ppcm[4];
 	u32 romStartAddr[4];
 	u32 delta[4], end[4], pos[4];
 	s8 ppcm_data[4];
@@ -345,7 +345,7 @@ void K053260_Update(u8 chipID, s32 baseChannel, s32** buffer, u32 length)
 		rvol[i] = ic->channels[i].volume * (8 - ic->channels[i].pan);
 		end[i] = ic->channels[i].size - 1;
 		pos[i] = ic->channels[i].pos;
-		play[i] = ic->channels[i].play;
+		Play[i] = ic->channels[i].Play;
 		loop[i] = ic->channels[i].loop;
 		ppcm[i] = ic->channels[i].ppcm;
 		ppcm_data[i] = ic->channels[i].ppcm_data;
@@ -365,7 +365,7 @@ void K053260_Update(u8 chipID, s32 baseChannel, s32** buffer, u32 length)
 			else
 			{
 				/* see if the voice is on */
-				if (play[ch]) {
+				if (Play[ch]) {
 					/* see if we're done */
 					if ((pos[ch] >> BASE_SHIFT) >= end[ch])
 					{
@@ -374,7 +374,7 @@ void K053260_Update(u8 chipID, s32 baseChannel, s32** buffer, u32 length)
 						if (loop[ch])
 							pos[ch] = 0;
 						else {
-							play[ch] = 0;
+							Play[ch] = 0;
 							continue;
 						}
 					}
@@ -423,7 +423,7 @@ void K053260_Update(u8 chipID, s32 baseChannel, s32** buffer, u32 length)
 	/* update the regs now */
 	for (int i = 0; i < 4; i++) {
 		ic->channels[i].pos = pos[i];
-		ic->channels[i].play = play[i];
+		ic->channels[i].Play = Play[i];
 		ic->channels[i].ppcm_data = ppcm_data[i];
 	}
 }

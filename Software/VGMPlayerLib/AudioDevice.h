@@ -11,20 +11,20 @@ public:
 	AudioDevice();
 	~AudioDevice();
 
-	boolean open(s32 channels, s32 bitsPerSample, s32 sampleRate, s32 bufferCount);
-	void close();
+	boolean Open(s32 channels, s32 bitsPerSample, s32 sampleRate, s32 bufferCount);
+	void Close();
 
-	s32 play();
-	s32 stop();
-	s32 update();
-	s32 queue(void* data_, int dataSize_);
-	s32 getQueued();
-	void setVolume(f32 volume_);
-	f32 getVolume();
-	void setPlayRate(f32 playRate_);
-	f32 getPlayRate();
+	s32 Play();
+	s32 Stop();
+	s32 Update();
+	s32 Queue(void* data_, int dataSize_);
+	s32 GetQueued();
+	void SetVolume(f32 volume_);
+	f32 GetVolume();
+	void SetPlayRate(f32 playRate_);
+	f32 GetPlayRate();
 
-	s32 getDeviceState();
+	s32 GetDeviceState();
 protected:
 private:
 	AudioDeviceImpl*	impl;

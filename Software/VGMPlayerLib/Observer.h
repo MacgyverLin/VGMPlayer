@@ -9,14 +9,14 @@ public:
 	Observer();
 	~Observer();
 protected:
-	virtual void onNotifySomething(Obserable& obserable) = 0;
-	virtual void onNotifyOpen(Obserable& obserable) = 0;
-	virtual void onNotifyClose(Obserable& obserable) = 0;
-	virtual void onNotifyPlay(Obserable& obserable) = 0;
-	virtual void onNotifyStop(Obserable& obserable) = 0;
-	virtual void onNotifyPause(Obserable& obserable) = 0;
-	virtual void onNotifyResume(Obserable& obserable) = 0;
-	virtual void onNotifyUpdate(Obserable& obserable) = 0;
+	virtual void OnNotifySomething(Obserable& obserable) = 0;
+	virtual void OnNotifyOpen(Obserable& obserable) = 0;
+	virtual void OnNotifyClose(Obserable& obserable) = 0;
+	virtual void OnNotifyPlay(Obserable& obserable) = 0;
+	virtual void OnNotifyStop(Obserable& obserable) = 0;
+	virtual void OnNotifyPause(Obserable& obserable) = 0;
+	virtual void OnNotifyResume(Obserable& obserable) = 0;
+	virtual void OnNotifyUpdate(Obserable& obserable) = 0;
 private:
 public:
 protected:

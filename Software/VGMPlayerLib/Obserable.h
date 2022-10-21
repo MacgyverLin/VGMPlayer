@@ -13,17 +13,17 @@ public:
 	Obserable();
 	~Obserable();
 
-	void attach(Observer& observer);
-	void detach(Observer& observer);
+	void Attach(Observer& observer);
+	void Detach(Observer& observer);
 protected:
-	void notifySomething();
-	void notifyOpen();
-	void notifyClose();
-	void notifyPlay();
-	void notifyStop();
-	void notifyPause();
-	void notifyResume();
-	void notifyUpdate();
+	void NotifySomething();
+	void NotifyOpen();
+	void NotifyClose();
+	void NotifyPlay();
+	void NotifyStop();
+	void NotifyPause();
+	void NotifyResume();
+	void NotifyUpdate();
 private:
 	Vector<Observer *> observers;
 };

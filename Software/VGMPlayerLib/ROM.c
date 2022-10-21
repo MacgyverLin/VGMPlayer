@@ -2,11 +2,7 @@
 #include <malloc.h>
 ROM* ROM_Create()
 {
-#ifdef STM32
-	ROM* rom = (ROM*)mymalloc(sizeof(ROM));
-#else
 	ROM* rom = (ROM*)malloc(sizeof(ROM));
-#endif
 	memset(rom, 0, sizeof(ROM));
 
 	return rom;
@@ -18,21 +14,13 @@ void ROM_Release(ROM* rom)
 	{
 		if (rom->buffer)
 		{
-#ifdef STM32
-			myfree(rom->buffer);
-#else
 			free(rom->buffer);
-#endif
 			rom->buffer = 0;
 		}
 
 		rom->length = 0;
 
-#ifdef STM32
-		myfree(rom);
-#else
 		free(rom);
-#endif
 		rom = 0;
 	}
 }

@@ -8,76 +8,76 @@ Obserable::~Obserable()
 {
 }
 
-void Obserable::attach(Observer& observer)
+void Obserable::Attach(Observer& observer)
 {
 	observers.push() = &observer;
 }
 
-void Obserable::detach(Observer& observer)
+void Obserable::Detach(Observer& observer)
 {
 	//observers.remove(&observer);
 }
 
-void Obserable::notifySomething()
+void Obserable::NotifySomething()
 {
 	for(u32 i=0; i<observers.size(); i++)
 	{
-		observers[i]->onNotifySomething(*this);
+		observers[i]->OnNotifySomething(*this);
 	}
 }
 
-void Obserable::notifyOpen()
+void Obserable::NotifyOpen()
 {
 	for(u32 i=0; i<observers.size(); i++)
 	{
-		observers[i]->onNotifyOpen(*this);
+		observers[i]->OnNotifyOpen(*this);
 	}
 }
 
-void Obserable::notifyClose()
+void Obserable::NotifyClose()
 {
 	for(u32 i=0; i<observers.size(); i++)
 	{
-		observers[i]->onNotifyClose(*this);
+		observers[i]->OnNotifyClose(*this);
 	}
 }
 
-void Obserable::notifyPlay()
+void Obserable::NotifyPlay()
 {
 	for(u32 i=0; i<observers.size(); i++)
 	{
-		observers[i]->onNotifyPlay(*this);
+		observers[i]->OnNotifyPlay(*this);
 	}
 }
 
-void Obserable::notifyStop()
+void Obserable::NotifyStop()
 {
 	for(u32 i=0; i<observers.size(); i++)
 	{
-		observers[i]->onNotifyStop(*this);
+		observers[i]->OnNotifyStop(*this);
 	}
 }
 
-void Obserable::notifyPause()
+void Obserable::NotifyPause()
 {
 	for(u32 i=0; i<observers.size(); i++)
 	{
-		observers[i]->onNotifyPause(*this);
+		observers[i]->OnNotifyPause(*this);
 	}
 }
 
-void Obserable::notifyResume()
+void Obserable::NotifyResume()
 {
 	for(u32 i=0; i<observers.size(); i++)
 	{
-		observers[i]->onNotifyResume(*this);
+		observers[i]->OnNotifyResume(*this);
 	}
 }
 
-void Obserable::notifyUpdate()
+void Obserable::NotifyUpdate()
 {
 	for(u32 i=0; i<observers.size(); i++)
 	{
-		observers[i]->onNotifyUpdate(*this);
+		observers[i]->OnNotifyUpdate(*this);
 	}
 }

@@ -7,12 +7,12 @@ using namespace std;
 class Platform
 {
 public:
-	static bool initialize();
-	static bool update();
+	static bool Initialize();
+	static bool Update();
 	static bool getKeyDown(int key);
 	static bool getKeyUp(int key);
 	static bool getKey(int key);
-	static void terminate();
+	static void Terminate();
 };
 
 #endif

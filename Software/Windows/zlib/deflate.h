@@ -323,14 +323,14 @@ void ZLIB_INTERNAL _tr_stored_block OF((deflate_state *s, charf *buf,
   extern const uch ZLIB_INTERNAL _dist_code[];
 #endif
 
-# define _tr_tally_lit(s, c, flush) \
+# define _tr_tally_lit(s, c, Flush) \
   { uch cc = (c); \
     s->d_buf[s->last_lit] = 0; \
     s->l_buf[s->last_lit++] = cc; \
     s->dyn_ltree[cc].Freq++; \
-    flush = (s->last_lit == s->lit_bufsize-1); \
+    Flush = (s->last_lit == s->lit_bufsize-1); \
    }
-# define _tr_tally_dist(s, distance, length, flush) \
+# define _tr_tally_dist(s, distance, length, Flush) \
   { uch len = (uch)(length); \
     ush dist = (ush)(distance); \
     s->d_buf[s->last_lit] = dist; \
@@ -338,12 +338,12 @@ void ZLIB_INTERNAL _tr_stored_block OF((deflate_state *s, charf *buf,
     dist--; \
     s->dyn_ltree[_length_code[len]+LITERALS+1].Freq++; \
     s->dyn_dtree[d_code(dist)].Freq++; \
-    flush = (s->last_lit == s->lit_bufsize-1); \
+    Flush = (s->last_lit == s->lit_bufsize-1); \
   }
 #else
-# define _tr_tally_lit(s, c, flush) flush = _tr_tally(s, 0, c)
-# define _tr_tally_dist(s, distance, length, flush) \
-              flush = _tr_tally(s, distance, length)
+# define _tr_tally_lit(s, c, Flush) Flush = _tr_tally(s, 0, c)
+# define _tr_tally_dist(s, distance, length, Flush) \
+              Flush = _tr_tally(s, distance, length)
 #endif
 
 #endif /* DEFLATE_H */

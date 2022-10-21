@@ -2,9 +2,6 @@
 #include "SN76489.h"
 #include "YM2612.h"
 #include "YM2151.h"
-#ifdef STM32
-#include "VGMBoard.h"
-#else
 #include "QSound.h"
 #include "SEGAPCM.h" 
 #include "K053260.h"
@@ -12,125 +9,98 @@
 #include "NESFDSAPU.h"
 #include "HuC6280.h"
 #include "ROM.h"
-ROM* rom = 0;
-#endif
 
+ROM* rom = 0;
 VGMData::VGMData(const char* texturePath_, s32 channels_, s32 bitPerSample_, s32 sampleRate_)
 	: Obserable()
+	, info(texturePath_, channels_, bitPerSample_, sampleRate_)
 {
-	playInfo.paused = TRUE;
-	playInfo.playing = FALSE;
-	playInfo.channels = channels_;
-	playInfo.bitPerSamples = bitPerSample_;
-	playInfo.sampleRate = sampleRate_;
-
-	strncpy(playInfo.texturePath, texturePath_, 256);
-#ifdef STM32
-#else
-	bufferInfo.sampleIdx = 0;
-
-	bufferInfo.channels.resize(2);
-	for (int i = 0; i < bufferInfo.channels.size(); i++)
-		bufferInfo.channels[i].resize(VGM_SAMPLE_COUNT);
-
-	bufferInfo.outputSamples.Set(VGM_SAMPLE_COUNT);
-
-	bufferInfo.needQueueOutputSamples = FALSE;
-#endif
 
 	updateDataRequest = FALSE;
 	updateSampleCounts = 0;
-#ifdef STM32
-#else
+
 	rom = ROM_Create();
-#endif
 }
 
 VGMData::~VGMData()
 {
-#ifdef STM32
-#else
 	if(rom)
 	{
 		ROM_Release(rom);
 		
 		rom = 0;
 	}
-#endif
 }
 
-u32 VGMData::getVersion()
+u32 VGMData::GetVersion()
 {
 	return header.version;
 }
 
-void VGMData::play()
+void VGMData::Play()
 {
-	playInfo.playing = TRUE;
+	info.playing = TRUE;
 
-	notifyPlay();
+	NotifyPlay();
 }
 
-void VGMData::stop()
+void VGMData::Stop()
 {
-	playInfo.playing = FALSE;
+	info.playing = FALSE;
 
-	notifyStop();
+	NotifyStop();
 }
 
-void VGMData::pause()
+void VGMData::Pause()
 {
-	playInfo.paused = TRUE;
+	info.paused = TRUE;
 
-	notifyPause();
+	NotifyPause();
 }
 
-void VGMData::resume()
+void VGMData::Resume()
 {
-	playInfo.paused = FALSE;
+	info.paused = FALSE;
 
-	notifyResume();
+	NotifyResume();
 }
 
-boolean VGMData::isPlaying()
+boolean VGMData::IsPlaying()
 {
-	return playInfo.playing;
+	return info.playing;
 }
 
-boolean VGMData::isPaused()
+boolean VGMData::IsPaused()
 {
-	return playInfo.paused;
+	return info.paused;
 }
 
-void VGMData::requestUpdateData()
+void VGMData::RequestUpdateData()
 {
 	updateDataRequest = TRUE;
 }
 
-const VGMHeader& VGMData::getHeader() const
+const VGMHeader& VGMData::GetHeader() const
 {
 	return header;
 }
 
-const VGMData::PlayInfo& VGMData::getPlayInfo() const
+const VGMData::Info& VGMData::GetInfo() const
 {
-	return playInfo;
+	return info;
 }
 
-#ifdef STM32
-#else
-const VGMData::BufferInfo& VGMData::getBufferInfo() const
+const VGMData::SystemChannels& VGMData::GetSystemChannels() const
 {
-	return bufferInfo;
+	return systemChannels;
 }
-#endif
 
-boolean VGMData::open()
+boolean VGMData::Open()
 {
-	onOpen();
+	OnOpen();
 
 	memset(&header, 0, sizeof(header));
-	if (read(&header, 0x38) != 0x38)
+	if (Read(&header, 0x38) != 0x38)
 	{
 		return FALSE;
 	}
@@ -158,78 +128,76 @@ boolean VGMData::open()
 
 	u32 byteRemained = dataStart - 0x38;
 	if (byteRemained > 0)
-		read((u8*)(&header) + 0x38, byteRemained);
+		Read((u8*)(&header) + 0x38, byteRemained);
 
 	int channelsCount = 0;
 	if (header.YM2612Clock)
 	{
-		YM2612_Initialize(0, header.YM2612Clock, playInfo.sampleRate);
+		YM2612_Initialize(0, header.YM2612Clock, info.sampleRate);
 
 		channelsCount += YM2612_GetChannelCount(0);
 	}
 	if (header.SN76489Clock)
 	{
-		SN76489_Initialize(0, header.SN76489Clock, playInfo.sampleRate);
+		SN76489_Initialize(0, header.SN76489Clock, info.sampleRate);
 
 		channelsCount += SN76489_GetChannelCount(0);
 	}
 	if (header.YM2151Clock)
 	{
-		YM2151_Initialize(0, header.YM2151Clock, playInfo.sampleRate);
+		YM2151_Initialize(0, header.YM2151Clock, info.sampleRate);
 
 		channelsCount += YM2151_GetChannelCount(0);
 	}
-#ifdef STM32
-#else	
 	if (header.K053260Clock)
 	{
-		K053260_Initialize(0, header.K053260Clock, playInfo.sampleRate);
+		K053260_Initialize(0, header.K053260Clock, info.sampleRate);
 		K053260_SetROM(0, rom);
 
 		channelsCount += K053260_GetChannelCount(0);
 	}
 	if (header.NESAPUClock)
 	{
-		NESAPU_Initialize(0, header.NESAPUClock & 0x7fffffff, playInfo.sampleRate);
+		NESAPU_Initialize(0, header.NESAPUClock & 0x7fffffff, info.sampleRate);
 
 		channelsCount += NESAPU_GetChannelCount(0);
 	}
 	if ((header.NESAPUClock & 0x80000000) != 0)
 	{
-		NESFDSAPU_Initialize(0, (header.NESAPUClock & 0x7fffffff), playInfo.sampleRate);
+		NESFDSAPU_Initialize(0, (header.NESAPUClock & 0x7fffffff), info.sampleRate);
 
 		channelsCount += NESFDSAPU_GetChannelCount(0);
 	}
 	if (header.HuC6280Clock)
 	{
-		HUC6280_Initialize(0, header.HuC6280Clock, playInfo.sampleRate);
+		HUC6280_Initialize(0, header.HuC6280Clock, info.sampleRate);
 
 		channelsCount += HUC6280_GetChannelCount(0);
 	}
 	if (header.QSoundClock)
 	{
-		QSound_Initialize(0, header.QSoundClock, playInfo.sampleRate);
+		QSound_Initialize(0, header.QSoundClock, info.sampleRate);
 		QSound_SetROM(0, rom);
 
 		channelsCount += QSound_GetChannelCount(0);
 	}
 	if (header.SegaPCMclock)
 	{
-		SEGAPCM_Initialize(0, header.SegaPCMclock, playInfo.sampleRate);
+		SEGAPCM_Initialize(0, header.SegaPCMclock, info.sampleRate);
 		SEGAPCM_SetROM(0, rom);
 
 		channelsCount += SEGAPCM_GetChannelCount(0);
 	}
-#endif
 
-	bufferInfo.channels.resize(channelsCount * 2);
-	for (int i = 0; i < bufferInfo.channels.size(); i++)
-		bufferInfo.channels[i].resize(VGM_SAMPLE_COUNT);
+	systemChannels.SetChannelsCount(channelsCount * 2);
+	//systemChannels.channels.resize(channelsCount * 2);
+	//for (int i = 0; i < systemChannels.channels.size(); i++)
+		//systemChannels .channels[i].resize(VGM_SAMPLE_COUNT);
 
 	return TRUE;
 }
 
-void VGMData::close()
+void VGMData::Close()
 {
 	if (header.YM2612Clock)
 	{
@@ -243,8 +211,6 @@ void VGMData::close()
 	{
 		YM2151_Shutdown(0);
 	}
-#ifdef STM32
-#else	
 	if (header.K053260Clock)
 	{
 		K053260_Shutdown(0);
@@ -267,56 +233,26 @@ void VGMData::close()
 	{
 		SEGAPCM_Shutdown(0);
 	}
-#endif
-	onClose();
+
+	OnClose();
 }
 
-s32 VGMData::read(void* buffer, u32 size)
+s32 VGMData::Read(void* buffer, u32 size)
 {
-	return onRead(buffer, size);
+	return OnRead(buffer, size);
 }
 
-s32 VGMData::seekSet(u32 size)
+s32 VGMData::SeekSet(u32 size)
 {
-	return onSeekSet(size);
+	return OnSeekSet(size);
 }
 
-s32 VGMData::seekCur(u32 size)
+s32 VGMData::SeekCur(u32 size)
 {
-	return onSeekCur(size);
+	return OnSeekCur(size);
 }
 
-void VGMData::fillOutputBuffer()
-{
-#ifdef STM32
-#else
-	s16* dest = (s16*)(&bufferInfo.outputSamples.Get(0, 0));
-
-	int div = bufferInfo.channels.size() / 2;
-
-	for (s32 i = 0; i < VGM_SAMPLE_COUNT; i++) // always fill by fix size VGM_SAMPLE_COUNT
-	{
-		s32 outL = 0;
-		for (int ch = 0; ch < bufferInfo.channels.size()/2; ch++)
-		{
-			outL += bufferInfo.channels[(ch << 1) + 0][i];
-		}
-		outL = outL / div;
-
-		s32 outR = 0;
-		for (int ch = 0; ch < bufferInfo.channels.size() / 2; ch++)
-		{
-			outR += bufferInfo.channels[(ch << 1) + 1][i];
-		}
-		outR = outR / div;
-
-		*dest++ = outL;
-		*dest++ = outR;
-	}
-#endif
-}
-
-u8 VGMData::getChannelEnable(u32 channel)
+u8 VGMData::GetChannelEnable(u32 channel)
 {
 	if (header.YM2612Clock)
 	{
@@ -358,7 +294,7 @@ u8 VGMData::getChannelEnable(u32 channel)
 		return 0;
 }
 
-void VGMData::setChannelEnable(u32 channel, bool enable)
+void VGMData::SetChannelEnable(u32 channel, bool enable)
 {
 	if (header.YM2612Clock)
 	{
@@ -398,207 +334,148 @@ void VGMData::setChannelEnable(u32 channel, bool enable)
 	}
 }
 
-u32 VGMData::updateSamples(u32 updateSampleCounts)
+u32 VGMData::HandleUpdateSamples(u32 updateSampleCounts)
 {
-#ifdef STM32
-	return updateSampleCounts;
-#else
-	updateSampleCounts = VGMPlayer_MIN((VGM_SAMPLE_COUNT - bufferInfo.sampleIdx), updateSampleCounts); // never exceed bufferSize
-	if (updateSampleCounts == 0)
-		return 0;
-
-	vector<s32*> sampleBuffers;
-	sampleBuffers.resize(bufferInfo.channels.size());
-	for (int i = 0; i < bufferInfo.channels.size(); i++)
-	{
-		sampleBuffers[i] = &bufferInfo.channels[i][bufferInfo.sampleIdx];
-	}
+	updateSampleCounts = systemChannels.BeginUpdateSamples(updateSampleCounts);
 
 	int baseChannel = 0;
 	if (header.YM2612Clock)
 	{
-		YM2612_Update(0, baseChannel, &sampleBuffers[0], updateSampleCounts);
-
-		baseChannel += YM2612_GetChannelCount(0);
+		baseChannel = systemChannels.HandleUpdateSamples(YM2612_Update, YM2612_GetChannelCount, 0, baseChannel, updateSampleCounts);
 	}
 	if (header.SN76489Clock)
 	{
-		SN76489_Update(0, baseChannel, &sampleBuffers[0], updateSampleCounts);
-
-		baseChannel += SN76489_GetChannelCount(0);
+		baseChannel = systemChannels.HandleUpdateSamples(SN76489_Update, SN76489_GetChannelCount, 0, baseChannel, updateSampleCounts);
 	}
 	if (header.YM2151Clock)
 	{
-		YM2151_Update(0, baseChannel, &sampleBuffers[0], updateSampleCounts);
-
-		baseChannel += YM2151_GetChannelCount(0);
+		baseChannel = systemChannels.HandleUpdateSamples(YM2151_Update, YM2151_GetChannelCount, 0, baseChannel, updateSampleCounts);
 	}
 	if (header.K053260Clock)
 	{
-		K053260_Update(0, baseChannel, &sampleBuffers[0], updateSampleCounts);
-
-		baseChannel += K053260_GetChannelCount(0);
+		baseChannel = systemChannels.HandleUpdateSamples(K053260_Update, K053260_GetChannelCount, 0, baseChannel, updateSampleCounts);
 	}
 	if (header.NESAPUClock)
 	{
-		NESAPU_Update(0, baseChannel, &sampleBuffers[0], updateSampleCounts);
-
-		baseChannel += NESAPU_GetChannelCount(0);
+		baseChannel = systemChannels.HandleUpdateSamples(NESAPU_Update, NESAPU_GetChannelCount, 0, baseChannel, updateSampleCounts);
 	}
 	if(header.NESAPUClock & 0x80000000)
 	{
-		NESFDSAPU_Update(0, baseChannel, &sampleBuffers[0], updateSampleCounts);
-
-		baseChannel += NESFDSAPU_GetChannelCount(0);
+		baseChannel = systemChannels.HandleUpdateSamples(NESFDSAPU_Update, NESFDSAPU_GetChannelCount, 0, baseChannel, updateSampleCounts);
 	}
 	if (header.HuC6280Clock)
 	{
-		HUC6280_Update(0, baseChannel, &sampleBuffers[0], updateSampleCounts);
-
-		baseChannel += HUC6280_GetChannelCount(0);
+		baseChannel = systemChannels.HandleUpdateSamples(HUC6280_Update, HUC6280_GetChannelCount, 0, baseChannel, updateSampleCounts);
 	}
 	if (header.QSoundClock)
 	{
-		QSound_Update(0, baseChannel, &sampleBuffers[0], updateSampleCounts);
-
-		baseChannel += QSound_GetChannelCount(0);
+		baseChannel = systemChannels.HandleUpdateSamples(QSound_Update, QSound_GetChannelCount, 0, baseChannel, updateSampleCounts);
 	}
 	if (header.SegaPCMclock)
 	{
-		SEGAPCM_Update(0, baseChannel, &sampleBuffers[0], updateSampleCounts);
-
-		baseChannel += SEGAPCM_GetChannelCount(0);
+		baseChannel = systemChannels.HandleUpdateSamples(SEGAPCM_Update, SEGAPCM_GetChannelCount, 0, baseChannel, updateSampleCounts);
 	}
 
-
-	bufferInfo.sampleIdx = bufferInfo.sampleIdx + updateSampleCounts;	// updated samples, sampleIdx+
-
-	assert(bufferInfo.sampleIdx <= VGM_SAMPLE_COUNT);
-	if (bufferInfo.sampleIdx == VGM_SAMPLE_COUNT)
-	{
-		bufferInfo.sampleIdx = 0;
-		bufferInfo.needQueueOutputSamples = TRUE;
-
-		fillOutputBuffer();
-	}
+	systemChannels.EndUpdateSamples(updateSampleCounts);
 
 	return updateSampleCounts;
-#endif
 }
 
-void VGMData::handleEndOfSound()
+void VGMData::HandleEndOfSound()
 {
 }
 
-void VGMData::handleK053260ROM(s32 skipByte0x66, s32 blockType, s32 blockSize)
+void VGMData::HandleK053260ROM(s32 skipByte0x66, s32 blockType, s32 blockSize)
 {
-#ifdef STM32
-#else	
 	unsigned int entireRomSize;
-	read(&entireRomSize, sizeof(entireRomSize));
+	Read(&entireRomSize, sizeof(entireRomSize));
 
 	unsigned int startAddress;
-	read(&startAddress, sizeof(startAddress));
+	Read(&startAddress, sizeof(startAddress));
 
 	vector<u8> romData;
 	romData.resize(blockSize - 8);
-	read(&romData[0], blockSize - 8);
+	Read(&romData[0], blockSize - 8);
 
 	// k053260_write_rom(0, entireRomSize, startAddress, blockSize - 8, romData);
 	ROM_LoadData(rom, startAddress, &romData[0], blockSize - 8, entireRomSize);
-#endif
 }
 
-void VGMData::handleQSoundROM(s32 skipByte0x66, s32 blockType, s32 blockSize)
+void VGMData::HandleQSoundROM(s32 skipByte0x66, s32 blockType, s32 blockSize)
 {
-#ifdef STM32
-#else	
 	unsigned int entireRomSize;
-	read(&entireRomSize, sizeof(entireRomSize));
+	Read(&entireRomSize, sizeof(entireRomSize));
 
 	unsigned int startAddress;
-	read(&startAddress, sizeof(startAddress));
+	Read(&startAddress, sizeof(startAddress));
 
 	vector<u8> romData;
 	romData.resize(blockSize - 8);
-	read(&romData[0], blockSize - 8);
+	Read(&romData[0], blockSize - 8);
 
 	//QSound_SetROM(0, entireRomSize, startAddress, &romData[0], blockSize - 8);
 	//rom->addROMSegment(startAddress, &romData[0], blockSize - 8, entireRomSize);
 	ROM_LoadData(rom, startAddress, &romData[0], blockSize - 8, entireRomSize);
-#endif
 }
 
-void VGMData::handleSEGAPCMROM(s32 skipByte0x66, s32 blockType, s32 blockSize)
+void VGMData::HandleSEGAPCMROM(s32 skipByte0x66, s32 blockType, s32 blockSize)
 {
-#ifdef STM32
-#else	
 	unsigned int entireRomSize;
-	read(&entireRomSize, sizeof(entireRomSize));
+	Read(&entireRomSize, sizeof(entireRomSize));
 
 	unsigned int startAddress;
-	read(&startAddress, sizeof(startAddress));
+	Read(&startAddress, sizeof(startAddress));
 
 	vector<u8> romData;
 	romData.resize(blockSize - 8);
-	read(&romData[0], blockSize - 8);
+	Read(&romData[0], blockSize - 8);
 
 	// k053260_write_rom(0, entireRomSize, startAddress, blockSize - 8, romData);
 	ROM_LoadData(rom, startAddress, &romData[0], blockSize - 8, entireRomSize);
-#endif
 }
 
-void VGMData::handleDataBlocks()
+void VGMData::HandleDataBlocks()
 {
 	u8 skipByte0x66;
-	read(&skipByte0x66, sizeof(skipByte0x66));
+	Read(&skipByte0x66, sizeof(skipByte0x66));
 
 	u8 blockType;
-	read(&blockType, sizeof(blockType));
+	Read(&blockType, sizeof(blockType));
 
 	u32 blockSize;
-	read(&blockSize, sizeof(blockSize));
+	Read(&blockSize, sizeof(blockSize));
 
-#ifdef STM32
-	seekCur(blockSize);
-#else	
 	if (blockType == 0x80)
 	{
-		handleSEGAPCMROM(skipByte0x66, blockType, blockSize);
+		HandleSEGAPCMROM(skipByte0x66, blockType, blockSize);
 	}
 	else if (blockType == 0x8e)
 	{
-		handleK053260ROM(skipByte0x66, blockType, blockSize);
+		HandleK053260ROM(skipByte0x66, blockType, blockSize);
 	}
 	else if (blockType == 0x8f)
 	{
-		handleQSoundROM(skipByte0x66, blockType, blockSize);
+		HandleQSoundROM(skipByte0x66, blockType, blockSize);
 	}
 	else
 	{
-		seekCur(blockSize);
+		SeekCur(blockSize);
 	}
-#endif
 }
 
-boolean VGMData::update()
+boolean VGMData::Update()
 {
 	if (updateDataRequest)
 	{
 		if (updateSampleCounts > 0)
 		{
-#ifdef STM32
-			s32 nnnn = VGMBoard_UpdateSamples(updateSampleCounts);
+			s32 nnnn = HandleUpdateSamples(updateSampleCounts);
 			updateSampleCounts -= nnnn;
-#else	
-			s32 nnnn = updateSamples(updateSampleCounts);
-			updateSampleCounts -= nnnn;
-#endif
 		}
 		else
 		{
 			u8 command;
-			read(&command, sizeof(command));
+			Read(&command, sizeof(command));
 
 			u8 aa;
 			u8 dd;
@@ -622,114 +499,95 @@ boolean VGMData::update()
 			switch (command)
 			{
 			case YM2612_PORT0_WRITE:
-				read(&aa, sizeof(aa));
-				read(&dd, sizeof(dd));
+				Read(&aa, sizeof(aa));
+				Read(&dd, sizeof(dd));
 
 				YM2612_WriteRegister(0, 0, aa);
 				YM2612_WriteRegister(0, 1, dd);
 				break;
 
 			case YM2612_PORT1_WRITE:
-				read(&aa, sizeof(aa));
-				read(&dd, sizeof(dd));
+				Read(&aa, sizeof(aa));
+				Read(&dd, sizeof(dd));
 
 				YM2612_WriteRegister(0, 2, aa);
 				YM2612_WriteRegister(0, 3, dd);
 				break;
 
 			case YM2151_WRITE:
-				read(&aa, sizeof(aa));
-				read(&dd, sizeof(dd));
+				Read(&aa, sizeof(aa));
+				Read(&dd, sizeof(dd));
 				YM2151_WriteRegister(0, aa, dd);
 				break;
 
 			case YM2203_WRITE:
-				read(&aa, sizeof(aa));
-				read(&dd, sizeof(dd));
+				Read(&aa, sizeof(aa));
+				Read(&dd, sizeof(dd));
 				//YM2203_WriteRegister(0, aa, dd);
 
 				break;
 
 			case GAME_GEAR_PSG_PORT6_WRITE:
-				read(&dd, sizeof(dd));
+				Read(&dd, sizeof(dd));
 				SN76489_WriteRegister(0, 0, dd);
 				break;
 
 			case SN76489_WRITE:
-				read(&dd, sizeof(dd));
+				Read(&dd, sizeof(dd));
 				SN76489_WriteRegister(0, 0, dd);
 				break;
 
 			case UNKNOWN_CHIP_A5_WRITE:
-				read(&aa, sizeof(aa));
-				read(&dd, sizeof(dd));
-#ifdef STM32
-#else	
-				//UNKNOWN_CHIP_A5_WRITE_WriteRegister(0, aa, dd);
-#endif
+				Read(&aa, sizeof(aa));
+				Read(&dd, sizeof(dd));
 				break;
 
 			case K053260_WRITE:
-				read(&aa, sizeof(aa));
-				read(&dd, sizeof(dd));
-#ifdef STM32
-#else	
+				Read(&aa, sizeof(aa));
+				Read(&dd, sizeof(dd));
 				K053260_WriteRegister(0, aa, dd);
-#endif
 				break;
 
 			case NES_APU_WRITE:
-				read(&aa, sizeof(aa));
-				read(&dd, sizeof(dd));
-#ifdef STM32
-#else	
+				Read(&aa, sizeof(aa));
+				Read(&dd, sizeof(dd));
 				NESAPU_WriteRegister(0, aa, dd);
 				NESFDSAPU_WriteRegister(0, aa, dd);
-#endif
 				break;
 
 			case OKIM6258_WRITE:
-				read(&aa, sizeof(aa));
-				read(&dd, sizeof(dd));
-#ifdef STM32
-#else	
+				Read(&aa, sizeof(aa));
+				Read(&dd, sizeof(dd));
 				// OKIM6258_WriteRegister(0, aa, dd);
-#endif
 				break;
 
 			case OKIM6295_WRITE:
-				read(&aa, sizeof(aa));
-				read(&dd, sizeof(dd));
-#ifdef STM32
-#else	
+				Read(&aa, sizeof(aa));
+				Read(&dd, sizeof(dd));
 				// OKIM6295_WriteRegister(0, aa, dd);
-#endif
 				break;
 
 			case HUC6280_WRITE:
-				read(&aa, sizeof(aa));
-				read(&dd, sizeof(dd));
-#ifdef STM32
-#else				
+				Read(&aa, sizeof(aa));
+				Read(&dd, sizeof(dd));
 				HUC6280_WriteRegister(0, aa, dd);
-#endif
 				break;
 
 			case DATA_BLOCKS:
-				handleDataBlocks();
+				HandleDataBlocks();
 				break;
 
 			case WAIT_NNNN_SAMPLES:
-				read(&NNNN, sizeof(NNNN));
-				updateSampleCounts += (((u32)NNNN) * playInfo.sampleRate / 44100);
+				Read(&NNNN, sizeof(NNNN));
+				updateSampleCounts += (((u32)NNNN) * info.sampleRate / 44100);
 				break;
 
 			case WAIT_735_SAMPLES:
-				updateSampleCounts += (735 * playInfo.sampleRate / 44100);
+				updateSampleCounts += (735 * info.sampleRate / 44100);
 				break;
 
 			case WAIT_882_SAMPLES:
-				updateSampleCounts += (882 * playInfo.sampleRate / 44100);
+				updateSampleCounts += (882 * info.sampleRate / 44100);
 				break;
 
 			case WAIT_1_SAMPLES:
@@ -748,90 +606,71 @@ boolean VGMData::update()
 			case WAIT_14_SAMPLES:
 			case WAIT_15_SAMPLES:
 			case WAIT_16_SAMPLES:
-				updateSampleCounts += (((command & 0x0f) + 1) * playInfo.sampleRate / 44100);
+				updateSampleCounts += (((command & 0x0f) + 1) * info.sampleRate / 44100);
 				break;
 
 			case DAC_SETUP_STREAM_CONTROL:
-				read(&ss, sizeof(ss));
-				read(&tt, sizeof(tt));
-				read(&pp, sizeof(pp));
-				read(&cc, sizeof(cc));
-#ifdef STM32
-#else				
+				Read(&ss, sizeof(ss));
+				Read(&tt, sizeof(tt));
+				Read(&pp, sizeof(pp));
+				Read(&cc, sizeof(cc));
 				//DACSetUpStreamControl(ss, tt, pp, cc);
-#endif
+
 				break;
 			case DAC_SET_STREAM_DATA:
-				read(&ss, sizeof(ss));
-				read(&dd, sizeof(dd));
-				read(&ll, sizeof(ll));
-				read(&bb, sizeof(bb));
-#ifdef STM32
-#else				
+				Read(&ss, sizeof(ss));
+				Read(&dd, sizeof(dd));
+				Read(&ll, sizeof(ll));
+				Read(&bb, sizeof(bb));
 				//DACSetStreamData(ss, dd, ll, bb);
-#endif
+
 				break;
 			case DAC_SET_STREAM_FREQUENCY:
-				read(&ss, sizeof(ss));
-				read(&ffffffff, sizeof(ffffffff));
-#ifdef STM32
-#else				
+				Read(&ss, sizeof(ss));
+				Read(&ffffffff, sizeof(ffffffff));
 				//DACSetStreamFrequency(ss, ffffffff);
-#endif
+
 				break;
 			case DAC_START_STREAM:
-				read(&ss, sizeof(ss));
-				read(&aaaaaaaa, sizeof(aaaaaaaa));
-				read(&mm, sizeof(mm));
-				read(&llllllll, sizeof(llllllll));
-#ifdef STM32
-#else				
+				Read(&ss, sizeof(ss));
+				Read(&aaaaaaaa, sizeof(aaaaaaaa));
+				Read(&mm, sizeof(mm));
+				Read(&llllllll, sizeof(llllllll));
 				//DACStartStream(ss, aaaaaaaa, mm, llllllll);
-#endif
+
 				break;
 			case DAC_STOP_STREAM:
-				read(&ss, sizeof(ss));
-#ifdef STM32
-#else				
+				Read(&ss, sizeof(ss));
 				//DACStopStream(ss);
-#endif
+
 				break;
 			case DAC_START_STEAM_FAST:
-				read(&ss, sizeof(ss));
-				read(&bbbb, sizeof(bbbb));
-				read(&ff, sizeof(ff));
-#ifdef STM32
-#else				
+				Read(&ss, sizeof(ss));
+				Read(&bbbb, sizeof(bbbb));
+				Read(&ff, sizeof(ff));
 				//DACStartStreamFast(ss, bbbb, ff);
-#endif
 				break;
 
 			case QSOUND_WRITE:
-				read(&mm, sizeof(mm));
-				read(&ll, sizeof(ll));
-				read(&rr, sizeof(rr));
-#ifdef STM32
-#else		
+				Read(&mm, sizeof(mm));
+				Read(&ll, sizeof(ll));
+				Read(&rr, sizeof(rr));
 				QSound_WriteRegister(0, rr, (((u32)mm << 8) | (u32)ll));
-#endif
 				break;
 
 			case SEGA_PCM:
-				read(&ll, sizeof(ll));
-				read(&uu, sizeof(uu));
-				read(&dd, sizeof(dd));
-#ifdef STM32
-#else		
+				Read(&ll, sizeof(ll));
+				Read(&uu, sizeof(uu));
+				Read(&dd, sizeof(dd));
 				SEGAPCM_WriteRegister(0, (((u32)uu) << 8) | ((u32)ll), dd);
-#endif
 				break;
 
 			case END_OF_SOUND:
-				handleEndOfSound();
+				HandleEndOfSound();
 
 				if (header.loopOffset)
 				{
-					seekSet(header.loopOffset + 0x1c);
+					SeekSet(header.loopOffset + 0x1c);
 					//printf("Loop();\n");
 					return FALSE;
 				}
@@ -851,10 +690,8 @@ boolean VGMData::update()
 		updateDataRequest = FALSE;
 	}
 
-	notifyUpdate();
-#ifdef STM32
-#else
-	bufferInfo.needQueueOutputSamples = FALSE;
-#endif
+	NotifyUpdate();
+	systemChannels.SetHasNewSamples(false);
+
 	return TRUE;
 }

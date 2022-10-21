@@ -9,87 +9,78 @@ VGMAudioPlayer::~VGMAudioPlayer()
 {
 }
 
-u32 VGMAudioPlayer::getQueued()
+u32 VGMAudioPlayer::GetQueued()
 {
-	return outputDevice.getQueued();
+	return outputDevice.GetQueued();
 }
 
-void VGMAudioPlayer::onNotifySomething(Obserable& observable)
+void VGMAudioPlayer::OnNotifySomething(Obserable& observable)
 {
 	VGMData& vgmData = (VGMData &)observable;
 }
 
-void VGMAudioPlayer::onNotifyOpen(Obserable& observable)
+void VGMAudioPlayer::OnNotifyOpen(Obserable& observable)
 {
-#ifdef STM32
-#else
 	VGMData& vgmData = (VGMData &)observable;
 
 
-	const VGMHeader& header = vgmData.getHeader();
-	const VGMData::PlayInfo& playInfo = vgmData.getPlayInfo();
-	const VGMData::BufferInfo& bufferInfo = vgmData.getBufferInfo();
+	const VGMHeader& header = vgmData.GetHeader();
+	const VGMData::Info& info = vgmData.GetInfo();
+	const VGMData::SystemChannels& systemChannels = vgmData.GetSystemChannels();
 
-	boolean rval = outputDevice.open(playInfo.channels, playInfo.bitPerSamples, playInfo.sampleRate, VGM_OUTPUT_BUFFER_COUNT);
-#endif
+	boolean rval = outputDevice.Open(info.channels, info.bitPerSamples, info.sampleRate, VGM_OUTPUT_BUFFER_COUNT);
 }
 
-void VGMAudioPlayer::onNotifyClose(Obserable& observable)
+void VGMAudioPlayer::OnNotifyClose(Obserable& observable)
 {
-#ifdef STM32
-#else	
 	VGMData& vgmData = (VGMData &)observable;
 
-	const VGMHeader& header = vgmData.getHeader();
-	const VGMData::PlayInfo& playInfo = vgmData.getPlayInfo();
-	const VGMData::BufferInfo& bufferInfo = vgmData.getBufferInfo();
+	const VGMHeader& header = vgmData.GetHeader();
+	const VGMData::Info& info = vgmData.GetInfo();
+	const VGMData::SystemChannels& systemChannels = vgmData.GetSystemChannels();
 
-	outputDevice.close();
-#endif
+	outputDevice.Close();
 }
 
-void VGMAudioPlayer::onNotifyPlay(Obserable& observable)
+void VGMAudioPlayer::OnNotifyPlay(Obserable& observable)
 {
 	VGMData& vgmData = (VGMData &)observable;
 }
 
-void VGMAudioPlayer::onNotifyStop(Obserable& observable)
+void VGMAudioPlayer::OnNotifyStop(Obserable& observable)
 {
 	VGMData& vgmData = (VGMData &)observable;
 }
 
-void VGMAudioPlayer::onNotifyPause(Obserable& observable)
+void VGMAudioPlayer::OnNotifyPause(Obserable& observable)
 {
 	VGMData& vgmData = (VGMData &)observable;
 }
 
-void VGMAudioPlayer::onNotifyResume(Obserable& observable)
+void VGMAudioPlayer::OnNotifyResume(Obserable& observable)
 {
 	VGMData& vgmData = (VGMData &)observable;
 }
 
-void VGMAudioPlayer::onNotifyUpdate(Obserable& observable)
+void VGMAudioPlayer::OnNotifyUpdate(Obserable& observable)
 {
-#ifdef STM32
-#else	
 	VGMData& vgmData = (VGMData &)observable;
-	const VGMData::PlayInfo& playInfo = vgmData.getPlayInfo();
-	const VGMData::BufferInfo& bufferInfo = vgmData.getBufferInfo();
+	const VGMData::Info& info = vgmData.GetInfo();
+	const VGMData::SystemChannels& systemChannels = vgmData.GetSystemChannels();
 
-	if (bufferInfo.needQueueOutputSamples)
+	if (systemChannels.GetHasNewSamples())
 	{
-		if (!outputDevice.queue((void*)(&bufferInfo.outputSamples.Get(0, 0)), VGM_SAMPLE_COUNT * (sizeof(s16) * 2) ))
+		if (!outputDevice.Queue((void*)(&systemChannels.GetOutputSample(0, 0)), VGM_SAMPLE_COUNT * (sizeof(s16) * 2) ))
 			return;
 
-		if (outputDevice.getDeviceState() != 3)
+		if (outputDevice.GetDeviceState() != 3)
 		{
-			outputDevice.play();
+			outputDevice.Play();
 
 			//outputDevice.setVolume(1.0);
 			//outputDevice.setPlayRate(1.0);
 		}
 	}
 
-	outputDevice.update();
-#endif
+	outputDevice.Update();
 }

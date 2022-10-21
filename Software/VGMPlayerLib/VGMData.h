@@ -365,9 +365,20 @@ public:
 class VGMData : public Obserable
 {
 public:
-	class PlayInfo
+	class Info
 	{
 	public:
+		Info(const char* texturePath_, s32 channels_, s32 bitPerSample_, s32 sampleRate_)
+		{
+			this->paused = TRUE;
+			this->playing = FALSE;
+			this->channels = channels_;
+			this->bitPerSamples = bitPerSample_;
+			this->sampleRate = sampleRate_;
+
+			strncpy(this->texturePath, texturePath_, 256);
+		}
+
 		boolean paused;
 		boolean playing;
 		s32 channels;
@@ -382,7 +393,6 @@ public:
 	public:
 		void Set(int bufferSize)
 		{
-			this->bufferSize = bufferSize;
 			m.resize(bufferSize * 2);
 		}
 
@@ -396,77 +406,200 @@ public:
 			return m[i * 2 + channel];
 		}
 	private:
-		int bufferSize;
 		vector<s16> m;
 	};
 #pragma pack (pop)
-	class BufferInfo
+
+	class Channel
 	{
 	public:
-		u32 sampleIdx;
-		vector<vector<s32>> channels;
-		OutputSamples outputSamples;
-		
-		boolean needQueueOutputSamples;
+		Channel()
+		{
+			notes.resize(VGM_SAMPLE_COUNT);
+			samples.resize(VGM_SAMPLE_COUNT);
+		}
+
+		vector<s32> notes;
+		vector<s32> samples;
 	};
+
+	class SystemChannels
+	{
+	public:
+		SystemChannels()
+		{
+			this->sampleIdx = 0;
+			this->channels.resize(2);
+			this->outputSamples.Set(VGM_SAMPLE_COUNT);
+			this->hasNewSamples = false;
+		}
+
+		void SetChannelsCount(int size)
+		{
+			this->channels.resize(size);
+		}
+
+		s32 GetChannelsCount() const
+		{
+			return this->channels.size();
+		}
+
+		int BeginUpdateSamples(int updateSampleCounts)
+		{
+			updateSampleCounts = VGMPlayer_MIN((VGM_SAMPLE_COUNT - sampleIdx), updateSampleCounts); // never exceed bufferSize
+			if (updateSampleCounts == 0)
+				return 0;
+
+			channelsSampleBuffers.resize(channels.size());
+			for (int i = 0; i < channels.size(); i++)
+			{
+				channelsSampleBuffers[i] = &channels[i].samples[sampleIdx];
+			}
+
+			return updateSampleCounts;
+		}
+
+		int HandleUpdateSamples(void (*chipUpdate)(u8, s32, s32**, u32),
+						   u32 (*chipGetChannelCount)(u8),
+						   u8 chipID, s32 baseChannel, u32 length)
+		{
+			chipUpdate(chipID, baseChannel, &channelsSampleBuffers[0], length);
+
+			baseChannel += chipGetChannelCount(chipID);
+
+			return baseChannel;
+		}
+
+		void EndUpdateSamples(int updateSampleCounts)
+		{
+			sampleIdx = sampleIdx + updateSampleCounts;	// updated samples, sampleIdx+
+
+			assert(sampleIdx <= VGM_SAMPLE_COUNT);
+			if (sampleIdx == VGM_SAMPLE_COUNT)
+			{
+				sampleIdx = 0;
+				hasNewSamples = true;
+
+				FillOutputBuffer();
+			}
+		}
+
+		void FillOutputBuffer()
+		{
+			s16* dest = (s16*)(&outputSamples.Get(0, 0));
+
+			s32 div = channels.size() / 2;
+			for (s32 i = 0; i < VGM_SAMPLE_COUNT; i++) // always fill by fix size VGM_SAMPLE_COUNT
+			{
+				s32 outL = 0;
+				for (s32 ch = 0; ch < channels.size() / 2; ch++)
+				{
+					outL += channels[(ch << 1) + 0].samples[i];
+				}
+				outL = outL / div;
+
+				s32 outR = 0;
+				for (int ch = 0; ch < channels.size() / 2; ch++)
+				{
+					outR += channels[(ch << 1) + 1].samples[i];
+				}
+				outR = outR / div;
+
+				*dest++ = outL;
+				*dest++ = outR;
+			}
+		}
+
+
+		const s32& GetChannelSample(int ch, int sampleIdx) const
+		{
+			return channels[ch].samples[sampleIdx];
+		}
+
+		s16& GetOutputSample(int i, int channel)
+		{
+			return outputSamples.Get(i, channel);
+		}
+
+		const s16& GetOutputSample(int i, int channel) const
+		{
+			return outputSamples.Get(i, channel);
+		}
+
+		boolean GetHasNewSamples() const
+		{
+			return hasNewSamples;
+		}
+
+		void SetHasNewSamples(boolean hasNewSamples_)
+		{
+			hasNewSamples = hasNewSamples_;
+		}
+	private:
+		u32 sampleIdx;
+		vector<Channel> channels;
+		OutputSamples outputSamples;
+		boolean hasNewSamples;
+
+		vector<s32*> channelsSampleBuffers;
+	};
+
 	VGMData(const char* texturePath_, s32 channels_, s32 bitPerSample_, s32 sampleRate_);
 	~VGMData();
 
-	u32 getVersion();
+	u32 GetVersion();
 
-	boolean open();
-	void close();
-	void play();
-	void stop();
-	void pause();
-	void resume();
-	boolean update();
+	boolean Open();
+	void Close();
+	void Play();
+	void Stop();
+	void Pause();
+	void Resume();
+	boolean Update();
 
-	boolean isPlaying();
-	boolean isPaused();
+	boolean IsPlaying();
+	boolean IsPaused();
 
-	void requestUpdateData();
+	void RequestUpdateData();
 
-	const VGMHeader& getHeader() const;
-	const VGMData::PlayInfo& getPlayInfo() const;
-	const VGMData::BufferInfo& getBufferInfo() const;
+	const VGMHeader& GetHeader() const;
+	const VGMData::Info& GetInfo() const;
+	const VGMData::SystemChannels& GetSystemChannels() const;
 
-	void setChannelEnable(u32 channel, bool enable);
-	u8 getChannelEnable(u32 channel);
+	void SetChannelEnable(u32 channel, bool enable);
+	u8 GetChannelEnable(u32 channel);
 protected:
-	virtual s32 read(void *buffer, u32 size);
-	virtual s32 seekSet(u32 size);
-	virtual s32 seekCur(u32 size);
+	virtual s32 Read(void *buffer, u32 size);
+	virtual s32 SeekSet(u32 size);
+	virtual s32 SeekCur(u32 size);
 
-	virtual boolean onOpen() = 0;
-	virtual void onClose() = 0;
-	virtual void onPlay() = 0;
-	virtual void onStop() = 0;
-	virtual void onPause() = 0;
-	virtual void onResume() = 0;
-	virtual boolean onUpdate() = 0;
-	virtual s32 onRead(void *buffer, u32 size) = 0;
-	virtual s32 onSeekSet(u32 size) = 0;
-	virtual s32 onSeekCur(u32 size) = 0;
+	virtual boolean OnOpen() = 0;
+	virtual void OnClose() = 0;
+	virtual void OnPlay() = 0;
+	virtual void OnStop() = 0;
+	virtual void OnPause() = 0;
+	virtual void OnResume() = 0;
+	virtual boolean OnUpdate() = 0;
+	virtual s32 OnRead(void *buffer, u32 size) = 0;
+	virtual s32 OnSeekSet(u32 size) = 0;
+	virtual s32 OnSeekCur(u32 size) = 0;
 
 	/////////////////////////////////////////////////
 	// data decode
 protected:
-	void handleDataBlocks();
-	void handleK053260ROM(s32 skipByte0x66, s32 blockType, s32 blockSize);
-	void handleQSoundROM(s32 skipByte0x66, s32 blockType, s32 blockSize);
-	void handleSEGAPCMROM(s32 skipByte0x66, s32 blockType, s32 blockSize);
+	void HandleDataBlocks();
+	void HandleK053260ROM(s32 skipByte0x66, s32 blockType, s32 blockSize);
+	void HandleQSoundROM(s32 skipByte0x66, s32 blockType, s32 blockSize);
+	void HandleSEGAPCMROM(s32 skipByte0x66, s32 blockType, s32 blockSize);
 	
-	u32 updateSamples(u32 updateSampleCounts);
-	void handleEndOfSound();
-
-	void fillOutputBuffer();
+	u32 HandleUpdateSamples(u32 updateSampleCounts);
+	void HandleEndOfSound();
 private:
 public:
 protected:
 	VGMHeader header;
-	PlayInfo playInfo;
-	BufferInfo bufferInfo;
+	Info info;
+	SystemChannels systemChannels;
 
 	boolean updateDataRequest;
 	u32 updateSampleCounts;

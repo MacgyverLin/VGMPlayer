@@ -62,9 +62,6 @@
     <ClInclude Include="..\..\VGMPlayerLib\ym2612.h">
       <Filter>Source Files\chips</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\VGMPlayerLib\FFT.h">
-      <Filter>Source Files\VGM</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\VGMPlayerLib\AudioDevice.h">
       <Filter>Source Files\Platform</Filter>
     </ClInclude>
@@ -116,6 +113,9 @@
     <ClInclude Include="..\..\VGMPlayerLib\VGMMultiChannelWaveFormViewer.h">
       <Filter>Source Files\VGM\Observer</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\VGMPlayerLib\FFT.h">
+      <Filter>Source Files\misc</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\VGMPlayerLib\HuC6280.c">
@@ -138,9 +138,6 @@
     </ClCompile>
     <ClCompile Include="..\..\VGMPlayerLib\ym2612.c">
       <Filter>Source Files\chips</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\VGMPlayerLib\FFT.cpp">
-      <Filter>Source Files\VGM</Filter>
     </ClCompile>
     <ClCompile Include="..\..\VGMPlayerLib\AudioDevice.cpp">
       <Filter>Source Files\Platform</Filter>
@@ -189,6 +186,9 @@
     </ClCompile>
     <ClCompile Include="..\..\VGMPlayerLib\VGMMultiChannelWaveFormViewer.cpp">
       <Filter>Source Files\VGM\Observer</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\VGMPlayerLib\FFT.cpp">
+      <Filter>Source Files\misc</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

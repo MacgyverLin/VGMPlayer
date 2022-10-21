@@ -1,9 +1,6 @@
 #include "VGMWaveFormViewer.h"
-#ifdef STM32
-#else
 #include <GL/glu.h>
 #include <GL/gl.h>
-#endif
 
 VGMWaveFormViewer::VGMWaveFormViewer(const string& name_, u32 x_, u32 y_, u32 width_, u32 height_, float waveScale_, const Skin& skin_)
 	: VGMDataObverser()
@@ -21,67 +18,65 @@ VGMWaveFormViewer::~VGMWaveFormViewer()
 {
 }
 
-void VGMWaveFormViewer::onNotifySomething(Obserable& observable)
+void VGMWaveFormViewer::OnNotifySomething(Obserable& observable)
 {
 	VGMData& vgmData = (VGMData&)observable;
 }
 
-void VGMWaveFormViewer::onNotifyOpen(Obserable& observable)
+void VGMWaveFormViewer::OnNotifyOpen(Obserable& observable)
 {
 	VGMData& vgmData = (VGMData&)observable;
-	const VGMHeader& header = vgmData.getHeader();
-	const VGMData::PlayInfo& playInfo = vgmData.getPlayInfo();
-	const VGMData::BufferInfo& bufferInfo = vgmData.getBufferInfo();
+	const VGMHeader& header = vgmData.GetHeader();
+	const VGMData::Info& info = vgmData.GetInfo();
+	const VGMData::SystemChannels& systemChannels = vgmData.GetSystemChannels();
 
-	videoDevice.open(name.c_str(), x, y, width, height);
+	videoDevice.Open(name.c_str(), x, y, width, height);
 
-	texture.Load(playInfo.texturePath);
+	texture.Load(info.texturePath);
 }
 
-void VGMWaveFormViewer::onNotifyClose(Obserable& observable)
+void VGMWaveFormViewer::OnNotifyClose(Obserable& observable)
 {
 	VGMData& vgmData = (VGMData&)observable;
 
-	const VGMHeader& header = vgmData.getHeader();
-	const VGMData::PlayInfo& playInfo = vgmData.getPlayInfo();
-	const VGMData::BufferInfo& bufferInfo = vgmData.getBufferInfo();
+	const VGMHeader& header = vgmData.GetHeader();
+	const VGMData::Info& info = vgmData.GetInfo();
+	const VGMData::SystemChannels& systemChannels = vgmData.GetSystemChannels();
 
-	videoDevice.close();
+	videoDevice.Close();
 }
 
-void VGMWaveFormViewer::onNotifyPlay(Obserable& observable)
-{
-	VGMData& vgmData = (VGMData&)observable;
-}
-
-void VGMWaveFormViewer::onNotifyStop(Obserable& observable)
+void VGMWaveFormViewer::OnNotifyPlay(Obserable& observable)
 {
 	VGMData& vgmData = (VGMData&)observable;
 }
 
-void VGMWaveFormViewer::onNotifyPause(Obserable& observable)
+void VGMWaveFormViewer::OnNotifyStop(Obserable& observable)
 {
 	VGMData& vgmData = (VGMData&)observable;
 }
 
-void VGMWaveFormViewer::onNotifyResume(Obserable& observable)
+void VGMWaveFormViewer::OnNotifyPause(Obserable& observable)
 {
 	VGMData& vgmData = (VGMData&)observable;
 }
 
-void VGMWaveFormViewer::onNotifyUpdate(Obserable& observable)
+void VGMWaveFormViewer::OnNotifyResume(Obserable& observable)
 {
 	VGMData& vgmData = (VGMData&)observable;
-	const VGMData::PlayInfo& playInfo = vgmData.getPlayInfo();
-	const VGMData::BufferInfo& bufferInfo = vgmData.getBufferInfo();
+}
 
-	if (bufferInfo.needQueueOutputSamples)
+void VGMWaveFormViewer::OnNotifyUpdate(Obserable& observable)
+{
+	VGMData& vgmData = (VGMData&)observable;
+	const VGMData::Info& info = vgmData.GetInfo();
+	const VGMData::SystemChannels& systemChannels = vgmData.GetSystemChannels();
+
+	if (systemChannels.GetHasNewSamples())
 	{
-		videoDevice.makeCurrent();
+		videoDevice.MakeCurrent();
 
-		videoDevice.clear(skin.bgColor);
-#ifdef STM32
-#else
+		videoDevice.Clear(skin.bgColor);
 		int startX = 0;
 		int endX = VGM_SAMPLE_COUNT; //sampleCount;
 		int divX = 10;
@@ -95,14 +90,10 @@ void VGMWaveFormViewer::onNotifyUpdate(Obserable& observable)
 		glPushMatrix();
 		gluOrtho2D(startX, endX, startY, endY);
 		glMatrixMode(GL_MODELVIEW);
-#endif
-
-#ifdef STM32
-#else
 		glViewport(0, 0, width, height);
 
 		glDisable(GL_BLEND);
-		videoDevice.drawTexSolidRectangle
+		videoDevice.DrawTexSolidRectangle
 		(
 			texture,
 			Vector2(startX, startY), skin.bgColor, Vector2(0, 0),
@@ -117,31 +108,27 @@ void VGMWaveFormViewer::onNotifyUpdate(Obserable& observable)
 			glViewport(0, j * height / 2, width, height / 2);
 
 			glBlendFunc(GL_ONE, GL_ONE);
-			videoDevice.drawLine(Vector2(startX, 0), skin.gridColor, Vector2(endX, 0), skin.gridColor);
+			videoDevice.DrawLine(Vector2(startX, 0), skin.gridColor, Vector2(endX, 0), skin.gridColor);
 			for (s32 i = startX; i < endX; i += (endX - startX) / divX)
 			{
-				videoDevice.drawLine(Vector2(i, startY * skin.waveScale), skin.gridColor, Vector2(i, endY), skin.gridColor);
+				videoDevice.DrawLine(Vector2(i, startY * skin.waveScale), skin.gridColor, Vector2(i, endY), skin.gridColor);
 			}
 			for (s32 i = startY; i < endY; i += (endY - startY) / 10)
 			{
-				videoDevice.drawLine(Vector2(startX, i), skin.gridColor, Vector2(endX, i), skin.gridColor);
+				videoDevice.DrawLine(Vector2(startX, i), skin.gridColor, Vector2(endX, i), skin.gridColor);
 			}
-			videoDevice.drawLine(Vector2(startX, 0), skin.axisColor, Vector2(endX, 0), skin.axisColor);
+			videoDevice.DrawLine(Vector2(startX, 0), skin.axisColor, Vector2(endX, 0), skin.axisColor);
 
 			const Color& c = j % 2 ? skin.leftColor : skin.rightColor;
 			for (s32 i = startX; i < endX - 3; i += 3)
 			{
-				s32 y0 = bufferInfo.outputSamples.Get(i + 0, j) * waveScale;
-				s32 y1 = bufferInfo.outputSamples.Get(i + 3, j) * waveScale;
-				videoDevice.drawLine(Vector2(i, y0), c, Vector2(i + 3, y1), c);
+				s32 y0 = systemChannels.GetOutputSample(i + 0, j) * waveScale;
+				s32 y1 = systemChannels.GetOutputSample(i + 3, j) * waveScale;
+				videoDevice.DrawLine(Vector2(i, y0), c, Vector2(i + 3, y1), c);
 			}
 		}
-#endif
 
-#ifdef STM32
-#else
-		videoDevice.flush();
+		videoDevice.Flush();
 		glPopMatrix();
-#endif
 	}
 }

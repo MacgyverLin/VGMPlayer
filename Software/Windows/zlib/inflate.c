@@ -619,9 +619,9 @@ unsigned copy;
    will return Z_BUF_ERROR if it has not reached the end of the stream.
  */
 
-int ZEXPORT inflate(strm, flush)
+int ZEXPORT inflate(strm, Flush)
 z_streamp strm;
-int flush;
+int Flush;
 {
     struct inflate_state FAR *state;
     z_const unsigned char FAR *next;    /* next input */
@@ -847,7 +847,7 @@ int flush;
             strm->adler = state->check = adler32(0L, Z_NULL, 0);
             state->mode = TYPE;
         case TYPE:
-            if (flush == Z_BLOCK || flush == Z_TREES) goto inf_leave;
+            if (Flush == Z_BLOCK || Flush == Z_TREES) goto inf_leave;
         case TYPEDO:
             if (state->last) {
                 BYTEBITS();
@@ -868,7 +868,7 @@ int flush;
                 Tracev((stderr, "inflate:     fixed codes block%s\n",
                         state->last ? " (last)" : ""));
                 state->mode = LEN_;             /* decode codes */
-                if (flush == Z_TREES) {
+                if (Flush == Z_TREES) {
                     DROPBITS(2);
                     goto inf_leave;
                 }
@@ -897,7 +897,7 @@ int flush;
                     state->length));
             INITBITS();
             state->mode = COPY_;
-            if (flush == Z_TREES) goto inf_leave;
+            if (Flush == Z_TREES) goto inf_leave;
         case COPY_:
             state->mode = COPY;
         case COPY:
@@ -1038,7 +1038,7 @@ int flush;
             }
             Tracev((stderr, "inflate:       codes ok\n"));
             state->mode = LEN_;
-            if (flush == Z_TREES) goto inf_leave;
+            if (Flush == Z_TREES) goto inf_leave;
         case LEN_:
             state->mode = LEN;
         case LEN:
@@ -1253,7 +1253,7 @@ int flush;
   inf_leave:
     RESTORE();
     if (state->wsize || (out != strm->avail_out && state->mode < BAD &&
-            (state->mode < CHECK || flush != Z_FINISH)))
+            (state->mode < CHECK || Flush != Z_FINISH)))
         if (updatewindow(strm, strm->next_out, out - strm->avail_out)) {
             state->mode = MEM;
             return Z_MEM_ERROR;
@@ -1269,7 +1269,7 @@ int flush;
     strm->data_type = (int)state->bits + (state->last ? 64 : 0) +
                       (state->mode == TYPE ? 128 : 0) +
                       (state->mode == LEN_ || state->mode == COPY_ ? 256 : 0);
-    if (((in == 0 && out == 0) || flush == Z_FINISH) && ret == Z_OK)
+    if (((in == 0 && out == 0) || Flush == Z_FINISH) && ret == Z_OK)
         ret = Z_BUF_ERROR;
     return ret;
 }
