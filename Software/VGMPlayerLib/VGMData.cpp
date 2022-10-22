@@ -499,6 +499,9 @@ boolean VGMData::Update()
 			u32 llllllll;
 			u16 bbbb;
 			u8 ff;
+			
+			s32 noteChannel = -1;
+			f32 noteFreq = 0;
 
 			switch (command)
 			{
@@ -518,17 +521,9 @@ boolean VGMData::Update()
 				YM2612_WriteRegister(0, 3, dd);
 				break;
 
-			case YM2151_WRITE:
-				Read(&aa, sizeof(aa));
+			case SN76489_WRITE:
 				Read(&dd, sizeof(dd));
-				YM2151_WriteRegister(0, aa, dd);
-				break;
-
-			case YM2203_WRITE:
-				Read(&aa, sizeof(aa));
-				Read(&dd, sizeof(dd));
-				//YM2203_WriteRegister(0, aa, dd);
-
+				SN76489_WriteRegister(0, 0, dd);
 				break;
 
 			case GAME_GEAR_PSG_PORT6_WRITE:
@@ -536,14 +531,10 @@ boolean VGMData::Update()
 				SN76489_WriteRegister(0, 0, dd);
 				break;
 
-			case SN76489_WRITE:
-				Read(&dd, sizeof(dd));
-				SN76489_WriteRegister(0, 0, dd);
-				break;
-
-			case UNKNOWN_CHIP_A5_WRITE:
+			case YM2151_WRITE:
 				Read(&aa, sizeof(aa));
 				Read(&dd, sizeof(dd));
+				YM2151_WriteRegister(0, aa, dd);
 				break;
 
 			case K053260_WRITE:
@@ -555,8 +546,34 @@ boolean VGMData::Update()
 			case NES_APU_WRITE:
 				Read(&aa, sizeof(aa));
 				Read(&dd, sizeof(dd));
-				NESAPU_WriteRegister(0, aa, dd);
+				NESAPU_WriteRegister(0, aa, dd, &noteChannel, &noteFreq);
 				NESFDSAPU_WriteRegister(0, aa, dd);
+				break;
+
+			case HUC6280_WRITE:
+				Read(&aa, sizeof(aa));
+				Read(&dd, sizeof(dd));
+				HUC6280_WriteRegister(0, aa, dd);
+				break;
+
+			case QSOUND_WRITE:
+				Read(&mm, sizeof(mm));
+				Read(&ll, sizeof(ll));
+				Read(&rr, sizeof(rr));
+				QSound_WriteRegister(0, rr, (((u32)mm << 8) | (u32)ll));
+				break;
+
+			case SEGA_PCM:
+				Read(&ll, sizeof(ll));
+				Read(&uu, sizeof(uu));
+				Read(&dd, sizeof(dd));
+				SEGAPCM_WriteRegister(0, (((u32)uu) << 8) | ((u32)ll), dd);
+				break;
+
+			case YM2203_WRITE:
+				Read(&aa, sizeof(aa));
+				Read(&dd, sizeof(dd));
+				//YM2203_WriteRegister(0, aa, dd);
 				break;
 
 			case OKIM6258_WRITE:
@@ -571,14 +588,55 @@ boolean VGMData::Update()
 				// OKIM6295_WriteRegister(0, aa, dd);
 				break;
 
-			case HUC6280_WRITE:
+			case UNKNOWN_CHIP_A5_WRITE:
 				Read(&aa, sizeof(aa));
 				Read(&dd, sizeof(dd));
-				HUC6280_WriteRegister(0, aa, dd);
 				break;
 
 			case DATA_BLOCKS:
 				HandleDataBlocks();
+				break;
+
+			case DAC_SETUP_STREAM_CONTROL:
+				Read(&ss, sizeof(ss));
+				Read(&tt, sizeof(tt));
+				Read(&pp, sizeof(pp));
+				Read(&cc, sizeof(cc));
+				//DACSetUpStreamControl(ss, tt, pp, cc);
+				break;
+
+			case DAC_SET_STREAM_DATA:
+				Read(&ss, sizeof(ss));
+				Read(&dd, sizeof(dd));
+				Read(&ll, sizeof(ll));
+				Read(&bb, sizeof(bb));
+				//DACSetStreamData(ss, dd, ll, bb);
+				break;
+
+			case DAC_SET_STREAM_FREQUENCY:
+				Read(&ss, sizeof(ss));
+				Read(&ffffffff, sizeof(ffffffff));
+				//DACSetStreamFrequency(ss, ffffffff);
+				break;
+
+			case DAC_START_STREAM:
+				Read(&ss, sizeof(ss));
+				Read(&aaaaaaaa, sizeof(aaaaaaaa));
+				Read(&mm, sizeof(mm));
+				Read(&llllllll, sizeof(llllllll));
+				//DACStartStream(ss, aaaaaaaa, mm, llllllll);
+				break;
+
+			case DAC_STOP_STREAM:
+				Read(&ss, sizeof(ss));
+				//DACStopStream(ss);
+				break;
+
+			case DAC_START_STEAM_FAST:
+				Read(&ss, sizeof(ss));
+				Read(&bbbb, sizeof(bbbb));
+				Read(&ff, sizeof(ff));
+				//DACStartStreamFast(ss, bbbb, ff);
 				break;
 
 			case WAIT_NNNN_SAMPLES:
@@ -611,62 +669,6 @@ boolean VGMData::Update()
 			case WAIT_15_SAMPLES:
 			case WAIT_16_SAMPLES:
 				updateSampleCounts += (((command & 0x0f) + 1) * info.sampleRate / 44100);
-				break;
-
-			case DAC_SETUP_STREAM_CONTROL:
-				Read(&ss, sizeof(ss));
-				Read(&tt, sizeof(tt));
-				Read(&pp, sizeof(pp));
-				Read(&cc, sizeof(cc));
-				//DACSetUpStreamControl(ss, tt, pp, cc);
-
-				break;
-			case DAC_SET_STREAM_DATA:
-				Read(&ss, sizeof(ss));
-				Read(&dd, sizeof(dd));
-				Read(&ll, sizeof(ll));
-				Read(&bb, sizeof(bb));
-				//DACSetStreamData(ss, dd, ll, bb);
-
-				break;
-			case DAC_SET_STREAM_FREQUENCY:
-				Read(&ss, sizeof(ss));
-				Read(&ffffffff, sizeof(ffffffff));
-				//DACSetStreamFrequency(ss, ffffffff);
-
-				break;
-			case DAC_START_STREAM:
-				Read(&ss, sizeof(ss));
-				Read(&aaaaaaaa, sizeof(aaaaaaaa));
-				Read(&mm, sizeof(mm));
-				Read(&llllllll, sizeof(llllllll));
-				//DACStartStream(ss, aaaaaaaa, mm, llllllll);
-
-				break;
-			case DAC_STOP_STREAM:
-				Read(&ss, sizeof(ss));
-				//DACStopStream(ss);
-
-				break;
-			case DAC_START_STEAM_FAST:
-				Read(&ss, sizeof(ss));
-				Read(&bbbb, sizeof(bbbb));
-				Read(&ff, sizeof(ff));
-				//DACStartStreamFast(ss, bbbb, ff);
-				break;
-
-			case QSOUND_WRITE:
-				Read(&mm, sizeof(mm));
-				Read(&ll, sizeof(ll));
-				Read(&rr, sizeof(rr));
-				QSound_WriteRegister(0, rr, (((u32)mm << 8) | (u32)ll));
-				break;
-
-			case SEGA_PCM:
-				Read(&ll, sizeof(ll));
-				Read(&uu, sizeof(uu));
-				Read(&dd, sizeof(dd));
-				SEGAPCM_WriteRegister(0, (((u32)uu) << 8) | ((u32)ll), dd);
 				break;
 
 			case END_OF_SOUND:

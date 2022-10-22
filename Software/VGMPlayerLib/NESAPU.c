@@ -27,11 +27,22 @@ typedef struct
 #define NESAPU_CHIPS_COUNT 2
 NESAPU nesapuChips[NESAPU_CHIPS_COUNT];
 
+#include <math.h>
 
 /* INTERNAL FUNCTIONS */
 /* INITIALIZE NOISE LOOKUP TABLE */
 void create_noise(u8 *noise_lut, const s32 bits, s32 size)
 {
+	/*
+	s32 i;
+	for (i = 0; i < size; i++)
+	{
+		float ph = ((float)i) / size * 3.14f * 2 * 300;
+
+		noise_lut[i] = 127 * sin(ph) + 127;
+	}
+	*/
+	
 	//static s32 m = 0x0011;
 	s32 m = 0x0011;
 	s32 xor_val, i;
@@ -357,10 +368,15 @@ s8 apu_dpcm(u8 chipID, dpcm_t *chan)
 }
 
 /* WRITE REGISTER VALUE */
-void apu_regwrite(u8 chipID, u32 address, u8 value)
+void apu_regwrite(u8 chipID, u32 address, u8 value, s32* channel, f32* freq)
 {
 	NESAPU *ic = &nesapuChips[chipID];
 	s32 chan = (address & 4) ? 1 : 0;
+
+	// float squarefreq[2] = { 0, 0 };
+	// float trifreq = 0;
+	// float noisefreq = 0;
+	// float dpcmfreq = 0;
 
 	switch (address)
 	{
@@ -381,6 +397,15 @@ void apu_regwrite(u8 chipID, u32 address, u8 value)
 		if (ic->APU.squ[chan].enabled)
 		{
 			ic->APU.squ[chan].freq = ((((ic->APU.squ[chan].regs[3] & 7) << 8) + value) + 1) << 16;
+			
+			// ic->APU.squ[chan].freq = (144*4 << 16);
+			// 576  ->  G
+			// 288  -> 391.96
+			// 144  -> 783.91
+			// 72   -> 1567.83
+			*channel = chan;
+			int invF = (ic->APU.squ[chan].freq >> 16);
+			*freq = (invF != 0) ? (144.0f / invF) * 783.91f : 0;
 		}
 		break;
 
@@ -393,6 +418,10 @@ void apu_regwrite(u8 chipID, u32 address, u8 value)
 			ic->APU.squ[chan].vbl_length = ic->vbl_times[value >> 3];
 			ic->APU.squ[chan].env_vol = 0;
 			ic->APU.squ[chan].freq = ((((value & 7) << 8) + ic->APU.squ[chan].regs[2]) + 1) << 16;
+
+			*channel = chan;
+			int invF = (ic->APU.squ[chan].freq >> 16);
+			*freq = (invF != 0) ? (144.0f / invF) * 783.91f : 0;
 		}
 
 		break;
@@ -443,6 +472,13 @@ void apu_regwrite(u8 chipID, u32 address, u8 value)
 			ic->APU.tri.counter_started = FALSE;
 			ic->APU.tri.vbl_length = ic->vbl_times[value >> 3];
 			ic->APU.tri.linear_length = ic->sync_times2[ic->APU.tri.regs[0] & 0x7F];
+
+			// 540			106.9
+			// 270			220.0
+			// 135			440.0
+			*channel = 2;
+			int invF = ((((ic->APU.tri.regs[3] & 7) << 8) + ic->APU.tri.regs[2]) + 1);
+			*freq = (invF != 0) ? (270.0f / invF) * 220.0f : 0.0f;
 		}
 
 		break;
@@ -468,6 +504,9 @@ void apu_regwrite(u8 chipID, u32 address, u8 value)
 		{
 			ic->APU.noi.vbl_length = ic->vbl_times[value >> 3];
 			ic->APU.noi.env_vol = 0; /* reset envelope */
+
+			*channel = 3;
+			*freq = noise_freq[ic->APU.noi.regs[2] & 0x0F] / 32.0f * 783.91;
 		}
 		break;
 
@@ -487,11 +526,23 @@ void apu_regwrite(u8 chipID, u32 address, u8 value)
 	case APU_WRE2:
 		ic->APU.dpcm.regs[2] = value;
 		//apu_dpcmreset(cur->dpcm);
+	
+		if (ic->APU.dpcm.enabled)
+		{
+			*channel = 4;
+			*freq =  dpcm_clocks[ic->APU.dpcm.regs[0] & 0x0F];
+		}
 		break;
 
 	case APU_WRE3:
 		ic->APU.dpcm.regs[3] = value;
 		//apu_dpcmreset(cur->dpcm);
+
+		if (ic->APU.dpcm.enabled)
+		{
+			*channel = 4;
+			*freq = dpcm_clocks[ic->APU.dpcm.regs[0] & 0x0F];
+		}
 		break;
 
 	case APU_SMASK:
@@ -557,6 +608,12 @@ void apu_regwrite(u8 chipID, u32 address, u8 value)
 	default:
 		break;
 	}
+
+	/*
+	static int time = 0;
+	if(!(squarefreq[0]==0 && squarefreq[1] == 0 && trifreq == 0 && noisefreq == 0 && dpcmfreq==0))
+		printf("%04x: %6.1f %6.1f %6.1f %6.1f %6.1f\n", time++, squarefreq[0], squarefreq[1], trifreq, noisefreq, dpcmfreq);
+	*/
 }
 
 /* UPDATE SOUND BUFFER USING CURRENT DATA */
@@ -650,7 +707,7 @@ u8 apu_read(u8 chipID, u32 address)
 }
 
 /* WRITE VALUE TO TEMP REGISTRY AND QUEUE EVENT */
-void apu_write(u8 chipID, u32 address, u8 value)
+void apu_write(u8 chipID, u32 address, u8 value, s32* channel, f32* freq)
 {
 	if (address >= 0x17)
 		return;
@@ -658,7 +715,7 @@ void apu_write(u8 chipID, u32 address, u8 value)
 	NESAPU *ic = &nesapuChips[chipID];
 
 	ic->APU.regs[address] = value;
-	apu_regwrite(chipID, address, value);
+	apu_regwrite(chipID, address, value, channel, freq);
 }
 
 s32 NESAPU_Initialize(u8 chipID, u32 clock, u32 sampleRate)
@@ -727,19 +784,19 @@ void NESAPU_Reset(u8 chipID)
 	ic->channel_count = 5;
 }
 
-void NESAPU_Update(u8 chipID, s32** bufs, s32** freqbufs, u32 length)
+void NESAPU_Update(u8 chipID, s32** bufs, u32 length)
 {
 	NESAPU* ic = &nesapuChips[chipID];
 
 	//if (ic->real_rate == 0)
 		//return;
 
-	apu_update(chipID, bufs, freqbufs, length);
+	apu_update(chipID, bufs, length);
 }
 
-void NESAPU_WriteRegister(u8 chipID, u32 address, u8 data)
+void NESAPU_WriteRegister(u8 chipID, u32 address, u8 data, s32* channel, f32* freq)
 {
-	apu_write(chipID, address, data);
+	apu_write(chipID, address, data, channel, freq);
 }
 
 u8 NESAPU_ReadRegister(u8 chipID, u32 address)

@@ -92,7 +92,7 @@ VideoDevice::~VideoDevice()
 boolean VideoDevice::Open(const string& name_, u32 x_, u32 y_, u32 width_, u32 height_)
 {
 	// Create impl->window
-	impl->window = SDL_CreateWindow(name_.c_str(), x_, y_, width_, height_, SDL_WINDOW_OPENGL | SDL_WINDOW_SHOWN | SDL_WINDOW_BORDERLESS);
+	impl->window = SDL_CreateWindow(name_.c_str(), x_, y_, width_, height_, SDL_WINDOW_OPENGL | SDL_WINDOW_SHOWN /**| SDL_WINDOW_BORDERLESS*/);
 	if (impl->window == NULL)
 	{
 		// Display error message

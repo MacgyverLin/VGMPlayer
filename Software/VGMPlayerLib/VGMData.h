@@ -496,9 +496,7 @@ public:
 								u32 (*chipGetChannelCount)(u8),
 								u8 chipID, s32 baseChannel, u32 length)
 		{
-			chipUpdate(chipID, 
-					   &channelSampleBuffers[baseChannel],
-					   length);
+			chipUpdate(chipID, &channelSampleBuffers[baseChannel], length);
 
 			baseChannel += chipGetChannelCount(chipID);
 
