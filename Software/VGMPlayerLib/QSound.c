@@ -34,7 +34,7 @@ typedef struct
 	s32 panningVolumes[33];
 	ROM* rom;
 
-	u32 channel_enabled;
+	u32 channel_output_enabled;
 	u32	channel_count;
 }QSound;
 
@@ -165,7 +165,7 @@ void QSound_Reset(u8 chipID)
 		ic->channels[i].PlayBank = 0;
 	}
 
-	ic->channel_enabled = 0xffffffff;
+	ic->channel_output_enabled = 0xffffffff;
 	ic->channel_count = 16;
 }
 
@@ -306,7 +306,7 @@ void QSound_Update(u8 chipID, s32** buffer, u32 length)
 	// Go through all channels
 	for (s32 ch = 0; ch < ic->channel_count; ch++)
 	{
-		if ((ic->channel_enabled & (1 << (ch))) == 0)
+		if ((ic->channel_output_enabled & (1 << (ch))) == 0)
 		{
 			for (int sample = 0; sample < length; sample++)
 			{
@@ -460,16 +460,16 @@ void QSound_SetChannelEnable(u8 chipID, u8 channel, u8 enable)
 	QSound* ic = &qSound[chipID];
 
 	if (enable)
-		ic->channel_enabled |= (1 << channel);
+		ic->channel_output_enabled |= (1 << channel);
 	else
-		ic->channel_enabled &= (~(1 << channel));
+		ic->channel_output_enabled &= (~(1 << channel));
 }
 
 u8 QSound_GetChannelEnable(u8 chipID, u8 channel)
 {
 	QSound* ic = &qSound[chipID];
 
-	return (ic->channel_enabled & (1 << channel)) != 0;
+	return (ic->channel_output_enabled & (1 << channel)) != 0;
 }
 
 u32 QSound_GetChannelCount(u8 chipID)

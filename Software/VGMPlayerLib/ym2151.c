@@ -141,7 +141,7 @@ typedef struct
 	s32			m2, c1, c2;				/* Phase Modulation input for operators 2,3,4 */
 	s32			mem;					/* one sample delay memory */
 
-	u32			channel_enabled;
+	u32			channel_output_enabled;
 	u32			channel_count;
 }YM2151;
 
@@ -1525,7 +1525,7 @@ void YM2151_Reset(u8 chipID)
 		YM2151_WriteRegister(chipID, i, 0, &channel, &freq);
 	}
 
-	ic->channel_enabled = 0xffffffff;
+	ic->channel_output_enabled = 0xffffffff;
 	ic->channel_count = 8;
 }
 
@@ -1880,7 +1880,7 @@ void YM2151_Update(u8 chipID, s32 **bufs, u32 length)
 		outr = 0;
 		for (ch = 0; ch < ic->channel_count; ch++)
 		{
-			if ((ic->channel_enabled & (1 << (ch))) == 0)
+			if ((ic->channel_output_enabled & (1 << (ch))) == 0)
 			{
 				bufs[(ch << 1) + 0][sample] = 0;
 				bufs[(ch << 1) + 1][sample] = 0;
@@ -1926,16 +1926,16 @@ void YM2151_SetChannelEnable(u8 chipID, u8 channel, u8 enable)
 	YM2151* ic = &ym2151Chips[chipID];
 
 	if (enable)
-		ic->channel_enabled |= (1 << channel);
+		ic->channel_output_enabled |= (1 << channel);
 	else
-		ic->channel_enabled &= (~(1 << channel));
+		ic->channel_output_enabled &= (~(1 << channel));
 }
 
 u8 YM2151_GetChannelEnable(u8 chipID, u8 channel)
 {
 	YM2151* ic = &ym2151Chips[chipID];
 
-	return (ic->channel_enabled & (1 << channel)) != 0;
+	return (ic->channel_output_enabled & (1 << channel)) != 0;
 }
 
 u32 YM2151_GetChannelCount(u8 chipID)

@@ -174,7 +174,7 @@ typedef struct {
 
 	s32 REG[2][0x100];
 
-	u32 channel_enabled;
+	u32 channel_output_enabled;
 	u32	channel_count;
 }YM2612;
 
@@ -2042,7 +2042,7 @@ void YM2612_Reset(u8 chipID)
 	YM2612_WriteRegister(chipID, 0, 0x2A, NULL, NULL);
 	YM2612_WriteRegister(chipID, 1, 0x80, NULL, NULL);
 
-	ic->channel_enabled = 0xffffffff;
+	ic->channel_output_enabled = 0xffffffff;
 	ic->channel_count = 6;
 }
 
@@ -2198,32 +2198,32 @@ void YM2612_Update(u8 chipID, s32** bufs, u32 length)
 		algo_type |= 8;
 	}
 
-	if ((ic->channel_enabled & (1 << (0))) != 0)
+	if ((ic->channel_output_enabled & (1 << (0))) != 0)
 		UPDATE_CHAN[ic->CHANNEL[0].ALGO + algo_type](ic, &(ic->CHANNEL[0]), 0, bufs, length);
 	else
 		Update_Chan_Clear(0, bufs, length);
 
-	if ((ic->channel_enabled & (1 << (1))) != 0)
+	if ((ic->channel_output_enabled & (1 << (1))) != 0)
 		UPDATE_CHAN[ic->CHANNEL[1].ALGO + algo_type](ic, &(ic->CHANNEL[1]), 1, bufs, length);
 	else
 		Update_Chan_Clear(1, bufs, length);
 
-	if ((ic->channel_enabled & (1 << (2))) != 0)
+	if ((ic->channel_output_enabled & (1 << (2))) != 0)
 		UPDATE_CHAN[ic->CHANNEL[2].ALGO + algo_type](ic, &(ic->CHANNEL[2]), 2, bufs, length);
 	else
 		Update_Chan_Clear(2, bufs, length);
 
-	if ((ic->channel_enabled & (1 << (3))) != 0)
+	if ((ic->channel_output_enabled & (1 << (3))) != 0)
 		UPDATE_CHAN[ic->CHANNEL[3].ALGO + algo_type](ic, &(ic->CHANNEL[3]), 3, bufs, length);
 	else
 		Update_Chan_Clear(3, bufs, length);
 
-	if ((ic->channel_enabled & (1 << (4))) != 0)
+	if ((ic->channel_output_enabled & (1 << (4))) != 0)
 		UPDATE_CHAN[ic->CHANNEL[4].ALGO + algo_type](ic, &(ic->CHANNEL[4]), 4, bufs, length);
 	else
 		Update_Chan_Clear(4, bufs, length);
 
-	if ((ic->channel_enabled & (1 << (5))) != 0)
+	if ((ic->channel_output_enabled & (1 << (5))) != 0)
 	{
 		if (!(ic->DAC))
 			UPDATE_CHAN[ic->CHANNEL[5].ALGO + algo_type](ic, &(ic->CHANNEL[5]), 5, bufs, length);
@@ -2240,16 +2240,16 @@ void YM2612_SetChannelEnable(u8 chipID, u8 channel, u8 enable)
 	YM2612* ic = &ym2612Chips[chipID];
 
 	if (enable)
-		ic->channel_enabled |= (1 << channel);
+		ic->channel_output_enabled |= (1 << channel);
 	else
-		ic->channel_enabled &= (~(1 << channel));
+		ic->channel_output_enabled &= (~(1 << channel));
 }
 
 u8 YM2612_GetChannelEnable(u8 chipID, u8 channel)
 {
 	YM2612* ic = &ym2612Chips[chipID];
 
-	return (ic->channel_enabled & (1 << channel)) != 0;
+	return (ic->channel_output_enabled & (1 << channel)) != 0;
 }
 
 u32 YM2612_GetChannelCount(u8 chipID)

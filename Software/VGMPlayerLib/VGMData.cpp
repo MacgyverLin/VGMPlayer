@@ -15,12 +15,6 @@ VGMData::VGMData(const char* texturePath_, s32 channels_, s32 bitPerSample_, s32
 	: Obserable()
 	, info(texturePath_, channels_, bitPerSample_, sampleRate_)
 {
-
-	updateDataRequest = FALSE;
-	updateSampleCounts = 0;
-
-	frameCounter = 0;
-
 	rom = ROM_Create();
 }
 
@@ -79,7 +73,7 @@ boolean VGMData::IsPaused()
 
 void VGMData::RequestUpdateData()
 {
-	updateDataRequest = TRUE;
+	info.updateDataRequest = TRUE;
 }
 
 const VGMHeader& VGMData::GetHeader() const
@@ -234,6 +228,11 @@ void VGMData::Close()
 	}
 
 	OnClose();
+}
+
+f32 VGMData::GetFrameCounter() const
+{
+	return info.frameCounter;
 }
 
 s32 VGMData::Read(void* buffer, u32 size)
@@ -482,19 +481,19 @@ const char* GetTimeCode(int frameCounter)
 boolean VGMData::Update()
 {
 	NotifyUpdate();
-	systemChannels.ClearSampleBufferUpdatedEvent();
+
 	systemChannels.ClearSampleBufferUpdatedEvent();
 
-	if (updateDataRequest)
+	if (info.updateDataRequest)
 	{
-		updateDataRequest = false;
+		info.updateDataRequest = false;
 
-		if (updateSampleCounts > 0)
+		if (info.updateSampleCounts > 0)
 		{
-			s32 nnnn = HandleUpdateSamples(updateSampleCounts);
-			updateSampleCounts -= nnnn;
+			s32 nnnn = HandleUpdateSamples(info.updateSampleCounts);
+			info.updateSampleCounts -= nnnn;
 
-			frameCounter += ((float)nnnn * VGM_FRAME_PER_SECOND / info.sampleRate);
+			info.frameCounter += (((float)nnnn) / info.sampleRate) * VGM_FRAME_PER_SECOND;
 		}
 		else
 		{
@@ -526,55 +525,55 @@ boolean VGMData::Update()
 				Read(&aa, sizeof(aa));
 				Read(&dd, sizeof(dd));
 
-				systemChannels.WriteRegister(YM2612_WritePort0, 0, aa, dd, frameCounter);
+				systemChannels.WriteRegister(YM2612_WritePort0, 0, aa, dd, info.frameCounter);
 				break;
 
 			case YM2612_PORT1_WRITE:
 				Read(&aa, sizeof(aa));
 				Read(&dd, sizeof(dd));
 
-				systemChannels.WriteRegister(YM2612_WritePort1, 0, aa, dd, frameCounter);
+				systemChannels.WriteRegister(YM2612_WritePort1, 0, aa, dd, info.frameCounter);
 				break;
 
 			case SN76489_WRITE:
 				Read(&dd, sizeof(dd));
 
-				systemChannels.WriteRegister(SN76489_WriteRegister, 0, 0, dd, frameCounter);
+				systemChannels.WriteRegister(SN76489_WriteRegister, 0, 0, dd, info.frameCounter);
 				break;
 
 			case GAME_GEAR_PSG_PORT6_WRITE:
 				Read(&dd, sizeof(dd));
 
-				systemChannels.WriteRegister(SN76489_WriteRegister, 0, 0, dd, frameCounter);
+				systemChannels.WriteRegister(SN76489_WriteRegister, 0, 0, dd, info.frameCounter);
 				break;
 
 			case YM2151_WRITE:
 				Read(&aa, sizeof(aa));
 				Read(&dd, sizeof(dd));
 			
-				systemChannels.WriteRegister(YM2151_WriteRegister, 0, aa, dd, frameCounter);
+				systemChannels.WriteRegister(YM2151_WriteRegister, 0, aa, dd, info.frameCounter);
 				break;
 
 			case K053260_WRITE:
 				Read(&aa, sizeof(aa));
 				Read(&dd, sizeof(dd));
 
-				systemChannels.WriteRegister(K053260_WriteRegister, 0, aa, dd, frameCounter);
+				systemChannels.WriteRegister(K053260_WriteRegister, 0, aa, dd, info.frameCounter);
 				break;
 
 			case NES_APU_WRITE:
 				Read(&aa, sizeof(aa));
 				Read(&dd, sizeof(dd));
 
-				systemChannels.WriteRegister(NESAPU_WriteRegister, 0, aa, dd, frameCounter);
-				systemChannels.WriteRegister(NESFDSAPU_WriteRegister, 0, aa, dd, frameCounter);
+				systemChannels.WriteRegister(NESAPU_WriteRegister, 0, aa, dd, info.frameCounter);
+				systemChannels.WriteRegister(NESFDSAPU_WriteRegister, 0, aa, dd, info.frameCounter);
 				break;
 
 			case HUC6280_WRITE:
 				Read(&aa, sizeof(aa));
 				Read(&dd, sizeof(dd));
 
-				systemChannels.WriteRegister(HUC6280_WriteRegister, 0, aa, dd, frameCounter);
+				systemChannels.WriteRegister(HUC6280_WriteRegister, 0, aa, dd, info.frameCounter);
 				break;
 
 			case QSOUND_WRITE:
@@ -582,7 +581,7 @@ boolean VGMData::Update()
 				Read(&ll, sizeof(ll));
 				Read(&rr, sizeof(rr));
 				
-				systemChannels.WriteRegister(QSound_WriteRegister, 0, rr, (((u32)mm << 8) | (u32)ll), frameCounter);
+				systemChannels.WriteRegister(QSound_WriteRegister, 0, rr, (((u32)mm << 8) | (u32)ll), info.frameCounter);
 				break;
 
 			case SEGA_PCM:
@@ -590,28 +589,28 @@ boolean VGMData::Update()
 				Read(&uu, sizeof(uu));
 				Read(&dd, sizeof(dd));
 		
-				systemChannels.WriteRegister(SEGAPCM_WriteRegister, 0, (((u32)uu) << 8) | ((u32)ll), dd, frameCounter);
+				systemChannels.WriteRegister(SEGAPCM_WriteRegister, 0, (((u32)uu) << 8) | ((u32)ll), dd, info.frameCounter);
 				break;
 
 			case YM2203_WRITE:
 				Read(&aa, sizeof(aa));
 				Read(&dd, sizeof(dd));
 
-				//systemChannels.WriteRegister(YM2203_WriteRegister, 0, aa, dd, frameCounter);
+				//systemChannels.WriteRegister(YM2203_WriteRegister, 0, aa, dd, info.frameCounter);
 				break;
 
 			case OKIM6258_WRITE:
 				Read(&aa, sizeof(aa));
 				Read(&dd, sizeof(dd));
 				
-				// systemChannels.WriteRegister(OKIM6258_WriteRegister, 0, aa, dd, frameCounter);
+				// systemChannels.WriteRegister(OKIM6258_WriteRegister, 0, aa, dd, info.frameCounter);
 				break;
 
 			case OKIM6295_WRITE:
 				Read(&aa, sizeof(aa));
 				Read(&dd, sizeof(dd));
 
-				// systemChannels.WriteRegister(OKIM6295_WriteRegister, 0, aa, dd, frameCounter);
+				// systemChannels.WriteRegister(OKIM6295_WriteRegister, 0, aa, dd, info.frameCounter);
 				break;
 
 			case UNKNOWN_CHIP_A5_WRITE:
@@ -667,15 +666,15 @@ boolean VGMData::Update()
 
 			case WAIT_NNNN_SAMPLES:
 				Read(&NNNN, sizeof(NNNN));
-				updateSampleCounts += (((u32)NNNN) * info.sampleRate / 44100);
+				info.updateSampleCounts += (((u32)NNNN) * info.sampleRate / 44100);
 				break;
 
 			case WAIT_735_SAMPLES:
-				updateSampleCounts += (735 * info.sampleRate / 44100);
+				info.updateSampleCounts += (735 * info.sampleRate / 44100);
 				break;
 
 			case WAIT_882_SAMPLES:
-				updateSampleCounts += (882 * info.sampleRate / 44100);
+				info.updateSampleCounts += (882 * info.sampleRate / 44100);
 				break;
 
 			case WAIT_1_SAMPLES:
@@ -694,7 +693,7 @@ boolean VGMData::Update()
 			case WAIT_14_SAMPLES:
 			case WAIT_15_SAMPLES:
 			case WAIT_16_SAMPLES:
-				updateSampleCounts += (((command & 0x0f) + 1) * info.sampleRate / 44100);
+				info.updateSampleCounts += (((command & 0x0f) + 1) * info.sampleRate / 44100);
 				break;
 
 			case END_OF_SOUND:

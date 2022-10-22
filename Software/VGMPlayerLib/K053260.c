@@ -32,7 +32,7 @@ typedef struct {
 	u8				*rom;
 	s32				rom_size;
 	*/
-	u32				channel_enabled;
+	u32				channel_output_enabled;
 	u32				channel_count;
 }K053260;
 
@@ -162,7 +162,7 @@ void K053260_Reset(u8 chipID)
 		ic->channels[i].ppcm_data = 0;
 	}
 
-	ic->channel_enabled = 0xffffffff;
+	ic->channel_output_enabled = 0xffffffff;
 	ic->channel_count = 4;
 }
 
@@ -357,7 +357,7 @@ void K053260_Update(u8 chipID, s32** buffer, u32 length)
 	{
 		for (int ch = 0; ch < ic->channel_count; ch++)
 		{
-			if ((ic->channel_enabled & (1 << (ch))) == 0)
+			if ((ic->channel_output_enabled & (1 << (ch))) == 0)
 			{
 				buffer[((ch) << 1) + 0][sample] = 0;
 				buffer[((ch) << 1) + 1][sample] = 0;
@@ -468,16 +468,16 @@ void K053260_SetChannelEnable(u8 chipID, u8 channel, u8 enable)
 	K053260* ic = &k053260Chips[chipID];
 
 	if (enable)
-		ic->channel_enabled |= (1 << channel);
+		ic->channel_output_enabled |= (1 << channel);
 	else
-		ic->channel_enabled &= (~(1 << channel));
+		ic->channel_output_enabled &= (~(1 << channel));
 }
 
 u8 K053260_GetChannelEnable(u8 chipID, u8 channel)
 {
 	K053260* ic = &k053260Chips[chipID];
 
-	return (ic->channel_enabled & (1 << channel)) != 0;
+	return (ic->channel_output_enabled & (1 << channel)) != 0;
 }
 
 u32 K053260_GetChannelCount(u8 chipID)

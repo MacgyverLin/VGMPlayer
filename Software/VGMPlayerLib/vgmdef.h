@@ -22,7 +22,7 @@ typedef double f64;
 #define VGM_SAMPLE_BUFFER_SIZE		(44100 / VGM_FRAME_PER_SECOND)
 #define VGM_OUTPUT_BUFFER_COUNT		4   // 64 Frames
 
-#define VGM_NOTE_BUFFER_SIZE		(32)
+#define VGM_NOTE_BUFFER_SIZE		(64)
 
 
 #define NO_CLAMP

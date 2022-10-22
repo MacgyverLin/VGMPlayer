@@ -24,7 +24,7 @@ typedef struct {
 	u32 noise_freq_tab[32];
 	u32 wave_freq_tab[4096];
 
-	u32 channel_enabled;
+	u32 channel_output_enabled;
 	u32 channel_count;
 }HUC6280;
 
@@ -52,7 +52,7 @@ static void c6280_stream_update(u8 chipID, s32 **buffer, u32 length)
 	/* Clear buffer */
 	for(ch = 0; ch < ic->channel_count; ch++)
 	{
-		if ((ic->channel_enabled & (1 << (ch))) == 0)
+		if ((ic->channel_output_enabled & (1 << (ch))) == 0)
 		{
 			for (sample = 0; sample < length; sample++)
 			{
@@ -133,7 +133,7 @@ static void c6280_stream_update(u8 chipID, s32 **buffer, u32 length)
 	}
 }
 
-static void c6280_write_internal(u8 chipID, s32 address, s32 data)
+static void c6280_write_internal(u8 chipID, s32 address, s32 data, s32* channel, f32* freq)
 {
 	HUC6280 *ic = &chips[chipID];
 	Channel *q = &ic->channel[ic->select];
@@ -151,11 +151,23 @@ static void c6280_write_internal(u8 chipID, s32 address, s32 data)
 		case 0x02: /* Channel frequency (LSB) */
 			q->frequency = (q->frequency & 0x0F00) | data;
 			q->frequency &= 0x0FFF;
+			
+			if ((q->control & 0x80) && (ic->channel_output_enabled & (1 << (ic->select))) )
+			{
+				*channel = ic->select;
+				*freq = q->frequency;
+			}
 			break;
 
 		case 0x03: /* Channel frequency (MSB) */
 			q->frequency = (q->frequency & 0x00FF) | (data << 8);
 			q->frequency &= 0x0FFF;
+
+			if( (q->control & 0x80) && (ic->channel_output_enabled & (1 << (ic->select))) )
+			{
+				//*channel = ic->select;
+				//*freq = q->frequency;
+			}
 			break;
 
 		case 0x04: /* Channel control (key-on, DDA mode, volume) */
@@ -250,7 +262,7 @@ s32 HUC6280_Initialize(u8 chipID, u32 clock, u32 sampleRate)
 	}
 	ic->volume_table[31] = 0;
 
-	ic->channel_enabled = 0xffffffff;
+	ic->channel_output_enabled = 0xffffffff;
 	ic->channel_count = 6;
 
 	return -1;
@@ -271,7 +283,7 @@ void HUC6280_Reset(u8 chipID)
 	ic->lfo_control = 0;
 	memset(ic->channel, 0, 8 * sizeof(Channel));
 
-	ic->channel_enabled = 0xffffffff;
+	ic->channel_output_enabled = 0xffffffff;
 	ic->channel_count = 6;
 }
 
@@ -290,7 +302,7 @@ void HUC6280_WriteRegister(u8 chipID, u32 addr, u32 data, s32* channel, f32* fre
 {
 	// h6280io_set_buffer(data);
 
-	c6280_write_internal(chipID, addr, data);
+	c6280_write_internal(chipID, addr, data, channel, freq);
 }
 
 void HUC6280_SetChannelEnable(u8 chipID, u8 channel, u8 enable)
@@ -298,16 +310,16 @@ void HUC6280_SetChannelEnable(u8 chipID, u8 channel, u8 enable)
 	HUC6280* ic = &chips[chipID];
 
 	if (enable)
-		ic->channel_enabled |= (1 << channel);
+		ic->channel_output_enabled |= (1 << channel);
 	else
-		ic->channel_enabled &= (~(1 << channel));
+		ic->channel_output_enabled &= (~(1 << channel));
 }
 
 u8 HUC6280_GetChannelEnable(u8 chipID, u8 channel)
 {
 	HUC6280* ic = &chips[chipID];
 
-	return (ic->channel_enabled & (1 << channel)) != 0;
+	return (ic->channel_output_enabled & (1 << channel)) != 0;
 }
 
 u32 HUC6280_GetChannelCount(u8 chipID)

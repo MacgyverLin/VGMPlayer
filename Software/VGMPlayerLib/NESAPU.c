@@ -20,7 +20,7 @@ typedef struct
 	u32		sync_times1[SYNCS_MAX1];		/* Samples per sync table */
 	u32		sync_times2[SYNCS_MAX2];		/* Samples per sync table */
 	s32		channel;
-	u32		channel_enabled;
+	u32		channel_output_enabled;
 	u32		channel_count;
 }NESAPU;
 
@@ -403,9 +403,13 @@ void apu_regwrite(u8 chipID, u32 address, u8 value, s32* channel, f32* freq)
 			// 288  -> 391.96
 			// 144  -> 783.91
 			// 72   -> 1567.83
-			*channel = chan;
-			int invF = (ic->APU.squ[chan].freq >> 16);
-			*freq = (invF != 0) ? (144.0f / invF) * 783.91f : 0;
+			
+			if ((ic->channel_output_enabled & (1 << (chan))))
+			{
+				*channel = chan;
+				int invF = (ic->APU.squ[chan].freq >> 16);
+				*freq = (invF != 0) ? (144.0f / invF) * 783.91f : 0;
+			}
 		}
 		break;
 
@@ -419,9 +423,12 @@ void apu_regwrite(u8 chipID, u32 address, u8 value, s32* channel, f32* freq)
 			ic->APU.squ[chan].env_vol = 0;
 			ic->APU.squ[chan].freq = ((((value & 7) << 8) + ic->APU.squ[chan].regs[2]) + 1) << 16;
 
-			*channel = chan;
-			int invF = (ic->APU.squ[chan].freq >> 16);
-			*freq = (invF != 0) ? (144.0f / invF) * 783.91f : 0;
+			if ((ic->channel_output_enabled & (1 << (chan))))
+			{
+				*channel = chan;
+				int invF = (ic->APU.squ[chan].freq >> 16);
+				*freq = (invF != 0) ? (144.0f / invF) * 783.91f : 0;
+			}
 		}
 
 		break;
@@ -476,9 +483,12 @@ void apu_regwrite(u8 chipID, u32 address, u8 value, s32* channel, f32* freq)
 			// 540			106.9
 			// 270			220.0
 			// 135			440.0
-			*channel = 2;
-			int invF = ((((ic->APU.tri.regs[3] & 7) << 8) + ic->APU.tri.regs[2]) + 1);
-			*freq = (invF != 0) ? (270.0f / invF) * 220.0f : 0.0f;
+			if ((ic->channel_output_enabled & (1 << (2))))
+			{
+				*channel = 2;
+				int invF = ((((ic->APU.tri.regs[3] & 7) << 8) + ic->APU.tri.regs[2]) + 1);
+				*freq = (invF != 0) ? (270.0f / invF) * 220.0f : 0.0f;
+			}
 		}
 
 		break;
@@ -505,8 +515,11 @@ void apu_regwrite(u8 chipID, u32 address, u8 value, s32* channel, f32* freq)
 			ic->APU.noi.vbl_length = ic->vbl_times[value >> 3];
 			ic->APU.noi.env_vol = 0; /* reset envelope */
 
-			*channel = 3;
-			*freq = noise_freq[ic->APU.noi.regs[2] & 0x0F] / 32.0f * 783.91;
+			if ((ic->channel_output_enabled & (1 << (3))))
+			{
+				*channel = 3;
+				*freq = noise_freq[ic->APU.noi.regs[2] & 0x0F] / 32.0f * 783.91;
+			}
 		}
 		break;
 
@@ -529,8 +542,11 @@ void apu_regwrite(u8 chipID, u32 address, u8 value, s32* channel, f32* freq)
 	
 		if (ic->APU.dpcm.enabled)
 		{
-			*channel = 4;
-			*freq =  dpcm_clocks[ic->APU.dpcm.regs[0] & 0x0F];
+			if ((ic->channel_output_enabled & (1 << (4))))
+			{
+				*channel = 4;
+				*freq = dpcm_clocks[ic->APU.dpcm.regs[0] & 0x0F];
+			}
 		}
 		break;
 
@@ -617,7 +633,7 @@ void apu_update(u8 chipID, s32** bufs, u32 length)
 
 	for (u32 i = 0; i < length; i++)
 	{
-		if((ic->channel_enabled & (1<<(0)))!=0)
+		if((ic->channel_output_enabled & (1<<(0)))!=0)
 		{
 			bufs[((0) << 1) + 0][i] = apu_square(chipID, &ic->APU.squ[0]) << 8;
 			bufs[((0) << 1) + 1][i] = bufs[((0) << 1) + 0][i];
@@ -629,7 +645,7 @@ void apu_update(u8 chipID, s32** bufs, u32 length)
 			bufs[((0) << 1) + 1][i] = 0;
 		}
 		
-		if ((ic->channel_enabled & (1 << (1))) != 0)
+		if ((ic->channel_output_enabled & (1 << (1))) != 0)
 		{
 			bufs[((1) << 1) + 0][i] = apu_square(chipID, &ic->APU.squ[1]) << 8;
 			bufs[((1) << 1) + 1][i] = bufs[((1) << 1) + 0][i];
@@ -640,7 +656,7 @@ void apu_update(u8 chipID, s32** bufs, u32 length)
 			bufs[((1) << 1) + 1][i] = 0;
 		}
 
-		if ((ic->channel_enabled & (1 << (2))) != 0)
+		if ((ic->channel_output_enabled & (1 << (2))) != 0)
 		{
 			bufs[((2) << 1) + 0][i] = apu_triangle(chipID, &ic->APU.tri) << 8;
 			bufs[((2) << 1) + 1][i] = bufs[((2) << 1) + 0][i];
@@ -651,7 +667,7 @@ void apu_update(u8 chipID, s32** bufs, u32 length)
 			bufs[((2) << 1) + 1][i] = 0;
 		}
 
-		if ((ic->channel_enabled & (1 << (3))) != 0)
+		if ((ic->channel_output_enabled & (1 << (3))) != 0)
 		{
 			bufs[((3) << 1) + 0][i] = apu_noise(chipID, &ic->APU.noi) << 8;
 			bufs[((3) << 1) + 1][i] = bufs[((3) << 1) + 0][i];
@@ -662,7 +678,7 @@ void apu_update(u8 chipID, s32** bufs, u32 length)
 			bufs[((3) << 1) + 1][i] = 0;
 		}
 		
-		if ((ic->channel_enabled & (1 << (4))) != 0)
+		if ((ic->channel_output_enabled & (1 << (4))) != 0)
 		{
 			bufs[((4) << 1) + 0][i] = apu_dpcm(chipID, &ic->APU.dpcm) << 8;
 			bufs[((4) << 1) + 1][i] = bufs[((4) << 1) + 0][i];
@@ -774,7 +790,7 @@ void NESAPU_Reset(u8 chipID)
 {
 	NESAPU* ic = &nesapuChips[chipID];
 
-	ic->channel_enabled = 0xffffffff;
+	ic->channel_output_enabled = 0xffffffff;
 	ic->channel_count = 5;
 }
 
@@ -803,16 +819,16 @@ void NESAPU_SetChannelEnable(u8 chipID, u8 channel, u8 enable)
 	NESAPU* ic = &nesapuChips[chipID];
 
 	if (enable)
-		ic->channel_enabled |= (1 << channel);
+		ic->channel_output_enabled |= (1 << channel);
 	else
-		ic->channel_enabled &= (~(1 << channel));
+		ic->channel_output_enabled &= (~(1 << channel));
 }
 
 u8 NESAPU_GetChannelEnable(u8 chipID, u8 channel)
 {
 	NESAPU* ic = &nesapuChips[chipID];
 
-	return (ic->channel_enabled & (1 << channel)) !=0;
+	return (ic->channel_output_enabled & (1 << channel)) !=0;
 }
 
 u32 NESAPU_GetChannelCount(u8 chipID)

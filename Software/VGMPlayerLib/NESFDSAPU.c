@@ -42,7 +42,7 @@ typedef struct
 
 	u32	samplingRate;
 
-	u32 channel_enabled;
+	u32 channel_output_enabled;
 	u32	channel_count;
 }NESFDSAPU;
 
@@ -57,7 +57,7 @@ s32 NESFDSAPU_Initialize(u8 chipID, u32 clock, u32 sampleRate)
 
 	memset(ic, 0, sizeof(NESFDSAPU));
 	ic->samplingRate = sampleRate;
-	ic->channel_enabled = 0xffffffff;
+	ic->channel_output_enabled = 0xffffffff;
 	ic->channel_count = 1;
 
 	return -1;
@@ -78,7 +78,7 @@ void NESFDSAPU_Reset(u8 chipID)
 	memset(ic, 0, sizeof(NESFDSAPU));
 	ic->samplingRate = sampleRate;
 
-	ic->channel_enabled = 0xffffffff;
+	ic->channel_output_enabled = 0xffffffff;
 	ic->channel_count = 1;
 }
 
@@ -306,7 +306,7 @@ void NESFDSAPU_Update(u8 chipID, s32** buffer, u32 length)
 			sub_freq = (ic->main_frequency) * sub_multi / 64;
 		}
 
-		if ((ic->channel_enabled & (1 << (0))) == 0)
+		if ((ic->channel_output_enabled & (1 << (0))) == 0)
 		{
 			buffer[((0) << 1) + 0][sample] = 0;
 			buffer[((0) << 1) + 1][sample] = 0;
@@ -348,16 +348,16 @@ void NESFDSAPU_SetChannelEnable(u8 chipID, u8 channel, u8 enable)
 	NESFDSAPU* ic = &nesfdsapuChips[chipID];
 
 	if (enable)
-		ic->channel_enabled |= (1 << channel);
+		ic->channel_output_enabled |= (1 << channel);
 	else
-		ic->channel_enabled &= (~(1 << channel));
+		ic->channel_output_enabled &= (~(1 << channel));
 }
 
 u8 NESFDSAPU_GetChannelEnable(u8 chipID, u8 channel)
 {
 	NESFDSAPU* ic = &nesfdsapuChips[chipID];
 
-	return (ic->channel_enabled & (1 << channel)) != 0;
+	return (ic->channel_output_enabled & (1 << channel)) != 0;
 }
 
 u32 NESFDSAPU_GetChannelCount(u8 chipID)

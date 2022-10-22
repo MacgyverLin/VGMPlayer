@@ -369,20 +369,30 @@ public:
 	public:
 		Info(const char* texturePath_, s32 channels_, s32 bitPerSample_, s32 sampleRate_)
 		{
-			this->paused = TRUE;
-			this->playing = FALSE;
 			this->channels = channels_;
 			this->bitPerSamples = bitPerSample_;
 			this->sampleRate = sampleRate_;
 
+			this->paused = TRUE;
+			this->playing = FALSE;
+
+			this->updateDataRequest = FALSE;
+			this->updateSampleCounts = 0;
+			this->frameCounter = 0;
+
 			strncpy(this->texturePath, texturePath_, 256);
 		}
 
-		boolean paused;
-		boolean playing;
 		s32 channels;
 		s32 bitPerSamples;
 		s32 sampleRate;
+
+		boolean paused;
+		boolean playing;
+
+		boolean updateDataRequest;
+		u32 updateSampleCounts;
+		f32 frameCounter;
 
 		char texturePath[256];
 	};
@@ -393,22 +403,21 @@ public:
 		class Note
 		{
 		public:
-			Note(u32 frame_ = 0, f32 frequency_ = 0)
+			Note(f32 frame_ = 0, f32 frequency_ = 0)
 				: frame(frame_)
 				, frequency(frequency_)
 			{
 			}
 
-			u32 frame;
+			f32 frame;
 			f32 frequency;
 		};
 
 		Channel()
+			: notes()
+			, leftSamples(VGM_SAMPLE_BUFFER_SIZE)
+			, rightSamples(VGM_SAMPLE_BUFFER_SIZE)
 		{
-			notes.resize(VGM_NOTE_BUFFER_SIZE);
-
-			leftSamples.resize(VGM_SAMPLE_BUFFER_SIZE);
-			rightSamples.resize(VGM_SAMPLE_BUFFER_SIZE);
 		}
 
 		vector<Note> notes;
@@ -422,7 +431,7 @@ public:
 	{
 	public:
 		TOutputBuffer(int size)
-			: buffer(size * 2)
+		: buffer(size * 2)
 		{
 		}
 
@@ -450,7 +459,6 @@ public:
 	};
 
 	typedef TOutputBuffer<s16> OutputSampleBuffer;
-	typedef TOutputBuffer<s32> OutputNoteBuffer;
 #pragma pack (pop)
 
 	class SystemChannels
@@ -465,8 +473,7 @@ public:
 		, sampleBufferUpdatedEvent(false)
 
 		, currentNoteIdx(0)
-		, outputNoteBuffer(VGM_NOTE_BUFFER_SIZE)
-		, noteBufferUpdatedEvent(false)
+		, outputNoteBuffer(0)
 		{
 		}
 
@@ -480,49 +487,6 @@ public:
 		s32 GetChannelsCount() const
 		{
 			return this->channels.size();
-		}
-
-
-		/////////////////////////////////////////////////
-		const Channel::Note& GetChannelNote(int ch, int i) const
-		{
-			return channels[ch].notes[i];
-		}
-
-		void WriteRegister
-		(
-			void(*WriteRegisterCB)(u8, u32, u32, s32*, f32*),
-			u8 chipID,
-			u32 address, u32 data,
-			s32 frameCounter)
-		{
-			s32 channel = -1;
-			f32 frequency = 0;
-
-			WriteRegisterCB(chipID, address, data, &channel, &frequency);
-
-			if (channel != -1)
-			{
-				channels[channel].notes[currentNoteIdx] = Channel::Note(frameCounter, frequency);
-
-				currentNoteIdx = currentNoteIdx + 1;	// updated samples, sampleIdx+
-				assert(currentNoteIdx <= VGM_NOTE_BUFFER_SIZE);
-				if (currentNoteIdx == VGM_NOTE_BUFFER_SIZE)
-				{
-					currentNoteIdx = 0;
-					noteBufferUpdatedEvent = true;
-				}
-			}
-		}
-
-		boolean HasNoteBufferUpdatedEvent() const
-		{
-			return noteBufferUpdatedEvent;
-		}
-
-		void ClearNoteBufferUpdatedEvent()
-		{
-			noteBufferUpdatedEvent = false;
 		}
 	//////////////////////////////////////////////////////
 	public:
@@ -563,6 +527,24 @@ public:
 				sampleBufferUpdatedEvent = true;
 		
 				FillOutputSampleBuffer();
+				FillOutputNoteBuffer();
+			}
+		}
+
+		void WriteRegister
+		(
+			void(*WriteRegisterCB)(u8, u32, u32, s32*, f32*),
+			u8 chipID,
+			u32 address, u32 data,
+			f32 frameCounter)
+		{
+			s32 ch = -1;
+			f32 freq = 0;
+
+			WriteRegisterCB(chipID, address, data, &ch, &freq);
+			if (ch != -1)
+			{
+				channels[ch].notes.push_back(Channel::Note(frameCounter, freq));
 			}
 		}
 	private:
@@ -587,6 +569,19 @@ public:
 				*dest++ = outR;
 			}
 		}
+
+		void FillOutputNoteBuffer()
+		{
+			outputNoteBuffer.resize(channels.size());
+			for (int ch = 0; ch < channels.size(); ch++)
+			{
+				outputNoteBuffer[ch] = channels[ch].notes;
+
+				channels[ch].notes.clear();
+			}
+
+			
+		}
 	public:
 		const s32& GetChannelLeftSample(int ch, int i) const
 		{
@@ -601,6 +596,11 @@ public:
 		const s16& GetOutputSample(int channel, int i) const
 		{
 			return outputSampleBuffer.Get(channel, i);
+		}
+
+		const vector<Channel::Note>& GetOutputNotes(int ch) const
+		{
+			return outputNoteBuffer[ch];
 		}
 
 		boolean HasSampleBufferUpdatedEvent() const
@@ -620,9 +620,8 @@ public:
 		OutputSampleBuffer outputSampleBuffer;
 		boolean sampleBufferUpdatedEvent;
 
+		vector<vector<Channel::Note>> outputNoteBuffer;
 		u32 currentNoteIdx;
-		OutputNoteBuffer outputNoteBuffer;
-		boolean noteBufferUpdatedEvent;
 	};
 
 	VGMData(const char* texturePath_, s32 channels_, s32 bitPerSample_, s32 sampleRate_);
@@ -649,6 +648,8 @@ public:
 
 	void SetChannelEnable(u32 channel, bool enable);
 	u8 GetChannelEnable(u32 channel);
+
+	f32 GetFrameCounter() const;
 protected:
 	virtual s32 Read(void *buffer, u32 size);
 	virtual s32 SeekSet(u32 size);
@@ -681,10 +682,6 @@ protected:
 	VGMHeader header;
 	Info info;
 	SystemChannels systemChannels;
-
-	boolean updateDataRequest;
-	u32 updateSampleCounts;
-	s32 frameCounter;
 private:
 };
 

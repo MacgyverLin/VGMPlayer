@@ -19,7 +19,7 @@ typedef struct
 	u32 PSG_Noise_Step_Table[4];
 	u32 PSG_Save[8];
 
-	u32 channel_enabled;
+	u32 channel_output_enabled;
 	u32	channel_count;
 }SN76489;
 
@@ -108,7 +108,7 @@ void SN76489_Reset(u8 chipID)
 {
 	SN76489* ic = &sn76489Chips[chipID];
 
-	ic->channel_enabled = 0xffffffff;
+	ic->channel_output_enabled = 0xffffffff;
 	ic->channel_count = 4;
 }
 
@@ -195,7 +195,7 @@ void SN76489_Update(u8 chipID, s32** buffer, u32 length)
 
 	for (ch = 2; ch >= 0; ch--)
 	{
-		if ((ic->channel_enabled & (1 << (ch))) == 0)
+		if ((ic->channel_output_enabled & (1 << (ch))) == 0)
 		{
 			for (int sample = 0; sample < length; sample++)
 			{
@@ -244,7 +244,7 @@ void SN76489_Update(u8 chipID, s32** buffer, u32 length)
 
 	// Channel 3 - Noise
 
-	if ((ic->channel_enabled & (1 << (3))) == 0)
+	if ((ic->channel_output_enabled & (1 << (3))) == 0)
 	{
 		for (int sample = 0; sample < length; sample++)
 		{
@@ -293,16 +293,16 @@ void SN76489_SetChannelEnable(u8 chipID, u8 channel, u8 enable)
 	SN76489* ic = &sn76489Chips[chipID];
 
 	if (enable)
-		ic->channel_enabled |= (1 << channel);
+		ic->channel_output_enabled |= (1 << channel);
 	else
-		ic->channel_enabled &= (~(1 << channel));
+		ic->channel_output_enabled &= (~(1 << channel));
 }
 
 u8 SN76489_GetChannelEnable(u8 chipID, u8 channel)
 {
 	SN76489* ic = &sn76489Chips[chipID];
 
-	return (ic->channel_enabled & (1 << channel)) != 0;
+	return (ic->channel_output_enabled & (1 << channel)) != 0;
 }
 
 u32 SN76489_GetChannelCount(u8 chipID)
