@@ -10,8 +10,8 @@ extern "C" {
 s32 HUC6280_Initialize(u8 chipID, u32 clock, u32 sampleRate);
 void HUC6280_Shutdown(u8 chipID);
 void HUC6280_Reset(u8 chipID);
-void HUC6280_Update(u8 chipID, s32 **buffer, u32 length);
-void HUC6280_WriteRegister(u8 chipID, u32 address, u8 data);
+void HUC6280_Update(u8 chipID, s32** buffer, u32 length);
+void HUC6280_WriteRegister(u8 chipID, u32 addr, u32 data, s32* channel, f32* freq);
 u8 HUC6280_ReadRegister(u8 chipID, u32 address);
 
 void HUC6280_SetChannelEnable(u8 chipID, u8 channel, u8 enable);

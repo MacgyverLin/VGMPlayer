@@ -10,7 +10,7 @@ extern "C" {
 	s32 NESAPU_Initialize(u8 chipID, u32 clock, u32 sampleRate);
 	void NESAPU_Shutdown(u8 chipID);
 	void NESAPU_Reset(u8 chipID);
-	void NESAPU_WriteRegister(u8 chipID, u32 address, u8 data, s32* channel, f32* freq);
+	void NESAPU_WriteRegister(u8 chipID, u32 address, u32 data, s32* channel, f32* freq);
 	u8 NESAPU_ReadRegister(u8 chipID, u32 address);
 	void NESAPU_Update(u8 chipID, s32** bufs, u32 length);
 

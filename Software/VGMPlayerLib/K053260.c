@@ -166,7 +166,7 @@ void K053260_Reset(u8 chipID)
 	ic->channel_count = 4;
 }
 
-void K053260_WriteRegister(u8 chipID, u32 address, u8 data)
+void K053260_WriteRegister(u8 chipID, u32 address, u32 data, s32* channel, f32* freq)
 {
 	s32 i, t;
 	s32 r = address;

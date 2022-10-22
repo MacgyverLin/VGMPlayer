@@ -9,9 +9,8 @@
 // All header sizes are valid for all versions from 1.50 on, as long as header has at least 64 bytes.If the VGM data starts at an offset that is lower than 0x100, all overlapping header bytes have to be handled as they were zero.
 // VGMs run with a rate of 44100 samples per second.All sample values use this unit.
 #include "vgmdef.h"
-#include "Obserable.h"
 #include <vector>
-#include "VideoDevice.h"
+#include "Obserable.h"
 using namespace std;
 
 #define VGMPlayer_MIN(a, b) ((a)<(b)) ? (a) : (b)
@@ -387,13 +386,43 @@ public:
 
 		char texturePath[256];
 	};
+
+	class Channel
+	{
+	public:
+		class Note
+		{
+		public:
+			Note(u32 frame_ = 0, f32 frequency_ = 0)
+				: frame(frame_)
+				, frequency(frequency_)
+			{
+			}
+
+			u32 frame;
+			f32 frequency;
+		};
+
+		Channel()
+		{
+			notes.resize(VGM_NOTE_BUFFER_SIZE);
+
+			leftSamples.resize(VGM_SAMPLE_BUFFER_SIZE);
+			rightSamples.resize(VGM_SAMPLE_BUFFER_SIZE);
+		}
+
+		vector<Note> notes;
+		vector<s32> leftSamples;
+		vector<s32> rightSamples;
+	};
+
 #pragma pack (push,1)
 	template<class T>
 	class TOutputBuffer
 	{
 	public:
 		TOutputBuffer(int size)
-		: buffer(size * 2)
+			: buffer(size * 2)
 		{
 		}
 
@@ -424,21 +453,6 @@ public:
 	typedef TOutputBuffer<s32> OutputNoteBuffer;
 #pragma pack (pop)
 
-	class Channel
-	{
-	public:
-		Channel()
-		{
-			notes.resize(VGM_NOTE_BUFFER_SIZE);
-			leftSamples.resize(VGM_SAMPLE_BUFFER_SIZE);
-			rightSamples.resize(VGM_SAMPLE_BUFFER_SIZE);
-		}
-
-		vector<s32> notes;
-		vector<s32> leftSamples;
-		vector<s32> rightSamples;
-	};
-
 	class SystemChannels
 	{
 	public:
@@ -451,8 +465,7 @@ public:
 		, sampleBufferUpdatedEvent(false)
 
 		, currentNoteIdx(0)
-		, channelNoteBuffers(0)
-		, outputNoteBuffer(VGM_SAMPLE_BUFFER_SIZE)
+		, outputNoteBuffer(VGM_NOTE_BUFFER_SIZE)
 		, noteBufferUpdatedEvent(false)
 		{
 		}
@@ -462,7 +475,6 @@ public:
 			channels.resize(size);
 	
 			channelSampleBuffers.resize(size * 2);
-			channelNoteBuffers.resize(size);
 		}
 
 		s32 GetChannelsCount() const
@@ -470,6 +482,50 @@ public:
 			return this->channels.size();
 		}
 
+
+		/////////////////////////////////////////////////
+		const Channel::Note& GetChannelNote(int ch, int i) const
+		{
+			return channels[ch].notes[i];
+		}
+
+		void WriteRegister
+		(
+			void(*WriteRegisterCB)(u8, u32, u32, s32*, f32*),
+			u8 chipID,
+			u32 address, u32 data,
+			s32 frameCounter)
+		{
+			s32 channel = -1;
+			f32 frequency = 0;
+
+			WriteRegisterCB(chipID, address, data, &channel, &frequency);
+
+			if (channel != -1)
+			{
+				channels[channel].notes[currentNoteIdx] = Channel::Note(frameCounter, frequency);
+
+				currentNoteIdx = currentNoteIdx + 1;	// updated samples, sampleIdx+
+				assert(currentNoteIdx <= VGM_NOTE_BUFFER_SIZE);
+				if (currentNoteIdx == VGM_NOTE_BUFFER_SIZE)
+				{
+					currentNoteIdx = 0;
+					noteBufferUpdatedEvent = true;
+				}
+			}
+		}
+
+		boolean HasNoteBufferUpdatedEvent() const
+		{
+			return noteBufferUpdatedEvent;
+		}
+
+		void ClearNoteBufferUpdatedEvent()
+		{
+			noteBufferUpdatedEvent = false;
+		}
+	//////////////////////////////////////////////////////
+	public:
 		int BeginUpdateSamples(int updateSampleCounts)
 		{
 			updateSampleCounts = VGMPlayer_MIN((VGM_SAMPLE_BUFFER_SIZE - currentSampleIdx), updateSampleCounts); // never exceed bufferSize
@@ -481,12 +537,6 @@ public:
 			{
 				channelSampleBuffers[i * 2 + 0] = &channels[i].leftSamples[currentSampleIdx];
 				channelSampleBuffers[i * 2 + 1] = &channels[i].rightSamples[currentSampleIdx];
-			}
-
-			channelNoteBuffers.resize(channels.size());
-			for (int i = 0; i < channels.size(); i++)
-			{
-				channelNoteBuffers[i] = &channels[i].notes[currentNoteIdx];
 			}
 
 			return updateSampleCounts;
@@ -518,23 +568,19 @@ public:
 	private:
 		void FillOutputSampleBuffer()
 		{
-			s16* dest = (s16*)(&outputSampleBuffer.Get(0, 0));
+			s16* dest = outputSampleBuffer;
 
 			s32 div = channels.size();
 			for (s32 i = 0; i < VGM_SAMPLE_BUFFER_SIZE; i++) // always fill by fix size VGM_SAMPLE_COUNT
 			{
 				s32 outL = 0;
 				for (s32 ch = 0; ch < channels.size(); ch++)
-				{
 					outL += channels[ch].leftSamples[i];
-				}
 				outL = outL / div;
 
 				s32 outR = 0;
 				for (int ch = 0; ch < channels.size(); ch++)
-				{
 					outR += channels[ch].rightSamples[i];
-				}
 				outR = outR / div;
 
 				*dest++ = outL;
@@ -566,26 +612,6 @@ public:
 		{
 			sampleBufferUpdatedEvent = false;
 		}
-
-		const s32& GetChannelNote(int ch, int i) const
-		{
-			return channels[ch].notes[i];
-		}
-
-		const s16& GetOutputNote(int channel, int i) const
-		{
-			return outputNoteBuffer.Get(channel, i);
-		}
-
-		boolean HasNoteBufferUpdatedEvent() const
-		{
-			return noteBufferUpdatedEvent;
-		}
-
-		void ClearNoteBufferUpdatedEvent()
-		{
-			noteBufferUpdatedEvent = false;
-		}
 	private:
 		vector<Channel> channels;
 		
@@ -595,7 +621,6 @@ public:
 		boolean sampleBufferUpdatedEvent;
 
 		u32 currentNoteIdx;
-		vector<s32*> channelNoteBuffers;
 		OutputNoteBuffer outputNoteBuffer;
 		boolean noteBufferUpdatedEvent;
 	};
@@ -659,6 +684,7 @@ protected:
 
 	boolean updateDataRequest;
 	u32 updateSampleCounts;
+	s32 frameCounter;
 private:
 };
 

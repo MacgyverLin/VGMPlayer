@@ -2025,22 +2025,22 @@ void YM2612_Reset(u8 chipID)
 
 	for (i = 0xB6; i >= 0xB4; i--)
 	{
-		YM2612_WriteRegister(chipID, 0, (unsigned char)i);
-		YM2612_WriteRegister(chipID, 2, (unsigned char)i);
-		YM2612_WriteRegister(chipID, 1, 0xC0);
-		YM2612_WriteRegister(chipID, 3, 0xC0);
+		YM2612_WriteRegister(chipID, 0, (unsigned char)i, NULL, NULL);
+		YM2612_WriteRegister(chipID, 2, (unsigned char)i, NULL, NULL);
+		YM2612_WriteRegister(chipID, 1, 0xC0, NULL, NULL);
+		YM2612_WriteRegister(chipID, 3, 0xC0, NULL, NULL);
 	}
 
 	for (i = 0xB2; i >= 0x22; i--)
 	{
-		YM2612_WriteRegister(chipID, 0, (unsigned char)i);
-		YM2612_WriteRegister(chipID, 2, (unsigned char)i);
-		YM2612_WriteRegister(chipID, 1, 0);
-		YM2612_WriteRegister(chipID, 3, 0);
+		YM2612_WriteRegister(chipID, 0, (unsigned char)i, NULL, NULL);
+		YM2612_WriteRegister(chipID, 2, (unsigned char)i, NULL, NULL);
+		YM2612_WriteRegister(chipID, 1, 0, NULL, NULL);
+		YM2612_WriteRegister(chipID, 3, 0, NULL, NULL);
 	}
 
-	YM2612_WriteRegister(chipID, 0, 0x2A);
-	YM2612_WriteRegister(chipID, 1, 0x80);
+	YM2612_WriteRegister(chipID, 0, 0x2A, NULL, NULL);
+	YM2612_WriteRegister(chipID, 1, 0x80, NULL, NULL);
 
 	ic->channel_enabled = 0xffffffff;
 	ic->channel_count = 6;
@@ -2053,7 +2053,19 @@ u8 YM2612_ReadStatus(u8 chipID)
 	return ic->Status;
 }
 
-void YM2612_WriteRegister(u8 chipID, u32 address, u8 data)
+void YM2612_WritePort0(u8 chipID, u32 aa, u32 dd, s32* channel, f32* freq)
+{
+	YM2612_WriteRegister(0, 0, aa, channel, freq);
+	YM2612_WriteRegister(0, 1, dd, channel, freq);
+}
+
+void YM2612_WritePort1(u8 chipID, u32 aa, u32 dd, s32* channel, f32* freq)
+{
+	YM2612_WriteRegister(0, 2, aa, channel, freq);
+	YM2612_WriteRegister(0, 3, dd, channel, freq);
+}
+
+void YM2612_WriteRegister(u8 chipID, u32 address, u32 data, s32* channel, f32* freq)
 {
 	s32 d;
 	YM2612* ic = &ym2612Chips[chipID];

@@ -1516,18 +1516,20 @@ void YM2151_Reset(u8 chipID)
 	ic->csm_req = 0;
 	ic->status = 0;
 
-	YM2151_WriteRegister(chipID, 0x1b, 0);	/* only because of CT1, CT2 output pins */
-	YM2151_WriteRegister(chipID, 0x18, 0);	/* set LFO frequency */
+	s32 channel;
+	f32 freq;
+	YM2151_WriteRegister(chipID, 0x1b, 0, &channel, &freq);	/* only because of CT1, CT2 output pins */
+	YM2151_WriteRegister(chipID, 0x18, 0, &channel, &freq);	/* set LFO frequency */
 	for (i = 0x20; i < 0x100; i++)		/* set the operators */
 	{
-		YM2151_WriteRegister(chipID, i, 0);
+		YM2151_WriteRegister(chipID, i, 0, &channel, &freq);
 	}
 
 	ic->channel_enabled = 0xffffffff;
 	ic->channel_count = 8;
 }
 
-void YM2151_WriteRegister(u8 chipID, u32 r, u8 v)
+void YM2151_WriteRegister(u8 chipID, u32 r, u32 v, s32* channel, f32* freq)
 {
 	YM2151 *ic = &ym2151Chips[chipID];
 	YM2151Operator *op = &ic->oper[(r & 0x07) * 4 + ((r & 0x18) >> 3)];

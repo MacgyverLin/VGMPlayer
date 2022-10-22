@@ -175,7 +175,7 @@ void QSound_Shutdown(u8 chipID)
 	ic->sampleRate = 0;
 }
 
-void QSound_WriteRegister(u8 chipID, u32 address, u32 data)
+void QSound_WriteRegister(u8 chipID, u32 address, u32 data, s32* channel, f32* freq)
 {
 	QSound* ic = &qSound[chipID];
 	QSoundChannel* pc;
@@ -292,6 +292,11 @@ void QSound_WriteRegister(u8 chipID, u32 address, u32 data)
 	}
 #endif
 	}
+}
+
+u8 QSound_ReadRegister(u8 chipID, u32 address)
+{
+	return 0;
 }
 
 void QSound_Update(u8 chipID, s32** buffer, u32 length)

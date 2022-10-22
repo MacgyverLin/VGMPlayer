@@ -275,10 +275,10 @@ void HUC6280_Reset(u8 chipID)
 	ic->channel_count = 6;
 }
 
-void HUC6280_Update(u8 chipID, s32 **buffer, s32** noteBuffers, u32 length)
+void HUC6280_Update(u8 chipID, s32** buffer, u32 length)
 {
 	HUC6280 *ic = &chips[chipID];
-	c6280_stream_update(chipID, buffer, noteBuffers, length);
+	c6280_stream_update(chipID, buffer, length);
 }
 
 u8 HUC6280_ReadRegister(u8 chipID, u32 address)
@@ -286,11 +286,11 @@ u8 HUC6280_ReadRegister(u8 chipID, u32 address)
 	return 0;//h6280io_get_buffer();
 }
 
-void HUC6280_WriteRegister(u8 chipID, u32 address, u8 data)
+void HUC6280_WriteRegister(u8 chipID, u32 addr, u32 data, s32* channel, f32* freq)
 {
 	// h6280io_set_buffer(data);
 
-	c6280_write_internal(chipID, address, data);
+	c6280_write_internal(chipID, addr, data);
 }
 
 void HUC6280_SetChannelEnable(u8 chipID, u8 channel, u8 enable)

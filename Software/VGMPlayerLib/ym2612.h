@@ -10,7 +10,10 @@ extern "C" {
 s32 YM2612_Initialize(u8 chipID, u32 clock, u32 sampleRate);
 void YM2612_Shutdown(u8 chipID);
 void YM2612_Reset(u8 chipID);
-void YM2612_WriteRegister(u8 chipID, u32 address, u8 data);
+void YM2612_WritePort0(u8 chipID, u32 address, u32 data, s32* channel, f32* freq);
+void YM2612_WritePort1(u8 chipID, u32 address, u32 data, s32* channel, f32* freq);
+void YM2612_WriteRegister(u8 chipID, u32 address, u32 data, s32* channel, f32* freq);
+
 u8 YM2612_ReadStatus(u8 chipID);
 void YM2612_Update(u8 chipID, s32 **bufs, u32 length);
 

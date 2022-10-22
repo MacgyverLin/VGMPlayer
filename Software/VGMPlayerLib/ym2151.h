@@ -10,7 +10,7 @@ extern "C" {
 s32 YM2151_Initialize(u8 chipID, u32 clock, u32 sampleRate);
 void YM2151_Shutdown(u8 chipID);
 void YM2151_Reset(u8 chipID);
-void YM2151_WriteRegister(u8 chipID, u32 address, u8 data);
+void YM2151_WriteRegister(u8 chipID, u32 address, u32 data, s32* channel, f32* freq);
 u8 YM2151_ReadRegister(u8 chipID, u32 address);
 void YM2151_Update(u8 chipID, s32** bufs, u32 length);
 

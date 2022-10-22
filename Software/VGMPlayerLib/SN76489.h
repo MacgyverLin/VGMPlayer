@@ -10,7 +10,7 @@ extern "C" {
 	s32 SN76489_Initialize(u8 chipCount, u32 clock, u32 sampleRate);
 	void SN76489_Shutdown(void);
 	void SN76489_Reset(u8 chipID);
-	void SN76489_WriteRegister(u8 chipID, u32 address, u8 data);
+	void SN76489_WriteRegister(u8 chipID, u32 aa, u32 dd, s32* channel, f32* freq);
 	u8 SN76489_ReadRegister(u8 chipID, u32 address);
 	void SN76489_Update(u8 chipID, s32 **bufs, u32 length);
 

@@ -18,7 +18,7 @@ extern "C" {
 s32 SEGAPCM_Initialize(u8 chipID, u32 clock, u32 sampleRate);
 void SEGAPCM_Shutdown(u8 chipID);
 void SEGAPCM_Reset(u8 chipID);
-void SEGAPCM_WriteRegister(u8 chipID, u32 address, u32 data);
+void SEGAPCM_WriteRegister(u8 chipID, u32 address, u32 data, s32* channel, f32* freq);
 u8 SEGAPCM_ReadRegister(u8 chipID, u32 address);
 void SEGAPCM_Update(u8 chipID, s32** buffer, u32 length);
 void SEGAPCM_SetROM(u8 chipID, ROM* rom);

@@ -19,6 +19,8 @@ VGMData::VGMData(const char* texturePath_, s32 channels_, s32 bitPerSample_, s32
 	updateDataRequest = FALSE;
 	updateSampleCounts = 0;
 
+	frameCounter = 0;
+
 	rom = ROM_Create();
 }
 
@@ -460,10 +462,26 @@ void VGMData::HandleDataBlocks()
 	}
 }
 
+const char* GetTimeCode(int frameCounter)
+{
+	static char buf[256];
+
+	int seconds = frameCounter / 30;
+	int minutes = seconds / 60;
+	int hours = minutes / 60;
+	
+	int frames = frameCounter % 30;
+	seconds = seconds % 60;
+	minutes = minutes % 60;
+	hours = hours % 24;
+
+	sprintf(buf, "%02d:%02d:%02d:%02d", hours, minutes, seconds, frames);
+	return buf;
+}
+
 boolean VGMData::Update()
 {
 	NotifyUpdate();
-
 	systemChannels.ClearSampleBufferUpdatedEvent();
 	systemChannels.ClearSampleBufferUpdatedEvent();
 
@@ -475,6 +493,8 @@ boolean VGMData::Update()
 		{
 			s32 nnnn = HandleUpdateSamples(updateSampleCounts);
 			updateSampleCounts -= nnnn;
+
+			frameCounter += ((float)nnnn * VGM_FRAME_PER_SECOND / info.sampleRate);
 		}
 		else
 		{
@@ -499,9 +519,6 @@ boolean VGMData::Update()
 			u32 llllllll;
 			u16 bbbb;
 			u8 ff;
-			
-			s32 noteChannel = -1;
-			f32 noteFreq = 0;
 
 			switch (command)
 			{
@@ -509,83 +526,92 @@ boolean VGMData::Update()
 				Read(&aa, sizeof(aa));
 				Read(&dd, sizeof(dd));
 
-				YM2612_WriteRegister(0, 0, aa);
-				YM2612_WriteRegister(0, 1, dd);
+				systemChannels.WriteRegister(YM2612_WritePort0, 0, aa, dd, frameCounter);
 				break;
 
 			case YM2612_PORT1_WRITE:
 				Read(&aa, sizeof(aa));
 				Read(&dd, sizeof(dd));
 
-				YM2612_WriteRegister(0, 2, aa);
-				YM2612_WriteRegister(0, 3, dd);
+				systemChannels.WriteRegister(YM2612_WritePort1, 0, aa, dd, frameCounter);
 				break;
 
 			case SN76489_WRITE:
 				Read(&dd, sizeof(dd));
-				SN76489_WriteRegister(0, 0, dd);
+
+				systemChannels.WriteRegister(SN76489_WriteRegister, 0, 0, dd, frameCounter);
 				break;
 
 			case GAME_GEAR_PSG_PORT6_WRITE:
 				Read(&dd, sizeof(dd));
-				SN76489_WriteRegister(0, 0, dd);
+
+				systemChannels.WriteRegister(SN76489_WriteRegister, 0, 0, dd, frameCounter);
 				break;
 
 			case YM2151_WRITE:
 				Read(&aa, sizeof(aa));
 				Read(&dd, sizeof(dd));
-				YM2151_WriteRegister(0, aa, dd);
+			
+				systemChannels.WriteRegister(YM2151_WriteRegister, 0, aa, dd, frameCounter);
 				break;
 
 			case K053260_WRITE:
 				Read(&aa, sizeof(aa));
 				Read(&dd, sizeof(dd));
-				K053260_WriteRegister(0, aa, dd);
+
+				systemChannels.WriteRegister(K053260_WriteRegister, 0, aa, dd, frameCounter);
 				break;
 
 			case NES_APU_WRITE:
 				Read(&aa, sizeof(aa));
 				Read(&dd, sizeof(dd));
-				NESAPU_WriteRegister(0, aa, dd, &noteChannel, &noteFreq);
-				NESFDSAPU_WriteRegister(0, aa, dd);
+
+				systemChannels.WriteRegister(NESAPU_WriteRegister, 0, aa, dd, frameCounter);
+				systemChannels.WriteRegister(NESFDSAPU_WriteRegister, 0, aa, dd, frameCounter);
 				break;
 
 			case HUC6280_WRITE:
 				Read(&aa, sizeof(aa));
 				Read(&dd, sizeof(dd));
-				HUC6280_WriteRegister(0, aa, dd);
+
+				systemChannels.WriteRegister(HUC6280_WriteRegister, 0, aa, dd, frameCounter);
 				break;
 
 			case QSOUND_WRITE:
 				Read(&mm, sizeof(mm));
 				Read(&ll, sizeof(ll));
 				Read(&rr, sizeof(rr));
-				QSound_WriteRegister(0, rr, (((u32)mm << 8) | (u32)ll));
+				
+				systemChannels.WriteRegister(QSound_WriteRegister, 0, rr, (((u32)mm << 8) | (u32)ll), frameCounter);
 				break;
 
 			case SEGA_PCM:
 				Read(&ll, sizeof(ll));
 				Read(&uu, sizeof(uu));
 				Read(&dd, sizeof(dd));
-				SEGAPCM_WriteRegister(0, (((u32)uu) << 8) | ((u32)ll), dd);
+		
+				systemChannels.WriteRegister(SEGAPCM_WriteRegister, 0, (((u32)uu) << 8) | ((u32)ll), dd, frameCounter);
 				break;
 
 			case YM2203_WRITE:
 				Read(&aa, sizeof(aa));
 				Read(&dd, sizeof(dd));
-				//YM2203_WriteRegister(0, aa, dd);
+
+				//systemChannels.WriteRegister(YM2203_WriteRegister, 0, aa, dd, frameCounter);
 				break;
 
 			case OKIM6258_WRITE:
 				Read(&aa, sizeof(aa));
 				Read(&dd, sizeof(dd));
-				// OKIM6258_WriteRegister(0, aa, dd);
+				
+				// systemChannels.WriteRegister(OKIM6258_WriteRegister, 0, aa, dd, frameCounter);
 				break;
 
 			case OKIM6295_WRITE:
 				Read(&aa, sizeof(aa));
 				Read(&dd, sizeof(dd));
-				// OKIM6295_WriteRegister(0, aa, dd);
+
+				// systemChannels.WriteRegister(OKIM6295_WriteRegister, 0, aa, dd, frameCounter);
 				break;
 
 			case UNKNOWN_CHIP_A5_WRITE:

@@ -82,7 +82,7 @@ void NESFDSAPU_Reset(u8 chipID)
 	ic->channel_count = 1;
 }
 
-void NESFDSAPU_WriteRegister(u8 chipID, u32 addr, u8 data)
+void NESFDSAPU_WriteRegister(u8 chipID, u32 addr, u32 data, s32* channel, f32* freq)
 {
 	NESFDSAPU* ic = &nesfdsapuChips[chipID];
 

@@ -45,7 +45,7 @@ void SEGAPCM_Reset(u8 chipID)
 	ic->channel_count = 16;
 }
 
-void SEGAPCM_WriteRegister(u8 chipID, u32 address, u32 data)
+void SEGAPCM_WriteRegister(u8 chipID, u32 address, u32 data, s32* channel, f32* freq)
 {
 	SEGAPCM* ic = &segapcm[chipID];
 

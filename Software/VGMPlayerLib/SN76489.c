@@ -116,7 +116,7 @@ void SN76489_Shutdown(void)
 {
 }
 
-void SN76489_WriteRegister(u8 chipID, u32 address, u8 data)
+void SN76489_WriteRegister(u8 chipID, u32 aa, u32 data, s32* channel, f32* freq)
 {
 	SN76489* ic = &sn76489Chips[chipID];
 

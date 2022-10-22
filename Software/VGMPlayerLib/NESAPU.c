@@ -608,12 +608,6 @@ void apu_regwrite(u8 chipID, u32 address, u8 value, s32* channel, f32* freq)
 	default:
 		break;
 	}
-
-	/*
-	static int time = 0;
-	if(!(squarefreq[0]==0 && squarefreq[1] == 0 && trifreq == 0 && noisefreq == 0 && dpcmfreq==0))
-		printf("%04x: %6.1f %6.1f %6.1f %6.1f %6.1f\n", time++, squarefreq[0], squarefreq[1], trifreq, noisefreq, dpcmfreq);
-	*/
 }
 
 /* UPDATE SOUND BUFFER USING CURRENT DATA */
@@ -707,15 +701,15 @@ u8 apu_read(u8 chipID, u32 address)
 }
 
 /* WRITE VALUE TO TEMP REGISTRY AND QUEUE EVENT */
-void apu_write(u8 chipID, u32 address, u8 value, s32* channel, f32* freq)
+void apu_write(u8 chipID, u32 address, u32 data, s32* channel, f32* freq)
 {
 	if (address >= 0x17)
 		return;
 
 	NESAPU *ic = &nesapuChips[chipID];
 
-	ic->APU.regs[address] = value;
-	apu_regwrite(chipID, address, value, channel, freq);
+	ic->APU.regs[address] = data;
+	apu_regwrite(chipID, address, data, channel, freq);
 }
 
 s32 NESAPU_Initialize(u8 chipID, u32 clock, u32 sampleRate)
@@ -794,7 +788,7 @@ void NESAPU_Update(u8 chipID, s32** bufs, u32 length)
 	apu_update(chipID, bufs, length);
 }
 
-void NESAPU_WriteRegister(u8 chipID, u32 address, u8 data, s32* channel, f32* freq)
+void NESAPU_WriteRegister(u8 chipID, u32 address, u32 data, s32* channel, f32* freq)
 {
 	apu_write(chipID, address, data, channel, freq);
 }
