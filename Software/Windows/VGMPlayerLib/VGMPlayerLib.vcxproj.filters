@@ -116,6 +116,9 @@
     <ClInclude Include="..\..\VGMPlayerLib\FFT.h">
       <Filter>Source Files\misc</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\VGMPlayerLib\VGMMultiChannelNoteViewer.h">
+      <Filter>Source Files\VGM\Observer</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\VGMPlayerLib\HuC6280.c">
@@ -189,6 +192,9 @@
     </ClCompile>
     <ClCompile Include="..\..\VGMPlayerLib\FFT.cpp">
       <Filter>Source Files\misc</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\VGMPlayerLib\VGMMultiChannelNoteViewer.cpp">
+      <Filter>Source Files\VGM\Observer</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

@@ -171,6 +171,7 @@
     <ClInclude Include="..\..\VGMPlayerLib\VGMDataObverser.h" />
     <ClInclude Include="..\..\VGMPlayerLib\vgmdef.h" />
     <ClInclude Include="..\..\VGMPlayerLib\VGMFile.h" />
+    <ClInclude Include="..\..\VGMPlayerLib\VGMMultiChannelNoteViewer.h" />
     <ClInclude Include="..\..\VGMPlayerLib\VGMMultiChannelWaveFormViewer.h" />
     <ClInclude Include="..\..\VGMPlayerLib\VGMPlayerLib.h" />
     <ClInclude Include="..\..\VGMPlayerLib\VGMSpectrumViewer.h" />
@@ -200,6 +201,7 @@
     <ClCompile Include="..\..\VGMPlayerLib\VGMData.cpp" />
     <ClCompile Include="..\..\VGMPlayerLib\VGMDataObverser.cpp" />
     <ClCompile Include="..\..\VGMPlayerLib\VGMFile.cpp" />
+    <ClCompile Include="..\..\VGMPlayerLib\VGMMultiChannelNoteViewer.cpp" />
     <ClCompile Include="..\..\VGMPlayerLib\VGMMultiChannelWaveFormViewer.cpp" />
     <ClCompile Include="..\..\VGMPlayerLib\VGMSpectrumViewer.cpp" />
     <ClCompile Include="..\..\VGMPlayerLib\VGMWaveFormViewer.cpp" />

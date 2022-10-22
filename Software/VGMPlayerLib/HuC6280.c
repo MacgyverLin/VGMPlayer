@@ -275,10 +275,10 @@ void HUC6280_Reset(u8 chipID)
 	ic->channel_count = 6;
 }
 
-void HUC6280_Update(u8 chipID, s32 **buffer, u32 length)
+void HUC6280_Update(u8 chipID, s32 **buffer, s32** noteBuffers, u32 length)
 {
 	HUC6280 *ic = &chips[chipID];
-	c6280_stream_update(chipID, buffer, length);
+	c6280_stream_update(chipID, buffer, noteBuffers, length);
 }
 
 u8 HUC6280_ReadRegister(u8 chipID, u32 address)

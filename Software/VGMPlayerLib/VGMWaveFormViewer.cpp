@@ -72,7 +72,7 @@ void VGMWaveFormViewer::OnNotifyUpdate(Obserable& observable)
 	const VGMData::Info& info = vgmData.GetInfo();
 	const VGMData::SystemChannels& systemChannels = vgmData.GetSystemChannels();
 
-	if (systemChannels.GetHasNewSamples())
+	if (systemChannels.HasSampleUpdateEvent())
 	{
 		videoDevice.MakeCurrent();
 

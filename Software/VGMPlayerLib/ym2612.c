@@ -183,41 +183,41 @@ typedef struct {
 YM2612 ym2612Chips[YM2612_CHIPS_COUNT];					// array of YM2612
 s32 YM2612_Enable_SSGEG = 0; // enable SSG-EG envelope (causes inacurate sound sometimes - rodrigo)
 
-void Update_Chan_Algo0(YM2612* ic, Channel* CH, s32 channelIdx, s32** buf, s32 lenght);
-void Update_Chan_Algo1(YM2612* ic, Channel* CH, s32 channelIdx, s32** buf, s32 lenght);
-void Update_Chan_Algo2(YM2612* ic, Channel* CH, s32 channelIdx, s32** buf, s32 lenght);
-void Update_Chan_Algo3(YM2612* ic, Channel* CH, s32 channelIdx, s32** buf, s32 lenght);
-void Update_Chan_Algo4(YM2612* ic, Channel* CH, s32 channelIdx, s32** buf, s32 lenght);
-void Update_Chan_Algo5(YM2612* ic, Channel* CH, s32 channelIdx, s32** buf, s32 lenght);
-void Update_Chan_Algo6(YM2612* ic, Channel* CH, s32 channelIdx, s32** buf, s32 lenght);
-void Update_Chan_Algo7(YM2612* ic, Channel* CH, s32 channelIdx, s32** buf, s32 lenght);
+void Update_Chan_Algo0(YM2612* ic, Channel* CH, s32 channelIdx, s32** bufs, s32 lenght);
+void Update_Chan_Algo1(YM2612* ic, Channel* CH, s32 channelIdx, s32** bufs, s32 lenght);
+void Update_Chan_Algo2(YM2612* ic, Channel* CH, s32 channelIdx, s32** bufs, s32 lenght);
+void Update_Chan_Algo3(YM2612* ic, Channel* CH, s32 channelIdx, s32** bufs, s32 lenght);
+void Update_Chan_Algo4(YM2612* ic, Channel* CH, s32 channelIdx, s32** bufs, s32 lenght);
+void Update_Chan_Algo5(YM2612* ic, Channel* CH, s32 channelIdx, s32** bufs, s32 lenght);
+void Update_Chan_Algo6(YM2612* ic, Channel* CH, s32 channelIdx, s32** bufs, s32 lenght);
+void Update_Chan_Algo7(YM2612* ic, Channel* CH, s32 channelIdx, s32** bufs, s32 lenght);
 
-void Update_Chan_Algo0_LFO(YM2612* ic, Channel* CH, s32 channelIdx, s32** buf, s32 lenght);
-void Update_Chan_Algo1_LFO(YM2612* ic, Channel* CH, s32 channelIdx, s32** buf, s32 lenght);
-void Update_Chan_Algo2_LFO(YM2612* ic, Channel* CH, s32 channelIdx, s32** buf, s32 lenght);
-void Update_Chan_Algo3_LFO(YM2612* ic, Channel* CH, s32 channelIdx, s32** buf, s32 lenght);
-void Update_Chan_Algo4_LFO(YM2612* ic, Channel* CH, s32 channelIdx, s32** buf, s32 lenght);
-void Update_Chan_Algo5_LFO(YM2612* ic, Channel* CH, s32 channelIdx, s32** buf, s32 lenght);
-void Update_Chan_Algo6_LFO(YM2612* ic, Channel* CH, s32 channelIdx, s32** buf, s32 lenght);
-void Update_Chan_Algo7_LFO(YM2612* ic, Channel* CH, s32 channelIdx, s32** buf, s32 lenght);
+void Update_Chan_Algo0_LFO(YM2612* ic, Channel* CH, s32 channelIdx, s32** bufs, s32 lenght);
+void Update_Chan_Algo1_LFO(YM2612* ic, Channel* CH, s32 channelIdx, s32** bufs, s32 lenght);
+void Update_Chan_Algo2_LFO(YM2612* ic, Channel* CH, s32 channelIdx, s32** bufs, s32 lenght);
+void Update_Chan_Algo3_LFO(YM2612* ic, Channel* CH, s32 channelIdx, s32** bufs, s32 lenght);
+void Update_Chan_Algo4_LFO(YM2612* ic, Channel* CH, s32 channelIdx, s32** bufs, s32 lenght);
+void Update_Chan_Algo5_LFO(YM2612* ic, Channel* CH, s32 channelIdx, s32** bufs, s32 lenght);
+void Update_Chan_Algo6_LFO(YM2612* ic, Channel* CH, s32 channelIdx, s32** bufs, s32 lenght);
+void Update_Chan_Algo7_LFO(YM2612* ic, Channel* CH, s32 channelIdx, s32** bufs, s32 lenght);
 
-void Update_Chan_Algo0_Int(YM2612* ic, Channel* CH, s32 channelIdx, s32** buf, s32 lenght);
-void Update_Chan_Algo1_Int(YM2612* ic, Channel* CH, s32 channelIdx, s32** buf, s32 lenght);
-void Update_Chan_Algo2_Int(YM2612* ic, Channel* CH, s32 channelIdx, s32** buf, s32 lenght);
-void Update_Chan_Algo3_Int(YM2612* ic, Channel* CH, s32 channelIdx, s32** buf, s32 lenght);
-void Update_Chan_Algo4_Int(YM2612* ic, Channel* CH, s32 channelIdx, s32** buf, s32 lenght);
-void Update_Chan_Algo5_Int(YM2612* ic, Channel* CH, s32 channelIdx, s32** buf, s32 lenght);
-void Update_Chan_Algo6_Int(YM2612* ic, Channel* CH, s32 channelIdx, s32** buf, s32 lenght);
-void Update_Chan_Algo7_Int(YM2612* ic, Channel* CH, s32 channelIdx, s32** buf, s32 lenght);
+void Update_Chan_Algo0_Int(YM2612* ic, Channel* CH, s32 channelIdx, s32** bufs, s32 lenght);
+void Update_Chan_Algo1_Int(YM2612* ic, Channel* CH, s32 channelIdx, s32** bufs, s32 lenght);
+void Update_Chan_Algo2_Int(YM2612* ic, Channel* CH, s32 channelIdx, s32** bufs, s32 lenght);
+void Update_Chan_Algo3_Int(YM2612* ic, Channel* CH, s32 channelIdx, s32** bufs, s32 lenght);
+void Update_Chan_Algo4_Int(YM2612* ic, Channel* CH, s32 channelIdx, s32** bufs, s32 lenght);
+void Update_Chan_Algo5_Int(YM2612* ic, Channel* CH, s32 channelIdx, s32** bufs, s32 lenght);
+void Update_Chan_Algo6_Int(YM2612* ic, Channel* CH, s32 channelIdx, s32** bufs, s32 lenght);
+void Update_Chan_Algo7_Int(YM2612* ic, Channel* CH, s32 channelIdx, s32** bufs, s32 lenght);
 
-void Update_Chan_Algo0_LFO_Int(YM2612* ic, Channel* CH, s32 channelIdx, s32** buf, s32 lenght);
-void Update_Chan_Algo1_LFO_Int(YM2612* ic, Channel* CH, s32 channelIdx, s32** buf, s32 lenght);
-void Update_Chan_Algo2_LFO_Int(YM2612* ic, Channel* CH, s32 channelIdx, s32** buf, s32 lenght);
-void Update_Chan_Algo3_LFO_Int(YM2612* ic, Channel* CH, s32 channelIdx, s32** buf, s32 lenght);
-void Update_Chan_Algo4_LFO_Int(YM2612* ic, Channel* CH, s32 channelIdx, s32** buf, s32 lenght);
-void Update_Chan_Algo5_LFO_Int(YM2612* ic, Channel* CH, s32 channelIdx, s32** buf, s32 lenght);
-void Update_Chan_Algo6_LFO_Int(YM2612* ic, Channel* CH, s32 channelIdx, s32** buf, s32 lenght);
-void Update_Chan_Algo7_LFO_Int(YM2612* ic, Channel* CH, s32 channelIdx, s32** buf, s32 lenght);
+void Update_Chan_Algo0_LFO_Int(YM2612* ic, Channel* CH, s32 channelIdx, s32** bufs, s32 lenght);
+void Update_Chan_Algo1_LFO_Int(YM2612* ic, Channel* CH, s32 channelIdx, s32** bufs, s32 lenght);
+void Update_Chan_Algo2_LFO_Int(YM2612* ic, Channel* CH, s32 channelIdx, s32** bufs, s32 lenght);
+void Update_Chan_Algo3_LFO_Int(YM2612* ic, Channel* CH, s32 channelIdx, s32** bufs, s32 lenght);
+void Update_Chan_Algo4_LFO_Int(YM2612* ic, Channel* CH, s32 channelIdx, s32** bufs, s32 lenght);
+void Update_Chan_Algo5_LFO_Int(YM2612* ic, Channel* CH, s32 channelIdx, s32** bufs, s32 lenght);
+void Update_Chan_Algo6_LFO_Int(YM2612* ic, Channel* CH, s32 channelIdx, s32** bufs, s32 lenght);
+void Update_Chan_Algo7_LFO_Int(YM2612* ic, Channel* CH, s32 channelIdx, s32** bufs, s32 lenght);
 
 void Env_Attack_Next(Slot* SL);
 void Env_Decay_Next(Slot* SL);
@@ -226,7 +226,7 @@ void Env_Release_Next(Slot* SL);
 void Env_NULL_Next(Slot* SL);
 
 // Update Channel functions pointer table
-const void(*UPDATE_CHAN[8 * 8 + 1])(YM2612* ic, Channel* CH, s32 channelIdx, s32** buf, s32 lenght) =
+const void(*UPDATE_CHAN[8 * 8 + 1])(YM2612* ic, Channel* CH, s32 channelIdx, s32** bufs, s32 lenght) =
 {
 	Update_Chan_Algo0,
 	Update_Chan_Algo1,
@@ -1045,17 +1045,15 @@ CH->OUTd = ((s32)ic->SIN_TAB[(ic->in3 >> SIN_LBITS) & SIN_MASK][ic->en3] + (s32)
 DO_LIMIT(ic)
 
 #define DO_OUTPUT(ic)            \
-buf[((channelIdx)<<1) + 0][i] + CH->OUTd & CH->LEFT;    \
-buf[((channelIdx)<<1) + 1][i] + CH->OUTd & CH->RIGHT;
-
-
+bufs[((channelIdx)<<1) + 0][i] = CH->OUTd & CH->LEFT;    \
+bufs[((channelIdx)<<1) + 1][i] = CH->OUTd & CH->RIGHT;
 
 #define DO_OUTPUT_INT0(ic)              \
 if((ic->int_cnt += ic->Inter_Step) & 0x04000)  \
 {                        \
 	ic->int_cnt &= 0x3FFF;              \
-	buf[((channelIdx)<<1) + 0][i] = CH->OUTd & CH->LEFT;      \
-	buf[((channelIdx)<<1) + 1][i] = CH->OUTd & CH->RIGHT;      \
+	bufs[((channelIdx)<<1) + 0][i] = CH->OUTd & CH->LEFT;      \
+	bufs[((channelIdx)<<1) + 1][i] = CH->OUTd & CH->RIGHT;      \
 }                        \
 else \
 	i--;
@@ -1065,8 +1063,8 @@ CH->Old_OUTd = (CH->OUTd + CH->Old_OUTd) >> 1;  \
 if((ic->int_cnt += ic->Inter_Step) & 0x04000)  \
 {                        \
 	ic->int_cnt &= 0x3FFF;              \
-	buf[((channelIdx)<<1) + 0][i] = CH->Old_OUTd & CH->LEFT;    \
-	buf[((channelIdx)<<1) + 1][i] = CH->Old_OUTd & CH->RIGHT;    \
+	bufs[((channelIdx)<<1) + 0][i] = CH->Old_OUTd & CH->LEFT;    \
+	bufs[((channelIdx)<<1) + 1][i] = CH->Old_OUTd & CH->RIGHT;    \
 }                        \
 else \
 	i--;
@@ -1076,26 +1074,28 @@ if((ic->int_cnt += ic->Inter_Step) & 0x04000)    \
 {                          \
 	ic->int_cnt &= 0x3FFF;                \
 	CH->Old_OUTd = (CH->OUTd + CH->Old_OUTd) >> 1;  \
-	buf[((channelIdx)<<1) + 0][i] = CH->Old_OUTd & CH->LEFT;      \
-	buf[((channelIdx)<<1) + 1][i] = CH->Old_OUTd & CH->RIGHT;      \
+	bufs[((channelIdx)<<1) + 0][i] = CH->Old_OUTd & CH->LEFT;      \
+	bufs[((channelIdx)<<1) + 1][i] = CH->Old_OUTd & CH->RIGHT;      \
 }                          \
 else \
 	i--;                      \
 CH->Old_OUTd = CH->OUTd;
+
 
 #define DO_OUTPUT_INT(ic)              \
 if((ic->int_cnt += ic->Inter_Step) & 0x04000)  \
 {                        \
   ic->int_cnt &= 0x3FFF;              \
   CH->Old_OUTd = (((ic->int_cnt ^ 0x3FFF) * CH->OUTd) + (ic->int_cnt * CH->Old_OUTd)) >> 14;  \
-  buf[((channelIdx)<<1) + 0][i] = CH->Old_OUTd & CH->LEFT;    \
-  buf[((channelIdx)<<1) + 1][i] = CH->Old_OUTd & CH->RIGHT;    \
+  bufs[((channelIdx)<<1) + 0][i] = CH->Old_OUTd & CH->LEFT;    \
+  bufs[((channelIdx)<<1) + 1][i] = CH->Old_OUTd & CH->RIGHT;    \
 }                        \
 else \
 	i--;                    \
 CH->Old_OUTd = CH->OUTd;
 
-void Update_Chan_Algo0(YM2612* ic, Channel* CH, s32 channelIdx, s32** buf, s32 lenght)
+
+void Update_Chan_Algo0(YM2612* ic, Channel* CH, s32 channelIdx, s32** bufs, s32 lenght)
 {
 	s32 i;
 
@@ -1113,7 +1113,7 @@ void Update_Chan_Algo0(YM2612* ic, Channel* CH, s32 channelIdx, s32** buf, s32 l
 	}
 }
 
-void Update_Chan_Algo1(YM2612* ic, Channel* CH, s32 channelIdx, s32** buf, s32 lenght)
+void Update_Chan_Algo1(YM2612* ic, Channel* CH, s32 channelIdx, s32** bufs, s32 lenght)
 {
 	s32 i;
 
@@ -1132,7 +1132,7 @@ void Update_Chan_Algo1(YM2612* ic, Channel* CH, s32 channelIdx, s32** buf, s32 l
 	}
 }
 
-void Update_Chan_Algo2(YM2612* ic, Channel* CH, s32 channelIdx, s32** buf, s32 lenght)
+void Update_Chan_Algo2(YM2612* ic, Channel* CH, s32 channelIdx, s32** bufs, s32 lenght)
 {
 	s32 i;
 
@@ -1152,7 +1152,7 @@ void Update_Chan_Algo2(YM2612* ic, Channel* CH, s32 channelIdx, s32** buf, s32 l
 }
 
 
-void Update_Chan_Algo3(YM2612* ic, Channel* CH, s32 channelIdx, s32** buf, s32 lenght)
+void Update_Chan_Algo3(YM2612* ic, Channel* CH, s32 channelIdx, s32** bufs, s32 lenght)
 {
 	s32 i;
 
@@ -1171,7 +1171,7 @@ void Update_Chan_Algo3(YM2612* ic, Channel* CH, s32 channelIdx, s32** buf, s32 l
 	}
 }
 
-void Update_Chan_Algo4(YM2612* ic, Channel* CH, s32 channelIdx, s32** buf, s32 lenght)
+void Update_Chan_Algo4(YM2612* ic, Channel* CH, s32 channelIdx, s32** bufs, s32 lenght)
 {
 	s32 i;
 
@@ -1190,7 +1190,7 @@ void Update_Chan_Algo4(YM2612* ic, Channel* CH, s32 channelIdx, s32** buf, s32 l
 	}
 }
 
-void Update_Chan_Algo5(YM2612* ic, Channel* CH, s32 channelIdx, s32** buf, s32 lenght)
+void Update_Chan_Algo5(YM2612* ic, Channel* CH, s32 channelIdx, s32** bufs, s32 lenght)
 {
 	s32 i;
 
@@ -1209,7 +1209,7 @@ void Update_Chan_Algo5(YM2612* ic, Channel* CH, s32 channelIdx, s32** buf, s32 l
 	}
 }
 
-void Update_Chan_Algo6(YM2612* ic, Channel* CH, s32 channelIdx, s32** buf, s32 lenght)
+void Update_Chan_Algo6(YM2612* ic, Channel* CH, s32 channelIdx, s32** bufs, s32 lenght)
 {
 	s32 i;
 
@@ -1228,7 +1228,7 @@ void Update_Chan_Algo6(YM2612* ic, Channel* CH, s32 channelIdx, s32** buf, s32 l
 	}
 }
 
-void Update_Chan_Algo7(YM2612* ic, Channel* CH, s32 channelIdx, s32** buf, s32 lenght)
+void Update_Chan_Algo7(YM2612* ic, Channel* CH, s32 channelIdx, s32** bufs, s32 lenght)
 {
 	s32 i;
 
@@ -1247,7 +1247,7 @@ void Update_Chan_Algo7(YM2612* ic, Channel* CH, s32 channelIdx, s32** buf, s32 l
 	}
 }
 
-void Update_Chan_Algo0_LFO(YM2612* ic, Channel* CH, s32 channelIdx, s32** buf, s32 lenght)
+void Update_Chan_Algo0_LFO(YM2612* ic, Channel* CH, s32 channelIdx, s32** bufs, s32 lenght)
 {
 	s32 i, env_LFO, freq_LFO;
 
@@ -1266,7 +1266,7 @@ void Update_Chan_Algo0_LFO(YM2612* ic, Channel* CH, s32 channelIdx, s32** buf, s
 	}
 }
 
-void Update_Chan_Algo1_LFO(YM2612* ic, Channel* CH, s32 channelIdx, s32** buf, s32 lenght)
+void Update_Chan_Algo1_LFO(YM2612* ic, Channel* CH, s32 channelIdx, s32** bufs, s32 lenght)
 {
 	s32 i, env_LFO, freq_LFO;
 
@@ -1285,7 +1285,7 @@ void Update_Chan_Algo1_LFO(YM2612* ic, Channel* CH, s32 channelIdx, s32** buf, s
 	}
 }
 
-void Update_Chan_Algo2_LFO(YM2612* ic, Channel* CH, s32 channelIdx, s32** buf, s32 lenght)
+void Update_Chan_Algo2_LFO(YM2612* ic, Channel* CH, s32 channelIdx, s32** bufs, s32 lenght)
 {
 	s32 i, env_LFO, freq_LFO;
 
@@ -1304,7 +1304,7 @@ void Update_Chan_Algo2_LFO(YM2612* ic, Channel* CH, s32 channelIdx, s32** buf, s
 	}
 }
 
-void Update_Chan_Algo3_LFO(YM2612* ic, Channel* CH, s32 channelIdx, s32** buf, s32 lenght)
+void Update_Chan_Algo3_LFO(YM2612* ic, Channel* CH, s32 channelIdx, s32** bufs, s32 lenght)
 {
 	s32 i, env_LFO, freq_LFO;
 
@@ -1323,7 +1323,7 @@ void Update_Chan_Algo3_LFO(YM2612* ic, Channel* CH, s32 channelIdx, s32** buf, s
 	}
 }
 
-void Update_Chan_Algo4_LFO(YM2612* ic, Channel* CH, s32 channelIdx, s32** buf, s32 lenght)
+void Update_Chan_Algo4_LFO(YM2612* ic, Channel* CH, s32 channelIdx, s32** bufs, s32 lenght)
 {
 	s32 i, env_LFO, freq_LFO;
 
@@ -1342,7 +1342,7 @@ void Update_Chan_Algo4_LFO(YM2612* ic, Channel* CH, s32 channelIdx, s32** buf, s
 	}
 }
 
-void Update_Chan_Algo5_LFO(YM2612* ic, Channel* CH, s32 channelIdx, s32** buf, s32 lenght)
+void Update_Chan_Algo5_LFO(YM2612* ic, Channel* CH, s32 channelIdx, s32** bufs, s32 lenght)
 {
 	s32 i, env_LFO, freq_LFO;
 
@@ -1361,7 +1361,7 @@ void Update_Chan_Algo5_LFO(YM2612* ic, Channel* CH, s32 channelIdx, s32** buf, s
 	}
 }
 
-void Update_Chan_Algo6_LFO(YM2612* ic, Channel* CH, s32 channelIdx, s32** buf, s32 lenght)
+void Update_Chan_Algo6_LFO(YM2612* ic, Channel* CH, s32 channelIdx, s32** bufs, s32 lenght)
 {
 	s32 i, env_LFO, freq_LFO;
 
@@ -1380,7 +1380,7 @@ void Update_Chan_Algo6_LFO(YM2612* ic, Channel* CH, s32 channelIdx, s32** buf, s
 	}
 }
 
-void Update_Chan_Algo7_LFO(YM2612* ic, Channel* CH, s32 channelIdx, s32** buf, s32 lenght)
+void Update_Chan_Algo7_LFO(YM2612* ic, Channel* CH, s32 channelIdx, s32** bufs, s32 lenght)
 {
 	s32 i, env_LFO, freq_LFO;
 
@@ -1399,7 +1399,7 @@ void Update_Chan_Algo7_LFO(YM2612* ic, Channel* CH, s32 channelIdx, s32** buf, s
 	}
 }
 
-void Update_Chan_Algo0_Int(YM2612* ic, Channel* CH, s32 channelIdx, s32** buf, s32 lenght)
+void Update_Chan_Algo0_Int(YM2612* ic, Channel* CH, s32 channelIdx, s32** bufs, s32 lenght)
 {
 	s32 i;
 
@@ -1421,7 +1421,7 @@ void Update_Chan_Algo0_Int(YM2612* ic, Channel* CH, s32 channelIdx, s32** buf, s
 }
 
 
-void Update_Chan_Algo1_Int(YM2612* ic, Channel* CH, s32 channelIdx, s32** buf, s32 lenght)
+void Update_Chan_Algo1_Int(YM2612* ic, Channel* CH, s32 channelIdx, s32** bufs, s32 lenght)
 {
 	s32 i;
 
@@ -1443,7 +1443,7 @@ void Update_Chan_Algo1_Int(YM2612* ic, Channel* CH, s32 channelIdx, s32** buf, s
 }
 
 
-void Update_Chan_Algo2_Int(YM2612* ic, Channel* CH, s32 channelIdx, s32** buf, s32 lenght)
+void Update_Chan_Algo2_Int(YM2612* ic, Channel* CH, s32 channelIdx, s32** bufs, s32 lenght)
 {
 	s32 i;
 
@@ -1465,7 +1465,7 @@ void Update_Chan_Algo2_Int(YM2612* ic, Channel* CH, s32 channelIdx, s32** buf, s
 }
 
 
-void Update_Chan_Algo3_Int(YM2612* ic, Channel* CH, s32 channelIdx, s32** buf, s32 lenght)
+void Update_Chan_Algo3_Int(YM2612* ic, Channel* CH, s32 channelIdx, s32** bufs, s32 lenght)
 {
 	s32 i;
 
@@ -1486,7 +1486,7 @@ void Update_Chan_Algo3_Int(YM2612* ic, Channel* CH, s32 channelIdx, s32** buf, s
 	}
 }
 
-void Update_Chan_Algo4_Int(YM2612* ic, Channel* CH, s32 channelIdx, s32** buf, s32 lenght)
+void Update_Chan_Algo4_Int(YM2612* ic, Channel* CH, s32 channelIdx, s32** bufs, s32 lenght)
 {
 	s32 i;
 
@@ -1507,7 +1507,7 @@ void Update_Chan_Algo4_Int(YM2612* ic, Channel* CH, s32 channelIdx, s32** buf, s
 	}
 }
 
-void Update_Chan_Algo5_Int(YM2612* ic, Channel* CH, s32 channelIdx, s32** buf, s32 lenght)
+void Update_Chan_Algo5_Int(YM2612* ic, Channel* CH, s32 channelIdx, s32** bufs, s32 lenght)
 {
 	s32 i;
 
@@ -1529,7 +1529,7 @@ void Update_Chan_Algo5_Int(YM2612* ic, Channel* CH, s32 channelIdx, s32** buf, s
 }
 
 
-void Update_Chan_Algo6_Int(YM2612* ic, Channel* CH, s32 channelIdx, s32** buf, s32 lenght)
+void Update_Chan_Algo6_Int(YM2612* ic, Channel* CH, s32 channelIdx, s32** bufs, s32 lenght)
 {
 	s32 i;
 
@@ -1551,7 +1551,7 @@ void Update_Chan_Algo6_Int(YM2612* ic, Channel* CH, s32 channelIdx, s32** buf, s
 }
 
 
-void Update_Chan_Algo7_Int(YM2612* ic, Channel* CH, s32 channelIdx, s32** buf, s32 lenght)
+void Update_Chan_Algo7_Int(YM2612* ic, Channel* CH, s32 channelIdx, s32** bufs, s32 lenght)
 {
 	s32 i;
 
@@ -1573,7 +1573,7 @@ void Update_Chan_Algo7_Int(YM2612* ic, Channel* CH, s32 channelIdx, s32** buf, s
 }
 
 
-void Update_Chan_Algo0_LFO_Int(YM2612* ic, Channel* CH, s32 channelIdx, s32** buf, s32 lenght)
+void Update_Chan_Algo0_LFO_Int(YM2612* ic, Channel* CH, s32 channelIdx, s32** bufs, s32 lenght)
 {
 	s32 i, env_LFO, freq_LFO;
 
@@ -1594,7 +1594,7 @@ void Update_Chan_Algo0_LFO_Int(YM2612* ic, Channel* CH, s32 channelIdx, s32** bu
 }
 
 
-void Update_Chan_Algo1_LFO_Int(YM2612* ic, Channel* CH, s32 channelIdx, s32** buf, s32 lenght)
+void Update_Chan_Algo1_LFO_Int(YM2612* ic, Channel* CH, s32 channelIdx, s32** bufs, s32 lenght)
 {
 	s32 i, env_LFO, freq_LFO;
 
@@ -1614,7 +1614,7 @@ void Update_Chan_Algo1_LFO_Int(YM2612* ic, Channel* CH, s32 channelIdx, s32** bu
 	}
 }
 
-void Update_Chan_Algo2_LFO_Int(YM2612* ic, Channel* CH, s32 channelIdx, s32** buf, s32 lenght)
+void Update_Chan_Algo2_LFO_Int(YM2612* ic, Channel* CH, s32 channelIdx, s32** bufs, s32 lenght)
 {
 	s32 i, env_LFO, freq_LFO;
 
@@ -1635,7 +1635,7 @@ void Update_Chan_Algo2_LFO_Int(YM2612* ic, Channel* CH, s32 channelIdx, s32** bu
 	}
 }
 
-void Update_Chan_Algo3_LFO_Int(YM2612* ic, Channel* CH, s32 channelIdx, s32** buf, s32 lenght)
+void Update_Chan_Algo3_LFO_Int(YM2612* ic, Channel* CH, s32 channelIdx, s32** bufs, s32 lenght)
 {
 	s32 i, env_LFO, freq_LFO;
 
@@ -1656,7 +1656,7 @@ void Update_Chan_Algo3_LFO_Int(YM2612* ic, Channel* CH, s32 channelIdx, s32** bu
 	}
 }
 
-void Update_Chan_Algo4_LFO_Int(YM2612* ic, Channel* CH, s32 channelIdx, s32** buf, s32 lenght)
+void Update_Chan_Algo4_LFO_Int(YM2612* ic, Channel* CH, s32 channelIdx, s32** bufs, s32 lenght)
 {
 	s32 i, env_LFO, freq_LFO;
 
@@ -1676,7 +1676,7 @@ void Update_Chan_Algo4_LFO_Int(YM2612* ic, Channel* CH, s32 channelIdx, s32** bu
 	}
 }
 
-void Update_Chan_Algo5_LFO_Int(YM2612* ic, Channel* CH, s32 channelIdx, s32** buf, s32 lenght)
+void Update_Chan_Algo5_LFO_Int(YM2612* ic, Channel* CH, s32 channelIdx, s32** bufs, s32 lenght)
 {
 	s32 i, env_LFO, freq_LFO;
 
@@ -1697,7 +1697,7 @@ void Update_Chan_Algo5_LFO_Int(YM2612* ic, Channel* CH, s32 channelIdx, s32** bu
 }
 
 
-void Update_Chan_Algo6_LFO_Int(YM2612* ic, Channel* CH, s32 channelIdx, s32** buf, s32 lenght)
+void Update_Chan_Algo6_LFO_Int(YM2612* ic, Channel* CH, s32 channelIdx, s32** bufs, s32 lenght)
 {
 	s32 i, env_LFO, freq_LFO;
 
@@ -1718,7 +1718,7 @@ void Update_Chan_Algo6_LFO_Int(YM2612* ic, Channel* CH, s32 channelIdx, s32** bu
 	}
 }
 
-void Update_Chan_Algo7_LFO_Int(YM2612* ic, Channel* CH, s32 channelIdx, s32** buf, s32 lenght)
+void Update_Chan_Algo7_LFO_Int(YM2612* ic, Channel* CH, s32 channelIdx, s32** bufs, s32 lenght)
 {
 	s32 i, env_LFO, freq_LFO;
 
@@ -1738,12 +1738,12 @@ void Update_Chan_Algo7_LFO_Int(YM2612* ic, Channel* CH, s32 channelIdx, s32** bu
 	}
 }
 
-void Update_Chan_Clear(s32 channelIdx, s32** buf, s32 lenght)
+void Update_Chan_Clear(s32 channelIdx, s32** bufs, s32 lenght)
 {
 	for (int i = 0; i < lenght; i++)
 	{
-		buf[((channelIdx) << 1) + 0][i] = 0;
-		buf[((channelIdx) << 1) + 1][i] = 0;
+		bufs[((channelIdx) << 1) + 0][i] = 0;
+		bufs[((channelIdx) << 1) + 1][i] = 0;
 	}
 }
 
@@ -2131,7 +2131,7 @@ void YM2612_WriteRegister(u8 chipID, u32 address, u8 data)
 	}
 }
 
-void YM2612_Update(u8 chipID, s32** buffer, u32 length)
+void YM2612_Update(u8 chipID, s32** bufs, u32 length)
 {
 	s32 i, j, algo_type;
 	YM2612* ic = &ym2612Chips[chipID];
@@ -2187,37 +2187,37 @@ void YM2612_Update(u8 chipID, s32** buffer, u32 length)
 	}
 
 	if ((ic->channel_enabled & (1 << (0))) != 0)
-		UPDATE_CHAN[ic->CHANNEL[0].ALGO + algo_type](ic, &(ic->CHANNEL[0]), 0, buffer, length);
+		UPDATE_CHAN[ic->CHANNEL[0].ALGO + algo_type](ic, &(ic->CHANNEL[0]), 0, bufs, length);
 	else
-		Update_Chan_Clear(0, buffer, length);
+		Update_Chan_Clear(0, bufs, length);
 
 	if ((ic->channel_enabled & (1 << (1))) != 0)
-		UPDATE_CHAN[ic->CHANNEL[1].ALGO + algo_type](ic, &(ic->CHANNEL[1]), 1, buffer, length);
+		UPDATE_CHAN[ic->CHANNEL[1].ALGO + algo_type](ic, &(ic->CHANNEL[1]), 1, bufs, length);
 	else
-		Update_Chan_Clear(1, buffer, length);
+		Update_Chan_Clear(1, bufs, length);
 
 	if ((ic->channel_enabled & (1 << (2))) != 0)
-		UPDATE_CHAN[ic->CHANNEL[2].ALGO + algo_type](ic, &(ic->CHANNEL[2]), 2, buffer, length);
+		UPDATE_CHAN[ic->CHANNEL[2].ALGO + algo_type](ic, &(ic->CHANNEL[2]), 2, bufs, length);
 	else
-		Update_Chan_Clear(2, buffer, length);
+		Update_Chan_Clear(2, bufs, length);
 
 	if ((ic->channel_enabled & (1 << (3))) != 0)
-		UPDATE_CHAN[ic->CHANNEL[3].ALGO + algo_type](ic, &(ic->CHANNEL[3]), 3, buffer, length);
+		UPDATE_CHAN[ic->CHANNEL[3].ALGO + algo_type](ic, &(ic->CHANNEL[3]), 3, bufs, length);
 	else
-		Update_Chan_Clear(3, buffer, length);
+		Update_Chan_Clear(3, bufs, length);
 
 	if ((ic->channel_enabled & (1 << (4))) != 0)
-		UPDATE_CHAN[ic->CHANNEL[4].ALGO + algo_type](ic, &(ic->CHANNEL[4]), 4, buffer, length);
+		UPDATE_CHAN[ic->CHANNEL[4].ALGO + algo_type](ic, &(ic->CHANNEL[4]), 4, bufs, length);
 	else
-		Update_Chan_Clear(4, buffer, length);
+		Update_Chan_Clear(4, bufs, length);
 
 	if ((ic->channel_enabled & (1 << (5))) != 0)
 	{
 		if (!(ic->DAC))
-			UPDATE_CHAN[ic->CHANNEL[5].ALGO + algo_type](ic, &(ic->CHANNEL[5]), 5, buffer, length);
+			UPDATE_CHAN[ic->CHANNEL[5].ALGO + algo_type](ic, &(ic->CHANNEL[5]), 5, bufs, length);
 	}
 	else
-		Update_Chan_Clear(5, buffer, length);
+		Update_Chan_Clear(5, bufs, length);
 
 	ic->Inter_Cnt = ic->int_cnt;
 }

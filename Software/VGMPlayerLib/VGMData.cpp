@@ -189,10 +189,7 @@ boolean VGMData::Open()
 		channelsCount += SEGAPCM_GetChannelCount(0);
 	}
 
-	systemChannels.SetChannelsCount(channelsCount * 2);
-	//systemChannels.channels.resize(channelsCount * 2);
-	//for (int i = 0; i < systemChannels.channels.size(); i++)
-		//systemChannels .channels[i].resize(VGM_SAMPLE_COUNT);
+	systemChannels.SetChannelsCount(channelsCount);
 
 	return TRUE;
 }
@@ -465,8 +462,15 @@ void VGMData::HandleDataBlocks()
 
 boolean VGMData::Update()
 {
+	NotifyUpdate();
+
+	systemChannels.ClearSampleUpdateEvent();
+	systemChannels.ClearNoteUpdateEvent();
+
 	if (updateDataRequest)
 	{
+		updateDataRequest = false;
+
 		if (updateSampleCounts > 0)
 		{
 			s32 nnnn = HandleUpdateSamples(updateSampleCounts);
@@ -686,12 +690,7 @@ boolean VGMData::Update()
 				return FALSE;
 			};
 		}
-
-		updateDataRequest = FALSE;
 	}
-
-	NotifyUpdate();
-	systemChannels.SetHasNewSamples(false);
 
 	return TRUE;
 }

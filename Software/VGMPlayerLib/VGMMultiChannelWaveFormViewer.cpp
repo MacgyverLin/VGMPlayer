@@ -72,7 +72,7 @@ void VGMMultiChannelWaveFormViewer::OnNotifyUpdate(Obserable& observable)
 	const VGMData::Info& info = vgmData.GetInfo();
 	const VGMData::SystemChannels& systemChannels = vgmData.GetSystemChannels();
 
-	if (systemChannels.GetHasNewSamples())
+	if (systemChannels.HasSampleUpdateEvent())
 	{
 		videoDevice.MakeCurrent();
 
@@ -106,7 +106,11 @@ void VGMMultiChannelWaveFormViewer::OnNotifyUpdate(Obserable& observable)
 		glEnable(GL_BLEND);
 		for (int ch = 0; ch < systemChannels.GetChannelsCount(); ch++)
 		{
-			glViewport(0, height * ch / systemChannels.GetChannelsCount(), width, height / systemChannels.GetChannelsCount());
+			int channelViewportHeight = height / systemChannels.GetChannelsCount() / 2;
+
+			//////////////////////////////////////////////////////////////////////////////
+			// draw grid
+			glViewport(0, (ch * 2 + 0) * channelViewportHeight, width, channelViewportHeight);
 
 			glBlendFunc(GL_ONE, GL_ONE);
 			videoDevice.DrawLine(Vector2(startX, 0), skin.gridColor, Vector2(endX, 0), skin.gridColor);
@@ -120,12 +124,37 @@ void VGMMultiChannelWaveFormViewer::OnNotifyUpdate(Obserable& observable)
 			}
 			videoDevice.DrawLine(Vector2(startX, 0), skin.axisColor, Vector2(endX, 0), skin.axisColor);
 
-			const Color& c = ch % 2 ? skin.leftColor : skin.rightColor;
 			int step = 1;
+			Color c = skin.leftColor;
 			for (s32 i = startX; i < endX - step; i += step)
 			{
-				s32 y0 = systemChannels.GetChannelSample(ch + 0, i +    0) * 5 * waveScale;
-				s32 y1 = systemChannels.GetChannelSample(ch + 0, i + step) * 5 * waveScale;
+				s32 y0 = systemChannels.GetChannelLeftSample(ch + 0, i +    0) * 5 * waveScale;
+				s32 y1 = systemChannels.GetChannelLeftSample(ch + 0, i + step) * 5 * waveScale;
+				videoDevice.DrawLine(Vector2(i + 0, y0), c, Vector2(i + step, y1), c);
+			}
+
+			//////////////////////////////////////////////////////////////////////////////
+			// draw grid
+			glViewport(0, (ch * 2 + 1) * channelViewportHeight, width, channelViewportHeight);
+
+			glBlendFunc(GL_ONE, GL_ONE);
+			videoDevice.DrawLine(Vector2(startX, 0), skin.gridColor, Vector2(endX, 0), skin.gridColor);
+			for (s32 i = startX; i < endX; i += (endX - startX) / divX)
+			{
+				videoDevice.DrawLine(Vector2(i, startY), skin.gridColor, Vector2(i, endY), skin.gridColor);
+			}
+			for (s32 i = startY; i < endY; i += (endY - startY) / divY)
+			{
+				videoDevice.DrawLine(Vector2(startX, i), skin.gridColor, Vector2(endX, i), skin.gridColor);
+			}
+			videoDevice.DrawLine(Vector2(startX, 0), skin.axisColor, Vector2(endX, 0), skin.axisColor);
+
+			step = 1;
+			c = skin.rightColor;
+			for (s32 i = startX; i < endX - step; i += step)
+			{
+				s32 y0 = systemChannels.GetChannelRightSample(ch + 0, i +    0) * 5 * waveScale;
+				s32 y1 = systemChannels.GetChannelRightSample(ch + 0, i + step) * 5 * waveScale;
 				videoDevice.DrawLine(Vector2(i + 0, y0), c, Vector2(i + step, y1), c);
 			}
 		}

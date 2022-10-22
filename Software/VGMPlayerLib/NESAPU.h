@@ -12,7 +12,7 @@ extern "C" {
 	void NESAPU_Reset(u8 chipID);
 	void NESAPU_WriteRegister(u8 chipID, u32 address, u8 data);
 	u8 NESAPU_ReadRegister(u8 chipID, u32 address);
-	void NESAPU_Update(u8 chipID, s32** buffer, u32 length);
+	void NESAPU_Update(u8 chipID, s32** bufs, u32 length);
 
 	void NESAPU_SetChannelEnable(u8 chipID, u8 channel, u8 enable);
 	u8 NESAPU_GetChannelEnable(u8 chipID, u8 channel);

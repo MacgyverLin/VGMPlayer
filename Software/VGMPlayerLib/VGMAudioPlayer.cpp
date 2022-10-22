@@ -68,7 +68,7 @@ void VGMAudioPlayer::OnNotifyUpdate(Obserable& observable)
 	const VGMData::Info& info = vgmData.GetInfo();
 	const VGMData::SystemChannels& systemChannels = vgmData.GetSystemChannels();
 
-	if (systemChannels.GetHasNewSamples())
+	if (systemChannels.HasSampleUpdateEvent())
 	{
 		if (!outputDevice.Queue((void*)(&systemChannels.GetOutputSample(0, 0)), VGM_SAMPLE_COUNT * (sizeof(s16) * 2) ))
 			return;

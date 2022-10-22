@@ -7,6 +7,7 @@
 
 /* struct describing a single operator */
 typedef struct {
+	u32		delta_phase;
 	u32		phase;					/* accumulated operator phase */
 	u32		freq;					/* operator frequency count */
 	s32		dt1;					/* current DT1 (detune 1 phase inc/decrement) value */
@@ -1353,25 +1354,40 @@ void advance(YM2151* ic)
 			if (mod_ind)
 			{
 				u32 kc_channel = op->kc_i + mod_ind;
-				(op + 0)->phase += ((ic->freq[kc_channel + (op + 0)->dt2] + (op + 0)->dt1) * (op + 0)->mul) >> 1;
-				(op + 1)->phase += ((ic->freq[kc_channel + (op + 1)->dt2] + (op + 1)->dt1) * (op + 1)->mul) >> 1;
-				(op + 2)->phase += ((ic->freq[kc_channel + (op + 2)->dt2] + (op + 2)->dt1) * (op + 2)->mul) >> 1;
-				(op + 3)->phase += ((ic->freq[kc_channel + (op + 3)->dt2] + (op + 3)->dt1) * (op + 3)->mul) >> 1;
+				(op + 0)->delta_phase = ((ic->freq[kc_channel + (op + 0)->dt2] + (op + 0)->dt1) * (op + 0)->mul) >> 1;
+				(op + 1)->delta_phase = ((ic->freq[kc_channel + (op + 1)->dt2] + (op + 1)->dt1) * (op + 1)->mul) >> 1;
+				(op + 2)->delta_phase = ((ic->freq[kc_channel + (op + 2)->dt2] + (op + 2)->dt1) * (op + 2)->mul) >> 1;
+				(op + 3)->delta_phase = ((ic->freq[kc_channel + (op + 3)->dt2] + (op + 3)->dt1) * (op + 3)->mul) >> 1;
+
+				(op + 0)->phase += (op + 0)->delta_phase;
+				(op + 1)->phase += (op + 1)->delta_phase;
+				(op + 2)->phase += (op + 2)->delta_phase;
+				(op + 3)->phase += (op + 3)->delta_phase;
 			}
 			else		/* phase modulation from LFO is equal to zero */
 			{
-				(op + 0)->phase += (op + 0)->freq;
-				(op + 1)->phase += (op + 1)->freq;
-				(op + 2)->phase += (op + 2)->freq;
-				(op + 3)->phase += (op + 3)->freq;
+				(op + 0)->delta_phase= (op + 0)->freq;
+				(op + 1)->delta_phase= (op + 1)->freq;
+				(op + 2)->delta_phase= (op + 2)->freq;
+				(op + 3)->delta_phase= (op + 3)->freq;
+				
+				(op + 0)->phase += (op + 0)->delta_phase;
+				(op + 1)->phase += (op + 1)->delta_phase;
+				(op + 2)->phase += (op + 2)->delta_phase;
+				(op + 3)->phase += (op + 3)->delta_phase;
 			}
 		}
 		else			/* phase modulation from LFO is disabled */
 		{
-			(op + 0)->phase += (op + 0)->freq;
-			(op + 1)->phase += (op + 1)->freq;
-			(op + 2)->phase += (op + 2)->freq;
-			(op + 3)->phase += (op + 3)->freq;
+			(op + 0)->delta_phase = (op + 0)->freq;
+			(op + 1)->delta_phase = (op + 1)->freq;
+			(op + 2)->delta_phase = (op + 2)->freq;
+			(op + 3)->delta_phase = (op + 3)->freq;
+
+			(op + 0)->phase += (op + 0)->delta_phase;
+			(op + 1)->phase += (op + 1)->delta_phase;
+			(op + 2)->phase += (op + 2)->delta_phase;
+			(op + 3)->phase += (op + 3)->delta_phase;
 		}
 
 		op += 4;
@@ -1798,7 +1814,7 @@ u8 YM2151_ReadRegister(u8 chipID, u32 address)
 	return ic->status;
 }
 
-void YM2151_Update(u8 chipID, s32 **buffer, u32 length)
+void YM2151_Update(u8 chipID, s32 **bufs, u32 length)
 {
 	s32 sample;
 	s32 outl, outr;
@@ -1807,8 +1823,8 @@ void YM2151_Update(u8 chipID, s32 **buffer, u32 length)
 
 	int ch;
 
-	//bufL = buffer[0];
-	//bufR = buffer[1];
+	//bufL = bufs[0];
+	//bufR = bufs[1];
 
 	if (ic->tim_B)
 	{
@@ -1864,13 +1880,13 @@ void YM2151_Update(u8 chipID, s32 **buffer, u32 length)
 		{
 			if ((ic->channel_enabled & (1 << (ch))) == 0)
 			{
-				buffer[(ch << 1) + 0][sample] = 0;
-				buffer[(ch << 1) + 1][sample] = 0;
+				bufs[(ch << 1) + 0][sample] = 0;
+				bufs[(ch << 1) + 1][sample] = 0;
 			}
 			else
 			{
-				buffer[(ch << 1) + 0][sample] = ic->chanout[ch] & ic->pan[ch * 2];
-				buffer[(ch << 1) + 1][sample] = ic->chanout[ch] & ic->pan[ch * 2 + 1];
+				bufs[(ch << 1) + 0][sample] = ic->chanout[ch] & ic->pan[ch * 2];
+				bufs[(ch << 1) + 1][sample] = ic->chanout[ch] & ic->pan[ch * 2 + 1];
 			}
 		}
 
@@ -1900,6 +1916,7 @@ void YM2151_Update(u8 chipID, s32 **buffer, u32 length)
 
 		advance(ic);
 	}
+
 }
 
 void YM2151_SetChannelEnable(u8 chipID, u8 channel, u8 enable)
