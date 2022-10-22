@@ -75,7 +75,7 @@ void VGMSpectrumViewer::OnNotifyUpdate(Obserable& observable)
 	const VGMData::Info& info = vgmData.GetInfo();
 	const VGMData::SystemChannels& systemChannels = vgmData.GetSystemChannels();
 
-	if (systemChannels.HasSampleUpdateEvent())
+	if (systemChannels.HasSampleBufferUpdatedEvent())
 	{
 		videoDevice.MakeCurrent();
 
@@ -96,7 +96,7 @@ void VGMSpectrumViewer::OnNotifyUpdate(Obserable& observable)
 		gluOrtho2D(endX, startX, startY, endY);
 		glMatrixMode(GL_MODELVIEW);
 
-		f32 step = VGM_SAMPLE_COUNT / fftSampleCount;
+		f32 step = VGM_SAMPLE_BUFFER_SIZE / fftSampleCount;
 
 		vector<complex> left;
 		left.resize(fftSampleCount);
@@ -107,7 +107,7 @@ void VGMSpectrumViewer::OnNotifyUpdate(Obserable& observable)
 			left[i].imag = 0;
 			for (int j = 0; j < step; j++)
 			{
-				left[i].real += systemChannels.GetOutputSample((int)leftIdx + j, 0);
+				left[i].real += systemChannels.GetOutputSample(0, (int)leftIdx + j);
 			}
 			left[i].real /= step;
 
@@ -123,7 +123,7 @@ void VGMSpectrumViewer::OnNotifyUpdate(Obserable& observable)
 			right[i].imag = 0;
 			for (int j = 0; j < step; j++)
 			{
-				right[i].real += systemChannels.GetOutputSample((int)rightIdx + j, 1);
+				right[i].real += systemChannels.GetOutputSample(1, (int)rightIdx + j);
 			}
 			right[i].real /= step;
 

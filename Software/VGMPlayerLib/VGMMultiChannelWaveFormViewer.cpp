@@ -72,14 +72,14 @@ void VGMMultiChannelWaveFormViewer::OnNotifyUpdate(Obserable& observable)
 	const VGMData::Info& info = vgmData.GetInfo();
 	const VGMData::SystemChannels& systemChannels = vgmData.GetSystemChannels();
 
-	if (systemChannels.HasSampleUpdateEvent())
+	if (systemChannels.HasSampleBufferUpdatedEvent())
 	{
 		videoDevice.MakeCurrent();
 
 		videoDevice.Clear(skin.bgColor);
 
 		int startX = 0;
-		int endX = VGM_SAMPLE_COUNT; //sampleCount;
+		int endX = VGM_SAMPLE_BUFFER_SIZE; //sampleCount;
 		int divX = 10;
 
 		int startY = -32767; //sampleCount/2;

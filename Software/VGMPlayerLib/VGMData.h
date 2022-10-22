@@ -388,26 +388,40 @@ public:
 		char texturePath[256];
 	};
 #pragma pack (push,1)
-	class OutputSamples
+	template<class T>
+	class TOutputBuffer
 	{
 	public:
-		void Set(int bufferSize)
+		TOutputBuffer(int size)
+		: buffer(size * 2)
 		{
-			m.resize(bufferSize * 2);
 		}
 
-		s16& Get(int i, int channel)
+		operator T* ()
 		{
-			return m[i * 2 + channel];
+			return &buffer[0];
 		}
 
-		const s16& Get(int i, int channel) const
+		operator const T* () const
 		{
-			return m[i * 2 + channel];
+			return &buffer[0];
+		}
+
+		T& Get(int i, int channel)
+		{
+			return buffer[(i << 1) + channel];
+		}
+
+		const T& Get(int channel, int i) const
+		{
+			return buffer[(i << 1) + channel];
 		}
 	private:
-		vector<s16> m;
+		vector<T> buffer;
 	};
+
+	typedef TOutputBuffer<s16> OutputSampleBuffer;
+	typedef TOutputBuffer<s32> OutputNoteBuffer;
 #pragma pack (pop)
 
 	class Channel
@@ -415,12 +429,12 @@ public:
 	public:
 		Channel()
 		{
-			note = 0;
-			leftSamples.resize(VGM_SAMPLE_COUNT);
-			rightSamples.resize(VGM_SAMPLE_COUNT);
+			notes.resize(VGM_NOTE_BUFFER_SIZE);
+			leftSamples.resize(VGM_SAMPLE_BUFFER_SIZE);
+			rightSamples.resize(VGM_SAMPLE_BUFFER_SIZE);
 		}
 
-		s32 note;
+		vector<s32> notes;
 		vector<s32> leftSamples;
 		vector<s32> rightSamples;
 	};
@@ -429,21 +443,26 @@ public:
 	{
 	public:
 		SystemChannels()
+		: channels(0)
+	
+		, currentSampleIdx(0)
+		, channelSampleBuffers(0)
+		, outputSampleBuffer(VGM_SAMPLE_BUFFER_SIZE)
+		, sampleBufferUpdatedEvent(false)
+
+		, currentNoteIdx(0)
+		, channelNoteBuffers(0)
+		, outputNoteBuffer(VGM_SAMPLE_BUFFER_SIZE)
+		, noteBufferUpdatedEvent(false)
 		{
-			this->outputSamples.Set(VGM_SAMPLE_COUNT);
-
-			sampleIdx = 0;
-			sampleUpdateEvent = false;
-
-			noteUpdateEvent = false;
 		}
 
 		void SetChannelsCount(int size)
 		{
 			channels.resize(size);
 	
-			channelsSampleBuffers.resize(size * 2);
-			channelsNoteBuffers.resize(size);
+			channelSampleBuffers.resize(size * 2);
+			channelNoteBuffers.resize(size);
 		}
 
 		s32 GetChannelsCount() const
@@ -453,21 +472,21 @@ public:
 
 		int BeginUpdateSamples(int updateSampleCounts)
 		{
-			updateSampleCounts = VGMPlayer_MIN((VGM_SAMPLE_COUNT - sampleIdx), updateSampleCounts); // never exceed bufferSize
+			updateSampleCounts = VGMPlayer_MIN((VGM_SAMPLE_BUFFER_SIZE - currentSampleIdx), updateSampleCounts); // never exceed bufferSize
 			if (updateSampleCounts == 0)
 				return 0;
 
-			channelsSampleBuffers.resize(channels.size() * 2);
+			channelSampleBuffers.resize(channels.size() * 2);
 			for (int i = 0; i < channels.size(); i++)
 			{
-				channelsSampleBuffers[i * 2 + 0] = &channels[i].leftSamples[sampleIdx];
-				channelsSampleBuffers[i * 2 + 1] = &channels[i].rightSamples[sampleIdx];
+				channelSampleBuffers[i * 2 + 0] = &channels[i].leftSamples[currentSampleIdx];
+				channelSampleBuffers[i * 2 + 1] = &channels[i].rightSamples[currentSampleIdx];
 			}
 
-			channelsNoteBuffers.resize(channels.size());
+			channelNoteBuffers.resize(channels.size());
 			for (int i = 0; i < channels.size(); i++)
 			{
-				channelsNoteBuffers[i] = &channels[i].note;
+				channelNoteBuffers[i] = &channels[i].notes[currentNoteIdx];
 			}
 
 			return updateSampleCounts;
@@ -478,7 +497,7 @@ public:
 								u8 chipID, s32 baseChannel, u32 length)
 		{
 			chipUpdate(chipID, 
-					   &channelsSampleBuffers[baseChannel],
+					   &channelSampleBuffers[baseChannel],
 					   length);
 
 			baseChannel += chipGetChannelCount(chipID);
@@ -488,34 +507,23 @@ public:
 
 		void EndUpdateSamples(int updateSampleCounts)
 		{
-			sampleIdx = sampleIdx + updateSampleCounts;	// updated samples, sampleIdx+
-			assert(sampleIdx <= VGM_SAMPLE_COUNT);
-			if (sampleIdx == VGM_SAMPLE_COUNT) //  1/ 50 frame
+			currentSampleIdx = currentSampleIdx + updateSampleCounts;	// updated samples, sampleIdx+
+			assert(currentSampleIdx <= VGM_SAMPLE_BUFFER_SIZE);
+			if (currentSampleIdx == VGM_SAMPLE_BUFFER_SIZE) //  1/ 50 frame
 			{
-				sampleIdx = 0;
-				sampleUpdateEvent = true;
+				currentSampleIdx = 0;
+				sampleBufferUpdatedEvent = true;
 		
-				FillOutputBuffer();
+				FillOutputSampleBuffer();
 			}
-
-			sampleIdx = sampleIdx + updateSampleCounts;	// updated samples, sampleIdx+
-			assert(sampleIdx <= VGM_SAMPLE_COUNT);
-			if (sampleIdx == VGM_SAMPLE_COUNT) //  1/ 50 frame
-			{
-				sampleIdx = 0;
-				sampleUpdateEvent = true;
-				FillOutputBuffer();
-			}
-
-			noteUpdateEvent = true;
 		}
 	private:
-		void FillOutputBuffer()
+		void FillOutputSampleBuffer()
 		{
-			s16* dest = (s16*)(&outputSamples.Get(0, 0));
+			s16* dest = (s16*)(&outputSampleBuffer.Get(0, 0));
 
 			s32 div = channels.size();
-			for (s32 i = 0; i < VGM_SAMPLE_COUNT; i++) // always fill by fix size VGM_SAMPLE_COUNT
+			for (s32 i = 0; i < VGM_SAMPLE_BUFFER_SIZE; i++) // always fill by fix size VGM_SAMPLE_COUNT
 			{
 				s32 outL = 0;
 				for (s32 ch = 0; ch < channels.size(); ch++)
@@ -536,55 +544,62 @@ public:
 			}
 		}
 	public:
-		const s32& GetChannelNote(int ch) const
+		const s32& GetChannelLeftSample(int ch, int i) const
 		{
-			return channels[ch].note;
+			return channels[ch].leftSamples[i];
 		}
 
-		const s32& GetChannelLeftSample(int ch, int sampleIdx) const
+		const s32& GetChannelRightSample(int ch, int i) const
 		{
-			return channels[ch].leftSamples[sampleIdx];
+			return channels[ch].rightSamples[i];
 		}
 
-		const s32& GetChannelRightSample(int ch, int sampleIdx) const
+		const s16& GetOutputSample(int channel, int i) const
 		{
-			return channels[ch].rightSamples[sampleIdx];
+			return outputSampleBuffer.Get(channel, i);
 		}
 
-		const s16& GetOutputSample(int i, int channel) const
+		boolean HasSampleBufferUpdatedEvent() const
 		{
-			return outputSamples.Get(i, channel);
+			return sampleBufferUpdatedEvent;
 		}
 
-		boolean HasSampleUpdateEvent() const
+		void ClearSampleBufferUpdatedEvent()
 		{
-			return sampleUpdateEvent;
+			sampleBufferUpdatedEvent = false;
 		}
 
-		void ClearSampleUpdateEvent()
+		const s32& GetChannelNote(int ch, int i) const
 		{
-			sampleUpdateEvent = false;
+			return channels[ch].notes[i];
 		}
 
-		boolean HasNoteUpdateEvent() const
+		const s16& GetOutputNote(int channel, int i) const
 		{
-			return noteUpdateEvent;
+			return outputNoteBuffer.Get(channel, i);
 		}
 
-		void ClearNoteUpdateEvent()
+		boolean HasNoteBufferUpdatedEvent() const
 		{
-			noteUpdateEvent = false;
+			return noteBufferUpdatedEvent;
+		}
+
+		void ClearNoteBufferUpdatedEvent()
+		{
+			noteBufferUpdatedEvent = false;
 		}
 	private:
-		u32 sampleIdx;
-		boolean sampleUpdateEvent;
-
-		boolean noteUpdateEvent;
-
 		vector<Channel> channels;
-		OutputSamples outputSamples;
-		vector<s32*> channelsSampleBuffers;
-		vector<s32*> channelsNoteBuffers;
+		
+		u32 currentSampleIdx;
+		vector<s32*> channelSampleBuffers;
+		OutputSampleBuffer outputSampleBuffer;
+		boolean sampleBufferUpdatedEvent;
+
+		u32 currentNoteIdx;
+		vector<s32*> channelNoteBuffers;
+		OutputNoteBuffer outputNoteBuffer;
+		boolean noteBufferUpdatedEvent;
 	};
 
 	VGMData(const char* texturePath_, s32 channels_, s32 bitPerSample_, s32 sampleRate_);

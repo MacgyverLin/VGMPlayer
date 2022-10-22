@@ -72,13 +72,13 @@ void VGMWaveFormViewer::OnNotifyUpdate(Obserable& observable)
 	const VGMData::Info& info = vgmData.GetInfo();
 	const VGMData::SystemChannels& systemChannels = vgmData.GetSystemChannels();
 
-	if (systemChannels.HasSampleUpdateEvent())
+	if (systemChannels.HasSampleBufferUpdatedEvent())
 	{
 		videoDevice.MakeCurrent();
 
 		videoDevice.Clear(skin.bgColor);
 		int startX = 0;
-		int endX = VGM_SAMPLE_COUNT; //sampleCount;
+		int endX = VGM_SAMPLE_BUFFER_SIZE; //sampleCount;
 		int divX = 10;
 
 		int startY = -32767; //sampleCount/2;
@@ -103,9 +103,9 @@ void VGMWaveFormViewer::OnNotifyUpdate(Obserable& observable)
 		);
 
 		glEnable(GL_BLEND);
-		for (int j = 0; j < 2; j++)
+		for (int ch = 0; ch < 2; ch++)
 		{
-			glViewport(0, j * height / 2, width, height / 2);
+			glViewport(0, ch * height / 2, width, height / 2);
 
 			glBlendFunc(GL_ONE, GL_ONE);
 			videoDevice.DrawLine(Vector2(startX, 0), skin.gridColor, Vector2(endX, 0), skin.gridColor);
@@ -119,11 +119,11 @@ void VGMWaveFormViewer::OnNotifyUpdate(Obserable& observable)
 			}
 			videoDevice.DrawLine(Vector2(startX, 0), skin.axisColor, Vector2(endX, 0), skin.axisColor);
 
-			const Color& c = j % 2 ? skin.leftColor : skin.rightColor;
+			const Color& c = ch % 2 ? skin.leftColor : skin.rightColor;
 			for (s32 i = startX; i < endX - 3; i += 3)
 			{
-				s32 y0 = systemChannels.GetOutputSample(i + 0, j) * waveScale;
-				s32 y1 = systemChannels.GetOutputSample(i + 3, j) * waveScale;
+				s32 y0 = systemChannels.GetOutputSample(ch, i + 0) * waveScale;
+				s32 y1 = systemChannels.GetOutputSample(ch, i + 3) * waveScale;
 				videoDevice.DrawLine(Vector2(i, y0), c, Vector2(i + 3, y1), c);
 			}
 		}

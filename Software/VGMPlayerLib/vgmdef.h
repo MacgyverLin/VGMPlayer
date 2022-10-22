@@ -17,8 +17,13 @@ typedef float f32;
 typedef double f64;
 
 #define vgm_log printf
-#define VGM_SAMPLE_COUNT		882 // NTSC FRAME
+#define VGM_SAMPLE_BUFFER_SIZE		882 // NTSC FRAME
 #define VGM_OUTPUT_BUFFER_COUNT 4   // 64 Frames
+
+#define VGM_NOTE_BUFFER_SIZE		882 // NTSC FRAME
+#define VGM_OUTPUT_NOTE_BUFFER_COUNT 4   // 64 Frames
+
+
 #define NO_CLAMP
 #define PI 3.141592654f
 

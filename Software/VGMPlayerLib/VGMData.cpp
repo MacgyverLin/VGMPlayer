@@ -464,8 +464,8 @@ boolean VGMData::Update()
 {
 	NotifyUpdate();
 
-	systemChannels.ClearSampleUpdateEvent();
-	systemChannels.ClearNoteUpdateEvent();
+	systemChannels.ClearSampleBufferUpdatedEvent();
+	systemChannels.ClearSampleBufferUpdatedEvent();
 
 	if (updateDataRequest)
 	{
