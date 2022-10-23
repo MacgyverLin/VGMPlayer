@@ -12,6 +12,22 @@
 #define STB_IMAGE_WRITE_IMPLEMENTATION
 #include "stb_image_write.h"
 
+const Color Color::Black(0.0f, 0.0f, 0.0f, 1.0f);
+const Color Color::Blue(0.0f, 0.0f, 0.5f, 1.0f);
+const Color Color::Green(0.0f, 0.5f, 0.0f, 1.0f);
+const Color Color::Cyan(0.0f, 0.5f, 0.5f, 1.0f);
+const Color Color::Red(0.5f, 0.0f, 0.0f, 1.0f);
+const Color Color::Mangenta(0.5f, 0.0f, 0.5f, 1.0f);
+const Color Color::Brown(0.5f, 0.5f, 0.0f, 1.0f);
+const Color Color::Grey(0.5f, 0.5f, 0.5f, 1.0f);
+const Color Color::BrightBlue(0.0f, 0.0f, 1.0f, 1.0f);
+const Color Color::BrightGreen(0.0f, 1.0f, 0.0f, 1.0f);
+const Color Color::BrightCyan(0.0f, 1.0f, 1.0f, 1.0f);
+const Color Color::BrightRed(1.0f, 0.0f, 0.0f, 1.0f);
+const Color Color::BrightMangenta(1.0f, 0.0f, 1.0f, 1.0f);
+const Color Color::Yellow(1.0f, 1.0f, 0.0f, 1.0f);
+const Color Color::White(1.0f, 1.0f, 1.0f, 1.0f);
+
 GLenum GetGLEnum(VideoDevice::Constant constant)
 {
 	static const vector<GLenum> glEnums =
@@ -878,7 +894,7 @@ void VideoDevice::DrawWireRectangle(const Vector2& v0, const Color& c0, const Ve
 {
 	glDisable(GL_TEXTURE_2D);
 
-	glBegin(GL_LINES);
+	glBegin(GL_LINE_LOOP);
 
 	glColor4fv((f32*)&c0);
 	glVertex2fv((f32*)&v0);

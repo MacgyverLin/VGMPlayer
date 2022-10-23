@@ -542,7 +542,7 @@ public:
 			f32 freq = 0;
 
 			WriteRegisterCB(chipID, address, data, &ch, &freq);
-			if (ch != -1)
+			if (frameCounter>10 && ch != -1)
 			{
 				channels[ch].notes.push_back(Channel::Note(frameCounter, freq));
 			}
