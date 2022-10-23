@@ -28,17 +28,33 @@ bool Platform::Initialize()
 static bool oldkeyStates[256] = {};
 static bool keyStates[256] = {};
 
-bool Platform::getKeyDown(int key)
+int Platform::GetScreenWidth()
+{
+	SDL_DisplayMode DM;
+	SDL_GetCurrentDisplayMode(0, &DM);
+
+	return DM.w;
+}
+
+int Platform::GetScreenHeight()
+{
+	SDL_DisplayMode DM;
+	SDL_GetCurrentDisplayMode(0, &DM);
+
+	return DM.h;
+}
+
+bool Platform::GetKeyDown(int key)
 {
 	return !oldkeyStates[key] && keyStates[key];
 }
 
-bool Platform::getKeyUp(int key)
+bool Platform::GetKeyUp(int key)
 {
 	return oldkeyStates[key] && !keyStates[key];
 }
 
-bool Platform::getKey(int key)
+bool Platform::GetKey(int key)
 {
 	return oldkeyStates[key] && keyStates[key];
 }

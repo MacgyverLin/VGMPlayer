@@ -2,10 +2,10 @@
 #define _VGMAudioPlayer_h_
 
 #include "VGMData.h"
-#include "VGMDataObverser.h"
+#include "VGMObverser.h"
 #include "AudioDevice.h"
 
-class VGMAudioPlayer : public VGMDataObverser
+class VGMAudioPlayer : public VGMObverser
 {
 public:
 	VGMAudioPlayer();

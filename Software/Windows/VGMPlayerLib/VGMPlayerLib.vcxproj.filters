@@ -27,6 +27,9 @@
     <Filter Include="Source Files\misc">
       <UniqueIdentifier>{05b5b077-57a3-4c68-b7fc-8e1dc33a0d6c}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source Files\VGM\Observer\Renderer">
+      <UniqueIdentifier>{d9ae2f09-fc56-4d1a-882f-b0f77539315e}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="stdafx.h">
@@ -77,10 +80,7 @@
     <ClInclude Include="..\..\VGMPlayerLib\Platform.h">
       <Filter>Source Files\Platform</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\VGMPlayerLib\VGMAudioPlayer.h">
-      <Filter>Source Files\VGM\Observer</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\VGMPlayerLib\VGMDataObverser.h">
+    <ClInclude Include="..\..\VGMPlayerLib\VGMObverser.h">
       <Filter>Source Files\VGM\Observer</Filter>
     </ClInclude>
     <ClInclude Include="..\..\VGMPlayerLib\VGMData.h">
@@ -91,12 +91,6 @@
     </ClInclude>
     <ClInclude Include="..\..\VGMPlayerLib\VideoDevice.h">
       <Filter>Source Files\Platform</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\VGMPlayerLib\VGMWaveFormViewer.h">
-      <Filter>Source Files\VGM\Observer</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\VGMPlayerLib\VGMSpectrumViewer.h">
-      <Filter>Source Files\VGM\Observer</Filter>
     </ClInclude>
     <ClInclude Include="..\..\VGMPlayerLib\VGMPlayerLib.h">
       <Filter>Source Files\VGM</Filter>
@@ -110,13 +104,28 @@
     <ClInclude Include="..\..\VGMPlayerLib\SEGAPCM.h">
       <Filter>Source Files\chips</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\VGMPlayerLib\VGMMultiChannelWaveFormViewer.h">
-      <Filter>Source Files\VGM\Observer</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\VGMPlayerLib\FFT.h">
       <Filter>Source Files\misc</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\VGMPlayerLib\VGMMultiChannelNoteViewer.h">
+    <ClInclude Include="..\..\VGMPlayerLib\VGMViewer.h">
+      <Filter>Source Files\VGM\Observer</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\VGMPlayerLib\VGMMultiChannelNoteRenderer.h">
+      <Filter>Source Files\VGM\Observer\Renderer</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\VGMPlayerLib\VGMMultiChannelWaveFormRenderer.h">
+      <Filter>Source Files\VGM\Observer\Renderer</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\VGMPlayerLib\VGMWaveFormRenderer.h">
+      <Filter>Source Files\VGM\Observer\Renderer</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\VGMPlayerLib\VGMSpectrumRenderer.h">
+      <Filter>Source Files\VGM\Observer\Renderer</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\VGMPlayerLib\VGMRenderer.h">
+      <Filter>Source Files\VGM\Observer\Renderer</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\VGMPlayerLib\VGMAudioPlayer.h">
       <Filter>Source Files\VGM\Observer</Filter>
     </ClInclude>
   </ItemGroup>
@@ -157,10 +166,7 @@
     <ClCompile Include="..\..\VGMPlayerLib\Platform.cpp">
       <Filter>Source Files\Platform</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\VGMPlayerLib\VGMAudioPlayer.cpp">
-      <Filter>Source Files\VGM\Observer</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\VGMPlayerLib\VGMDataObverser.cpp">
+    <ClCompile Include="..\..\VGMPlayerLib\VGMObverser.cpp">
       <Filter>Source Files\VGM\Observer</Filter>
     </ClCompile>
     <ClCompile Include="..\..\VGMPlayerLib\VGMData.cpp">
@@ -172,12 +178,6 @@
     <ClCompile Include="..\..\VGMPlayerLib\VideoDevice.cpp">
       <Filter>Source Files\Platform</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\VGMPlayerLib\VGMWaveFormViewer.cpp">
-      <Filter>Source Files\VGM\Observer</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\VGMPlayerLib\VGMSpectrumViewer.cpp">
-      <Filter>Source Files\VGM\Observer</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\VGMPlayerLib\QSound.c">
       <Filter>Source Files\chips</Filter>
     </ClCompile>
@@ -187,13 +187,28 @@
     <ClCompile Include="..\..\VGMPlayerLib\SEGAPCM.c">
       <Filter>Source Files\chips</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\VGMPlayerLib\VGMMultiChannelWaveFormViewer.cpp">
-      <Filter>Source Files\VGM\Observer</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\VGMPlayerLib\FFT.cpp">
       <Filter>Source Files\misc</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\VGMPlayerLib\VGMMultiChannelNoteViewer.cpp">
+    <ClCompile Include="..\..\VGMPlayerLib\VGMViewer.cpp">
+      <Filter>Source Files\VGM\Observer</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\VGMPlayerLib\VGMMultiChannelNoteRenderer.cpp">
+      <Filter>Source Files\VGM\Observer\Renderer</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\VGMPlayerLib\VGMMultiChannelWaveFormRenderer.cpp">
+      <Filter>Source Files\VGM\Observer\Renderer</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\VGMPlayerLib\VGMWaveFormRenderer.cpp">
+      <Filter>Source Files\VGM\Observer\Renderer</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\VGMPlayerLib\VGMSpectrumRenderer.cpp">
+      <Filter>Source Files\VGM\Observer\Renderer</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\VGMPlayerLib\VGMRenderer.cpp">
+      <Filter>Source Files\VGM\Observer\Renderer</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\VGMPlayerLib\VGMAudioPlayer.cpp">
       <Filter>Source Files\VGM\Observer</Filter>
     </ClCompile>
   </ItemGroup>

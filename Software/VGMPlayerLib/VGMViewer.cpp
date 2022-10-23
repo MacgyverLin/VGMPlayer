@@ -1,74 +1,108 @@
-#include "VGMMultiChannelNoteViewer.h"
+#include "VGMViewer.h"
 #include "FFT.h"
 #include <GL/glu.h>
 #include <GL/gl.h>
 
-VGMMultiChannelNoteViewer::VGMMultiChannelNoteViewer(const string& name_, u32 x_, u32 y_, u32 width_, u32 height_, float waveScale_, const Skin& skin_)
-	: VGMDataObverser()
+#define FACTOR 0.9
+#define WIDTH  (640 * FACTOR)
+#define HEIGHT (480 * FACTOR)
+#define TITLE_BAR 0
+#define GAP 5
+
+VGMViewer::VGMViewer(const string& name_, u32 x_, u32 y_, u32 width_, u32 height_)
+	: VGMObverser()
 	, name(name_)
 	, x(x_)
 	, y(y_)
 	, width(width_)
 	, height(height_)
-	, waveScale(waveScale_)
-	, skin(skin_)
-{
-	maxLeft.resize(skin.numColumns * 2);
-	maxRight.resize(skin.numColumns * 2);
-}
 
-VGMMultiChannelNoteViewer::~VGMMultiChannelNoteViewer()
+	, vgmWaveFormRenderer				("Output  ", 0                ,          0, width / 3, height * 1 / 3, 5.0f, VGMWaveFormRenderer::Skin())
+	, vgmSpectrumRenderer				("Spectrum", 0 + width / 3 * 1,          0, width / 3, height * 1 / 3, 5.0f, VGMSpectrumRenderer::Skin())
+	, vgmMultiChannelWaveFormRenderer	("Channels", 0 + width / 3 * 2,          0, width / 3, height * 1 / 3, 1.0f, VGMMultiChannelWaveFormRenderer::Skin())
+	, vgmMultiChannelNoteRenderer		("Notes   ", 0                , height / 3, width / 1, height * 2 / 3, 1.0f, VGMMultiChannelNoteRenderer::Skin())
 {
 }
 
-void VGMMultiChannelNoteViewer::OnNotifySomething(Obserable& observable)
+VGMViewer::~VGMViewer()
+{
+}
+
+void VGMViewer::OnNotifySomething(Obserable& observable)
 {
 	VGMData& vgmData = (VGMData&)observable;
+
+	vgmWaveFormRenderer.OnNotifySomething(observable);
+	vgmSpectrumRenderer.OnNotifySomething(observable);
+	vgmMultiChannelWaveFormRenderer.OnNotifySomething(observable);
+	vgmMultiChannelNoteRenderer.OnNotifySomething(observable);
 }
 
-void VGMMultiChannelNoteViewer::OnNotifyOpen(Obserable& observable)
+void VGMViewer::OnNotifyOpen(Obserable& observable)
 {
 	VGMData& vgmData = (VGMData&)observable;
-	const VGMHeader& header = vgmData.GetHeader();
-	const VGMData::Info& info = vgmData.GetInfo();
-	const VGMData::SystemChannels& systemChannels = vgmData.GetSystemChannels();
 
 	videoDevice.Open(name.c_str(), x, y, width, height);
-	texture.Load(info.texturePath);
+
+	vgmWaveFormRenderer.OnNotifyOpen(observable);
+	vgmSpectrumRenderer.OnNotifyOpen(observable);
+	vgmMultiChannelWaveFormRenderer.OnNotifyOpen(observable);
+	vgmMultiChannelNoteRenderer.OnNotifyOpen(observable);
 }
 
-void VGMMultiChannelNoteViewer::OnNotifyClose(Obserable& observable)
+void VGMViewer::OnNotifyClose(Obserable& observable)
 {
 	VGMData& vgmData = (VGMData&)observable;
 
-	const VGMHeader& header = vgmData.GetHeader();
-	const VGMData::Info& info = vgmData.GetInfo();
-	const VGMData::SystemChannels& systemChannels = vgmData.GetSystemChannels();
+	vgmWaveFormRenderer.OnNotifyClose(observable);
+	vgmSpectrumRenderer.OnNotifyClose(observable);
+	vgmMultiChannelWaveFormRenderer.OnNotifyClose(observable);
+	vgmMultiChannelNoteRenderer.OnNotifyClose(observable);
 
 	videoDevice.Close();
 }
 
-void VGMMultiChannelNoteViewer::OnNotifyPlay(Obserable& observable)
+void VGMViewer::OnNotifyPlay(Obserable& observable)
 {
 	VGMData& vgmData = (VGMData&)observable;
+
+	vgmWaveFormRenderer.OnNotifyPlay(observable);
+	vgmSpectrumRenderer.OnNotifyPlay(observable);
+	vgmMultiChannelWaveFormRenderer.OnNotifyPlay(observable);
+	vgmMultiChannelNoteRenderer.OnNotifyPlay(observable);
 }
 
-void VGMMultiChannelNoteViewer::OnNotifyStop(Obserable& observable)
+void VGMViewer::OnNotifyStop(Obserable& observable)
 {
 	VGMData& vgmData = (VGMData&)observable;
+
+	vgmWaveFormRenderer.OnNotifyStop(observable);
+	vgmSpectrumRenderer.OnNotifyStop(observable);
+	vgmMultiChannelWaveFormRenderer.OnNotifyStop(observable);
+	vgmMultiChannelNoteRenderer.OnNotifyStop(observable);
 }
 
-void VGMMultiChannelNoteViewer::OnNotifyPause(Obserable& observable)
+void VGMViewer::OnNotifyPause(Obserable& observable)
 {
 	VGMData& vgmData = (VGMData&)observable;
+
+	vgmWaveFormRenderer.OnNotifyPause(observable);
+	vgmSpectrumRenderer.OnNotifyPause(observable);
+	vgmMultiChannelWaveFormRenderer.OnNotifyPause(observable);
+	vgmMultiChannelNoteRenderer.OnNotifyPause(observable);
 }
 
-void VGMMultiChannelNoteViewer::OnNotifyResume(Obserable& observable)
+void VGMViewer::OnNotifyResume(Obserable& observable)
 {
 	VGMData& vgmData = (VGMData&)observable;
+
+	vgmWaveFormRenderer.OnNotifyResume(observable);
+	vgmSpectrumRenderer.OnNotifyResume(observable);
+	vgmMultiChannelWaveFormRenderer.OnNotifyResume(observable);
+	vgmMultiChannelNoteRenderer.OnNotifyResume(observable);
 }
 
-void VGMMultiChannelNoteViewer::OnNotifyUpdate(Obserable& observable)
+void VGMViewer::OnNotifyUpdate(Obserable& observable)
 {
 	VGMData& vgmData = (VGMData&)observable;
 	const VGMData::Info& info = vgmData.GetInfo();
@@ -76,75 +110,13 @@ void VGMMultiChannelNoteViewer::OnNotifyUpdate(Obserable& observable)
 
 	if (systemChannels.HasSampleBufferUpdatedEvent())
 	{
-		if (channelsNotes.size() != systemChannels.GetChannelsCount())
-			channelsNotes.resize(systemChannels.GetChannelsCount());
-
-		for (int ch = 0; ch < systemChannels.GetChannelsCount() ; ch++)
-		{
-			const std::vector<VGMData::Channel::Note>& outputNotes = systemChannels.GetOutputNotes(ch);
-			channelsNotes[ch].insert(channelsNotes[ch].end(), outputNotes.begin(), outputNotes.end());
-		}
-
 		videoDevice.MakeCurrent();
-		videoDevice.Clear(Color(0, 0, 0, 1));
+		videoDevice.Clear(Color(0.0, 0.0, 0.0, 1.0));
 
-
-		/////////////////////////////////////////////////////////////////////
-		glMatrixMode(GL_PROJECTION);
-		glLoadIdentity();
-		gluOrtho2D(0, width, 0, height);
-		glMatrixMode(GL_MODELVIEW);
-
-		glViewport(0, 0, width, height);
-		glEnable(GL_BLEND);
-		videoDevice.DrawSolidRectangle
-		(
-			Vector2(width, 0), Color(1.0f, 1.0f, 1.0f, 0.1f),
-			Vector2(0, 0), Color(1.0f, 1.0f, 1.0f, 0.1f),
-			Vector2(0, height), Color(1.0f, 1.0f, 1.0f, 0.2f),
-			Vector2(width, height), Color(1.0f, 1.0f, 1.0f, 0.2f)
-		);
-
-		/////////////////////////////////////////////////////////////////////
-		int startX = 0;
-		int endX = 32;
-		int startY = 0;
-		int endY = VGM_FRAME_PER_SECOND * 5;
-		f32 frameCounter = vgmData.GetFrameCounter();
-
-		glMatrixMode(GL_PROJECTION);
-		glLoadIdentity();
-		gluOrtho2D(startX, endX, startY + frameCounter, endY + frameCounter);
-		glMatrixMode(GL_MODELVIEW);
-
-		glViewport(0, 0, width, height);
-		glEnable(GL_BLEND);
-		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-
-		Color topColor = skin.leftColor; topColor.a = 0.3f;
-		Color bottomColor = skin.leftColor; bottomColor.a = 0.9f;
-		for (int ch = 0; ch < channelsNotes.size(); ch++)
-		{
-			int viewportWidth = width / (systemChannels.GetChannelsCount());
-			glViewport(viewportWidth * ch, 0, viewportWidth, height);
-
-			for (s32 i = 0; i< channelsNotes[ch].size(); i++)
-			{
-				f32 y = channelsNotes[ch][i].frame + endY;
-
-				// 30.86 	61.73 	123.46 	246.92 	493.84 	987.67 	1975.34 	3950.68 	7901.36 	15802.72 	31605.44 
-
-				s32 x = channelsNotes[ch][i].frequency / 987.67 * (endX - startX);
-
-				videoDevice.DrawSolidRectangle
-				(
-					Vector2(x + 1, y), topColor,
-					Vector2(x + 0, y), topColor,
-					Vector2(x + 0, y + 1), topColor,
-					Vector2(x + 1, y + 1), topColor
-				);
-			}
-		}
+		vgmWaveFormRenderer.OnNotifyUpdate(observable);
+		vgmSpectrumRenderer.OnNotifyUpdate(observable);
+		vgmMultiChannelWaveFormRenderer.OnNotifyUpdate(observable);
+		vgmMultiChannelNoteRenderer.OnNotifyUpdate(observable);
 
 		videoDevice.Flush();
 	}

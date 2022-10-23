@@ -384,11 +384,14 @@ public:
 		NUM_SCANCODES = 512 /**< not a key, just marks the number of scancodes																																												  for array bounds */
 	} Scancode;
 
+	static int GetScreenWidth();
+	static int GetScreenHeight();
+
 	static bool Initialize();
 	static bool Update();
-	static bool getKeyDown(int key);
-	static bool getKeyUp(int key);
-	static bool getKey(int key);
+	static bool GetKeyDown(int key);
+	static bool GetKeyUp(int key);
+	static bool GetKey(int key);
 	static void Terminate();
 };
 
