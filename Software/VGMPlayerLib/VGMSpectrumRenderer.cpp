@@ -140,10 +140,10 @@ void VGMSpectrumRenderer::OnNotifyUpdate(Obserable& observable)
 		videoDevice.DrawTexSolidRectangle
 		(
 			texture,
-			Vector2(endX, startY), skin.bgColor, Vector2(0, 0),
-			Vector2(startX, startY), skin.bgColor, Vector2(1, 0),
-			Vector2(startX, endY), skin.bgColor, Vector2(1, 1),
-			Vector2(endX, endY), skin.bgColor, Vector2(0, 1)
+			Vector2(endX, startY), skin.bgColor, Vector2(1, 0),
+			Vector2(startX, startY), skin.bgColor, Vector2(0, 0),
+			Vector2(startX, endY), skin.bgColor, Vector2(0, 1),
+			Vector2(endX, endY), skin.bgColor, Vector2(1, 1)
 		);
 
 		/////////////////////////////////////////////////////////////////////

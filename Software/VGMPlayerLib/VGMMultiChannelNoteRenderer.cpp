@@ -84,7 +84,8 @@ void VGMMultiChannelNoteRenderer::OnNotifyUpdate(Obserable& observable)
 		/////////////////////////////////////////////////////////////////////
 		SetViewport(0, 0, 1, 1);
 
-		videoDevice.Disable(VideoDevice::Constant::BLEND);
+		videoDevice.Clear(Color(0.0, 0.0, 0.0, 1.0));
+		videoDevice.Enable(VideoDevice::Constant::BLEND);
 		videoDevice.DrawSolidRectangle
 		(
 			Vector2(1, 0), Color(0.0f, 0.0f, 0.0f, 0.1f),
@@ -97,7 +98,8 @@ void VGMMultiChannelNoteRenderer::OnNotifyUpdate(Obserable& observable)
 		int startX = 0;
 		int endX = 32;
 		int startY = 0;
-		int endY = VGM_FRAME_PER_SECOND * 5;
+		int endY = VGM_FRAME_PER_SECOND;
+		f32 staffHeight = (endY - startY) * 0.001;
 		f32 frameCounter = vgmData.GetFrameCounter();
 
 		glMatrixMode(GL_PROJECTION);
@@ -109,26 +111,28 @@ void VGMMultiChannelNoteRenderer::OnNotifyUpdate(Obserable& observable)
 		videoDevice.Enable(VideoDevice::Constant::BLEND);
 		videoDevice.BlendFunc(VideoDevice::Constant::SRC_ALPHA, VideoDevice::Constant::ONE_MINUS_SRC_ALPHA);
 
-		Color topColor = skin.leftColor; topColor.a = 0.3f;
-		Color bottomColor = skin.leftColor; bottomColor.a = 0.9f;
+		Color topColor = skin.leftColor;;
+		Color bottomColor = skin.leftColor;
 		for (int ch = 0; ch < channelsNotes.size(); ch++)
 		{
 			float channelViewportWidth = 1.0f / systemChannels.GetChannelsCount();
-
 			SetViewport(channelViewportWidth * ch, 0.0f, channelViewportWidth, 1.0f);
+
+			// float channelViewportHeight = 1.0f / systemChannels.GetChannelsCount();
+			// SetViewport(0.0f, channelViewportHeight * ch, 1.0f, channelViewportHeight);
 
 			for (s32 i = 0; i< channelsNotes[ch].size(); i++)
 			{
-				f32 y = channelsNotes[ch][i].frame + endY;
 				// 30.86 	61.73 	123.46 	246.92 	493.84 	987.67 	1975.34 	3950.68 	7901.36 	15802.72 	31605.44 
-				s32 x = channelsNotes[ch][i].frequency / 987.67 * (endX - startX);
+				f32 y = channelsNotes[ch][i].frame + endY;
+				f32 x = channelsNotes[ch][i].frequency * (endX - startX) / 987.67;
 
 				videoDevice.DrawSolidRectangle
 				(
-					Vector2(x + 1, y), topColor,
-					Vector2(x + 0, y), topColor,
-					Vector2(x + 0, y + 1), topColor,
-					Vector2(x + 1, y + 1), topColor
+					Vector2(x + 1, y + 0), topColor,
+					Vector2(x + 0, y + 0), topColor,
+					Vector2(x + 0, y + staffHeight), topColor,
+					Vector2(x + 1, y + staffHeight), topColor
 				);
 			}
 		}

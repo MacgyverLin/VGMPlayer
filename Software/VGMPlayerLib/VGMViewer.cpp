@@ -17,10 +17,14 @@ VGMViewer::VGMViewer(const string& name_, u32 x_, u32 y_, u32 width_, u32 height
 	, width(width_)
 	, height(height_)
 
-	, vgmWaveFormRenderer				("Output  ", 0                ,          0, width / 3, height * 1 / 3, 5.0f, VGMWaveFormRenderer::Skin())
-	, vgmSpectrumRenderer				("Spectrum", 0 + width / 3 * 1,          0, width / 3, height * 1 / 3, 5.0f, VGMSpectrumRenderer::Skin())
-	, vgmMultiChannelWaveFormRenderer	("Channels", 0 + width / 3 * 2,          0, width / 3, height * 1 / 3, 1.0f, VGMMultiChannelWaveFormRenderer::Skin())
-	, vgmMultiChannelNoteRenderer		("Notes   ", 0                , height / 3, width / 1, height * 2 / 3, 1.0f, VGMMultiChannelNoteRenderer::Skin())
+//	, vgmWaveFormRenderer				("Output  ", 0                ,          0, width / 3, height * 1 / 3, 5.0f, VGMWaveFormRenderer::Skin())
+//	, vgmSpectrumRenderer				("Spectrum", 0 + width / 3 * 1,          0, width / 3, height * 1 / 3, 5.0f, VGMSpectrumRenderer::Skin())
+//	, vgmMultiChannelWaveFormRenderer	("Channels", 0 + width / 3 * 2,          0, width / 3, height * 1 / 3, 1.0f, VGMMultiChannelWaveFormRenderer::Skin())
+//	, vgmMultiChannelNoteRenderer		("Notes   ", 0                , height / 3, width / 1, height * 2 / 3, 1.0f, VGMMultiChannelNoteRenderer::Skin())
+	, vgmWaveFormRenderer				("Output  ", 0 + width / 3 * 2, height / 3 * 0, width * 1 / 3, height * 1 / 3, 5.0f, VGMWaveFormRenderer::Skin())
+	, vgmSpectrumRenderer				("Spectrum", 0 + width / 3 * 2, height / 3 * 1, width * 1 / 3, height * 1 / 3, 5.0f, VGMSpectrumRenderer::Skin())
+	, vgmMultiChannelWaveFormRenderer	("Channels", 0 + width / 3 * 2, height / 3 * 2, width * 1 / 3, height * 1 / 3, 1.0f, VGMMultiChannelWaveFormRenderer::Skin())
+	, vgmMultiChannelNoteRenderer		("Notes   ", 0                , 0             , width * 2 / 3, height * 3 / 3, 1.0f, VGMMultiChannelNoteRenderer::Skin())
 {
 }
 
