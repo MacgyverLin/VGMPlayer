@@ -1,0 +1,11 @@
+#include "VGMObverser.h"
+
+////////////////////////////////////////////////////////////////
+VGMObverser::VGMObverser()
+{
+}
+
+VGMObverser::~VGMObverser()
+{
+}
+
