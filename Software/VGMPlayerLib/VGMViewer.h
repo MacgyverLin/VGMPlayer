@@ -1,6 +1,7 @@
 #ifndef _VGMViewer_h_
 #define _VGMViewer_h_
 
+#include "Platform.h"
 #include "VGMData.h"
 #include "VGMObverser.h"
 
@@ -37,10 +38,17 @@ private:
 	u32 width;
 	u32 height;
 
+
 	VGMWaveFormRenderer vgmWaveFormRenderer;
 	VGMSpectrumRenderer vgmSpectrumRenderer;
 	VGMMultiChannelWaveFormRenderer vgmMultiChannelWaveFormRenderer;
+
+
+#ifdef OLDLAYOUT
+	VGMMultiChannelWaveFormRenderer vgmMultiChannelNoteRenderer;
+#else
 	VGMMultiChannelNoteRenderer vgmMultiChannelNoteRenderer;
+#endif
 };
 
 #endif

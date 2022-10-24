@@ -19,26 +19,25 @@ using namespace std;
 #pragma pack (push,1)
 enum VGMCommand
 {
-	GAME_GEAR_PSG_PORT6_WRITE = 0x4F,	// dd
-	SN76489_WRITE = 0x50,				// dd
-	YM2413_WRITE = 0x51,				// aa dd
-	YM2612_PORT0_WRITE = 0x52,			// aa dd
-	YM2612_PORT1_WRITE = 0x53,			// aa dd
+	GAME_GEAR_PSG_PORT6_WRITE = 0x4F,				// dd
+	SN76489_WRITE = 0x50,							// dd
+	YM2413_WRITE = 0x51,							// aa dd
+	YM2612_PORT0_WRITE = 0x52,						// aa dd
+	YM2612_PORT1_WRITE = 0x53,						// aa dd
+	YM2151_WRITE = 0x54,							// aa dd	
+	YM2203_WRITE = 0x55,							// aa dd	
+	YM2608_PORT0_WRITE = 0x56,						// aa dd	
+	YM2608_PORT1_WRITE = 0x57,						// aa dd	
+	YM2610_PORT0_WRITE = 0x58,						// aa dd	
+	YM2610_PORT1_WRITE = 0x59,						// aa dd	
+	YM3812_WRITE = 0x5A,							// aa dd	
+	YM3526_WRITE = 0x5B,							// aa dd	
+	Y8950_WRITE = 0x5C,								// aa dd	
+	YMZ280B_WRITE = 0x5D,							// aa dd	
+	YMF262_PORT0_WRITE = 0x5E,						// aa dd	
+	YMF262_PORT1_WRITE = 0x5F,						// aa dd	
 
-	YM2151_WRITE = 0x54,				// aa dd	
-	YM2203_WRITE = 0x55,				// aa dd	
-	YM2608_PORT0_WRITE = 0x56,			// aa dd	
-	YM2608_PORT1_WRITE = 0x57,			// aa dd	
-	YM2610_PORT0_WRITE = 0x58,			// aa dd	
-	YM2610_PORT1_WRITE = 0x59,			// aa dd	
-	YM3812_WRITE = 0x5A,				// aa dd	
-	YM3526_WRITE = 0x5B,				// aa dd	
-	Y8950_WRITE = 0x5C,					// aa dd	
-	YMZ280B_WRITE = 0x5D,				// aa dd	
-	YMF262_PORT0_WRITE = 0x5E,			// aa dd	
-	YMF262_PORT1_WRITE = 0x5F,			// aa dd	
-
-	WAIT_NNNN_SAMPLES = 0x61,			// nn nn
+	WAIT_NNNN_SAMPLES = 0x61,						// nn nn
 	WAIT_735_SAMPLES = 0x62,
 	WAIT_882_SAMPLES = 0x63,
 	END_OF_SOUND = 0x66,
@@ -61,6 +60,23 @@ enum VGMCommand
 	WAIT_15_SAMPLES = 0x7E,
 	WAIT_16_SAMPLES = 0x7F,
 
+	YM2612_PORT0_ADDR_0X2A_WRITE_0X80 = 0x80,
+	YM2612_PORT0_ADDR_0X2A_WRITE_0X81 = 0x81,
+	YM2612_PORT0_ADDR_0X2A_WRITE_0X82 = 0x82,
+	YM2612_PORT0_ADDR_0X2A_WRITE_0X83 = 0x83,
+	YM2612_PORT0_ADDR_0X2A_WRITE_0X84 = 0x84,
+	YM2612_PORT0_ADDR_0X2A_WRITE_0X85 = 0x85,
+	YM2612_PORT0_ADDR_0X2A_WRITE_0X86 = 0x86,
+	YM2612_PORT0_ADDR_0X2A_WRITE_0X87 = 0x87,
+	YM2612_PORT0_ADDR_0X2A_WRITE_0X88 = 0x88,
+	YM2612_PORT0_ADDR_0X2A_WRITE_0X89 = 0x89,
+	YM2612_PORT0_ADDR_0X2A_WRITE_0X8A = 0x8A,
+	YM2612_PORT0_ADDR_0X2A_WRITE_0X8B = 0x8B,
+	YM2612_PORT0_ADDR_0X2A_WRITE_0X8C = 0x8C,
+	YM2612_PORT0_ADDR_0X2A_WRITE_0X8D = 0x8D,
+	YM2612_PORT0_ADDR_0X2A_WRITE_0X8E = 0x8E,
+	YM2612_PORT0_ADDR_0X2A_WRITE_0X8F = 0x8F,
+
 	DAC_SETUP_STREAM_CONTROL = 0x90,
 	DAC_SET_STREAM_DATA = 0x91,
 	DAC_SET_STREAM_FREQUENCY = 0x92,
@@ -77,9 +93,65 @@ enum VGMCommand
 	HUC6280_WRITE = 0xB9, 				// aa dd
 	SEGA_PCM = 0xC0,					// bbaa dd Sega PCM, write value dd to memory offset aabb
 
+	MultiPCM_SETBANK_OFFSET = 0xC3,
+	MultiPCM_WRITE = 0xB5,
+
 	QSOUND_WRITE = 0xC4,				// mmll rr
+
+	SEEK_TO_OFFSET = 0xE0,
 };
 
+enum VGMDataBlockType
+{
+	YM2612_PCM_DATA = 0X00,
+	RF5C68_PCM_DATA = 0X01,
+	RF5C164_PCM_DATA = 0X02,
+	PWM_PCM_DATA = 0X03,
+	OKIM6258_ADPCM_DATA = 0X04,
+	HUC6280_PCM_DATA = 0X05,
+	SCSP_PCM_DATA = 0X06,
+	NES_APU_DPCM_DATA = 0X07,
+
+
+	YM2612_PCM_DATA_COMPRESSED = 0X40,
+	RF5C68_PCM_DATA_COMPRESSED = 0X41,
+	RF5C164_PCM_DATA_COMPRESSED = 0X42,
+	PWM_PCM_DATA_COMPRESSED = 0X43,
+	OKIM6258_ADPCM_DATA_COMPRESSED = 0X44,
+	HUC6280_PCM_DATA_COMPRESSED = 0X45,
+	SCSP_PCM_DATA_COMPRESSED = 0X46,
+	NES_APU_DPCM_DATA_COMPRESSED = 0X47,
+
+
+	DECOMPRESSION_TABLE = 0X7F,
+
+
+	SEGA_PCM_ROM_DATA = 0X80,
+	YM2608_DELTA_T_ROM_DATA = 0X81,
+	YM2610_ADPCM_ROM_DATA = 0X82,
+	YM2610_DELTA_T_ROM_DATA = 0X83,
+	YMF278B_ROM_DATA = 0X84,
+	YMF271_ROM_DATA = 0X85,
+	YMZ280B_ROM_DATA = 0X86,
+	YMF278B_RAM_DATA = 0X87,
+	Y8950_DELTA_T_ROM_DATA = 0X88,
+	MULTIPCM_ROM_DATA = 0X89,
+	UPD7759_ROM_DATA = 0X8A,
+	OKIM6295_ROM_DATA = 0X8B,
+	K054539_ROM_DATA = 0X8C,
+	C140_ROM_DATA = 0X8D,
+	K053260_ROM_DATA = 0X8E,
+	QSOUND_ROM_DATA = 0X8F,
+	ES5505_ES5506_ROM_DATA = 0X90,
+	X1_010_ROM_DATA = 0X91,
+	C352_ROM_DATA = 0X92,
+	GA20_ROM_DATA = 0X93,
+	RF5C68_RAM_WRITE = 0XC0,
+	RF5C164_RAM_WRITE = 0XC1,
+	NES_APU_RAM_WRITE = 0XC2,
+	SCSP_RAM_WRITE = 0XE0,
+	ES5503_RAM_WRITE = 0XE1
+};
 
 class VGMHeader
 {
@@ -579,8 +651,6 @@ public:
 
 				channels[ch].notes.clear();
 			}
-
-			
 		}
 	public:
 		const s32& GetChannelLeftSample(int ch, int i) const
@@ -670,10 +740,11 @@ protected:
 	// data decode
 protected:
 	void HandleDataBlocks();
-	void HandleK053260ROM(s32 skipByte0x66, s32 blockType, s32 blockSize);
-	void HandleQSoundROM(s32 skipByte0x66, s32 blockType, s32 blockSize);
-	void HandleSEGAPCMROM(s32 skipByte0x66, s32 blockType, s32 blockSize);
-	
+
+	void HandleDataBlock0x00To0x3F(s32 skipByte0x66, s32 blockType, s32 blockSize);
+	void HandleDataBlock0x40To0x7E(s32 skipByte0x66, s32 blockType, s32 blockSize);
+	void HandleDataBlock0x80To0xBF(s32 skipByte0x66, s32 blockType, s32 blockSize);
+
 	u32 HandleUpdateSamples(u32 updateSampleCounts);
 	void HandleEndOfSound();
 private:

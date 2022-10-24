@@ -1747,6 +1747,15 @@ void Update_Chan_Clear(s32 channelIdx, s32** bufs, s32 lenght)
 	}
 }
 
+void Update_Chan_DAC(s32 channelIdx, s32** bufs, s32 lenght, s32 dac)
+{
+	for (int i = 0; i < lenght; i++)
+	{
+		bufs[((channelIdx) << 1) + 0][i] = dac >> OUT_SHIFT;
+		bufs[((channelIdx) << 1) + 1][i] = dac >> OUT_SHIFT;
+	}
+}
+
 /////////////////////////////////////////////////////////////////////////////
 s32 YM2612_Initialize(u8 chipID, u32 clock, u32 sampleRate)
 {
@@ -2227,6 +2236,10 @@ void YM2612_Update(u8 chipID, s32** bufs, u32 length)
 	{
 		if (!(ic->DAC))
 			UPDATE_CHAN[ic->CHANNEL[5].ALGO + algo_type](ic, &(ic->CHANNEL[5]), 5, bufs, length);
+		else
+		{
+			Update_Chan_DAC(5, bufs, length, ic->DACdata);
+		}
 	}
 	else
 		Update_Chan_Clear(5, bufs, length);

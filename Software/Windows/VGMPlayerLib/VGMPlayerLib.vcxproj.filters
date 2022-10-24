@@ -128,6 +128,12 @@
     <ClInclude Include="..\..\VGMPlayerLib\VGMAudioPlayer.h">
       <Filter>Source Files\VGM\Observer</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\VGMPlayerLib\DataStream.h">
+      <Filter>Source Files\chips</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\VGMPlayerLib\multipcm.h">
+      <Filter>Source Files\chips</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\VGMPlayerLib\HuC6280.c">
@@ -210,6 +216,12 @@
     </ClCompile>
     <ClCompile Include="..\..\VGMPlayerLib\VGMAudioPlayer.cpp">
       <Filter>Source Files\VGM\Observer</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\VGMPlayerLib\DataStream.c">
+      <Filter>Source Files\chips</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\VGMPlayerLib\multipcm.c">
+      <Filter>Source Files\chips</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

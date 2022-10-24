@@ -147,7 +147,7 @@ void VGMSpectrumRenderer::OnNotifyUpdate(Obserable& observable)
 		);
 
 		/////////////////////////////////////////////////////////////////////
-		SetViewport(0, 0, 1, 1);
+		SetViewport(0, 0, 1, 0.5f);
 		
 		videoDevice.Enable(VideoDevice::Constant::BLEND);
 		videoDevice.BlendFunc(VideoDevice::Constant::SRC_ALPHA, VideoDevice::Constant::ONE_MINUS_SRC_ALPHA);

@@ -3,12 +3,6 @@
 #include <GL/glu.h>
 #include <GL/gl.h>
 
-#define FACTOR 0.9
-#define WIDTH  (640 * FACTOR)
-#define HEIGHT (480 * FACTOR)
-#define TITLE_BAR 0
-#define GAP 5
-
 VGMViewer::VGMViewer(const string& name_, u32 x_, u32 y_, u32 width_, u32 height_)
 	: VGMObverser()
 	, name(name_)
@@ -16,15 +10,17 @@ VGMViewer::VGMViewer(const string& name_, u32 x_, u32 y_, u32 width_, u32 height
 	, y(y_)
 	, width(width_)
 	, height(height_)
-
-//	, vgmWaveFormRenderer				("Output  ", 0                ,          0, width / 3, height * 1 / 3, 5.0f, VGMWaveFormRenderer::Skin())
-//	, vgmSpectrumRenderer				("Spectrum", 0 + width / 3 * 1,          0, width / 3, height * 1 / 3, 5.0f, VGMSpectrumRenderer::Skin())
-//	, vgmMultiChannelWaveFormRenderer	("Channels", 0 + width / 3 * 2,          0, width / 3, height * 1 / 3, 1.0f, VGMMultiChannelWaveFormRenderer::Skin())
-//	, vgmMultiChannelNoteRenderer		("Notes   ", 0                , height / 3, width / 1, height * 2 / 3, 1.0f, VGMMultiChannelNoteRenderer::Skin())
-	, vgmWaveFormRenderer				("Output  ", 0 + width / 3 * 2, height / 3 * 0, width * 1 / 3, height * 1 / 3, 5.0f, VGMWaveFormRenderer::Skin())
-	, vgmSpectrumRenderer				("Spectrum", 0 + width / 3 * 2, height / 3 * 1, width * 1 / 3, height * 1 / 3, 5.0f, VGMSpectrumRenderer::Skin())
-	, vgmMultiChannelWaveFormRenderer	("Channels", 0 + width / 3 * 2, height / 3 * 2, width * 1 / 3, height * 1 / 3, 1.0f, VGMMultiChannelWaveFormRenderer::Skin())
-	, vgmMultiChannelNoteRenderer		("Notes   ", 0                , 0             , width * 2 / 3, height * 3 / 3, 1.0f, VGMMultiChannelNoteRenderer::Skin())
+#ifdef OLDLAYOUT
+	, vgmWaveFormRenderer("Output"					, 0 + width / 2 * 0, height / 2 * 0, width / 2 * 1, height / 2 * 1, 5.0f, VGMWaveFormRenderer::Skin())
+	, vgmSpectrumRenderer("Spectrum"				, 0 + width / 2 * 1, height / 2 * 0, width / 2 * 1, height / 2 * 1, 5.0f, VGMSpectrumRenderer::Skin())
+	, vgmMultiChannelWaveFormRenderer("Channels"	, 0 + width / 2 * 0, height / 2 * 1, width / 2 * 1, height / 2 * 1, 1.0f, VGMMultiChannelWaveFormRenderer::Skin())
+	, vgmMultiChannelNoteRenderer("Channels"		, 0 + width / 2 * 1, height / 2 * 1, width / 2 * 1, height / 2 * 1, 1.0f, VGMMultiChannelWaveFormRenderer::Skin())
+#else
+	, vgmWaveFormRenderer("Output"					, 0 + width / 3 * 2, height / 3 * 0, width * 1 / 3, height * 1 / 3, 5.0f, VGMWaveFormRenderer::Skin())
+	, vgmSpectrumRenderer("Spectrum"				, 0 + width / 3 * 2, height / 3 * 1, width * 1 / 3, height * 1 / 3, 5.0f, VGMSpectrumRenderer::Skin())
+	, vgmMultiChannelWaveFormRenderer("Channels"	, 0 + width / 3 * 2, height / 3 * 2, width * 1 / 3, height * 1 / 3, 1.0f, VGMMultiChannelWaveFormRenderer::Skin())
+	, vgmMultiChannelNoteRenderer("Notes"			, 0				   , 0             , width * 2 / 3, height * 3 / 3, 1.0f, VGMMultiChannelNoteRenderer::Skin())
+#endif
 {
 }
 

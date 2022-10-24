@@ -3,28 +3,42 @@
 #include "YM2612.h"
 #include "YM2151.h"
 #include "QSound.h"
-#include "SEGAPCM.h" 
 #include "K053260.h"
 #include "NESAPU.h"
 #include "NESFDSAPU.h"
 #include "HuC6280.h"
-#include "ROM.h"
+#include "SEGAPCM.h" 
+#include "multiPCM.h"
 
-ROM* rom = 0;
+#include "ROM.h"
+#include "DataStream.h"
+
+ROM* rom = nullptr;
+DataStream* dataStream = nullptr;
+
 VGMData::VGMData(const char* texturePath_, s32 channels_, s32 bitPerSample_, s32 sampleRate_)
 	: Obserable()
 	, info(texturePath_, channels_, bitPerSample_, sampleRate_)
 {
 	rom = ROM_Create();
+
+	dataStream = DataStream_Create();
 }
 
 VGMData::~VGMData()
 {
+	if (dataStream)
+	{
+		DataStream_Release(dataStream);
+
+		dataStream = nullptr;
+	}
+
 	if(rom)
 	{
 		ROM_Release(rom);
 		
-		rom = 0;
+		rom = nullptr;
 	}
 }
 
@@ -184,6 +198,13 @@ boolean VGMData::Open()
 
 		channelsCount += SEGAPCM_GetChannelCount(0);
 	}
+	if (header.MultiPCMClock)
+	{
+		MultiPCM_Initialize(0, header.MultiPCMClock, info.sampleRate);
+		MultiPCM_SetROM(0, rom);
+
+		channelsCount += MultiPCM_GetChannelCount(0);
+	}
 
 	systemChannels.SetChannelsCount(channelsCount);
 
@@ -225,6 +246,10 @@ void VGMData::Close()
 	if (header.SegaPCMclock)
 	{
 		SEGAPCM_Shutdown(0);
+	}
+	if (header.MultiPCMClock)
+	{
+		MultiPCM_Shutdown(0);
 	}
 
 	OnClose();
@@ -288,8 +313,12 @@ u8 VGMData::GetChannelEnable(u32 channel)
 	{
 		return SEGAPCM_GetChannelEnable(0, channel);
 	}
-	else
-		return 0;
+	if (header.MultiPCMClock)
+	{
+		return MultiPCM_GetChannelEnable(0, channel);
+	}
+	
+	return 0;
 }
 
 void VGMData::SetChannelEnable(u32 channel, bool enable)
@@ -329,6 +358,10 @@ void VGMData::SetChannelEnable(u32 channel, bool enable)
 	if (header.SegaPCMclock)
 	{
 		SEGAPCM_SetChannelEnable(0, channel, enable);
+	}
+	if (header.MultiPCMClock)
+	{
+		MultiPCM_SetChannelEnable(0, channel, enable);
 	}
 }
 
@@ -373,6 +406,10 @@ u32 VGMData::HandleUpdateSamples(u32 updateSampleCounts)
 	{
 		currentChannel = systemChannels.HandleUpdateSamples(SEGAPCM_Update, SEGAPCM_GetChannelCount, 0, currentChannel, updateSampleCounts);
 	}
+	if (header.MultiPCMClock)
+	{
+		currentChannel = systemChannels.HandleUpdateSamples(MultiPCM_Update, MultiPCM_GetChannelCount, 0, currentChannel, updateSampleCounts);
+	}
 
 	systemChannels.EndUpdateSamples(updateSampleCounts);
 
@@ -383,52 +420,69 @@ void VGMData::HandleEndOfSound()
 {
 }
 
-void VGMData::HandleK053260ROM(s32 skipByte0x66, s32 blockType, s32 blockSize)
+void VGMData::HandleDataBlock0x00To0x3F(s32 skipByte0x66, s32 blockType, s32 blockSize)
 {
-	unsigned int entireRomSize;
-	Read(&entireRomSize, sizeof(entireRomSize));
+	vector<u8> dataStreamData;
+	dataStreamData.resize(blockSize);
+	Read(&dataStreamData[0], blockSize);
 
-	unsigned int startAddress;
-	Read(&startAddress, sizeof(startAddress));
-
-	vector<u8> romData;
-	romData.resize(blockSize - 8);
-	Read(&romData[0], blockSize - 8);
-
-	// k053260_write_rom(0, entireRomSize, startAddress, blockSize - 8, romData);
-	ROM_LoadData(rom, startAddress, &romData[0], blockSize - 8, entireRomSize);
+	DataStream_LoadData(dataStream, 0, &dataStreamData[0], blockSize, blockSize);
 }
 
-void VGMData::HandleQSoundROM(s32 skipByte0x66, s32 blockType, s32 blockSize)
+void VGMData::HandleDataBlock0x40To0x7E(s32 skipByte0x66, s32 blockType, s32 blockSize)
 {
-	unsigned int entireRomSize;
-	Read(&entireRomSize, sizeof(entireRomSize));
+	/*
+	u32 compressionType;
+	Read(&compressionType, sizeof(compressionType));
 
-	unsigned int startAddress;
-	Read(&startAddress, sizeof(startAddress));
+	u32 sizeOfUncompressedData;
+	Read(&sizeOfUncompressedData, sizeof(sizeOfUncompressedData));
 
-	vector<u8> romData;
-	romData.resize(blockSize - 8);
-	Read(&romData[0], blockSize - 8);
-
-	//QSound_SetROM(0, entireRomSize, startAddress, &romData[0], blockSize - 8);
-	//rom->addROMSegment(startAddress, &romData[0], blockSize - 8, entireRomSize);
-	ROM_LoadData(rom, startAddress, &romData[0], blockSize - 8, entireRomSize);
+	  tt (8 bits) = compression type
+					   00 - bit packing compression
+					   01 - DPCM compression
+	   ss ss ss ss (32 bits) = size of uncompressed data (for memory allocation)
+							   It is assumed that each decompressed value uses
+							   ceil(bd/8) bytes.
+	   (attr) = attribute bytes used by the decompression-algorithm
+	   bit packing compression:
+		   bd (8 bits) = Bits decompressed
+		   bc (8 bits) = Bits compressed
+		   st (8 bits) = compression sub-type
+						   00 - copy (high bits aren't used)
+						   01 - shift left (low bits aren't used)
+						   02 - use table (data = index into decompression table,
+										   see data block 7F)
+		   aa aa (16 bits) = value that is added (ignored if table is used)
+		   The data block is treated as a bitstream with bc bits per value. The
+		   top bits in each byte are read first. The extracted bits of each value
+		   are transformed into a value with at least bd bits using method st.
+		   Finally, aaaa is added to get the resulting value.
+	   DPCM-Compression: (uses a decompression table)
+		   bd (8 bits) = Bits decompressed
+		   bc (8 bits) = Bits compressed
+		   st (8 bits) = [reserved for future use, must be 00]
+		   aa aa (16 bits) = start value
+		   The data is read as a bitstream (see bit packing). The read value is used as
+		   index into a delta-table (defined by data block 7F). The delta value
+		   is added to the "state" value, which is also the result value.
+		   The "state" value is initialized with aaaa at the beginning.
+	   (data) = compressed data, of size (block size - 0x0A - attr size)
+	*/
 }
 
-void VGMData::HandleSEGAPCMROM(s32 skipByte0x66, s32 blockType, s32 blockSize)
+void VGMData::HandleDataBlock0x80To0xBF(s32 skipByte0x66, s32 blockType, s32 blockSize)
 {
-	unsigned int entireRomSize;
+	u32 entireRomSize;
 	Read(&entireRomSize, sizeof(entireRomSize));
 
-	unsigned int startAddress;
+	u32 startAddress;
 	Read(&startAddress, sizeof(startAddress));
 
 	vector<u8> romData;
 	romData.resize(blockSize - 8);
 	Read(&romData[0], blockSize - 8);
 
-	// k053260_write_rom(0, entireRomSize, startAddress, blockSize - 8, romData);
 	ROM_LoadData(rom, startAddress, &romData[0], blockSize - 8, entireRomSize);
 }
 
@@ -443,22 +497,14 @@ void VGMData::HandleDataBlocks()
 	u32 blockSize;
 	Read(&blockSize, sizeof(blockSize));
 
-	if (blockType == 0x80)
-	{
-		HandleSEGAPCMROM(skipByte0x66, blockType, blockSize);
-	}
-	else if (blockType == 0x8e)
-	{
-		HandleK053260ROM(skipByte0x66, blockType, blockSize);
-	}
-	else if (blockType == 0x8f)
-	{
-		HandleQSoundROM(skipByte0x66, blockType, blockSize);
-	}
+	if (blockType >= 0x00 && blockType <= 0x3F)
+		HandleDataBlock0x00To0x3F(skipByte0x66, blockType, blockSize);
+	else if (blockType >= 0x40 && blockType <= 0x7E)
+		HandleDataBlock0x40To0x7E(skipByte0x66, blockType, blockSize);
+	else if (blockType >= 0x80 && blockType <= 0xBF)
+		HandleDataBlock0x80To0xBF(skipByte0x66, blockType, blockSize);
 	else
-	{
 		SeekCur(blockSize);
-	}
 }
 
 const char* GetTimeCode(int frameCounter)
@@ -500,6 +546,8 @@ boolean VGMData::Update()
 			u8 command;
 			Read(&command, sizeof(command));
 
+			u32 dataStreamSize;
+
 			u8 aa;
 			u8 dd;
 			u16 NNNN;
@@ -518,6 +566,10 @@ boolean VGMData::Update()
 			u32 llllllll;
 			u16 bbbb;
 			u8 ff;
+			u32 dddddddd;
+			u32 i;
+			u32 count;
+			u16 aabb;
 
 			switch (command)
 			{
@@ -535,6 +587,30 @@ boolean VGMData::Update()
 				systemChannels.WriteRegister(YM2612_WritePort1, 0, aa, dd, info.frameCounter);
 				break;
 
+			case YM2612_PORT0_ADDR_0X2A_WRITE_0X80:
+			case YM2612_PORT0_ADDR_0X2A_WRITE_0X81:
+			case YM2612_PORT0_ADDR_0X2A_WRITE_0X82:
+			case YM2612_PORT0_ADDR_0X2A_WRITE_0X83:
+			case YM2612_PORT0_ADDR_0X2A_WRITE_0X84:
+			case YM2612_PORT0_ADDR_0X2A_WRITE_0X85:
+			case YM2612_PORT0_ADDR_0X2A_WRITE_0X86:
+			case YM2612_PORT0_ADDR_0X2A_WRITE_0X87:
+			case YM2612_PORT0_ADDR_0X2A_WRITE_0X88:
+			case YM2612_PORT0_ADDR_0X2A_WRITE_0X89:
+			case YM2612_PORT0_ADDR_0X2A_WRITE_0X8A:
+			case YM2612_PORT0_ADDR_0X2A_WRITE_0X8B:
+			case YM2612_PORT0_ADDR_0X2A_WRITE_0X8C:
+			case YM2612_PORT0_ADDR_0X2A_WRITE_0X8D:
+			case YM2612_PORT0_ADDR_0X2A_WRITE_0X8E:
+			case YM2612_PORT0_ADDR_0X2A_WRITE_0X8F:
+				dd = DataStream_getU8(dataStream);
+				systemChannels.WriteRegister(YM2612_WritePort0, 0, 0x2a, dd, info.frameCounter);
+		
+				count = command & 0x0f;
+				info.updateSampleCounts += count * info.sampleRate / 44100;
+
+				break;
+				
 			case SN76489_WRITE:
 				Read(&dd, sizeof(dd));
 
@@ -618,10 +694,26 @@ boolean VGMData::Update()
 				Read(&dd, sizeof(dd));
 				break;
 
+			case MultiPCM_SETBANK_OFFSET: //0xC3:
+				Read(&cc, sizeof(cc));
+				Read(&aa, sizeof(aa));
+				Read(&bb, sizeof(bb));
+
+				MultiPCM_SetBank(0, aa * 0x80000, bb * 0x80000);
+				break;
+
+			case MultiPCM_WRITE:
+				Read(&aa, sizeof(aa));
+				Read(&dd, sizeof(dd));
+				systemChannels.WriteRegister(MultiPCM_WriteRegister, 0, aa, dd, info.frameCounter);
+				break;					
+
+			////////////////////////////////////
 			case DATA_BLOCKS:
 				HandleDataBlocks();
 				break;
 
+			////////////////////////////////////
 			case DAC_SETUP_STREAM_CONTROL:
 				Read(&ss, sizeof(ss));
 				Read(&tt, sizeof(tt));
@@ -663,6 +755,11 @@ boolean VGMData::Update()
 				Read(&ff, sizeof(ff));
 				//DACStartStreamFast(ss, bbbb, ff);
 				break;
+			
+			case SEEK_TO_OFFSET:
+				Read(&dddddddd, sizeof(dddddddd));
+				SeekCur(dddddddd);
+				break;
 
 			case WAIT_NNNN_SAMPLES:
 				Read(&NNNN, sizeof(NNNN));
@@ -701,14 +798,12 @@ boolean VGMData::Update()
 
 				if (header.loopOffset)
 				{
-					SeekSet(header.loopOffset + 0x1c);
-					//printf("Loop();\n");
+					SeekSet(header.loopOffset + 0x1c); // loop to head
 					return FALSE;
 				}
 				else
 				{
-					//printf("END_OF_SOUND();\n");
-					return FALSE;
+					return FALSE;  //can't find end loop to head
 				}
 				break;
 

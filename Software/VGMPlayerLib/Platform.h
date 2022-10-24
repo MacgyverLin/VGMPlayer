@@ -4,6 +4,8 @@
 #include "vgmdef.h"
 using namespace std;
 
+#define OLDLAYOUT
+
 class Platform
 {
 public:

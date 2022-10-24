@@ -153,9 +153,11 @@
   <ItemGroup>
     <ClInclude Include="..\..\VGMPlayerLib\Array.h" />
     <ClInclude Include="..\..\VGMPlayerLib\AudioDevice.h" />
+    <ClInclude Include="..\..\VGMPlayerLib\DataStream.h" />
     <ClInclude Include="..\..\VGMPlayerLib\FFT.h" />
     <ClInclude Include="..\..\VGMPlayerLib\HuC6280.h" />
     <ClInclude Include="..\..\VGMPlayerLib\k053260.h" />
+    <ClInclude Include="..\..\VGMPlayerLib\multipcm.h" />
     <ClInclude Include="..\..\VGMPlayerLib\NESAPU.h" />
     <ClInclude Include="..\..\VGMPlayerLib\NESFDSAPU.h" />
     <ClInclude Include="..\..\VGMPlayerLib\nes_defs.h" />
@@ -187,9 +189,11 @@
   <ItemGroup>
     <ClCompile Include="..\..\VGMPlayerLib\Array.cpp" />
     <ClCompile Include="..\..\VGMPlayerLib\AudioDevice.cpp" />
+    <ClCompile Include="..\..\VGMPlayerLib\DataStream.c" />
     <ClCompile Include="..\..\VGMPlayerLib\FFT.cpp" />
     <ClCompile Include="..\..\VGMPlayerLib\HuC6280.c" />
     <ClCompile Include="..\..\VGMPlayerLib\K053260.c" />
+    <ClCompile Include="..\..\VGMPlayerLib\multipcm.c" />
     <ClCompile Include="..\..\VGMPlayerLib\NESAPU.c" />
     <ClCompile Include="..\..\VGMPlayerLib\NESFDSAPU.c" />
     <ClCompile Include="..\..\VGMPlayerLib\Obserable.cpp" />

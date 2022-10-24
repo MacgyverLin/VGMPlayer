@@ -137,6 +137,8 @@ s32 VGMFile::OnSeekSet(u32 offset)
 
 s32 VGMFile::OnSeekCur(u32 offset)
 {
+	int c = gztell(impl->gzFile);
+
 	if (impl->file)
 	{
 		return fseek(impl->file, offset, SEEK_CUR);

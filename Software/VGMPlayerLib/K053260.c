@@ -28,10 +28,6 @@ typedef struct {
 	u32				*delta_table;
 	Channel			channels[4];
 	ROM*			rom;
-	/*
-	u8				*rom;
-	s32				rom_size;
-	*/
 	u32				channel_output_enabled;
 	u32				channel_count;
 }K053260;
@@ -427,34 +423,6 @@ void K053260_Update(u8 chipID, s32** buffer, u32 length)
 		ic->channels[i].ppcm_data = ppcm_data[i];
 	}
 }
-
-/*
-void K053260_SetROM(u8 chipID, u32 totalROMSize, u32 startAddress, u8 *rom, u32 nLen)
-{
-	K053260* ic = &k053260Chips[chipID];
-
-	if (ic->rom_size != totalROMSize)
-	{
-		if (ic->rom)
-		{
-			u8* newRom = malloc(totalROMSize);
-
-			memcpy(newRom, ic->rom, totalROMSize);
-			free(ic->rom);
-
-			ic->rom = newRom;
-		}
-		else
-		{
-			ic->rom = malloc(totalROMSize);
-		}
-
-		ic->rom_size = totalROMSize;
-	}
-
-	memcpy(&ic->rom[startAddress], rom, nLen);
-}
-*/
 
 void K053260_SetROM(u8 chipID, ROM* rom)
 {
