@@ -51,6 +51,22 @@ public:
 		return *this;
 	}
 
+	static const Color Black;
+	static const Color Blue;
+	static const Color Green;
+	static const Color Cyan;
+	static const Color Red;
+	static const Color Mangenta;
+	static const Color Brown;
+	static const Color Grey;
+	static const Color BrightBlue;
+	static const Color BrightGreen;
+	static const Color BrightCyan;
+	static const Color BrightRed;
+	static const Color BrightMangenta;
+	static const Color Yellow;
+	static const Color White;
+
 	f32 r;
 	f32 g;
 	f32 b;

@@ -373,11 +373,6 @@ void apu_regwrite(u8 chipID, u32 address, u8 value, s32* channel, f32* freq)
 	NESAPU *ic = &nesapuChips[chipID];
 	s32 chan = (address & 4) ? 1 : 0;
 
-	// float squarefreq[2] = { 0, 0 };
-	// float trifreq = 0;
-	// float noisefreq = 0;
-	// float dpcmfreq = 0;
-
 	switch (address)
 	{
 	/* squares */

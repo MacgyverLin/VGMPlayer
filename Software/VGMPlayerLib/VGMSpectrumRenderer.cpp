@@ -8,8 +8,6 @@ VGMSpectrumRenderer::VGMSpectrumRenderer(const char* name_, u32 x_, u32 y_, u32 
 	, waveScale(waveScale_)
 	, skin(skin_)
 {
-	maxLeft.resize(skin.numColumns * 2);
-	maxRight.resize(skin.numColumns * 2);
 }
 
 VGMSpectrumRenderer::~VGMSpectrumRenderer()
@@ -69,13 +67,17 @@ void VGMSpectrumRenderer::OnNotifyUpdate(Obserable& observable)
 	{
 		int fftSampleCount = skin.numColumns * 2;
 		int startX = fftSampleCount / 2;
-		int endX = fftSampleCount; //sampleCount;
+		int endX = fftSampleCount;
 		f32 stepX = ((f32)(endX - startX)) / ((f32)fftSampleCount / 2);
 
 		int startY = 0;
 		int endY = 1;
 		f32 stepY = ((f32)(endY - startY)) / 20;
-		f32 step = VGM_SAMPLE_BUFFER_SIZE / fftSampleCount;
+		
+		f32 N = VGM_SAMPLE_BUFFER_SIZE / fftSampleCount;
+
+		maxLeft.resize(fftSampleCount);
+		maxRight.resize(fftSampleCount);
 
 		vector<complex> left;
 		left.resize(fftSampleCount);
@@ -84,13 +86,13 @@ void VGMSpectrumRenderer::OnNotifyUpdate(Obserable& observable)
 		{
 			left[i].real = 0;
 			left[i].imag = 0;
-			for (int j = 0; j < step; j++)
+			for (int j = 0; j < N; j++)
 			{
-				left[i].real += systemChannels.GetOutputSample(0, (int)leftIdx + j);
+				left[i].real += systemChannels.GetOutputSample(0, leftIdx + j);
 			}
-			left[i].real /= step;
+			left[i].real /= N;
 
-			leftIdx += step;
+			leftIdx += N;
 		}
 
 		vector<complex> right;
@@ -100,13 +102,13 @@ void VGMSpectrumRenderer::OnNotifyUpdate(Obserable& observable)
 		{
 			right[i].real = 0;
 			right[i].imag = 0;
-			for (int j = 0; j < step; j++)
+			for (int j = 0; j < N; j++)
 			{
-				right[i].real += systemChannels.GetOutputSample(1, (int)rightIdx + j);
+				right[i].real += systemChannels.GetOutputSample(1, rightIdx + j);
 			}
-			right[i].real /= step;
+			right[i].real /= N;
 
-			rightIdx += step;
+			rightIdx += N;
 		}
 
 		fft(fftSampleCount, &left[0]);
@@ -114,6 +116,11 @@ void VGMSpectrumRenderer::OnNotifyUpdate(Obserable& observable)
 
 		for (int i = 0; i < fftSampleCount; i++)
 		{
+			if (left[i].real < 0)
+				left[i].real = -left[i].real;
+			if (right[i].real < 0)
+				right[i].real = -right[i].real;
+
 			f32 l = abs(left[i].real);
 			if (maxLeft[i] < l)
 				maxLeft[i] = l;
@@ -167,16 +174,18 @@ void VGMSpectrumRenderer::OnNotifyUpdate(Obserable& observable)
 			videoDevice.BlendFunc(VideoDevice::Constant::SRC_ALPHA, VideoDevice::Constant::ONE);
 			Color topColor = skin.leftColor; topColor.a = 0.3f;
 			Color bottomColor = skin.leftColor; bottomColor.a = 0.9f;
+
+			f32 scale = waveScale / 65536.0f;
 			for (s32 i = startX; i < endX; i++)
 			{
-				f32 y0 = abs(left[i].real) / (65536) * waveScale;
+				f32 y0 = abs(left[i].real) * scale;
 				videoDevice.DrawSolidRectangle(
 					Vector2(i + 0.1f, y0), topColor,
 					Vector2(i + 0.9f, y0), topColor,
 					Vector2(i + 0.9f, 0), bottomColor,
 					Vector2(i + 0.1f, 0), bottomColor);
 
-				y0 = abs(maxLeft[i]) / (65536) * waveScale;
+				y0 = abs(maxLeft[i]) * scale;
 				videoDevice.DrawSolidRectangle(
 					Vector2(i + 0.1f, y0 - bloom), topColor,
 					Vector2(i + 0.9f, y0 - bloom), topColor,
@@ -205,16 +214,18 @@ void VGMSpectrumRenderer::OnNotifyUpdate(Obserable& observable)
 			videoDevice.BlendFunc(VideoDevice::Constant::SRC_ALPHA, VideoDevice::Constant::ONE);
 			Color topColor = skin.rightColor; topColor.a = 0.3f;
 			Color bottomColor = skin.rightColor; bottomColor.a = 0.9f;
+
+			f32 scale = waveScale / 65536.0f;
 			for (s32 i = startX; i < endX; i++)
 			{
-				f32 y0 = abs(right[i].real) / (65536) * waveScale;
+				f32 y0 = abs(right[i].real) * scale;
 				videoDevice.DrawSolidRectangle(
 					Vector2(i + 0.1f, y0), topColor,
 					Vector2(i + 0.9f, y0), topColor,
 					Vector2(i + 0.9f, 0), bottomColor,
 					Vector2(i + 0.1f, 0), bottomColor);
 
-				y0 = abs(maxRight[i]) / (65536) * waveScale;
+				y0 = abs(maxRight[i]) * scale;
 				videoDevice.DrawSolidRectangle(
 					Vector2(i + 0.1f, y0 - bloom), topColor,
 					Vector2(i + 0.9f, y0 - bloom), topColor,

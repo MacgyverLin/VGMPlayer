@@ -99,40 +99,57 @@ void VGMMultiChannelNoteRenderer::OnNotifyUpdate(Obserable& observable)
 		int endX = 32;
 		int startY = 0;
 		int endY = VGM_FRAME_PER_SECOND;
-		f32 staffHeight = (endY - startY) * 0.001;
+		f32 staffHeight = (endY - startY) * 0.01;
 		f32 frameCounter = vgmData.GetFrameCounter();
 
-		glMatrixMode(GL_PROJECTION);
-		glLoadIdentity();
-		gluOrtho2D(startX, endX, startY + frameCounter, endY + frameCounter);
-		glMatrixMode(GL_MODELVIEW);
+		Color topColor = Color::Cyan;
+		Color bottomColor = Color::Black;
+		Color staffColor = Color::Yellow;
 
-		SetViewport(0, 0, 1, 1);
-		videoDevice.Enable(VideoDevice::Constant::BLEND);
-		videoDevice.BlendFunc(VideoDevice::Constant::SRC_ALPHA, VideoDevice::Constant::ONE_MINUS_SRC_ALPHA);
-
-		Color topColor = skin.leftColor;;
-		Color bottomColor = skin.leftColor;
-		for (int ch = 0; ch < channelsNotes.size(); ch++)
+		int channelCount = 1;// systemChannels.GetChannelsCount();
+		for (int ch = 0; ch < channelCount; ch++)
 		{
-			float channelViewportWidth = 1.0f / systemChannels.GetChannelsCount();
+			float channelViewportWidth = 1.0f / channelCount;
 			SetViewport(channelViewportWidth * ch, 0.0f, channelViewportWidth, 1.0f);
 
 			// float channelViewportHeight = 1.0f / systemChannels.GetChannelsCount();
 			// SetViewport(0.0f, channelViewportHeight * ch, 1.0f, channelViewportHeight);
+			videoDevice.Enable(VideoDevice::Constant::BLEND);
+			videoDevice.BlendFunc(VideoDevice::Constant::SRC_ALPHA, VideoDevice::Constant::ONE_MINUS_SRC_ALPHA);
+
+			videoDevice.MatrixMode(VideoDevice::Constant::PROJECTION);
+			videoDevice.LoadIdentity();
+			videoDevice.Ortho2D(0, 1, 0, 1);
+			videoDevice.MatrixMode(VideoDevice::Constant::MODELVIEW);
+
+			videoDevice.DrawWireRectangle
+			(
+				Vector2(1, 0), bottomColor,
+				Vector2(0, 0), bottomColor,
+				Vector2(0, 1), topColor,
+				Vector2(1, 1), topColor
+			);
+
+			videoDevice.Disable(VideoDevice::Constant::BLEND);
+
+			videoDevice.MatrixMode(VideoDevice::Constant::PROJECTION);
+			videoDevice.LoadIdentity();
+			videoDevice.Ortho2D(startX, endX, startY + frameCounter, endY + frameCounter);
+			videoDevice.MatrixMode(VideoDevice::Constant::MODELVIEW);
+			videoDevice.Enable(VideoDevice::Constant::BLEND);
 
 			for (s32 i = 0; i< channelsNotes[ch].size(); i++)
 			{
 				// 30.86 	61.73 	123.46 	246.92 	493.84 	987.67 	1975.34 	3950.68 	7901.36 	15802.72 	31605.44 
-				f32 y = channelsNotes[ch][i].frame + endY;
-				f32 x = channelsNotes[ch][i].frequency * (endX - startX) / 987.67;
+				f32 x = floor(channelsNotes[ch][i].frequency / 1000.0f) * (endX - startX);
+				f32 y = floor(channelsNotes[ch][i].frame) + endY;
 
 				videoDevice.DrawSolidRectangle
 				(
-					Vector2(x + 1, y + 0), topColor,
-					Vector2(x + 0, y + 0), topColor,
-					Vector2(x + 0, y + staffHeight), topColor,
-					Vector2(x + 1, y + staffHeight), topColor
+					Vector2(x + 1, y + 0), staffColor,
+					Vector2(x + 0, y + 0), staffColor,
+					Vector2(x + 0, y + staffHeight), staffColor,
+					Vector2(x + 1, y + staffHeight), staffColor
 				);
 			}
 		}
