@@ -8,7 +8,6 @@
 #include "NESFDSAPU.h"
 #include "HuC6280.h"
 #include "SEGAPCM.h" 
-#include "multiPCM.h"
 
 #include "ROM.h"
 #include "DataStream.h"
@@ -198,13 +197,6 @@ boolean VGMData::Open()
 
 		channelsCount += SEGAPCM_GetChannelCount(0);
 	}
-	if (header.MultiPCMClock)
-	{
-		MultiPCM_Initialize(0, header.MultiPCMClock, info.sampleRate);
-		MultiPCM_SetROM(0, rom);
-
-		channelsCount += MultiPCM_GetChannelCount(0);
-	}
 
 	systemChannels.SetChannelsCount(channelsCount);
 
@@ -246,10 +238,6 @@ void VGMData::Close()
 	if (header.SegaPCMclock)
 	{
 		SEGAPCM_Shutdown(0);
-	}
-	if (header.MultiPCMClock)
-	{
-		MultiPCM_Shutdown(0);
 	}
 
 	OnClose();
@@ -313,11 +301,7 @@ u8 VGMData::GetChannelEnable(u32 channel)
 	{
 		return SEGAPCM_GetChannelEnable(0, channel);
 	}
-	if (header.MultiPCMClock)
-	{
-		return MultiPCM_GetChannelEnable(0, channel);
-	}
-	
+
 	return 0;
 }
 
@@ -358,10 +342,6 @@ void VGMData::SetChannelEnable(u32 channel, bool enable)
 	if (header.SegaPCMclock)
 	{
 		SEGAPCM_SetChannelEnable(0, channel, enable);
-	}
-	if (header.MultiPCMClock)
-	{
-		MultiPCM_SetChannelEnable(0, channel, enable);
 	}
 }
 
@@ -405,10 +385,6 @@ u32 VGMData::HandleUpdateSamples(u32 updateSampleCounts)
 	if (header.SegaPCMclock)
 	{
 		currentChannel = systemChannels.HandleUpdateSamples(SEGAPCM_Update, SEGAPCM_GetChannelCount, 0, currentChannel, updateSampleCounts);
-	}
-	if (header.MultiPCMClock)
-	{
-		currentChannel = systemChannels.HandleUpdateSamples(MultiPCM_Update, MultiPCM_GetChannelCount, 0, currentChannel, updateSampleCounts);
 	}
 
 	systemChannels.EndUpdateSamples(updateSampleCounts);
@@ -696,16 +672,16 @@ boolean VGMData::Update()
 
 			case MultiPCM_SETBANK_OFFSET: //0xC3:
 				Read(&cc, sizeof(cc));
-				Read(&aa, sizeof(aa));
-				Read(&bb, sizeof(bb));
+				Read(&aabb, sizeof(aabb));
 
-				MultiPCM_SetBank(0, aa * 0x80000, bb * 0x80000);
+				//MultiPCM_SetBank(0, (aabb & 7) * 0x80000, (aabb & 7) * 0x80000);
+				//MultiPCM_SetBank(0, ((aabb >> 3) & 7) * 0x80000, (aabb & 7) * 0x80000);
 				break;
 
 			case MultiPCM_WRITE:
 				Read(&aa, sizeof(aa));
 				Read(&dd, sizeof(dd));
-				systemChannels.WriteRegister(MultiPCM_WriteRegister, 0, aa, dd, info.frameCounter);
+				//systemChannels.WriteRegister(MultiPCM_WriteRegister, 0, aa, dd, info.frameCounter);
 				break;					
 
 			////////////////////////////////////
