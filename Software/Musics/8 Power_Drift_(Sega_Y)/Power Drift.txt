@@ -1,0 +1,47 @@
+***********************************************
+* VGM music package                           *
+* http://vgm.mdscene.net/                     *
+***********************************************
+Game name:           Power Drift
+System:              Sega Y
+Music hardware:      YM2151, SegaPCM
+
+Music author:        Hiroshi Kawaguchi
+Game developer:      Sega
+Game publisher:      Sega
+Game release date:   1988-08-05
+
+Package created by:  2ch-H
+Package version:     1.00
+
+Song list, in approximate game order:
+Song name                           Length:
+                                    Total  Loop
+01 Credit                           0:01   -
+02 Poker Face (Opening)             0:42   0:41
+03 Side Street (A Course)           4:29   4:27
+04 Like the Wind (B Course)         3:39   3:37
+05 Silent Language (C Course)       2:17   2:04
+06 Adjustment Mind (D Course)       2:08   2:00
+07 Artistic Traps (E Course)        2:07   1:55
+08 Diversity (Name Entry)           0:15   0:15
+09 Not Use                          0:03   0:03
+
+Total Length                       15:40  30:43
+
+
+Notes:
+Track Names are used in Power Drift OST.
+
+This pack was made using M1 VGM mod v0.7.9a1.
+I changed a clock of YM2151 and SegaPCM 
+equally with MAME.
+
+Size reduction:
+1. vgm_sro: 27.7 MB -> 10.4 MB (37.5 %)
+2. vgm_cmp: 10.4 MB -> 2.55 MB (24.5 %)
+Total: 27.7 MB -> 2.55 MB (9.2 %)
+
+
+Package history:
+1.00 2012-07-02 2ch-H: Initial release.

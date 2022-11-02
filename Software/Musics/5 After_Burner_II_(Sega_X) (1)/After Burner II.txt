@@ -1,0 +1,65 @@
+***********************************************
+* VGM music package                           *
+* http://vgmrips.net/                         *
+***********************************************
+Game name:           After Burner II
+System:              Sega X
+Music hardware:      YM2151, SegaPCM
+
+Music author:        Hiroshi Kawaguchi
+Game developer:      Sega AM2
+Game publisher:      Sega
+Game release date:   1987
+
+Package created by:  2ch-H
+Package version:     2.00
+
+Song list, in approximate game order:
+Song name                           Length:
+                                    Total  Loop
+01 Maximum Power                    0:13   0:10
+02 Final Take Off                   3:16   3:14
+03 Red Out                          1:37   1:32
+04 Super Stripe                     1:42   1:40
+05 After Burner                     5:08   0:03
+06 City 202                         0:24   0:22
+07 After Burner (Extended)          5:05   5:05
+08 Final Take Off (Melody Version)  4:14   -
+09 After Burner (Melody Version)    5:09   0:03
+
+Total Length                       26:48  38:56
+
+
+Notes:
+Track Names are used in AFTER BURNER 20th
+Anniversary Box.
+
+
+The "melody" versions of "After Burner" and
+"Final Take Off" are present on several After
+Burner soundtracks, but are very rare (if they
+even existed) to find on real arcade machines.
+
+The source files were eventually recovered by
+Sega and M2 from old development disks and
+added as a bonus in the Nintendo 3DS game
+3D After Burner II.
+
+I extracted the ROM of the emulated Z80 sound
+processor from that game and now the 2 melody
+tracks have finally been logged.
+-ctr
+
+Size reduction:
+1. vgm_cmp: 15.1 MB -> 8.46 MB (55.9 %)
+2. vgm_sro: 8.46 MB -> 6.60 MB (78.0 %)
+3. vgm_cmp: 6.60 MB -> 2.15 MB (32.6 %)
+Total: 15.1 MB -> 2.15 MB (14.2 %)
+
+
+Package history:
+1.00 2012-02-14 2ch-H: Initial release.
+1.10 2012-02-22 Valley Bell: Size reduction
+ with updated vgm_sro and vgm_cmp.
+2.00 2015-04-29 ctr: Added new tracks from
+ 3D After Burner II.
