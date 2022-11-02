@@ -90,29 +90,28 @@ public:
 	const char* out_filename;
 };
 
-VideoEncoderImpl* ffmpeg_initialize()
+bool ffmpeg_initialize(VideoEncoderImpl* impl)
 {
-	VideoEncoderImpl* impl = new VideoEncoderImpl();
 	int ret, i;
 
 	av_register_all();
 	//Input
 	if ((ret = avformat_open_input(&impl->ifmt_ctx_v, impl->in_filename_v, 0, 0)) < 0) {
 		printf("Could not open input file.");
-		return nullptr;
+		return false;
 	}
 	if ((ret = avformat_find_stream_info(impl->ifmt_ctx_v, 0)) < 0) {
 		printf("Failed to retrieve input stream information");
-		return nullptr;
+		return false;
 	}
 
 	if ((ret = avformat_open_input(&impl->ifmt_ctx_a, impl->in_filename_a, 0, 0)) < 0) {
 		printf("Could not open input file.");
-		return nullptr;
+		return false;
 	}
 	if ((ret = avformat_find_stream_info(impl->ifmt_ctx_a, 0)) < 0) {
 		printf("Failed to retrieve input stream information");
-		return nullptr;
+		return false;
 	}
 	printf("===========Input Information==========\n");
 	av_dump_format(impl->ifmt_ctx_v, 0, impl->in_filename_v, 0);
@@ -123,7 +122,7 @@ VideoEncoderImpl* ffmpeg_initialize()
 	if (!impl->ofmt_ctx) {
 		printf("Could not create output context\n");
 		ret = AVERROR_UNKNOWN;
-		return nullptr;
+		return false;
 	}
 	impl->ofmt = impl->ofmt_ctx->oformat;
 
@@ -139,14 +138,14 @@ VideoEncoderImpl* ffmpeg_initialize()
 				printf("Failed allocating output stream\n");
 				ret = AVERROR_UNKNOWN;
 				
-				return nullptr;
+				return false;
 			}
 			impl->videoindex_out = out_stream->index;
 			//Copy the settings of AVCodecContext
 			if (avcodec_copy_context(out_stream->codec, in_stream->codec) < 0) {
 				printf("Failed to copy context from input to output stream codec context\n");
 				
-				return nullptr;
+				return false;
 			}
 			out_stream->codec->codec_tag = 0;
 			if (impl->ofmt_ctx->oformat->flags & AVFMT_GLOBALHEADER)
@@ -166,13 +165,13 @@ VideoEncoderImpl* ffmpeg_initialize()
 			{
 				printf("Failed allocating output stream\n");
 				ret = AVERROR_UNKNOWN;
-				return nullptr;
+				return false;
 			}
 			impl->audioindex_out = out_stream->index;
 			//Copy the settings of AVCodecContext
 			if (avcodec_copy_context(out_stream->codec, in_stream->codec) < 0) {
 				printf("Failed to copy context from input to output stream codec context\n");
-				return nullptr;
+				return false;
 			}
 			out_stream->codec->codec_tag = 0;
 			if (impl->ofmt_ctx->oformat->flags & AVFMT_GLOBALHEADER)
@@ -189,13 +188,13 @@ VideoEncoderImpl* ffmpeg_initialize()
 	if (!(impl->ofmt->flags & AVFMT_NOFILE)) {
 		if (avio_open(&impl->ofmt_ctx->pb, impl->out_filename, AVIO_FLAG_WRITE) < 0) {
 			printf("Could not open output file '%s'", impl->out_filename);
-			return nullptr;
+			return false;
 		}
 	}
 	//Write file header
 	if (avformat_write_header(impl->ofmt_ctx, NULL) < 0) {
 		printf("Error occurred when opening output file\n");
-		return nullptr;
+		return false;
 	}
 
 	//FIX
@@ -205,7 +204,7 @@ VideoEncoderImpl* ffmpeg_initialize()
 #if USE_AACBSF
 	AVBitStreamFilterContext* aacbsfc = av_bitstream_filter_init("aac_adtstoasc");
 #endif
-	return impl;
+	return true;
 }
 
 bool ffmpeg_update(VideoEncoderImpl* impl)
@@ -320,7 +319,11 @@ bool ffmpeg_update(VideoEncoderImpl* impl)
 
 void ffmpeg_terminate(VideoEncoderImpl* impl)
 {
-	int ret, i;
+	if (!impl)
+		return;
+
+	if(!impl->ofmt_ctx)
+		return;
 
 	//Write file trailer
 	av_write_trailer(impl->ofmt_ctx);
@@ -339,15 +342,17 @@ void ffmpeg_terminate(VideoEncoderImpl* impl)
 		avio_close(impl->ofmt_ctx->pb);
 
 	avformat_free_context(impl->ofmt_ctx);
-	
-	delete impl;
-	impl = nullptr;
+
+	memset(impl, 0, sizeof(VideoEncoderImpl));
 }
 
 int test()
 {
-	VideoEncoderImpl* impl = ffmpeg_initialize();
+	VideoEncoderImpl* impl = new VideoEncoderImpl();
 	if (!impl)
+		return false;
+
+	if (!ffmpeg_initialize(impl))
 		return false;
 
 	while (ffmpeg_update(impl));
@@ -360,7 +365,7 @@ VideoEncoder::VideoEncoder()
 {
 	impl = new VideoEncoderImpl();
 
-	test();
+	// test();
 }
 
 VideoEncoder::~VideoEncoder()
@@ -374,9 +379,17 @@ VideoEncoder::~VideoEncoder()
 	}
 }
 
+static bool done = false;
+
 bool VideoEncoder::Initiate(const char* filename)
 {
 	assert(impl);
+
+	if (done)
+		return false;
+
+	if (!ffmpeg_initialize(impl))
+		return false;
 
     return true;
 }
@@ -385,10 +398,17 @@ bool VideoEncoder::AddFrame(const char* imageBuffer, int imageBufferSize, const 
 {
     assert(impl);
 
-    return true;
+	if (!done)
+	{
+		while (ffmpeg_update(impl));
+
+		done = true;
+	}
+
+	return true;
 }
 
 void VideoEncoder::Terminate()
 {
-    assert(impl);
+	ffmpeg_terminate(impl);
 }

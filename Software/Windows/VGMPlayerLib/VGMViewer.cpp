@@ -112,6 +112,8 @@ void VGMViewer::OnNotifyUpdate(Obserable& observable)
 
 	if (systemChannels.HasSampleBufferUpdatedEvent())
 	{
+		videoEncoder.AddFrame(nullptr, 0 , nullptr, 0);
+
 		videoDevice.MakeCurrent();
 		videoDevice.Clear(Color(0.0, 0.0, 0.0, 1.0));
 
