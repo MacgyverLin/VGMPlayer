@@ -38,184 +38,214 @@
     <ClInclude Include="targetver.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\VGMPlayerLib\HuC6280.h">
-      <Filter>Source Files\chips</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\VGMPlayerLib\k053260.h">
-      <Filter>Source Files\chips</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\VGMPlayerLib\nes_defs.h">
-      <Filter>Source Files\chips</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\VGMPlayerLib\NESAPU.h">
-      <Filter>Source Files\chips</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\VGMPlayerLib\NESFDSAPU.h">
-      <Filter>Source Files\chips</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\VGMPlayerLib\SN76489.h">
-      <Filter>Source Files\chips</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\VGMPlayerLib\vgmdef.h">
-      <Filter>Source Files\chips</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\VGMPlayerLib\ym2151.h">
-      <Filter>Source Files\chips</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\VGMPlayerLib\ym2612.h">
-      <Filter>Source Files\chips</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\VGMPlayerLib\AudioDevice.h">
-      <Filter>Source Files\Platform</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\VGMPlayerLib\Array.h">
-      <Filter>Source Files\Platform</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\VGMPlayerLib\Obserable.h">
-      <Filter>Source Files\VGM\Model</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\VGMPlayerLib\Observer.h">
-      <Filter>Source Files\VGM\Observer</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\VGMPlayerLib\Platform.h">
-      <Filter>Source Files\Platform</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\VGMPlayerLib\VGMObverser.h">
-      <Filter>Source Files\VGM\Observer</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\VGMPlayerLib\VGMData.h">
-      <Filter>Source Files\VGM\Model</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\VGMPlayerLib\VGMFile.h">
-      <Filter>Source Files\VGM\Model</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\VGMPlayerLib\VideoDevice.h">
-      <Filter>Source Files\Platform</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\VGMPlayerLib\VGMPlayerLib.h">
       <Filter>Source Files\VGM</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\VGMPlayerLib\QSound.h">
+    <ClInclude Include="DataStream.h">
       <Filter>Source Files\chips</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\VGMPlayerLib\ROM.h">
+    <ClInclude Include="HuC6280.h">
       <Filter>Source Files\chips</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\VGMPlayerLib\SEGAPCM.h">
+    <ClInclude Include="k051649.h">
       <Filter>Source Files\chips</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\VGMPlayerLib\FFT.h">
+    <ClInclude Include="k053260.h">
+      <Filter>Source Files\chips</Filter>
+    </ClInclude>
+    <ClInclude Include="k054539.h">
+      <Filter>Source Files\chips</Filter>
+    </ClInclude>
+    <ClInclude Include="multipcm.h">
+      <Filter>Source Files\chips</Filter>
+    </ClInclude>
+    <ClInclude Include="nes_defs.h">
+      <Filter>Source Files\chips</Filter>
+    </ClInclude>
+    <ClInclude Include="NESAPU.h">
+      <Filter>Source Files\chips</Filter>
+    </ClInclude>
+    <ClInclude Include="NESFDSAPU.h">
+      <Filter>Source Files\chips</Filter>
+    </ClInclude>
+    <ClInclude Include="Obserable.h">
+      <Filter>Source Files\chips</Filter>
+    </ClInclude>
+    <ClInclude Include="QSound.h">
+      <Filter>Source Files\chips</Filter>
+    </ClInclude>
+    <ClInclude Include="ROM.h">
+      <Filter>Source Files\chips</Filter>
+    </ClInclude>
+    <ClInclude Include="SEGAPCM.h">
+      <Filter>Source Files\chips</Filter>
+    </ClInclude>
+    <ClInclude Include="SN76489.h">
+      <Filter>Source Files\chips</Filter>
+    </ClInclude>
+    <ClInclude Include="vgmdef.h">
+      <Filter>Source Files\chips</Filter>
+    </ClInclude>
+    <ClInclude Include="ym2151.h">
+      <Filter>Source Files\chips</Filter>
+    </ClInclude>
+    <ClInclude Include="ym2612.h">
+      <Filter>Source Files\chips</Filter>
+    </ClInclude>
+    <ClInclude Include="FFT.h">
       <Filter>Source Files\misc</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\VGMPlayerLib\VGMViewer.h">
+    <ClInclude Include="Array.h">
+      <Filter>Source Files\Platform</Filter>
+    </ClInclude>
+    <ClInclude Include="AudioDevice.h">
+      <Filter>Source Files\Platform</Filter>
+    </ClInclude>
+    <ClInclude Include="Platform.h">
+      <Filter>Source Files\Platform</Filter>
+    </ClInclude>
+    <ClInclude Include="VideoDevice.h">
+      <Filter>Source Files\Platform</Filter>
+    </ClInclude>
+    <ClInclude Include="VGMObverser.h">
+      <Filter>Source Files\VGM\Model</Filter>
+    </ClInclude>
+    <ClInclude Include="VGMData.h">
+      <Filter>Source Files\VGM\Model</Filter>
+    </ClInclude>
+    <ClInclude Include="VGMFile.h">
+      <Filter>Source Files\VGM\Observer\Renderer</Filter>
+    </ClInclude>
+    <ClInclude Include="VGMFireSpectrumViewer.h">
+      <Filter>Source Files\VGM\Observer\Renderer</Filter>
+    </ClInclude>
+    <ClInclude Include="VGMMultiChannelNoteRenderer.h">
+      <Filter>Source Files\VGM\Observer\Renderer</Filter>
+    </ClInclude>
+    <ClInclude Include="VGMMultiChannelWaveFormRenderer.h">
+      <Filter>Source Files\VGM\Observer\Renderer</Filter>
+    </ClInclude>
+    <ClInclude Include="VGMSpectrumRenderer.h">
+      <Filter>Source Files\VGM\Observer\Renderer</Filter>
+    </ClInclude>
+    <ClInclude Include="VGMWaveFormRenderer.h">
+      <Filter>Source Files\VGM\Observer\Renderer</Filter>
+    </ClInclude>
+    <ClInclude Include="Observer.h">
       <Filter>Source Files\VGM\Observer</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\VGMPlayerLib\VGMMultiChannelNoteRenderer.h">
-      <Filter>Source Files\VGM\Observer\Renderer</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\VGMPlayerLib\VGMMultiChannelWaveFormRenderer.h">
-      <Filter>Source Files\VGM\Observer\Renderer</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\VGMPlayerLib\VGMWaveFormRenderer.h">
-      <Filter>Source Files\VGM\Observer\Renderer</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\VGMPlayerLib\VGMSpectrumRenderer.h">
-      <Filter>Source Files\VGM\Observer\Renderer</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\VGMPlayerLib\VGMRenderer.h">
-      <Filter>Source Files\VGM\Observer\Renderer</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\VGMPlayerLib\VGMAudioPlayer.h">
+    <ClInclude Include="VGMViewer.h">
       <Filter>Source Files\VGM\Observer</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\VGMPlayerLib\DataStream.h">
-      <Filter>Source Files\chips</Filter>
+    <ClInclude Include="VGMRenderer.h">
+      <Filter>Source Files\VGM\Observer</Filter>
+    </ClInclude>
+    <ClInclude Include="VGMPlayerLib.h">
+      <Filter>Source Files\VGM\Observer</Filter>
+    </ClInclude>
+    <ClInclude Include="VGMLogoViewer.h">
+      <Filter>Source Files\VGM\Observer</Filter>
+    </ClInclude>
+    <ClInclude Include="VGMHardwarePlayer.h">
+      <Filter>Source Files\VGM\Observer</Filter>
+    </ClInclude>
+    <ClInclude Include="VGMAudioPlayer.h">
+      <Filter>Source Files\VGM\Observer</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="..\..\VGMPlayerLib\HuC6280.c">
+    <ClCompile Include="DataStream.c">
       <Filter>Source Files\chips</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\VGMPlayerLib\K053260.c">
+    <ClCompile Include="HuC6280.c">
       <Filter>Source Files\chips</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\VGMPlayerLib\NESAPU.c">
+    <ClCompile Include="k051649.c">
       <Filter>Source Files\chips</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\VGMPlayerLib\NESFDSAPU.c">
+    <ClCompile Include="K053260.c">
       <Filter>Source Files\chips</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\VGMPlayerLib\SN76489.c">
+    <ClCompile Include="k054539.c">
       <Filter>Source Files\chips</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\VGMPlayerLib\ym2151.c">
+    <ClCompile Include="multipcm.c">
       <Filter>Source Files\chips</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\VGMPlayerLib\ym2612.c">
+    <ClCompile Include="NESAPU.c">
       <Filter>Source Files\chips</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\VGMPlayerLib\AudioDevice.cpp">
-      <Filter>Source Files\Platform</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\VGMPlayerLib\Array.cpp">
-      <Filter>Source Files\Platform</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\VGMPlayerLib\Obserable.cpp">
-      <Filter>Source Files\VGM\Model</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\VGMPlayerLib\Observer.cpp">
-      <Filter>Source Files\VGM\Observer</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\VGMPlayerLib\Platform.cpp">
-      <Filter>Source Files\Platform</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\VGMPlayerLib\VGMObverser.cpp">
-      <Filter>Source Files\VGM\Observer</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\VGMPlayerLib\VGMData.cpp">
-      <Filter>Source Files\VGM\Model</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\VGMPlayerLib\VGMFile.cpp">
-      <Filter>Source Files\VGM\Model</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\VGMPlayerLib\VideoDevice.cpp">
-      <Filter>Source Files\Platform</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\VGMPlayerLib\QSound.c">
+    <ClCompile Include="NESFDSAPU.c">
       <Filter>Source Files\chips</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\VGMPlayerLib\ROM.c">
+    <ClCompile Include="QSound.c">
       <Filter>Source Files\chips</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\VGMPlayerLib\SEGAPCM.c">
+    <ClCompile Include="ROM.c">
       <Filter>Source Files\chips</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\VGMPlayerLib\FFT.cpp">
+    <ClCompile Include="SEGAPCM.c">
+      <Filter>Source Files\chips</Filter>
+    </ClCompile>
+    <ClCompile Include="SN76489.c">
+      <Filter>Source Files\chips</Filter>
+    </ClCompile>
+    <ClCompile Include="ym2151.c">
+      <Filter>Source Files\chips</Filter>
+    </ClCompile>
+    <ClCompile Include="ym2612.c">
+      <Filter>Source Files\chips</Filter>
+    </ClCompile>
+    <ClCompile Include="Obserable.cpp">
+      <Filter>Source Files\chips</Filter>
+    </ClCompile>
+    <ClCompile Include="FFT.cpp">
       <Filter>Source Files\misc</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\VGMPlayerLib\VGMViewer.cpp">
+    <ClCompile Include="Array.cpp">
+      <Filter>Source Files\Platform</Filter>
+    </ClCompile>
+    <ClCompile Include="AudioDevice.cpp">
+      <Filter>Source Files\Platform</Filter>
+    </ClCompile>
+    <ClCompile Include="Platform.cpp">
+      <Filter>Source Files\Platform</Filter>
+    </ClCompile>
+    <ClCompile Include="VideoDevice.cpp">
+      <Filter>Source Files\Platform</Filter>
+    </ClCompile>
+    <ClCompile Include="VGMObverser.cpp">
+      <Filter>Source Files\VGM\Model</Filter>
+    </ClCompile>
+    <ClCompile Include="VGMData.cpp">
+      <Filter>Source Files\VGM\Model</Filter>
+    </ClCompile>
+    <ClCompile Include="VGMFile.cpp">
+      <Filter>Source Files\VGM\Model</Filter>
+    </ClCompile>
+    <ClCompile Include="VGMMultiChannelNoteRenderer.cpp">
+      <Filter>Source Files\VGM\Observer\Renderer</Filter>
+    </ClCompile>
+    <ClCompile Include="VGMMultiChannelWaveFormRenderer.cpp">
+      <Filter>Source Files\VGM\Observer\Renderer</Filter>
+    </ClCompile>
+    <ClCompile Include="VGMSpectrumRenderer.cpp">
+      <Filter>Source Files\VGM\Observer\Renderer</Filter>
+    </ClCompile>
+    <ClCompile Include="VGMWaveFormRenderer.cpp">
+      <Filter>Source Files\VGM\Observer\Renderer</Filter>
+    </ClCompile>
+    <ClCompile Include="Observer.cpp">
       <Filter>Source Files\VGM\Observer</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\VGMPlayerLib\VGMMultiChannelNoteRenderer.cpp">
-      <Filter>Source Files\VGM\Observer\Renderer</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\VGMPlayerLib\VGMMultiChannelWaveFormRenderer.cpp">
-      <Filter>Source Files\VGM\Observer\Renderer</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\VGMPlayerLib\VGMWaveFormRenderer.cpp">
-      <Filter>Source Files\VGM\Observer\Renderer</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\VGMPlayerLib\VGMSpectrumRenderer.cpp">
-      <Filter>Source Files\VGM\Observer\Renderer</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\VGMPlayerLib\VGMRenderer.cpp">
-      <Filter>Source Files\VGM\Observer\Renderer</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\VGMPlayerLib\VGMAudioPlayer.cpp">
+    <ClCompile Include="VGMViewer.cpp">
       <Filter>Source Files\VGM\Observer</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\VGMPlayerLib\DataStream.c">
-      <Filter>Source Files\chips</Filter>
+    <ClCompile Include="VGMRenderer.cpp">
+      <Filter>Source Files\VGM\Observer</Filter>
+    </ClCompile>
+    <ClCompile Include="VGMAudioPlayer.cpp">
+      <Filter>Source Files\VGM\Observer</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>
