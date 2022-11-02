@@ -6,6 +6,7 @@
 #include "VGMObverser.h"
 
 #include "VideoDevice.h"
+#include "VideoEncoder.h"
 
 #include "VGMWaveFormRenderer.h"
 #include "VGMSpectrumRenderer.h"
@@ -30,14 +31,14 @@ private:
 public:
 protected:
 private:
-	VideoDevice videoDevice;
-
 	string name;
 	u32 x;
 	u32 y;
 	u32 width;
 	u32 height;
 
+	VideoDevice videoDevice;
+	VideoEncoder videoEncoder;
 
 	VGMWaveFormRenderer vgmWaveFormRenderer;
 	VGMSpectrumRenderer vgmSpectrumRenderer;

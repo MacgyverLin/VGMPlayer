@@ -152,6 +152,9 @@
     <ClInclude Include="VGMAudioPlayer.h">
       <Filter>Source Files\VGM\Observer</Filter>
     </ClInclude>
+    <ClInclude Include="VideoEncoder.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="DataStream.c">
@@ -246,6 +249,9 @@
     </ClCompile>
     <ClCompile Include="VGMAudioPlayer.cpp">
       <Filter>Source Files\VGM\Observer</Filter>
+    </ClCompile>
+    <ClCompile Include="VideoEncoder.cpp">
+      <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

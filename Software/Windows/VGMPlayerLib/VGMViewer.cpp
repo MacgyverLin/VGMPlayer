@@ -43,6 +43,7 @@ void VGMViewer::OnNotifyOpen(Obserable& observable)
 	VGMData& vgmData = (VGMData&)observable;
 
 	videoDevice.Open(name.c_str(), x, y, width, height);
+	videoEncoder.Initiate("1.mp4");
 
 	vgmWaveFormRenderer.OnNotifyOpen(observable);
 	vgmSpectrumRenderer.OnNotifyOpen(observable);
@@ -59,6 +60,7 @@ void VGMViewer::OnNotifyClose(Obserable& observable)
 	vgmMultiChannelWaveFormRenderer.OnNotifyClose(observable);
 	vgmMultiChannelNoteRenderer.OnNotifyClose(observable);
 
+	videoEncoder.Terminate();
 	videoDevice.Close();
 }
 

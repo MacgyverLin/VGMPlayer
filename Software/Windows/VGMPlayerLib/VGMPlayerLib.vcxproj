@@ -87,9 +87,10 @@
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
-      <SDLCheck>true</SDLCheck>
+      <SDLCheck>
+      </SDLCheck>
       <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS; WIN32;_DEBUG;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <ConformanceMode>true</ConformanceMode>
+      <ConformanceMode>Default</ConformanceMode>
       <AdditionalIncludeDirectories>../SDK/ffmpeg/include; ../SDK/stb/include; ../SDK/OpenAL/include; ../zlib; ../SDK/SDL/include; ../../VGMPlayerLib</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
@@ -97,8 +98,8 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
     </Link>
     <Lib>
-      <AdditionalDependencies>winmm.lib; zlib.lib; OpenAL32.lib; OpenGL32.lib; glu32.lib; SDL2.lib; SDL2main.lib; </AdditionalDependencies>
-      <AdditionalLibraryDirectories>../SDK/OpenAL/libs/x86;../SDK/SDL/lib/x86; $(OutDir)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>avcodec.lib;avformat.lib;avutil.lib;avdevice.lib;avfilter.lib;postproc.lib;swresample.lib;swscale.lib;winmm.lib; zlib.lib; OpenAL32.lib; OpenGL32.lib; glu32.lib; SDL2.lib; SDL2main.lib; </AdditionalDependencies>
+      <AdditionalLibraryDirectories>../SDK/ffmpeg/lib; ../SDK/OpenAL/libs/x86;../SDK/SDL/lib/x86; $(OutDir)</AdditionalLibraryDirectories>
     </Lib>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
@@ -116,8 +117,8 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
     </Link>
     <Lib>
-      <AdditionalDependencies>winmm.lib; OpenAL32.lib; OpenGL32.lib; glu32.lib; SDL2.lib; SDL2main.lib; </AdditionalDependencies>
-      <AdditionalLibraryDirectories>../SDK/OpenAL/libs/x86; ../SDK/SDL/lib/x86</AdditionalLibraryDirectories>
+      <AdditionalDependencies>swscale.lib; swresample.lib; postproc.lib; avutil.lib; avformat.lib; avfilter.lib; avdevice.lib; avcodec.lib; winmm.lib; zlib.lib; OpenAL32.lib; OpenGL32.lib; glu32.lib; SDL2.lib; SDL2main.lib; </AdditionalDependencies>
+      <AdditionalLibraryDirectories>../SDK/ffmpeg/lib; ../SDK/OpenAL/libs/x64;../SDK/SDL/lib/x64; $(OutDir)</AdditionalLibraryDirectories>
     </Lib>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -139,8 +140,8 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
     </Link>
     <Lib>
-      <AdditionalLibraryDirectories>../SDK/OpenAL/libs/x86; ../SDK/SDL/lib/x86; $(OutDir)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>winmm.lib; zlib.lib; OpenAL32.lib; OpenGL32.lib; glu32.lib; SDL2.lib; SDL2main.lib; </AdditionalDependencies>
+      <AdditionalLibraryDirectories>../SDK/ffmpeg/lib; ../SDK/OpenAL/libs/x86; ../SDK/SDL/lib/x86; $(OutDir)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>avcodec.lib;avformat.lib;avutil.lib;avdevice.lib;avfilter.lib;postproc.lib;swresample.lib;swscale.lib; winmm.lib; zlib.lib; OpenAL32.lib; OpenGL32.lib; glu32.lib; SDL2.lib; SDL2main.lib; </AdditionalDependencies>
     </Lib>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -161,6 +162,10 @@
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
     </Link>
+    <Lib>
+      <AdditionalDependencies>swscale.lib; swresample.lib; postproc.lib; avutil.lib; avformat.lib; avfilter.lib; avdevice.lib; avcodec.lib; winmm.lib; zlib.lib; OpenAL32.lib; OpenGL32.lib; glu32.lib; SDL2.lib; SDL2main.lib; </AdditionalDependencies>
+      <AdditionalLibraryDirectories>../SDK/ffmpeg/lib; ../SDK/OpenAL/libs/x64;../SDK/SDL/lib/x64; $(OutDir)</AdditionalLibraryDirectories>
+    </Lib>
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="..\..\VGMPlayerLib\VGMPlayerLib.h" />
@@ -201,6 +206,7 @@
     <ClInclude Include="VGMViewer.h" />
     <ClInclude Include="VGMWaveFormRenderer.h" />
     <ClInclude Include="VideoDevice.h" />
+    <ClInclude Include="VideoEncoder.h" />
     <ClInclude Include="ym2151.h" />
     <ClInclude Include="ym2612.h" />
   </ItemGroup>
@@ -234,6 +240,7 @@
     <ClCompile Include="VGMViewer.cpp" />
     <ClCompile Include="VGMWaveFormRenderer.cpp" />
     <ClCompile Include="VideoDevice.cpp" />
+    <ClCompile Include="VideoEncoder.cpp" />
     <ClCompile Include="ym2151.c" />
     <ClCompile Include="ym2612.c" />
   </ItemGroup>
