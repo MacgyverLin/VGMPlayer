@@ -39,6 +39,14 @@ VGMFile::~VGMFile()
 	}
 }
 
+const char* VGMFile::GetPath() const
+{
+	assert(impl);
+
+	return impl->path;
+}
+
+
 boolean VGMFile::OnOpen()
 {
 	boolean isvgz = (strstr(impl->path, ".vgz") != 0);

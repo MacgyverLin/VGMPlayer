@@ -1,6 +1,4 @@
 #include "VGMWaveFormRenderer.h"
-#include <GL/glu.h>
-#include <GL/gl.h>
 
 VGMWaveFormRenderer::VGMWaveFormRenderer(const char* name_, u32 x_, u32 y_, u32 width_, u32 height_, float waveScale_, const VGMWaveFormRenderer::Skin& skin_)
 	: VGMRenderer(name_, x_, y_, width_, height_)

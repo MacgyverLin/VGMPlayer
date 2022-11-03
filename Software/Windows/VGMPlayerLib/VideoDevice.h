@@ -4,6 +4,7 @@
 #include "vgmdef.h"
 #include <string>
 #include <algorithm>
+#include "Array.h"
 using namespace std;
 
 class Vector2
@@ -739,11 +740,14 @@ public:
 	boolean IsCurrent();
 	void Flush();
 
+	void ReadPixels(Vector<char>& buffer);
+
 	void Enable(VideoDevice::Constant mode);
 	void Disable(VideoDevice::Constant mode);
 
 	void BlendFunc(VideoDevice::Constant sfactor, VideoDevice::Constant dfactor);
-	void Clear(const Color& c);
+	void ClearColor(const Color& c);
+	void Clear();
 	void MatrixMode(VideoDevice::Constant mode);
 	void LoadIdentity();
 	void Ortho2D(int left, int right, int bottom, int top);

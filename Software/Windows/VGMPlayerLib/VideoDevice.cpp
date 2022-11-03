@@ -5,6 +5,7 @@
 #include <SDL_opengl.h>
 #include <GL/glu.h>
 #include <GL/gl.h>
+#include "Array.h"
 #include <vector>
 
 #define STB_IMAGE_IMPLEMENTATION
@@ -30,7 +31,7 @@ const Color Color::White(1.0f, 1.0f, 1.0f, 1.0f);
 
 GLenum GetGLEnum(VideoDevice::Constant constant)
 {
-	static const vector<GLenum> glEnums =
+	static const std::vector<GLenum> glEnums =
 	{
 		GL_TRUE,
 		GL_FALSE,
@@ -728,6 +729,9 @@ class VideoDeviceImpl
 public:
 	SDL_Window* window;
 	SDL_GLContext glContext;
+
+	int width;
+	int height;
 };
 
 VideoDevice::VideoDevice()
@@ -754,6 +758,8 @@ boolean VideoDevice::Open(const string& name_, u32 x_, u32 y_, u32 width_, u32 h
 		//	printf("Window could not be created! SDL_Error: %s\n", SDL_GetError());
 		return FALSE;
 	}
+
+	SDL_GL_GetDrawableSize(impl->window, &impl->width, &impl->height);
 
 	// Create OpenGL context
 	impl->glContext = SDL_GL_CreateContext(impl->window);
@@ -801,6 +807,21 @@ void VideoDevice::Flush()
 	SDL_GL_SwapWindow(impl->window);
 }
 
+void VideoDevice::ReadPixels(Vector<char>& buffer)
+{
+	buffer.resize(impl->width * impl->height * 3);
+	glReadPixels(0, 0, impl->width, impl->height, GL_RGB, GL_UNSIGNED_BYTE, &buffer[0]);
+
+	/*
+	FILE* f = fopen("1.raw", "wb");
+	if (f)
+	{
+		fwrite(&buffer[0], 1, buffer.size(), f);
+		fclose(f);
+	}
+	*/
+}
+
 void VideoDevice::Enable(VideoDevice::Constant cap)
 {
 	glEnable(GetGLEnum(cap));
@@ -811,9 +832,13 @@ void VideoDevice::Disable(VideoDevice::Constant cap)
 	glDisable(GetGLEnum(cap));
 }
 
-void VideoDevice::Clear(const Color& c)
+void VideoDevice::ClearColor(const Color& c)
 {
 	glClearColor(c.r, c.g, c.b, c.a);
+}
+
+void VideoDevice::Clear()
+{
 	glClear(GL_COLOR_BUFFER_BIT);
 }
 

@@ -1,7 +1,5 @@
 #include "VGMMultiChannelNoteRenderer.h"
 #include "FFT.h"
-#include <GL/glu.h>
-#include <GL/gl.h>
 
 VGMMultiChannelNoteRenderer::VGMMultiChannelNoteRenderer(const char* name_, u32 x_, u32 y_, u32 width_, u32 height_, float waveScale_, const VGMMultiChannelNoteRenderer::Skin& skin_)
 	: VGMRenderer(name_, x_, y_, width_, height_)
@@ -84,7 +82,8 @@ void VGMMultiChannelNoteRenderer::OnNotifyUpdate(Obserable& observable)
 		/////////////////////////////////////////////////////////////////////
 		SetViewport(0, 0, 1, 1);
 
-		videoDevice.Clear(Color(0.0, 0.0, 0.0, 1.0));
+		videoDevice.ClearColor(Color(0.0, 0.0, 0.0, 1.0));
+		videoDevice.Clear();
 		videoDevice.Enable(VideoDevice::Constant::BLEND);
 		videoDevice.DrawSolidRectangle
 		(

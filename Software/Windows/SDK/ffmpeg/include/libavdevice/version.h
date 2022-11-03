@@ -25,11 +25,11 @@
  * Libavdevice version macros
  */
 
-#include "libavutil/version.h"
+#include "libavutil/avutil.h"
 
 #define LIBAVDEVICE_VERSION_MAJOR  55
-#define LIBAVDEVICE_VERSION_MINOR  13
-#define LIBAVDEVICE_VERSION_MICRO 101
+#define LIBAVDEVICE_VERSION_MINOR   5
+#define LIBAVDEVICE_VERSION_MICRO 100
 
 #define LIBAVDEVICE_VERSION_INT AV_VERSION_INT(LIBAVDEVICE_VERSION_MAJOR, \
                                                LIBAVDEVICE_VERSION_MINOR, \

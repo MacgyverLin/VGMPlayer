@@ -166,13 +166,6 @@ struct SwrContext *swr_alloc(void);
 int swr_init(struct SwrContext *s);
 
 /**
- * Check whether an swr context has been initialized or not.
- *
- * @return positive if it has been initialized, 0 if not initialized
- */
-int swr_is_initialized(struct SwrContext *s);
-
-/**
  * Allocate SwrContext if needed and set/reset common parameters.
  *
  * This function does not require s to be allocated with swr_alloc(). On the
@@ -210,7 +203,7 @@ void swr_free(struct SwrContext **s);
  *
  * If more input is provided than output space then the input will be buffered.
  * You can avoid this buffering by providing more output space than input.
- * Conversion will run directly without copying whenever possible.
+ * Convertion will run directly without copying whenever possible.
  *
  * @param s         allocated Swr context, with parameters set
  * @param out       output buffers, only the first one need be set in case of packed audio

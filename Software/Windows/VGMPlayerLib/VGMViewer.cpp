@@ -1,7 +1,6 @@
 #include "VGMViewer.h"
 #include "FFT.h"
-#include <GL/glu.h>
-#include <GL/gl.h>
+#include "VGMFile.h"
 
 VGMViewer::VGMViewer(const string& name_, u32 x_, u32 y_, u32 width_, u32 height_)
 	: VGMObverser()
@@ -40,10 +39,14 @@ void VGMViewer::OnNotifySomething(Obserable& observable)
 
 void VGMViewer::OnNotifyOpen(Obserable& observable)
 {
-	VGMData& vgmData = (VGMData&)observable;
+	VGMFile& vgmFile = (VGMFile&)observable;
 
-	videoDevice.Open(name.c_str(), x, y, width, height);
-	videoEncoder.Initiate("1.mp4");
+	std::string caption = name + vgmFile.GetPath();
+	std::string mp4File = vgmFile.GetPath();
+	mp4File = mp4File.substr(0, mp4File.find_last_of('.')) + ".mp4";
+
+	videoDevice.Open(caption.c_str(), x, y, width, height);
+	videoEncoder.Initiate(mp4File.c_str(), width, height);
 
 	vgmWaveFormRenderer.OnNotifyOpen(observable);
 	vgmSpectrumRenderer.OnNotifyOpen(observable);
@@ -112,10 +115,9 @@ void VGMViewer::OnNotifyUpdate(Obserable& observable)
 
 	if (systemChannels.HasSampleBufferUpdatedEvent())
 	{
-		videoEncoder.AddFrame(nullptr, 0 , nullptr, 0);
-
 		videoDevice.MakeCurrent();
-		videoDevice.Clear(Color(0.0, 0.0, 0.0, 1.0));
+		videoDevice.ClearColor(Color(0.0, 0.0, 0.0, 1.0));
+		videoDevice.Clear();
 
 		vgmWaveFormRenderer.OnNotifyUpdate(observable);
 		vgmSpectrumRenderer.OnNotifyUpdate(observable);
@@ -123,5 +125,13 @@ void VGMViewer::OnNotifyUpdate(Obserable& observable)
 		vgmMultiChannelNoteRenderer.OnNotifyUpdate(observable);
 
 		videoDevice.Flush();
+
+
+
+		Vector<char> colorBuffer;
+		Vector<char> audioBuffer;
+		videoDevice.ReadPixels(colorBuffer);
+		
+		videoEncoder.Update(colorBuffer, audioBuffer);
 	}
 }

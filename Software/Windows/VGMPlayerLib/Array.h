@@ -33,7 +33,7 @@ public:
 		return _m[i];
 	}
 
-	u32 size()
+	u32 size() const
 	{
 		return _size;
 	}
@@ -94,7 +94,7 @@ public:
 		return _m[oldSize];
 	}
 
-	s32 find(T& t)
+	s32 find(T& t) const
 	{
 		for (u32 i = 0; i < _size; i++)
 		{
@@ -143,12 +143,12 @@ public:
 		}
 	}
 
-	u32 size()
+	u32 size() const
 	{
 		return _size;
 	}
 
-	u32 capacity()
+	u32 capacity() const
 	{
 		return _capacity;
 	}

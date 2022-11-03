@@ -1,7 +1,5 @@
 #include "VGMSpectrumRenderer.h"
 #include "FFT.h"
-#include <GL/glu.h>
-#include <GL/gl.h>
 
 VGMSpectrumRenderer::VGMSpectrumRenderer(const char* name_, u32 x_, u32 y_, u32 width_, u32 height_, float waveScale_, const VGMSpectrumRenderer::Skin& skin_)
 	: VGMRenderer(name_, x_, y_, width_, height_)

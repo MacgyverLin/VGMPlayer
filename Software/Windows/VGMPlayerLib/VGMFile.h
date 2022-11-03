@@ -10,6 +10,8 @@ class VGMFile : public VGMData
 public:
 	VGMFile(const char* path_, const char* texturePath_, s32 channels_, s32 bitPerSample_, s32 sampleRate_);
 	~VGMFile();
+
+	const char* GetPath() const;
 protected:
 	virtual boolean OnOpen();
 	virtual void OnClose();

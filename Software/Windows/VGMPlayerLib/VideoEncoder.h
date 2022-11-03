@@ -5,6 +5,7 @@
 #include <stdlib.h>
 #include <math.h>
 #include <string>
+#include "Array.h"
 
 class VideoEncoderImpl;
 
@@ -14,9 +15,8 @@ public:
     VideoEncoder();
     virtual ~VideoEncoder();
 
-    bool Initiate(const char* filename);
-    bool AddFrame(const char* imageBuffer, int imageBufferSize,
-                  const char* soundBuffer, int soundBufferSize);
+    bool Initiate(const char* filename, int width, int height);
+    bool Update(const Vector<char>& videoBuffer, const Vector<char>& audioBuffer);
     void Terminate();
 private:
     VideoEncoderImpl* impl;
