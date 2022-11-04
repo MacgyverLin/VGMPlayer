@@ -807,7 +807,7 @@ void VideoDevice::Flush()
 	SDL_GL_SwapWindow(impl->window);
 }
 
-void VideoDevice::ReadPixels(Vector<char>& buffer)
+void VideoDevice::ReadPixels(Vector<unsigned char>& buffer)
 {
 	buffer.resize(impl->width * impl->height * 3);
 	glReadPixels(0, 0, impl->width, impl->height, GL_RGB, GL_UNSIGNED_BYTE, &buffer[0]);

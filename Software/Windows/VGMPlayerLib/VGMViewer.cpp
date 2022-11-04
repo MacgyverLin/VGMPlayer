@@ -7,8 +7,8 @@ VGMViewer::VGMViewer(const string& name_, u32 x_, u32 y_, u32 width_, u32 height
 	, name(name_)
 	, x(x_)
 	, y(y_)
-	, width(width_)
-	, height(height_)
+	, width(width_ + (width_ % 2))
+	, height(height_ + (height_ % 2))
 #ifdef OLDLAYOUT
 	, vgmWaveFormRenderer("Output"					, 0 + width / 2 * 0, height / 2 * 0, width / 2 * 1, height / 2 * 1, 5.0f, VGMWaveFormRenderer::Skin())
 	, vgmSpectrumRenderer("Spectrum"				, 0 + width / 2 * 1, height / 2 * 0, width / 2 * 1, height / 2 * 1, 5.0f, VGMSpectrumRenderer::Skin())
@@ -126,12 +126,8 @@ void VGMViewer::OnNotifyUpdate(Obserable& observable)
 
 		videoDevice.Flush();
 
-
-
-		Vector<char> colorBuffer;
-		Vector<char> audioBuffer;
+		Vector<unsigned char> colorBuffer;
 		videoDevice.ReadPixels(colorBuffer);
-		
-		videoEncoder.Update(colorBuffer, audioBuffer);
+		videoEncoder.Update(colorBuffer, systemChannels.GetOutputSampleBuffer());
 	}
 }

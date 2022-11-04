@@ -6,6 +6,7 @@
 #include <math.h>
 #include <string>
 #include "Array.h"
+#include <vector>
 
 class VideoEncoderImpl;
 
@@ -16,7 +17,7 @@ public:
     virtual ~VideoEncoder();
 
     bool Initiate(const char* filename, int width, int height);
-    bool Update(const Vector<char>& videoBuffer, const Vector<char>& audioBuffer);
+    bool Update(const Vector<unsigned char>& videoBuffer, const std::vector<s16>& audioBuffer);
     void Terminate();
 private:
     VideoEncoderImpl* impl;

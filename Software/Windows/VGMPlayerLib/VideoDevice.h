@@ -3,7 +3,6 @@
 
 #include "vgmdef.h"
 #include <string>
-#include <algorithm>
 #include "Array.h"
 using namespace std;
 
@@ -740,7 +739,7 @@ public:
 	boolean IsCurrent();
 	void Flush();
 
-	void ReadPixels(Vector<char>& buffer);
+	void ReadPixels(Vector<unsigned char>& buffer);
 
 	void Enable(VideoDevice::Constant mode);
 	void Disable(VideoDevice::Constant mode);

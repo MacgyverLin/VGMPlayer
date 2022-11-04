@@ -528,6 +528,11 @@ public:
 		{
 			return buffer[(i << 1) + channel];
 		}
+
+		const vector<T>& GetBuffer() const
+		{
+			return buffer;
+		}
 	private:
 		vector<T> buffer;
 	};
@@ -668,6 +673,11 @@ public:
 		const s16& GetOutputSample(int channel, int i) const
 		{
 			return outputSampleBuffer.Get(channel, i);
+		}
+
+		const std::vector<s16>& GetOutputSampleBuffer() const
+		{
+			return outputSampleBuffer.GetBuffer();
 		}
 
 		const vector<Channel::Note>& GetOutputNotes(int ch) const
