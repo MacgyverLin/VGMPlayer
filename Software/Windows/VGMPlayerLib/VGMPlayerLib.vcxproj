@@ -98,8 +98,8 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
     </Link>
     <Lib>
-      <AdditionalDependencies>freetype.lib; avcodec.lib;avformat.lib;avutil.lib;avdevice.lib;avfilter.lib;postproc.lib;swresample.lib;swscale.lib;winmm.lib; OpenAL32.lib; OpenGL32.lib; glu32.lib; SDL2.lib; SDL2main.lib; </AdditionalDependencies>
-      <AdditionalLibraryDirectories>../SDK/freetype/release static/vs2015-2022/win32; ../SDK/ffmpeg/lib; ../SDK/OpenAL/libs/x86;../SDK/SDL/lib/x86; $(OutDir)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>zlib.lib; freetype.lib; avcodec.lib;avformat.lib;avutil.lib;avdevice.lib;avfilter.lib;postproc.lib;swresample.lib;swscale.lib;winmm.lib; OpenAL32.lib; OpenGL32.lib; glu32.lib; SDL2.lib; SDL2main.lib; </AdditionalDependencies>
+      <AdditionalLibraryDirectories>../SDK/freetype/release dll/win32; ../SDK/ffmpeg/lib; ../SDK/OpenAL/libs/x86;../SDK/SDL/lib/x86; $(OutDir)</AdditionalLibraryDirectories>
       <IgnoreAllDefaultLibraries>true</IgnoreAllDefaultLibraries>
     </Lib>
   </ItemDefinitionGroup>
@@ -141,8 +141,8 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
     </Link>
     <Lib>
-      <AdditionalLibraryDirectories>../SDK/freetype/release static/vs2015-2022/win32; ../SDK/ffmpeg/lib; ../SDK/OpenAL/libs/x86;../SDK/SDL/lib/x86; $(OutDir)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>freetype.lib; avcodec.lib;avformat.lib;avutil.lib;avdevice.lib;avfilter.lib;postproc.lib;swresample.lib;swscale.lib;winmm.lib; OpenAL32.lib; OpenGL32.lib; glu32.lib; SDL2.lib; SDL2main.lib; </AdditionalDependencies>
+      <AdditionalLibraryDirectories>../SDK/freetype/release dll/win32; ../SDK/ffmpeg/lib; ../SDK/OpenAL/libs/x86;../SDK/SDL/lib/x86; $(OutDir)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>zlib.lib; freetype.lib; avcodec.lib;avformat.lib;avutil.lib;avdevice.lib;avfilter.lib;postproc.lib;swresample.lib;swscale.lib;winmm.lib; OpenAL32.lib; OpenGL32.lib; glu32.lib; SDL2.lib; SDL2main.lib; </AdditionalDependencies>
       <IgnoreAllDefaultLibraries>true</IgnoreAllDefaultLibraries>
     </Lib>
   </ItemDefinitionGroup>

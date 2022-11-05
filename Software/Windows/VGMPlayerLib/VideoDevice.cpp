@@ -753,20 +753,18 @@ void Texture2D::SetMagFilter(VideoDeviceEnum magFilter_)
 }
 
 ////////////////////////////////////////////////////////
-#ifdef USE_FONT
-
 #include <ft2build.h>
 #include FT_FREETYPE_H
 
-FontTexture::FontTexture()
+Font::Font()
 {
 }
 
-FontTexture::~FontTexture()
+Font::~Font()
 {
 }
 
-int FontTexture::Load(const char* path_)
+int Font::Load(const char* path_, float size_)
 {
 	FT_Library ft;
 
@@ -795,7 +793,7 @@ int FontTexture::Load(const char* path_)
 	else 
 	{
 		// set size to load glyphs as
-		FT_Set_Pixel_Sizes(face, 0, 48);
+		FT_Set_Pixel_Sizes(face, 0, size_);
 
 		// disable byte-alignment restriction
 		glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
@@ -809,6 +807,7 @@ int FontTexture::Load(const char* path_)
 				vgm_log("ERROR::FREETYTPE: Failed to load Glyph\n");
 				continue;
 			}
+
 			// generate texture
 			unsigned int texture;
 			glGenTextures(1, &texture);
@@ -817,19 +816,21 @@ int FontTexture::Load(const char* path_)
 			(
 				GL_TEXTURE_2D,
 				0,
-				GL_RED,
+				GL_LUMINANCE,
 				face->glyph->bitmap.width,
 				face->glyph->bitmap.rows,
 				0,
-				GL_RED,
+				GL_LUMINANCE,
 				GL_UNSIGNED_BYTE,
 				face->glyph->bitmap.buffer
 			);
+
 			// set texture options
 			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
 			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
 			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
 			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+			
 			// now store character for later use
 			Character character = 
 			{
@@ -850,7 +851,7 @@ int FontTexture::Load(const char* path_)
 	return -1;
 }
 
-void FontTexture::RenderText(const char* text, float x, float y, float scale, const Color& c)
+void Font::RenderText(const char* text, float x, float y, float scale, const Color& c)
 {
 	// activate corresponding render state	
 	//shader.use();
@@ -862,9 +863,9 @@ void FontTexture::RenderText(const char* text, float x, float y, float scale, co
 
 
 	// iterate through all characters
-	for(int c = 0; c < strlen(text); c++)
+	for(int i = 0; i < strlen(text); i++)
 	{
-		Character ch = characters[text[c]];
+		Character ch = characters[text[i]];
 
 		float xpos = x + ch.bearing.x * scale;
 		float ypos = y - (ch.size.y - ch.bearing.y) * scale;
@@ -879,15 +880,15 @@ void FontTexture::RenderText(const char* text, float x, float y, float scale, co
 		// render quad
 		// glDrawArrays(GL_TRIANGLES, 0, 6);
 
-		static Vector2 v[4] =
+		Vector2 v[4] =
 		{
-			{ xpos,     ypos + h },
-			{ xpos,     ypos,    },
-			{ xpos + w, ypos,    },
-			{ xpos + w, ypos + h }
+			{ xpos + 0, ypos + h},
+			{ xpos + 0, ypos + 0},
+			{ xpos + w, ypos + 0},
+			{ xpos + w, ypos + h}
 		};
 
-		static Vector2 t[4] =
+		Vector2 t[4] =
 		{
 			{ 0.0f, 0.0f },
 			{ 0.0f, 1.0f },
@@ -925,17 +926,33 @@ void FontTexture::RenderText(const char* text, float x, float y, float scale, co
 	//glBindVertexArray(0);
 	//glBindTexture(GL_TEXTURE_2D, 0);
 }
-#endif
 
 //////////////////////////////////////////////////////////////////////////////////
 class VideoDeviceImpl
 {
 public:
+	VideoDeviceImpl()
+	{
+		window = nullptr;
+		glContext = nullptr;
+
+		width = 0;
+		height = 0;
+
+		currentFont = nullptr;
+		currentFontScale = 1.0f;
+		currentFontColor = Color::White;
+	}
+
 	SDL_Window* window;
 	SDL_GLContext glContext;
 
 	int width;
 	int height;
+
+	Font* currentFont;
+	float currentFontScale;
+	Color currentFontColor;
 };
 
 VideoDevice::VideoDevice()
@@ -963,8 +980,6 @@ boolean VideoDevice::Open(const string& name_, u32 x_, u32 y_, u32 width_, u32 h
 		return FALSE;
 	}
 
-	SDL_GL_GetDrawableSize(impl->window, &impl->width, &impl->height);
-
 	// Create OpenGL context
 	impl->glContext = SDL_GL_CreateContext(impl->window);
 	if (impl->glContext == NULL)
@@ -973,6 +988,9 @@ boolean VideoDevice::Open(const string& name_, u32 x_, u32 y_, u32 width_, u32 h
 		//printf("OpenGL context could not be created! SDL Error: %s\n", SDL_GetError());
 		return FALSE;
 	}
+
+	SDL_GL_GetDrawableSize(impl->window, &impl->width, &impl->height);
+	impl->currentFont = nullptr;
 
 	SDL_GL_SetSwapInterval(1);
 
@@ -1078,6 +1096,54 @@ void VideoDevice::Viewport(int x_, int y_, int width_, int height_)
 
 	glEnable(GL_SCISSOR_TEST);
 	glScissor(x_, y_, width_, height_);
+}
+
+Font* VideoDevice::CreateFont(const char* filename_, int size_)
+{
+	Font* font = new Font();
+
+	if (!font->Load(filename_, size_))
+	{
+		delete font;
+		font = nullptr;
+	}
+
+	return font;
+}
+
+void VideoDevice::DestroyFont(Font* font_)
+{
+	if (font_)
+	{
+		if (impl->currentFont == font_)
+			impl->currentFont = nullptr;
+
+		delete font_;
+		font_ = nullptr;
+	}
+}
+
+void VideoDevice::SetFont(Font* font_)
+{
+	impl->currentFont = font_;
+}
+
+void VideoDevice::SetFontScale(float scale_)
+{
+	impl->currentFontScale = scale_;
+}
+
+void VideoDevice::SetFontColor(const Color& color_)
+{
+	impl->currentFontColor = color_;
+}
+
+void VideoDevice::DrawText(const char* text, float x, float y)
+{
+	if (!impl->currentFont)
+		return;
+
+	impl->currentFont->RenderText(text, x, y, impl->currentFontScale, impl->currentFontColor);
 }
 
 void VideoDevice::DrawPoint(const Vector2& v, const Color& c)

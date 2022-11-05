@@ -20,7 +20,7 @@ VGMViewer::VGMViewer(const string& name_, u32 x_, u32 y_, u32 width_, u32 height
 	, vgmWaveFormRenderer(videoDevice, "Output"					, Rect(0 + width / 3 * 0, height / 3 * 0, width / 3 * 2, height / 3 * 1), 5.0f, VGMWaveFormRenderer::Skin())
 	, vgmSpectrumRenderer(videoDevice, "Spectrum"				, Rect(0 + width / 3 * 2, height / 3 * 0, width / 3 * 1, height / 3 * 1), 5.0f, VGMSpectrumRenderer::Skin())
 	, vgmMultiChannelWaveFormRenderer(videoDevice, "Channels"	, Rect(0 + width / 3 * 2, height / 3 * 1, width / 3 * 1, height / 3 * 2), 1.0f, VGMMultiChannelWaveFormRenderer::Skin())
-	, vgmMultiChannelNoteRenderer(videoDevice, "Notes"			, Rect(0		        , 0             , width / 3 * 2, height / 3 * 3), 1.0f, VGMMultiChannelNoteRenderer::Skin())
+	, vgmMultiChannelNoteRenderer(videoDevice, "Notes"			, Rect(0				, height / 3 * 1, width / 3 * 2, height / 3 * 2), 1.0f, VGMMultiChannelNoteRenderer::Skin())
 #endif
 {
 }

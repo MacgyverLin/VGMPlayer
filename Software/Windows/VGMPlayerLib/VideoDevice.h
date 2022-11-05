@@ -755,8 +755,7 @@ private:
 	VideoDeviceEnum magFilter;
 };
 
-#ifdef USE_FONT
-class FontTexture
+class Font
 {
 public:
 	struct Character 
@@ -767,15 +766,14 @@ public:
 		unsigned int advance;   // Horizontal offset to advance to next glyph
 	};
 
-	FontTexture();
-	~FontTexture();
+	Font();
+	~Font();
 
-	int Load(const char* path_);
+	int Load(const char* path_, float size_);
 	void RenderText(const char* text, float x, float y, float scale, const Color& color);
 private:
 	std::map<char, Character> characters;
 };
-#endif
 
 class VideoDeviceImpl;
 class VideoDevice
@@ -807,6 +805,13 @@ public:
 	void LoadIdentity();
 	void Ortho2D(int left, int right, int bottom, int top);
 	void Viewport(int x_, int y_, int width_, int height_);
+
+	Font* CreateFont(const char* filename_, int size_);
+	void DestroyFont(Font* font);
+	void SetFont(Font* font_);
+	void SetFontScale(float scale_);
+	void SetFontColor(const Color& color_);
+	void DrawText(const char* text, float x, float y);
 
 	void DrawPoint(const Vector2& v, const Color& c);
 	void DrawLine(const Vector2& v0, const Color& c0, const Vector2& v1, const Color& c1);

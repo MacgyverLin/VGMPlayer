@@ -24,9 +24,7 @@ void VGMMultiChannelNoteRenderer::OnNotifyOpen(Obserable& observable)
 	const VGMData::Info& info = vgmData.GetInfo();
 	const VGMData::SystemChannels& systemChannels = vgmData.GetSystemChannels();
 
-#ifdef USE_FONT
-	fontTexture.Load("arial.ttf");
-#endif
+	font = videoDevice.CreateFont("arial.ttf", 24);
 }
 
 void VGMMultiChannelNoteRenderer::OnNotifyClose(Obserable& observable)
@@ -36,6 +34,8 @@ void VGMMultiChannelNoteRenderer::OnNotifyClose(Obserable& observable)
 	const VGMHeader& header = vgmData.GetHeader();
 	const VGMData::Info& info = vgmData.GetInfo();
 	const VGMData::SystemChannels& systemChannels = vgmData.GetSystemChannels();
+
+	videoDevice.DestroyFont(font);
 }
 
 void VGMMultiChannelNoteRenderer::OnNotifyPlay(Obserable& observable)
@@ -69,12 +69,18 @@ void VGMMultiChannelNoteRenderer::OnNotifyUpdate(Obserable& observable)
 		/////////////////////////////////////////////////////////////////////////////////
 		videoDevice.MatrixMode(VideoDeviceEnum::PROJECTION);
 		videoDevice.LoadIdentity();
-		videoDevice.Ortho2D(0, 640, 0, 480);
-		videoDevice.MatrixMode(VideoDeviceEnum::MODELVIEW);
 
-#ifdef USE_FONT
-		fontTexture.RenderText("fuck you", 0, 0, 1.0, Color::White);
-#endif
+		Rect region = GetRegion();
+		videoDevice.Ortho2D(0, region.w, 0, region.h);
+		videoDevice.MatrixMode(VideoDeviceEnum::MODELVIEW);
+		SetViewport(0, 0, 1, 1);
+
+		videoDevice.SetFont(font);
+		videoDevice.SetFontColor(Color::White);
+		videoDevice.SetFontScale(1.0f);
+		videoDevice.DrawText("fuck you", 0, 0);
+		videoDevice.DrawText("fuck you", 0, 20);
+
 		/////////////////////////////////////////////////////////////////////////////////
 		videoDevice.MatrixMode(VideoDeviceEnum::PROJECTION);
 		videoDevice.LoadIdentity();
