@@ -91,15 +91,16 @@
       </SDLCheck>
       <PreprocessorDefinitions>__STDC_CONSTANT_MACROS; _CRT_SECURE_NO_WARNINGS; WIN32;_DEBUG;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>Default</ConformanceMode>
-      <AdditionalIncludeDirectories>../SDK/ffmpeg/include; ../SDK/stb/include; ../SDK/OpenAL/include; ../zlib; ../SDK/SDL/include; ../../VGMPlayerLib</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>../SDK/freetype/include; ../SDK/ffmpeg/include; ../SDK/stb/include; ../SDK/OpenAL/include; ../zlib; ../SDK/SDL/include; ../../VGMPlayerLib</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
     </Link>
     <Lib>
-      <AdditionalDependencies>avcodec.lib;avformat.lib;avutil.lib;avdevice.lib;avfilter.lib;postproc.lib;swresample.lib;swscale.lib;winmm.lib; zlib.lib; OpenAL32.lib; OpenGL32.lib; glu32.lib; SDL2.lib; SDL2main.lib; </AdditionalDependencies>
-      <AdditionalLibraryDirectories>../SDK/ffmpeg/lib; ../SDK/OpenAL/libs/x86;../SDK/SDL/lib/x86; $(OutDir)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>freetype.lib; avcodec.lib;avformat.lib;avutil.lib;avdevice.lib;avfilter.lib;postproc.lib;swresample.lib;swscale.lib;winmm.lib; OpenAL32.lib; OpenGL32.lib; glu32.lib; SDL2.lib; SDL2main.lib; </AdditionalDependencies>
+      <AdditionalLibraryDirectories>../SDK/freetype/release static/vs2015-2022/win32; ../SDK/ffmpeg/lib; ../SDK/OpenAL/libs/x86;../SDK/SDL/lib/x86; $(OutDir)</AdditionalLibraryDirectories>
+      <IgnoreAllDefaultLibraries>true</IgnoreAllDefaultLibraries>
     </Lib>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
@@ -131,7 +132,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>__STDC_CONSTANT_MACROS; _CRT_SECURE_NO_WARNINGS; WIN32;NDEBUG;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>../SDK/ffmpeg/include; ../SDK/stb/include; ../SDK/OpenAL/include; ../zlib; ../SDK/SDL/include; ../../VGMPlayerLib</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>../SDK/freetype/include; ../SDK/ffmpeg/include; ../SDK/stb/include; ../SDK/OpenAL/include; ../zlib; ../SDK/SDL/include; ../../VGMPlayerLib</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -140,8 +141,9 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
     </Link>
     <Lib>
-      <AdditionalLibraryDirectories>../SDK/ffmpeg/lib; ../SDK/OpenAL/libs/x86; ../SDK/SDL/lib/x86; $(OutDir)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>avcodec.lib;avformat.lib;avutil.lib;avdevice.lib;avfilter.lib;postproc.lib;swresample.lib;swscale.lib; winmm.lib; zlib.lib; OpenAL32.lib; OpenGL32.lib; glu32.lib; SDL2.lib; SDL2main.lib; </AdditionalDependencies>
+      <AdditionalLibraryDirectories>../SDK/freetype/release static/vs2015-2022/win32; ../SDK/ffmpeg/lib; ../SDK/OpenAL/libs/x86;../SDK/SDL/lib/x86; $(OutDir)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>freetype.lib; avcodec.lib;avformat.lib;avutil.lib;avdevice.lib;avfilter.lib;postproc.lib;swresample.lib;swscale.lib;winmm.lib; OpenAL32.lib; OpenGL32.lib; glu32.lib; SDL2.lib; SDL2main.lib; </AdditionalDependencies>
+      <IgnoreAllDefaultLibraries>true</IgnoreAllDefaultLibraries>
     </Lib>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">

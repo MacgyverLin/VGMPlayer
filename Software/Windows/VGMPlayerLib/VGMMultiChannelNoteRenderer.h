@@ -52,6 +52,9 @@ private:
 	float waveScale;
 	Skin skin;
 
+#ifdef USE_FONT
+	FontTexture fontTexture;
+#endif
 	std::vector<std::vector<VGMData::Channel::Note>> channelsNotes;
 };
 

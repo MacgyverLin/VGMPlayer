@@ -81,9 +81,9 @@ void VGMSpectrumRenderer::OnNotifyUpdate(Obserable& observable)
 
 		/////////////////////////////////////////////////////////////////////////////////
 		int fftSampleCount = skin.numColumns * 2;
-		int startX = fftSampleCount / 2;
-		int endX = fftSampleCount;
-		f32 stepX = ((f32)(endX - startX)) / ((f32)fftSampleCount / 2);
+		int startX = 0;// ;
+		int endX = fftSampleCount / 2;
+		f32 stepX = ((f32)(endX - startX)) / ((f32)fftSampleCount);
 
 		int startY = 0;
 		int endY = 1;
@@ -98,22 +98,21 @@ void VGMSpectrumRenderer::OnNotifyUpdate(Obserable& observable)
 		f32 rightIdx = 0;
 		for (int i = 0; i < fftSampleCount; i++)
 		{
-			left[i].real = 0;
-			left[i].imag = 0;
-			right[i].real = 0;
-			right[i].imag = 0;
+			complex* l = &left[i];
+			complex* r = &right[i];
 
-			/*
+			l->real = 0;
+			l->imag = 0;
+			r->real = 0;
+			r->imag = 0;
+
 			for (int j = 0; j < N; j++)
 			{
-				left[i].real += systemChannels.GetOutputSample(0, leftIdx + j);
-				right[i].real += systemChannels.GetOutputSample(1, rightIdx + j);
+				l->real += systemChannels.GetOutputSample(0, leftIdx  + j);
+				r->real += systemChannels.GetOutputSample(1, rightIdx + j);
 			}
-			left[i].real /= N;
-			right[i].real /= N;
-			*/
-			left[i].real = systemChannels.GetOutputSample(0, leftIdx);
-			right[i].real = systemChannels.GetOutputSample(1, rightIdx);
+			l->real /= N;
+			r->real /= N;
 
 			leftIdx += N;
 			rightIdx += N;
@@ -128,8 +127,8 @@ void VGMSpectrumRenderer::OnNotifyUpdate(Obserable& observable)
 		maxRight.resize(fftSampleCount);
 		for (int i = 0; i < fftSampleCount; i++)
 		{
-			displayLeft[i] = abs(left[fftSampleCount - 1 - i].real);
-			displayRight[i] = abs(right[fftSampleCount - 1 - i].real);
+			displayLeft[i] = abs(left[i].real);
+			displayRight[i] = abs(right[i].real);
 
 			maxLeft[i] = maxLeft[i] < displayLeft[i] ? displayLeft[i] : (maxLeft[i] * 0.96f);
 			maxRight[i] = maxRight[i] < displayRight[i] ? displayRight[i] : (maxRight[i] * 0.96f);

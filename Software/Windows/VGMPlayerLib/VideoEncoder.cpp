@@ -102,7 +102,7 @@ private:
 			 * of which frame timestamps are represented. For fixed-fps content,
 			 * timebase should be 1/framerate and timestamp increments should be
 			 * identical to 1. */
-			c->time_base.den = 43;
+			c->time_base.den = VGM_FRAME_PER_SECOND;
 			c->time_base.num = 1;
 			c->gop_size = 12; /* emit one intra frame every twelve frames at most */
 			c->pix_fmt = AV_PIX_FMT_YUV420P;

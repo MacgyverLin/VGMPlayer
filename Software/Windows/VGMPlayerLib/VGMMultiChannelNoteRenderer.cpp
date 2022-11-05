@@ -23,6 +23,10 @@ void VGMMultiChannelNoteRenderer::OnNotifyOpen(Obserable& observable)
 	const VGMHeader& header = vgmData.GetHeader();
 	const VGMData::Info& info = vgmData.GetInfo();
 	const VGMData::SystemChannels& systemChannels = vgmData.GetSystemChannels();
+
+#ifdef USE_FONT
+	fontTexture.Load("arial.ttf");
+#endif
 }
 
 void VGMMultiChannelNoteRenderer::OnNotifyClose(Obserable& observable)
@@ -62,6 +66,15 @@ void VGMMultiChannelNoteRenderer::OnNotifyUpdate(Obserable& observable)
 
 	if (systemChannels.HasSampleBufferUpdatedEvent())
 	{
+		/////////////////////////////////////////////////////////////////////////////////
+		videoDevice.MatrixMode(VideoDeviceEnum::PROJECTION);
+		videoDevice.LoadIdentity();
+		videoDevice.Ortho2D(0, 640, 0, 480);
+		videoDevice.MatrixMode(VideoDeviceEnum::MODELVIEW);
+
+#ifdef USE_FONT
+		fontTexture.RenderText("fuck you", 0, 0, 1.0, Color::White);
+#endif
 		/////////////////////////////////////////////////////////////////////////////////
 		videoDevice.MatrixMode(VideoDeviceEnum::PROJECTION);
 		videoDevice.LoadIdentity();

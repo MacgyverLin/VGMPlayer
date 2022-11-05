@@ -3,7 +3,9 @@
 
 #include "vgmdef.h"
 #include <string>
+#include <map>
 #include "Array.h"
+
 using namespace std;
 
 class Vector2
@@ -752,6 +754,28 @@ private:
 	VideoDeviceEnum minFilter;
 	VideoDeviceEnum magFilter;
 };
+
+#ifdef USE_FONT
+class FontTexture
+{
+public:
+	struct Character 
+	{
+		unsigned int textureID; // ID handle of the glyph texture
+		Vector2		 size;      // Size of glyph
+		Vector2		 bearing;   // Offset from baseline to left/top of glyph
+		unsigned int advance;   // Horizontal offset to advance to next glyph
+	};
+
+	FontTexture();
+	~FontTexture();
+
+	int Load(const char* path_);
+	void RenderText(const char* text, float x, float y, float scale, const Color& color);
+private:
+	std::map<char, Character> characters;
+};
+#endif
 
 class VideoDeviceImpl;
 class VideoDevice

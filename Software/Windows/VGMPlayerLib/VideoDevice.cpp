@@ -752,6 +752,181 @@ void Texture2D::SetMagFilter(VideoDeviceEnum magFilter_)
 	magFilter = magFilter_;
 }
 
+////////////////////////////////////////////////////////
+#ifdef USE_FONT
+
+#include <ft2build.h>
+#include FT_FREETYPE_H
+
+FontTexture::FontTexture()
+{
+}
+
+FontTexture::~FontTexture()
+{
+}
+
+int FontTexture::Load(const char* path_)
+{
+	FT_Library ft;
+
+	// All functions return a value different than 0 whenever an error occurred
+	if (FT_Init_FreeType(&ft))
+	{
+		vgm_log("ERROR::FREETYPE: Could not init FreeType Library\n");
+		return -1;
+	}
+
+	// find path to font
+	std::string font_name = path_; // FileSystem::getPath("resources/fonts/Antonio-Bold.ttf");
+	if (font_name.empty())
+	{
+		vgm_log("ERROR::FREETYPE: Failed to load font_name\n");
+		return -1;
+	}
+
+	// load font as face
+	FT_Face face;
+	if (FT_New_Face(ft, font_name.c_str(), 0, &face)) 
+	{
+		vgm_log("ERROR::FREETYPE: Failed to load font\n");
+		return -1;
+	}
+	else 
+	{
+		// set size to load glyphs as
+		FT_Set_Pixel_Sizes(face, 0, 48);
+
+		// disable byte-alignment restriction
+		glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
+
+		// load first 128 characters of ASCII set
+		for (unsigned char c = 0; c < 128; c++)
+		{
+			// Load character glyph 
+			if (FT_Load_Char(face, c, FT_LOAD_RENDER))
+			{
+				vgm_log("ERROR::FREETYTPE: Failed to load Glyph\n");
+				continue;
+			}
+			// generate texture
+			unsigned int texture;
+			glGenTextures(1, &texture);
+			glBindTexture(GL_TEXTURE_2D, texture);
+			glTexImage2D
+			(
+				GL_TEXTURE_2D,
+				0,
+				GL_RED,
+				face->glyph->bitmap.width,
+				face->glyph->bitmap.rows,
+				0,
+				GL_RED,
+				GL_UNSIGNED_BYTE,
+				face->glyph->bitmap.buffer
+			);
+			// set texture options
+			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+			// now store character for later use
+			Character character = 
+			{
+				texture,
+				Vector2(face->glyph->bitmap.width, face->glyph->bitmap.rows),
+				Vector2(face->glyph->bitmap_left, face->glyph->bitmap_top),
+				static_cast<unsigned int>(face->glyph->advance.x)
+			};
+			characters.insert(std::pair<char, Character>(c, character));
+		}
+		glBindTexture(GL_TEXTURE_2D, 0);
+	}
+
+	// destroy FreeType once we're finished
+	FT_Done_Face(face);
+	FT_Done_FreeType(ft);
+
+	return -1;
+}
+
+void FontTexture::RenderText(const char* text, float x, float y, float scale, const Color& c)
+{
+	// activate corresponding render state	
+	//shader.use();
+	//glUniform3f(glGetUniformLocation(shader.ID, "textColor"), color.x, color.y, color.z);
+	
+	//glActiveTexture(GL_TEXTURE0);
+	
+	//glBindVertexArray(VAO);
+
+
+	// iterate through all characters
+	for(int c = 0; c < strlen(text); c++)
+	{
+		Character ch = characters[text[c]];
+
+		float xpos = x + ch.bearing.x * scale;
+		float ypos = y - (ch.size.y - ch.bearing.y) * scale;
+
+		float w = ch.size.x * scale;
+		float h = ch.size.y * scale;
+		
+		// update content of VBO memory
+		// glBindBuffer(GL_ARRAY_BUFFER, VBO);
+		// glBufferSubData(GL_ARRAY_BUFFER, 0, sizeof(vertices), vertices); // be sure to use glBufferSubData and not glBufferData
+		// glBindBuffer(GL_ARRAY_BUFFER, 0);
+		// render quad
+		// glDrawArrays(GL_TRIANGLES, 0, 6);
+
+		static Vector2 v[4] =
+		{
+			{ xpos,     ypos + h },
+			{ xpos,     ypos,    },
+			{ xpos + w, ypos,    },
+			{ xpos + w, ypos + h }
+		};
+
+		static Vector2 t[4] =
+		{
+			{ 0.0f, 0.0f },
+			{ 0.0f, 1.0f },
+			{ 1.0f, 1.0f },
+			{ 1.0f, 0.0f }
+		};
+
+		glEnable(GL_TEXTURE_2D);
+		glBindTexture(GL_TEXTURE_2D, ch.textureID);
+
+		glBegin(GL_QUADS);
+
+		glTexCoord2fv((f32*)&t[0]);
+		glColor4fv((f32*)&c);
+		glVertex2fv((f32*)&v[0]);
+
+		glTexCoord2fv((f32*)&t[1]);
+		glColor4fv((f32*)&c);
+		glVertex2fv((f32*)&v[1]);
+
+		glTexCoord2fv((f32*)&t[2]);
+		glColor4fv((f32*)&c);
+		glVertex2fv((f32*)&v[2]);
+
+		glTexCoord2fv((f32*)&t[3]);
+		glColor4fv((f32*)&c);
+		glVertex2fv((f32*)&v[3]);
+
+		glEnd();
+
+		// now advance cursors for next glyph (note that advance is number of 1/64 pixels)
+		x += (ch.advance >> 6) * scale; // bitshift by 6 to get value in pixels (2^6 = 64 (divide amount of 1/64th pixels by 64 to get amount of pixels))
+	}
+	
+	//glBindVertexArray(0);
+	//glBindTexture(GL_TEXTURE_2D, 0);
+}
+#endif
+
 //////////////////////////////////////////////////////////////////////////////////
 class VideoDeviceImpl
 {

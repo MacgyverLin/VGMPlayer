@@ -18,8 +18,8 @@ typedef double f64;
 
 #define vgm_log printf
 //#define VGM_FRAME_PER_SECOND		60	// NTSC
-#define VGM_FRAME_PER_SECOND		50	// PAL
 #define VGM_SAMPLE_BUFFER_SIZE		1024 // (44100 / VGM_FRAME_PER_SECOND)
+#define VGM_FRAME_PER_SECOND		(44100 / VGM_SAMPLE_BUFFER_SIZE)
 #define VGM_OUTPUT_BUFFER_COUNT		4   // 64 Frames
 
 #define VGM_NOTE_BUFFER_SIZE		(64)
