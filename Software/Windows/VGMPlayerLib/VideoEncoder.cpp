@@ -102,7 +102,7 @@ private:
 			 * of which frame timestamps are represented. For fixed-fps content,
 			 * timebase should be 1/framerate and timestamp increments should be
 			 * identical to 1. */
-			c->time_base.den = 30;
+			c->time_base.den = 43;
 			c->time_base.num = 1;
 			c->gop_size = 12; /* emit one intra frame every twelve frames at most */
 			c->pix_fmt = AV_PIX_FMT_YUV420P;
@@ -333,21 +333,21 @@ private:
 			}
 	}
 
-	void write_video_frame(AVFormatContext* oc, AVStream* st, const Vector<unsigned char>& videoBuffer, bool lastframe)
+	void write_video_frame(AVFormatContext* oc, AVStream* st, const Vector<unsigned char>& videoBuffer)
 	{
 		int ret;
 		AVCodecContext* c = st->codec;
 
-		if (lastframe) {
-			/* No more frames to compress. The codec has a latency of a few
-			 * frames if using B-frames, so we get the last frames by
-			 * passing the same picture again. */
-		}
-		else
+		int w = c->width * 3;
+		for (int y = 0; y < c->height; y++)
 		{
-			memcpy(src_picture.data[0], &videoBuffer[0], videoBuffer.size());
-			sws_scale(sws_ctx, (const uint8_t* const*)src_picture.data, src_picture.linesize, 0, c->height, dst_picture.data, dst_picture.linesize);
+			int srcStartIdx = (y                ) * w;
+			int dstStartIdx = (c->height - 1 - y) * w;
+
+			memcpy(&src_picture.data[0][srcStartIdx], &videoBuffer[dstStartIdx], w);
 		}
+		// memcpy(src_picture.data[0], &videoBuffer[0], videoBuffer.size());
+		sws_scale(sws_ctx, (const uint8_t* const*)src_picture.data, src_picture.linesize, 0, c->height, dst_picture.data, dst_picture.linesize);
 
 		if (oc->oformat->flags & AVFMT_RAWPICTURE)
 		{
@@ -534,7 +534,7 @@ public:
 			// }
 		// else
 		// {
-			write_video_frame(oc, video_st, videoBuffer, false);
+			write_video_frame(oc, video_st, videoBuffer);
 	
 			frame->pts += av_rescale_q(1, video_st->codec->time_base, video_st->time_base);
 

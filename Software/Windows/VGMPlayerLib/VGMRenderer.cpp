@@ -1,11 +1,9 @@
 #include "VGMRenderer.h"
 
-VGMRenderer::VGMRenderer(const char* name_, float viewportX_, float viewportY_, float viewportWidth_, float viewportHeight_)
-	: name(name_)
-	, viewportX(viewportX_)
-	, viewportY(viewportY_)
-	, viewportWidth(viewportWidth_)
-	, viewportHeight(viewportHeight_)
+VGMRenderer::VGMRenderer(VideoDevice& videoDevice_, const char* name_, Rect region_)
+	: videoDevice(videoDevice_)
+	, name(name_)
+	, region(region_)
 {
 }
 
@@ -13,26 +11,20 @@ VGMRenderer::~VGMRenderer()
 {
 }
 
-void VGMRenderer::SetSize(float viewportX_, float viewportY_, float viewportWidth_, float viewportHeight_)
+void VGMRenderer::SetRegion(Rect region_)
 {
-	viewportX = viewportX_;
-	viewportY = viewportY_;
-	viewportWidth = viewportWidth_;
-	viewportHeight = viewportHeight_;
+	region = region_;
 }
 
-void VGMRenderer::GetSize(float& viewportX_, float& viewportY_, float& viewportWidth_, float& viewportHeight_)
+Rect VGMRenderer::GetRegion() const
 {
-	viewportX_ = viewportX;
-	viewportY_ = viewportY;
-	viewportWidth_ = viewportWidth;
-	viewportHeight_ = viewportHeight;
+	return region;
 }
 
 //////////////////////////////////////////////////////////////////////
 void VGMRenderer::SetViewport(float x_, float y_, float width_, float height_)
 {
-	videoDevice.Viewport(x_ * viewportWidth + viewportX, y_ * viewportHeight + viewportY, width_ * viewportWidth, height_ * viewportHeight);
+	videoDevice.Viewport(x_ * region.w + region.x, y_ * region.h + region.y, width_ * region.w, height_ * region.h);
 }
 
 void VGMRenderer::OnNotifySomething(Obserable& observable)

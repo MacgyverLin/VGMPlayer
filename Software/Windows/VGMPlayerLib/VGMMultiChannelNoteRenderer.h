@@ -34,7 +34,7 @@ public:
 		Color rightColor;
 	};
 
-	VGMMultiChannelNoteRenderer(const char* name_, u32 x_, u32 y_, u32 width_, u32 height_, float waveScale_, const VGMMultiChannelNoteRenderer::Skin& skin_);
+	VGMMultiChannelNoteRenderer(VideoDevice& videoDevice_, const char* name_, Rect region_, float waveScale_, const VGMMultiChannelNoteRenderer::Skin& skin_);
 	virtual ~VGMMultiChannelNoteRenderer();
 
 	virtual void OnNotifySomething(Obserable& vgmData) override;
@@ -52,7 +52,6 @@ private:
 	float waveScale;
 	Skin skin;
 
-	Texture2D texture;
 	std::vector<std::vector<VGMData::Channel::Note>> channelsNotes;
 };
 

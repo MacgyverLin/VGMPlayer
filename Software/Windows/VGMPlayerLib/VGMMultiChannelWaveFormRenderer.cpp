@@ -1,7 +1,7 @@
 #include "VGMMultiChannelWaveFormRenderer.h"
 
-VGMMultiChannelWaveFormRenderer::VGMMultiChannelWaveFormRenderer(const char* name_, u32 x_, u32 y_, u32 width_, u32 height_, float waveScale_, const VGMMultiChannelWaveFormRenderer::Skin& skin_)
-	: VGMRenderer(name_, x_, y_, width_, height_)
+VGMMultiChannelWaveFormRenderer::VGMMultiChannelWaveFormRenderer(VideoDevice& videoDevice_, const char* name_, Rect region_, float waveScale_, const VGMMultiChannelWaveFormRenderer::Skin& skin_)
+	: VGMRenderer(videoDevice_, name_, region_)
 	, waveScale(waveScale_)
 	, skin(skin_)
 {
@@ -22,8 +22,6 @@ void VGMMultiChannelWaveFormRenderer::OnNotifyOpen(Obserable& observable)
 	const VGMHeader& header = vgmData.GetHeader();
 	const VGMData::Info& info = vgmData.GetInfo();
 	const VGMData::SystemChannels& systemChannels = vgmData.GetSystemChannels();
-
-	texture.Load(info.texturePath);
 }
 
 void VGMMultiChannelWaveFormRenderer::OnNotifyClose(Obserable& observable)
@@ -63,6 +61,24 @@ void VGMMultiChannelWaveFormRenderer::OnNotifyUpdate(Obserable& observable)
 
 	if (systemChannels.HasSampleBufferUpdatedEvent())
 	{
+		/////////////////////////////////////////////////////////////////////////////////
+		videoDevice.MatrixMode(VideoDeviceEnum::PROJECTION);
+		videoDevice.LoadIdentity();
+		videoDevice.Ortho2D(0, 1, 0, 1);
+		videoDevice.MatrixMode(VideoDeviceEnum::MODELVIEW);
+
+		SetViewport(0, 0, 1, 1);
+
+		videoDevice.Disable(VideoDeviceEnum::BLEND);
+		videoDevice.DrawWireRectangle
+		(
+			Vector2(0.0, 0.0), Color::Grey,
+			Vector2(1.0, 0.0), Color::Grey,
+			Vector2(1.0, 1.0), Color::Grey,
+			Vector2(0.0, 1.0), Color::Grey
+		);
+
+		/////////////////////////////////////////////////////////////////////////////////
 		int startX = 0;
 		int endX = VGM_SAMPLE_BUFFER_SIZE; //sampleCount;
 		int divX = 10;
@@ -71,24 +87,12 @@ void VGMMultiChannelWaveFormRenderer::OnNotifyUpdate(Obserable& observable)
 		int endY = 32768; //sampleCount;
 		int divY = 3;
 
-		videoDevice.MatrixMode(VideoDevice::Constant::PROJECTION);
+		videoDevice.MatrixMode(VideoDeviceEnum::PROJECTION);
 		videoDevice.LoadIdentity();
 		videoDevice.Ortho2D(startX, endX, startY, endY);
-		videoDevice.MatrixMode(VideoDevice::Constant::MODELVIEW);
-		
-		SetViewport(0, 0, 1, 1);
+		videoDevice.MatrixMode(VideoDeviceEnum::MODELVIEW);
 
-		videoDevice.Disable(VideoDevice::Constant::BLEND);
-		videoDevice.DrawTexSolidRectangle
-		(
-			texture,
-			Vector2(startX, startY), skin.bgColor, Vector2(0, 0),
-			Vector2(endX, startY), skin.bgColor, Vector2(1, 0),
-			Vector2(endX, endY), skin.bgColor, Vector2(1, 1),
-			Vector2(startX, endY), skin.bgColor, Vector2(0, 1)
-		);
-
-		videoDevice.Enable(VideoDevice::Constant::BLEND);
+		videoDevice.Enable(VideoDeviceEnum::BLEND);
 		for (int ch = 0; ch < systemChannels.GetChannelsCount(); ch++)
 		{
 			float channelViewportHeight = 1.0f / systemChannels.GetChannelsCount() / 2;
@@ -97,7 +101,7 @@ void VGMMultiChannelWaveFormRenderer::OnNotifyUpdate(Obserable& observable)
 			// draw grid
 			SetViewport(0, (ch * 2 + 0) * channelViewportHeight, 1, channelViewportHeight);
 
-			videoDevice.BlendFunc(VideoDevice::Constant::ONE, VideoDevice::Constant::ONE);
+			videoDevice.BlendFunc(VideoDeviceEnum::ONE, VideoDeviceEnum::ONE);
 			videoDevice.DrawLine(Vector2(startX, 0), skin.gridColor, Vector2(endX, 0), skin.gridColor);
 			for (s32 i = startX; i < endX; i += (endX - startX) / divX)
 			{
@@ -122,7 +126,7 @@ void VGMMultiChannelWaveFormRenderer::OnNotifyUpdate(Obserable& observable)
 			// draw grid
 			SetViewport(0, (ch * 2 + 1) * channelViewportHeight, 1, channelViewportHeight);
 
-			videoDevice.BlendFunc(VideoDevice::Constant::ONE, VideoDevice::Constant::ONE);
+			videoDevice.BlendFunc(VideoDeviceEnum::ONE, VideoDeviceEnum::ONE);
 			videoDevice.DrawLine(Vector2(startX, 0), skin.gridColor, Vector2(endX, 0), skin.gridColor);
 			for (s32 i = startX; i < endX; i += (endX - startX) / divX)
 			{

@@ -31,7 +31,7 @@ public:
 		Color rightColor;
 	};
 
-	VGMWaveFormRenderer(const char* name_,u32 x_, u32 y_, u32 width_, u32 height_, float waveScale_, const VGMWaveFormRenderer::Skin& skin_);
+	VGMWaveFormRenderer(VideoDevice& videoDevice_, const char* name_, Rect region_, float waveScale_, const VGMWaveFormRenderer::Skin& skin_);
 	virtual ~VGMWaveFormRenderer();
 
 	virtual void OnNotifySomething(Obserable& vgmData);
@@ -48,9 +48,6 @@ protected:
 private:
 	float waveScale;
 	Skin skin;
-	vector<f32> max;
-
-	Texture2D texture;
 };
 
 #endif

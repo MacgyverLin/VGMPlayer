@@ -1,8 +1,8 @@
 #include "VGMMultiChannelNoteRenderer.h"
 #include "FFT.h"
 
-VGMMultiChannelNoteRenderer::VGMMultiChannelNoteRenderer(const char* name_, u32 x_, u32 y_, u32 width_, u32 height_, float waveScale_, const VGMMultiChannelNoteRenderer::Skin& skin_)
-	: VGMRenderer(name_, x_, y_, width_, height_)
+VGMMultiChannelNoteRenderer::VGMMultiChannelNoteRenderer(VideoDevice& videoDevice_, const char* name_, Rect region_, float waveScale_, const VGMMultiChannelNoteRenderer::Skin& skin_)
+	: VGMRenderer(videoDevice_, name_, region_)
 	, waveScale(waveScale_)
 	, skin(skin_)
 {
@@ -23,8 +23,6 @@ void VGMMultiChannelNoteRenderer::OnNotifyOpen(Obserable& observable)
 	const VGMHeader& header = vgmData.GetHeader();
 	const VGMData::Info& info = vgmData.GetInfo();
 	const VGMData::SystemChannels& systemChannels = vgmData.GetSystemChannels();
-
-	texture.Load(info.texturePath);
 }
 
 void VGMMultiChannelNoteRenderer::OnNotifyClose(Obserable& observable)
@@ -64,6 +62,24 @@ void VGMMultiChannelNoteRenderer::OnNotifyUpdate(Obserable& observable)
 
 	if (systemChannels.HasSampleBufferUpdatedEvent())
 	{
+		/////////////////////////////////////////////////////////////////////////////////
+		videoDevice.MatrixMode(VideoDeviceEnum::PROJECTION);
+		videoDevice.LoadIdentity();
+		videoDevice.Ortho2D(0, 1, 0, 1);
+		videoDevice.MatrixMode(VideoDeviceEnum::MODELVIEW);
+
+		SetViewport(0, 0, 1, 1);
+
+		videoDevice.Disable(VideoDeviceEnum::BLEND);
+		videoDevice.DrawWireRectangle
+		(
+			Vector2(0, 0), Color::Grey,
+			Vector2(1, 0), Color::Grey,
+			Vector2(1, 1), Color::Grey,
+			Vector2(0, 1), Color::Grey
+		);
+
+		/////////////////////////////////////////////////////////////////////////////////
 		if (channelsNotes.size() != systemChannels.GetChannelsCount())
 			channelsNotes.resize(systemChannels.GetChannelsCount());
 
@@ -72,26 +88,6 @@ void VGMMultiChannelNoteRenderer::OnNotifyUpdate(Obserable& observable)
 			const std::vector<VGMData::Channel::Note>& outputNotes = systemChannels.GetOutputNotes(ch);
 			channelsNotes[ch].insert(channelsNotes[ch].end(), outputNotes.begin(), outputNotes.end());
 		}
-
-		/////////////////////////////////////////////////////////////////////
-		videoDevice.MatrixMode(VideoDevice::Constant::PROJECTION);
-		videoDevice.LoadIdentity();
-		videoDevice.Ortho2D(0, 1, 0, 1);
-		videoDevice.MatrixMode(VideoDevice::Constant::MODELVIEW);
-
-		/////////////////////////////////////////////////////////////////////
-		SetViewport(0, 0, 1, 1);
-
-		videoDevice.ClearColor(Color(0.0, 0.0, 0.0, 1.0));
-		videoDevice.Clear();
-		videoDevice.Enable(VideoDevice::Constant::BLEND);
-		videoDevice.DrawSolidRectangle
-		(
-			Vector2(1, 0), Color(0.0f, 0.0f, 0.0f, 0.1f),
-			Vector2(0, 0), Color(0.0f, 0.0f, 0.0f, 0.1f),
-			Vector2(0, 1), Color(0.0f, 0.0f, 0.0f, 0.2f),
-			Vector2(1, 1), Color(0.0f, 0.0f, 0.0f, 0.2f)
-		);
 
 		/////////////////////////////////////////////////////////////////////
 		int startX = 0;
@@ -105,6 +101,14 @@ void VGMMultiChannelNoteRenderer::OnNotifyUpdate(Obserable& observable)
 		Color bottomColor = Color::Black;
 		Color staffColor = Color::Yellow;
 
+		videoDevice.Enable(VideoDeviceEnum::BLEND);
+		videoDevice.BlendFunc(VideoDeviceEnum::SRC_ALPHA, VideoDeviceEnum::ONE_MINUS_SRC_ALPHA);
+
+		videoDevice.MatrixMode(VideoDeviceEnum::PROJECTION);
+		videoDevice.LoadIdentity();
+		videoDevice.Ortho2D(0, 1, 0, 1);
+		videoDevice.MatrixMode(VideoDeviceEnum::MODELVIEW);
+
 		int channelCount = 1;// systemChannels.GetChannelsCount();
 		for (int ch = 0; ch < channelCount; ch++)
 		{
@@ -113,13 +117,6 @@ void VGMMultiChannelNoteRenderer::OnNotifyUpdate(Obserable& observable)
 
 			// float channelViewportHeight = 1.0f / systemChannels.GetChannelsCount();
 			// SetViewport(0.0f, channelViewportHeight * ch, 1.0f, channelViewportHeight);
-			videoDevice.Enable(VideoDevice::Constant::BLEND);
-			videoDevice.BlendFunc(VideoDevice::Constant::SRC_ALPHA, VideoDevice::Constant::ONE_MINUS_SRC_ALPHA);
-
-			videoDevice.MatrixMode(VideoDevice::Constant::PROJECTION);
-			videoDevice.LoadIdentity();
-			videoDevice.Ortho2D(0, 1, 0, 1);
-			videoDevice.MatrixMode(VideoDevice::Constant::MODELVIEW);
 
 			videoDevice.DrawWireRectangle
 			(
@@ -129,13 +126,13 @@ void VGMMultiChannelNoteRenderer::OnNotifyUpdate(Obserable& observable)
 				Vector2(1, 1), topColor
 			);
 
-			videoDevice.Disable(VideoDevice::Constant::BLEND);
+			videoDevice.Disable(VideoDeviceEnum::BLEND);
 
-			videoDevice.MatrixMode(VideoDevice::Constant::PROJECTION);
+			videoDevice.MatrixMode(VideoDeviceEnum::PROJECTION);
 			videoDevice.LoadIdentity();
 			videoDevice.Ortho2D(startX, endX, startY + frameCounter, endY + frameCounter);
-			videoDevice.MatrixMode(VideoDevice::Constant::MODELVIEW);
-			videoDevice.Enable(VideoDevice::Constant::BLEND);
+			videoDevice.MatrixMode(VideoDeviceEnum::MODELVIEW);
+			videoDevice.Enable(VideoDeviceEnum::BLEND);
 
 			for (s32 i = 0; i< channelsNotes[ch].size(); i++)
 			{

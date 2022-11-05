@@ -1,7 +1,7 @@
 #include "VGMWaveFormRenderer.h"
 
-VGMWaveFormRenderer::VGMWaveFormRenderer(const char* name_, u32 x_, u32 y_, u32 width_, u32 height_, float waveScale_, const VGMWaveFormRenderer::Skin& skin_)
-	: VGMRenderer(name_, x_, y_, width_, height_)
+VGMWaveFormRenderer::VGMWaveFormRenderer(VideoDevice& videoDevice_, const char* name_, Rect region_, float waveScale_, const VGMWaveFormRenderer::Skin& skin_)
+	: VGMRenderer(videoDevice_, name_, region_)
 	, waveScale(waveScale_)
 	, skin(skin_)
 {
@@ -22,8 +22,6 @@ void VGMWaveFormRenderer::OnNotifyOpen(Obserable& observable)
 	const VGMHeader& header = vgmData.GetHeader();
 	const VGMData::Info& info = vgmData.GetInfo();
 	const VGMData::SystemChannels& systemChannels = vgmData.GetSystemChannels();
-
-	texture.Load(info.texturePath);
 }
 
 void VGMWaveFormRenderer::OnNotifyClose(Obserable& observable)
@@ -63,40 +61,45 @@ void VGMWaveFormRenderer::OnNotifyUpdate(Obserable& observable)
 
 	if (systemChannels.HasSampleBufferUpdatedEvent())
 	{
-		int startX = 0;
-		int endX = VGM_SAMPLE_BUFFER_SIZE; //sampleCount;
-		int divX = 10;
-
-		int startY = -32767; //sampleCount/2;
-		int endY = 32768; //sampleCount;
-		int divY = 10;
-
 		/////////////////////////////////////////////////////////////////////////////////
-		videoDevice.MatrixMode(VideoDevice::Constant::PROJECTION);
+		videoDevice.MatrixMode(VideoDeviceEnum::PROJECTION);
 		videoDevice.LoadIdentity();
-		videoDevice.Ortho2D(startX, endX, startY, endY);
-		videoDevice.MatrixMode(VideoDevice::Constant::MODELVIEW);
+		videoDevice.Ortho2D(0, 1, 0, 1);
+		videoDevice.MatrixMode(VideoDeviceEnum::MODELVIEW);
 
 		SetViewport(0, 0, 1, 1);
 
-		/////////////////////////////////////////////////////////////////////////////////
-		videoDevice.Disable(VideoDevice::Constant::BLEND);
-		videoDevice.DrawTexSolidRectangle
+		videoDevice.Disable(VideoDeviceEnum::BLEND);
+		videoDevice.DrawWireRectangle
 		(
-			texture,
-			Vector2(startX, startY), skin.bgColor, Vector2(0, 0),
-			Vector2(  endX, startY), skin.bgColor, Vector2(1, 0),
-			Vector2(  endX,   endY), skin.bgColor, Vector2(1, 1),
-			Vector2(startX,   endY), skin.bgColor, Vector2(0, 1)
+			Vector2(0, 0), Color::Grey,
+			Vector2(1, 0), Color::Grey,
+			Vector2(1, 1), Color::Grey,
+			Vector2(0, 1), Color::Grey
 		);
 
+
 		/////////////////////////////////////////////////////////////////////////////////
-		videoDevice.Enable(VideoDevice::Constant::BLEND);
+		int startX = 0;
+		int endX = VGM_SAMPLE_BUFFER_SIZE;
+		int divX = 10;
+
+		int startY = -32767;
+		int endY = 32768;
+		int divY = 10;
+
+		/////////////////////////////////////////////////////////////////////////////////
+		videoDevice.MatrixMode(VideoDeviceEnum::PROJECTION);
+		videoDevice.LoadIdentity();
+		videoDevice.Ortho2D(startX, endX, startY, endY);
+		videoDevice.MatrixMode(VideoDeviceEnum::MODELVIEW);
+
+		videoDevice.Enable(VideoDeviceEnum::BLEND);
 		for (int ch = 0; ch < 2; ch++)
 		{
 			SetViewport(0, ch * 1.0f / 2.0f, 1.0f, 1.0f / 2.0f);
 
-			videoDevice.BlendFunc(VideoDevice::Constant::ONE, VideoDevice::Constant::ONE);
+			videoDevice.BlendFunc(VideoDeviceEnum::ONE, VideoDeviceEnum::ONE);
 			videoDevice.DrawLine(Vector2(startX, 0), skin.gridColor, Vector2(endX, 0), skin.gridColor);
 			for (s32 i = startX; i < endX; i += (endX - startX) / divX)
 			{

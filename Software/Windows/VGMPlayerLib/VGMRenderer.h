@@ -7,12 +7,12 @@
 class VGMRenderer
 {
 public:
-	VGMRenderer(const char* name_, float viewportX_ = 0, float viewportY_ = 0, float viewportWidth_ = 320, float viewportHeight_ = 240);
+	VGMRenderer(VideoDevice& videoDevice_, const char* name_, Rect region_ = Rect(0, 0, 320, 240));
 	virtual ~VGMRenderer();
 
 public:
-	void SetSize(float viewportX_, float viewportY_, float viewportWidth_, float viewportHeight_);
-	void GetSize(float& viewportX_, float& viewportY_, float& viewportWidth_, float& viewportHeight_);
+	void SetRegion(Rect region_);
+	Rect GetRegion() const;
 protected:
 	//////////////////////////////////////////////////////////////////////
 	void SetViewport(float x_, float y_, float width_, float height_);
@@ -28,13 +28,10 @@ protected:
 private:
 public:
 protected:
-	VideoDevice videoDevice;
+	VideoDevice& videoDevice;
 
 	std::string name;
-	float viewportX;
-	float viewportY;
-	float viewportWidth;
-	float viewportHeight;
+	Rect region;
 };
 
 #endif

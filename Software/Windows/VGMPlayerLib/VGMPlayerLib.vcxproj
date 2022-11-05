@@ -191,10 +191,10 @@
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="targetver.h" />
     <ClInclude Include="VGMAudioPlayer.h" />
+    <ClInclude Include="VGMBackgroundRenderer.h" />
     <ClInclude Include="VGMData.h" />
     <ClInclude Include="vgmdef.h" />
     <ClInclude Include="VGMFile.h" />
-    <ClInclude Include="VGMFireSpectrumViewer.h" />
     <ClInclude Include="VGMHardwarePlayer.h" />
     <ClInclude Include="VGMLogoViewer.h" />
     <ClInclude Include="VGMMultiChannelNoteRenderer.h" />
@@ -230,6 +230,7 @@
     <ClCompile Include="SEGAPCM.c" />
     <ClCompile Include="SN76489.c" />
     <ClCompile Include="VGMAudioPlayer.cpp" />
+    <ClCompile Include="VGMBackgroundRenderer.cpp" />
     <ClCompile Include="VGMData.cpp" />
     <ClCompile Include="VGMFile.cpp" />
     <ClCompile Include="VGMMultiChannelNoteRenderer.cpp" />

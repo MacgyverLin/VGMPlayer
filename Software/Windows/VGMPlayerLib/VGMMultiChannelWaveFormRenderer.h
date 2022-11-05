@@ -31,7 +31,7 @@ public:
 		Color rightColor;
 	};
 
-	VGMMultiChannelWaveFormRenderer(const char* name_, u32 x_, u32 y_, u32 width_, u32 height_, float waveScale_, const VGMMultiChannelWaveFormRenderer::Skin& skin_);
+	VGMMultiChannelWaveFormRenderer(VideoDevice& videoDevice_, const char* name_, Rect region_, float waveScale_, const VGMMultiChannelWaveFormRenderer::Skin& skin_);
 	virtual ~VGMMultiChannelWaveFormRenderer();
 
 	virtual void OnNotifySomething(Obserable& vgmData);
@@ -49,8 +49,6 @@ private:
 	float waveScale;
 	Skin skin;
 	vector<f32> max;
-
-	Texture2D texture;
 };
 
 #endif

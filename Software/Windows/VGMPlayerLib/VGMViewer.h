@@ -8,6 +8,7 @@
 #include "VideoDevice.h"
 #include "VideoEncoder.h"
 
+#include "VGMBackgroundRenderer.h"
 #include "VGMWaveFormRenderer.h"
 #include "VGMSpectrumRenderer.h"
 #include "VGMMultiChannelWaveFormRenderer.h"
@@ -40,11 +41,10 @@ private:
 	VideoDevice videoDevice;
 	VideoEncoder videoEncoder;
 
+	VGMBackgroundRenderer vgmBackgroundRenderer;
 	VGMWaveFormRenderer vgmWaveFormRenderer;
 	VGMSpectrumRenderer vgmSpectrumRenderer;
 	VGMMultiChannelWaveFormRenderer vgmMultiChannelWaveFormRenderer;
-
-
 #ifdef OLDLAYOUT
 	VGMMultiChannelWaveFormRenderer vgmMultiChannelNoteRenderer;
 #else
