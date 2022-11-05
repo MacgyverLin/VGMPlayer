@@ -217,6 +217,8 @@ void QSound_WriteRegister(u8 chipID, u32 address, u32 data, s32* channel, f32* f
 	nChanNum = (address >> 3) & 15;
 	r = address & 7;
 
+	*channel = nChanNum;
+
 	// Pointer to channel info
 	pc = ic->channels + nChanNum;
 	switch (r) 

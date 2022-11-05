@@ -4,6 +4,7 @@
 #include "VGMData.h"
 #include "VGMRenderer.h"
 #include "VideoDevice.h"
+#include <list>
 
 class VGMMultiChannelNoteRenderer : public VGMRenderer
 {
@@ -54,7 +55,7 @@ private:
 
 	Font* font;
 
-	std::vector<std::vector<VGMData::Channel::Note>> channelsNotes;
+	std::list<string> commandStrings;
 };
 
 #endif

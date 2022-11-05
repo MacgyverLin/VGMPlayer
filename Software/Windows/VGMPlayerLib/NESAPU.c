@@ -373,6 +373,8 @@ void apu_regwrite(u8 chipID, u32 address, u8 value, s32* channel, f32* freq)
 	NESAPU *ic = &nesapuChips[chipID];
 	s32 chan = (address & 4) ? 1 : 0;
 
+	*channel = chan;
+
 	switch (address)
 	{
 	/* squares */
@@ -417,13 +419,6 @@ void apu_regwrite(u8 chipID, u32 address, u8 value, s32* channel, f32* freq)
 			ic->APU.squ[chan].vbl_length = ic->vbl_times[value >> 3];
 			ic->APU.squ[chan].env_vol = 0;
 			ic->APU.squ[chan].freq = ((((value & 7) << 8) + ic->APU.squ[chan].regs[2]) + 1) << 16;
-
-			if ((ic->channel_output_enabled & (1 << (chan))))
-			{
-				*channel = chan;
-				int invF = (ic->APU.squ[chan].freq >> 16);
-				*freq = (invF != 0) ? (144.0f / invF) * 783.91f : 0;
-			}
 		}
 
 		break;
@@ -474,16 +469,6 @@ void apu_regwrite(u8 chipID, u32 address, u8 value, s32* channel, f32* freq)
 			ic->APU.tri.counter_started = FALSE;
 			ic->APU.tri.vbl_length = ic->vbl_times[value >> 3];
 			ic->APU.tri.linear_length = ic->sync_times2[ic->APU.tri.regs[0] & 0x7F];
-
-			// 540			106.9
-			// 270			220.0
-			// 135			440.0
-			if ((ic->channel_output_enabled & (1 << (2))))
-			{
-				*channel = 2;
-				int invF = ((((ic->APU.tri.regs[3] & 7) << 8) + ic->APU.tri.regs[2]) + 1);
-				*freq = (invF != 0) ? (270.0f / invF) * 220.0f : 0.0f;
-			}
 		}
 
 		break;
@@ -509,12 +494,6 @@ void apu_regwrite(u8 chipID, u32 address, u8 value, s32* channel, f32* freq)
 		{
 			ic->APU.noi.vbl_length = ic->vbl_times[value >> 3];
 			ic->APU.noi.env_vol = 0; /* reset envelope */
-
-			if ((ic->channel_output_enabled & (1 << (3))))
-			{
-				*channel = 3;
-				*freq = noise_freq[ic->APU.noi.regs[2] & 0x0F] / 32.0f * 783.91;
-			}
 		}
 		break;
 
@@ -534,26 +513,12 @@ void apu_regwrite(u8 chipID, u32 address, u8 value, s32* channel, f32* freq)
 	case APU_WRE2:
 		ic->APU.dpcm.regs[2] = value;
 		//apu_dpcmreset(cur->dpcm);
-	
-		if (ic->APU.dpcm.enabled)
-		{
-			if ((ic->channel_output_enabled & (1 << (4))))
-			{
-				*channel = 4;
-				*freq = dpcm_clocks[ic->APU.dpcm.regs[0] & 0x0F];
-			}
-		}
+
 		break;
 
 	case APU_WRE3:
 		ic->APU.dpcm.regs[3] = value;
 		//apu_dpcmreset(cur->dpcm);
-
-		if (ic->APU.dpcm.enabled)
-		{
-			*channel = 4;
-			*freq = dpcm_clocks[ic->APU.dpcm.regs[0] & 0x0F];
-		}
 		break;
 
 	case APU_SMASK:

@@ -24,7 +24,7 @@ void VGMMultiChannelNoteRenderer::OnNotifyOpen(Obserable& observable)
 	const VGMData::Info& info = vgmData.GetInfo();
 	const VGMData::SystemChannels& systemChannels = vgmData.GetSystemChannels();
 
-	font = videoDevice.CreateFont("arial.ttf", 24);
+	font = videoDevice.CreateFont("arial.ttf", 20);
 }
 
 void VGMMultiChannelNoteRenderer::OnNotifyClose(Obserable& observable)
@@ -36,6 +36,7 @@ void VGMMultiChannelNoteRenderer::OnNotifyClose(Obserable& observable)
 	const VGMData::SystemChannels& systemChannels = vgmData.GetSystemChannels();
 
 	videoDevice.DestroyFont(font);
+	font = nullptr;
 }
 
 void VGMMultiChannelNoteRenderer::OnNotifyPlay(Obserable& observable)
@@ -67,26 +68,27 @@ void VGMMultiChannelNoteRenderer::OnNotifyUpdate(Obserable& observable)
 	if (systemChannels.HasSampleBufferUpdatedEvent())
 	{
 		/////////////////////////////////////////////////////////////////////////////////
-		videoDevice.MatrixMode(VideoDeviceEnum::PROJECTION);
-		videoDevice.LoadIdentity();
+		const vector<string>& outputCommand = systemChannels.GetOutputCommands();
 
-		Rect region = GetRegion();
-		videoDevice.Ortho2D(0, region.w, 0, region.h);
-		videoDevice.MatrixMode(VideoDeviceEnum::MODELVIEW);
-		SetViewport(0, 0, 1, 1);
+		for (int i = 0; i < outputCommand.size(); i++)
+			commandStrings.push_back(outputCommand[i]);
 
-		videoDevice.SetFont(font);
-		videoDevice.SetFontColor(Color::White);
-		videoDevice.SetFontScale(1.0f);
-		videoDevice.DrawText("fuck you", 0, 0);
-		videoDevice.DrawText("fuck you", 0, 20);
+		if (commandStrings.size() > 40)
+		{
+			int remove = commandStrings.size() - 40;
+
+			std::list<string>::iterator startItr = commandStrings.begin();
+			std::list<string>::iterator endItr = commandStrings.begin();
+			std::advance(endItr, remove);
+
+			commandStrings.erase(startItr, endItr);
+		}
 
 		/////////////////////////////////////////////////////////////////////////////////
 		videoDevice.MatrixMode(VideoDeviceEnum::PROJECTION);
 		videoDevice.LoadIdentity();
 		videoDevice.Ortho2D(0, 1, 0, 1);
 		videoDevice.MatrixMode(VideoDeviceEnum::MODELVIEW);
-
 		SetViewport(0, 0, 1, 1);
 
 		videoDevice.Disable(VideoDeviceEnum::BLEND);
@@ -99,74 +101,29 @@ void VGMMultiChannelNoteRenderer::OnNotifyUpdate(Obserable& observable)
 		);
 
 		/////////////////////////////////////////////////////////////////////////////////
-		if (channelsNotes.size() != systemChannels.GetChannelsCount())
-			channelsNotes.resize(systemChannels.GetChannelsCount());
-
-		for (int ch = 0; ch < systemChannels.GetChannelsCount() ; ch++)
-		{
-			const std::vector<VGMData::Channel::Note>& outputNotes = systemChannels.GetOutputNotes(ch);
-			channelsNotes[ch].insert(channelsNotes[ch].end(), outputNotes.begin(), outputNotes.end());
-		}
-
-		/////////////////////////////////////////////////////////////////////
-		int startX = 0;
-		int endX = 32;
-		int startY = 0;
-		int endY = VGM_FRAME_PER_SECOND;
-		f32 staffHeight = (endY - startY) * 0.01;
-		f32 frameCounter = vgmData.GetFrameCounter();
-
-		Color topColor = Color::Cyan;
-		Color bottomColor = Color::Black;
-		Color staffColor = Color::Yellow;
+		Rect region = GetRegion();
 
 		videoDevice.Enable(VideoDeviceEnum::BLEND);
 		videoDevice.BlendFunc(VideoDeviceEnum::SRC_ALPHA, VideoDeviceEnum::ONE_MINUS_SRC_ALPHA);
 
 		videoDevice.MatrixMode(VideoDeviceEnum::PROJECTION);
 		videoDevice.LoadIdentity();
-		videoDevice.Ortho2D(0, 1, 0, 1);
+		videoDevice.Ortho2D(0, region.w, 0, region.h);
 		videoDevice.MatrixMode(VideoDeviceEnum::MODELVIEW);
+		SetViewport(0, 0, 1, 1);
 
-		int channelCount = 1;// systemChannels.GetChannelsCount();
-		for (int ch = 0; ch < channelCount; ch++)
+		videoDevice.SetFont(font);
+		videoDevice.SetFontColor(Color::White);
+
+		float scale = 20.0 * 1.0f / systemChannels.GetChannelsCount();
+		videoDevice.SetFontScale(1.0);
+
+		int y = 0;
+		for (auto& s : commandStrings)
 		{
-			float channelViewportWidth = 1.0f / channelCount;
-			SetViewport(channelViewportWidth * ch, 0.0f, channelViewportWidth, 1.0f);
+			videoDevice.DrawText(s.c_str(), 0, y);
 
-			// float channelViewportHeight = 1.0f / systemChannels.GetChannelsCount();
-			// SetViewport(0.0f, channelViewportHeight * ch, 1.0f, channelViewportHeight);
-
-			videoDevice.DrawWireRectangle
-			(
-				Vector2(1, 0), bottomColor,
-				Vector2(0, 0), bottomColor,
-				Vector2(0, 1), topColor,
-				Vector2(1, 1), topColor
-			);
-
-			videoDevice.Disable(VideoDeviceEnum::BLEND);
-
-			videoDevice.MatrixMode(VideoDeviceEnum::PROJECTION);
-			videoDevice.LoadIdentity();
-			videoDevice.Ortho2D(startX, endX, startY + frameCounter, endY + frameCounter);
-			videoDevice.MatrixMode(VideoDeviceEnum::MODELVIEW);
-			videoDevice.Enable(VideoDeviceEnum::BLEND);
-
-			for (s32 i = 0; i< channelsNotes[ch].size(); i++)
-			{
-				// 30.86 	61.73 	123.46 	246.92 	493.84 	987.67 	1975.34 	3950.68 	7901.36 	15802.72 	31605.44 
-				f32 x = floor(channelsNotes[ch][i].frequency / 1000.0f) * (endX - startX);
-				f32 y = floor(channelsNotes[ch][i].frame) + endY;
-
-				videoDevice.DrawSolidRectangle
-				(
-					Vector2(x + 1, y + 0), staffColor,
-					Vector2(x + 0, y + 0), staffColor,
-					Vector2(x + 0, y + staffHeight), staffColor,
-					Vector2(x + 1, y + staffHeight), staffColor
-				);
-			}
+			y += 24;
 		}
 	}
 }

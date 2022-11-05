@@ -72,8 +72,8 @@ s32 SN76489_Initialize(u8 chipID, u32 clock, u32 sampleRate)
 
 	for (i = 0; i < 512; i++)
 	{
-		out = sin((2.0 * PI) * ((f64)(i) / 512));
-		out = sin((2.0 * PI) * ((f64)(i) / 512));
+		out = sin((2.0 * M_PI) * ((f64)(i) / 512));
+		out = sin((2.0 * M_PI) * ((f64)(i) / 512));
 
 		for (j = 0; j < 16; j++)
 		{

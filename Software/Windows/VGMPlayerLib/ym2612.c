@@ -1821,7 +1821,7 @@ s32 YM2612_Initialize(u8 chipID, u32 clock, u32 sampleRate)
 	ic->SIN_TAB[0] = ic->SIN_TAB[SIN_LENGHT / 2] = &ic->TL_TAB[(s32)PG_CUT_OFF];
 	for (i = 1; i <= SIN_LENGHT / 4; i++)
 	{
-		x = sin(2.0 * PI * (f32)(i) / (f32)(SIN_LENGHT));  // Sinus
+		x = sin(2.0 * M_PI * (f32)(i) / (f32)(SIN_LENGHT));  // Sinus
 		x = 20 * log10(1 / x);                    // convert to dB
 
 		j = (s32)(x / ENV_STEP);            // Get TL range
@@ -1835,14 +1835,14 @@ s32 YM2612_Initialize(u8 chipID, u32 clock, u32 sampleRate)
 	// Tableau LFO (LFO wav) :
 	for (i = 0; i < LFO_LENGHT; i++)
 	{
-		x = sin(2.0 * PI * (f32)(i) / (f32)(LFO_LENGHT));  // Sinus
+		x = sin(2.0 * M_PI * (f32)(i) / (f32)(LFO_LENGHT));  // Sinus
 		x += 1.0;
 		x /= 2.0;          // positive only
 		x *= 11.8 / ENV_STEP;    // ajusted to MAX enveloppe modulation
 
 		ic->LFO_ENV_TAB[i] = (s32)x;
 
-		x = sin(2.0 * PI * (f32)(i) / (f32)(LFO_LENGHT));  // Sinus
+		x = sin(2.0 * M_PI * (f32)(i) / (f32)(LFO_LENGHT));  // Sinus
 		x *= (f32)((1 << (LFO_HBITS - 1)) - 1);
 
 		ic->LFO_FREQ_TAB[i] = (s32)x;

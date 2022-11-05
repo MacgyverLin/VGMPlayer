@@ -106,6 +106,8 @@ void NESFDSAPU_WriteRegister(u8 chipID, u32 addr, u32 data, s32* channel, f32* f
 	}
 	else
 	{
+		*channel = 5;
+
 		switch (addr)
 		{
 		case 0x4080:	// Volume Envelope

@@ -10,6 +10,7 @@
 // VGMs run with a rate of 44100 samples per second.All sample values use this unit.
 #include "vgmdef.h"
 #include <vector>
+#include <string>
 #include "Obserable.h"
 using namespace std;
 
@@ -84,7 +85,7 @@ enum VGMCommand
 	DAC_STOP_STREAM = 0x94,
 	DAC_START_STEAM_FAST = 0x95,
 
-	
+
 	UNKNOWN_CHIP_A5_WRITE = 0xA5,
 	K053260_WRITE = 0xBA,				// aa dd
 	NES_APU_WRITE = 0xB4, 				// aa dd
@@ -474,27 +475,28 @@ public:
 	class Channel
 	{
 	public:
-		class Note
+		class Command
 		{
 		public:
-			Note(f32 frame_ = 0, f32 frequency_ = 0)
-				: frame(frame_)
-				, frequency(frequency_)
+			Command(float frameCounter, u32 address_, u16 data_)
+				: address(address_)
+				, data(data_)
 			{
 			}
 
-			f32 frame;
-			f32 frequency;
+			float frameCounter;
+			u32 address;
+			u16 data;
 		};
 
 		Channel()
-			: notes()
+			: commands()
 			, leftSamples(VGM_SAMPLE_BUFFER_SIZE)
 			, rightSamples(VGM_SAMPLE_BUFFER_SIZE)
 		{
 		}
 
-		vector<Note> notes;
+		vector<Command> commands;
 		vector<s32> leftSamples;
 		vector<s32> rightSamples;
 	};
@@ -505,7 +507,7 @@ public:
 	{
 	public:
 		TOutputBuffer(int size)
-		: buffer(size * 2)
+			: buffer(size * 2)
 		{
 		}
 
@@ -544,30 +546,31 @@ public:
 	{
 	public:
 		SystemChannels()
-		: channels(0)
-	
-		, currentSampleIdx(0)
-		, channelSampleBuffers(0)
-		, outputSampleBuffer(VGM_SAMPLE_BUFFER_SIZE)
-		, sampleBufferUpdatedEvent(false)
+			: channels(0)
 
-		, currentNoteIdx(0)
-		, outputNoteBuffer(0)
+			, currentSampleIdx(0)
+			, channelSampleBuffers(0)
+			, outputSampleBuffer(VGM_SAMPLE_BUFFER_SIZE)
+
+			, sampleBufferUpdatedEvent(false)
+
 		{
 		}
 
 		void SetChannelsCount(int size)
 		{
 			channels.resize(size);
-	
+
 			channelSampleBuffers.resize(size * 2);
+
+			outputCommands.resize(size);
 		}
 
 		s32 GetChannelsCount() const
 		{
 			return this->channels.size();
 		}
-	//////////////////////////////////////////////////////
+		//////////////////////////////////////////////////////
 	public:
 		int BeginUpdateSamples(int updateSampleCounts)
 		{
@@ -586,8 +589,8 @@ public:
 		}
 
 		int HandleUpdateSamples(void (*chipUpdate)(u8, s32**, u32),
-								u32 (*chipGetChannelCount)(u8),
-								u8 chipID, s32 baseChannel, u32 length)
+			u32(*chipGetChannelCount)(u8),
+			u8 chipID, s32 baseChannel, u32 length)
 		{
 			chipUpdate(chipID, &channelSampleBuffers[baseChannel], length);
 
@@ -604,9 +607,10 @@ public:
 			{
 				currentSampleIdx = 0;
 				sampleBufferUpdatedEvent = true;
-		
+
 				FillOutputSampleBuffer();
-				FillOutputNoteBuffer();
+
+				FillOutputCommand();
 			}
 		}
 
@@ -621,9 +625,9 @@ public:
 			f32 freq = 0;
 
 			WriteRegisterCB(chipID, address, data, &ch, &freq);
-			if (frameCounter>10 && ch != -1)
+			if (ch != -1)
 			{
-				channels[ch].notes.push_back(Channel::Note(frameCounter, freq));
+				channels[ch].commands.push_back(Channel::Command(frameCounter, address, data));
 			}
 		}
 	private:
@@ -649,14 +653,59 @@ public:
 			}
 		}
 
-		void FillOutputNoteBuffer()
+		template< typename... Args >
+		std::string string_format(const char* format, Args... args)
 		{
-			outputNoteBuffer.resize(channels.size());
-			for (int ch = 0; ch < channels.size(); ch++)
+			size_t length = std::snprintf(nullptr, 0, format, args...);
+			if (length <= 0)
 			{
-				outputNoteBuffer[ch] = channels[ch].notes;
+				return "";
+			}
 
-				channels[ch].notes.clear();
+			char* buf = new char[length + 1];
+			std::snprintf(buf, length + 1, format, args...);
+
+			std::string str(buf);
+			delete[] buf;
+			return std::move(str);
+		}
+
+		void FillOutputCommand()
+		{
+			outputCommands.clear();
+
+			int maxCommandCounts = 0;
+			for (s32 i = 0; i < channels.size(); i++)
+			{
+				if (maxCommandCounts < channels[i].commands.size())
+				{
+					maxCommandCounts = channels[i].commands.size();
+				}
+			}
+
+			for (s32 i = 0; i < maxCommandCounts; i++)
+			{
+				string line;
+
+				for (s32 ch = 0; ch < channels.size(); ch++)
+				{					
+					if (i < channels[ch].commands.size())
+					{
+						VGMData::Channel::Command& command = channels[ch].commands[i];
+						line += string_format("%04X   ", command.address, command.data);
+					}
+					else
+					{
+						line += string_format("0000  ");
+					}
+				}
+
+				outputCommands.push_back(line);
+			}
+
+			for (s32 i = 0; i < outputCommands.size(); i++)
+			{
+				//vgm_log("%s\n", outputCommands[i].c_str());
 			}
 		}
 	public:
@@ -680,9 +729,9 @@ public:
 			return outputSampleBuffer.GetBuffer();
 		}
 
-		const vector<Channel::Note>& GetOutputNotes(int ch) const
+		const vector<string>& GetOutputCommands() const
 		{
-			return outputNoteBuffer[ch];
+			return outputCommands;
 		}
 
 		boolean HasSampleBufferUpdatedEvent() const
@@ -696,14 +745,13 @@ public:
 		}
 	private:
 		vector<Channel> channels;
-		
+
 		u32 currentSampleIdx;
 		vector<s32*> channelSampleBuffers;
 		OutputSampleBuffer outputSampleBuffer;
 		boolean sampleBufferUpdatedEvent;
 
-		vector<vector<Channel::Note>> outputNoteBuffer;
-		u32 currentNoteIdx;
+		vector<string> outputCommands;
 	};
 
 	VGMData(const char* texturePath_, s32 channels_, s32 bitPerSample_, s32 sampleRate_);
@@ -733,7 +781,7 @@ public:
 
 	f32 GetFrameCounter() const;
 protected:
-	virtual s32 Read(void *buffer, u32 size);
+	virtual s32 Read(void* buffer, u32 size);
 	virtual s32 SeekSet(u32 size);
 	virtual s32 SeekCur(u32 size);
 
@@ -744,7 +792,7 @@ protected:
 	virtual void OnPause() = 0;
 	virtual void OnResume() = 0;
 	virtual boolean OnUpdate() = 0;
-	virtual s32 OnRead(void *buffer, u32 size) = 0;
+	virtual s32 OnRead(void* buffer, u32 size) = 0;
 	virtual s32 OnSeekSet(u32 size) = 0;
 	virtual s32 OnSeekCur(u32 size) = 0;
 

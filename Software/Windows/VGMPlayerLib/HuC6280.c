@@ -137,6 +137,8 @@ static void c6280_write_internal(u8 chipID, s32 address, s32 data, s32* channel,
 {
 	HUC6280 *ic = &chips[chipID];
 	Channel *q = &ic->channel[ic->select];
+
+	*channel = ic->select;
 		
 	switch(address & 0x0F)
 	{
@@ -152,22 +154,12 @@ static void c6280_write_internal(u8 chipID, s32 address, s32 data, s32* channel,
 			q->frequency = (q->frequency & 0x0F00) | data;
 			q->frequency &= 0x0FFF;
 			
-			if ((q->control & 0x80) && (ic->channel_output_enabled & (1 << (ic->select))) )
-			{
-				*channel = ic->select;
-				*freq = q->frequency;
-			}
 			break;
 
 		case 0x03: /* Channel frequency (MSB) */
 			q->frequency = (q->frequency & 0x00FF) | (data << 8);
 			q->frequency &= 0x0FFF;
 
-			if( (q->control & 0x80) && (ic->channel_output_enabled & (1 << (ic->select))) )
-			{
-				//*channel = ic->select;
-				//*freq = q->frequency;
-			}
 			break;
 
 		case 0x04: /* Channel control (key-on, DDA mode, volume) */

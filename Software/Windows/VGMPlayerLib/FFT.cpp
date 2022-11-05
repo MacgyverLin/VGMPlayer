@@ -80,11 +80,11 @@ void c_div(complex a, complex b, complex *c)
 
 void Wn_i(int n, int i, complex *Wn, char flag)
 {
-	Wn->real = cos(2 * PI*i / n);
+	Wn->real = cos(2 * M_PI*i / n);
 	if (flag == 1)
-		Wn->imag = -sin(2 * PI*i / n);
+		Wn->imag = -sin(2 * M_PI*i / n);
 	else if (flag == 0)
-		Wn->imag = -sin(2 * PI*i / n);
+		Wn->imag = -sin(2 * M_PI*i / n);
 }
 /*******************************************************************************
 * 功能: 傅里叶变化

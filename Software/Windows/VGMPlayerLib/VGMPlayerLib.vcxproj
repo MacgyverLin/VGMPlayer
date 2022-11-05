@@ -171,10 +171,15 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="..\..\VGMPlayerLib\VGMPlayerLib.h" />
+    <ClInclude Include="2610intf.h" />
     <ClInclude Include="Array.h" />
     <ClInclude Include="AudioDevice.h" />
+    <ClInclude Include="ay8910.h" />
     <ClInclude Include="DataStream.h" />
+    <ClInclude Include="emu2149.h" />
+    <ClInclude Include="emutypes.h" />
     <ClInclude Include="FFT.h" />
+    <ClInclude Include="fm.h" />
     <ClInclude Include="HuC6280.h" />
     <ClInclude Include="k051649.h" />
     <ClInclude Include="k053260.h" />
@@ -211,12 +216,17 @@
     <ClInclude Include="VideoEncoder.h" />
     <ClInclude Include="ym2151.h" />
     <ClInclude Include="ym2612.h" />
+    <ClInclude Include="ymdeltat.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="2610intf.c" />
     <ClCompile Include="Array.cpp" />
     <ClCompile Include="AudioDevice.cpp" />
+    <ClCompile Include="ay8910.c" />
     <ClCompile Include="DataStream.c" />
+    <ClCompile Include="emu2149.c" />
     <ClCompile Include="FFT.cpp" />
+    <ClCompile Include="fm.c" />
     <ClCompile Include="HuC6280.c" />
     <ClCompile Include="k051649.c" />
     <ClCompile Include="K053260.c" />
@@ -246,6 +256,7 @@
     <ClCompile Include="VideoEncoder.cpp" />
     <ClCompile Include="ym2151.c" />
     <ClCompile Include="ym2612.c" />
+    <ClCompile Include="ymdeltat.c" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

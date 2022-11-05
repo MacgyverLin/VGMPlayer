@@ -155,6 +155,24 @@
     <ClInclude Include="VGMBackgroundRenderer.h">
       <Filter>Source Files\VGM\Observer\Renderer</Filter>
     </ClInclude>
+    <ClInclude Include="2610intf.h">
+      <Filter>Source Files\chips</Filter>
+    </ClInclude>
+    <ClInclude Include="ay8910.h">
+      <Filter>Source Files\chips</Filter>
+    </ClInclude>
+    <ClInclude Include="fm.h">
+      <Filter>Source Files\chips</Filter>
+    </ClInclude>
+    <ClInclude Include="ymdeltat.h">
+      <Filter>Source Files\chips</Filter>
+    </ClInclude>
+    <ClInclude Include="emu2149.h">
+      <Filter>Source Files\chips</Filter>
+    </ClInclude>
+    <ClInclude Include="emutypes.h">
+      <Filter>Source Files\chips</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="DataStream.c">
@@ -255,6 +273,21 @@
     </ClCompile>
     <ClCompile Include="VGMBackgroundRenderer.cpp">
       <Filter>Source Files\VGM\Observer\Renderer</Filter>
+    </ClCompile>
+    <ClCompile Include="2610intf.c">
+      <Filter>Source Files\chips</Filter>
+    </ClCompile>
+    <ClCompile Include="ay8910.c">
+      <Filter>Source Files\chips</Filter>
+    </ClCompile>
+    <ClCompile Include="fm.c">
+      <Filter>Source Files\chips</Filter>
+    </ClCompile>
+    <ClCompile Include="ymdeltat.c">
+      <Filter>Source Files\chips</Filter>
+    </ClCompile>
+    <ClCompile Include="emu2149.c">
+      <Filter>Source Files\chips</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

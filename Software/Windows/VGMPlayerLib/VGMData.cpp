@@ -507,8 +507,8 @@ const char* GetTimeCode(int frameCounter)
 boolean VGMData::Update()
 {
 	NotifyUpdate();
-
 	systemChannels.ClearSampleBufferUpdatedEvent();
+
 
 	if (info.updateDataRequest)
 	{
