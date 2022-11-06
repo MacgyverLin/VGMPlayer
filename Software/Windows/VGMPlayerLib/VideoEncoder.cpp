@@ -94,6 +94,8 @@ private:
 		case AVMEDIA_TYPE_VIDEO:
 			c->codec_id = codec_id;
 
+			c->me_method = 1;
+
 			c->bit_rate = 400000;
 			/* Resolution must be a multiple of two. */
 			c->width = width;
@@ -154,7 +156,7 @@ private:
 		/* increment frequency by 110 Hz per second */
 		tincr2 = 2 * M_PI * 110.0 / c->sample_rate / c->sample_rate;
 
-		src_nb_samples = c->codec->capabilities& CODEC_CAP_VARIABLE_FRAME_SIZE ? 10000 : c->frame_size;
+		src_nb_samples = c->codec->capabilities & CODEC_CAP_VARIABLE_FRAME_SIZE ? 10000 : c->frame_size;
 
 		ret = av_samples_alloc_array_and_samples(&src_samples_data, &src_samples_linesize, c->channels, src_nb_samples, c->sample_fmt, 0);
 		if (ret < 0)
@@ -325,12 +327,12 @@ private:
 		*((AVPicture*)frame) = dst_picture;
 
 
-			sws_ctx = sws_getContext(c->width, c->height, AV_PIX_FMT_RGB24, c->width, c->height, AV_PIX_FMT_YUV420P, SWS_FAST_BILINEAR, NULL, NULL, NULL);
-			if (!sws_ctx)
-			{
-				vgm_log("Could not initialize the conversion context\n");
-				exit(1);
-			}
+		sws_ctx = sws_getContext(c->width, c->height, AV_PIX_FMT_RGB24, c->width, c->height, AV_PIX_FMT_YUV420P, SWS_FAST_BILINEAR, NULL, NULL, NULL);
+		if (!sws_ctx)
+		{
+			vgm_log("Could not initialize the conversion context\n");
+			exit(1);
+		}
 	}
 
 	void write_video_frame(AVFormatContext* oc, AVStream* st, const Vector<unsigned char>& videoBuffer)
@@ -341,7 +343,7 @@ private:
 		int w = c->width * 3;
 		for (int y = 0; y < c->height; y++)
 		{
-			int srcStartIdx = (y                ) * w;
+			int srcStartIdx = (y)*w;
 			int dstStartIdx = (c->height - 1 - y) * w;
 
 			memcpy(&src_picture.data[0][srcStartIdx], &videoBuffer[dstStartIdx], w);
@@ -370,14 +372,14 @@ private:
 
 			/* encode the image */
 			ret = avcodec_encode_video2(c, &pkt, frame, &got_packet);
-			if (ret < 0) 
+			if (ret < 0)
 			{
 				vgm_log("Error encoding video frame: %s\n", get_err2str(ret));
 				exit(1);
 			}
 			/* If size is zero, it means the image was buffered. */
 
-			if (!ret && got_packet && pkt.size) 
+			if (!ret && got_packet && pkt.size)
 			{
 				pkt.stream_index = st->index;
 
@@ -390,7 +392,7 @@ private:
 			}
 		}
 
-		if (ret != 0) 
+		if (ret != 0)
 		{
 			vgm_log("Error while writing video frame: %s\n", get_err2str(ret));
 			exit(1);
@@ -413,8 +415,8 @@ public:
 		audio_time = 0;
 
 		swr_ctx = nullptr;
-		t = 0; 
-		tincr = 0; 
+		t = 0;
+		tincr = 0;
 		tincr2 = 0;
 
 		max_dst_nb_samples = 0;
@@ -436,7 +438,7 @@ public:
 		frame = nullptr;
 
 		sws_ctx = nullptr;
-		
+
 		////////////////////////////////////////////
 		fmt = nullptr;
 		oc = nullptr;
@@ -486,10 +488,10 @@ public:
 		av_dump_format(oc, 0, filename, 1);
 
 		/* open the output file, if needed */
-		if (!(fmt->flags & AVFMT_NOFILE)) 
+		if (!(fmt->flags & AVFMT_NOFILE))
 		{
 			ret = avio_open(&oc->pb, filename, AVIO_FLAG_WRITE);
-			if (ret < 0) 
+			if (ret < 0)
 			{
 				vgm_log("Could not open '%s': %s\n", filename, get_err2str(ret));
 				return false;
@@ -498,7 +500,7 @@ public:
 
 		/* Write the stream header, if any. */
 		ret = avformat_write_header(oc, NULL);
-		if (ret < 0) 
+		if (ret < 0)
 		{
 			fprintf(stderr, "Error occurred when opening output file: %s\n", get_err2str(ret));
 			return false;
@@ -530,16 +532,16 @@ public:
 		/* write interleaved audio and video frames */
 		//if (!video_st || (video_st && audio_st && audio_time < video_time))
 		// {
-			write_audio_frame(oc, audio_st, audioBuffer);
-			// }
-		// else
-		// {
-			write_video_frame(oc, video_st, videoBuffer);
-	
-			frame->pts += av_rescale_q(1, video_st->codec->time_base, video_st->time_base);
+		write_audio_frame(oc, audio_st, audioBuffer);
+		// }
+	// else
+	// {
+		write_video_frame(oc, video_st, videoBuffer);
 
-			//frame->pts += av_rescale_q(1, video_st->codec->time_base, video_st->time_base);
-			// }
+		frame->pts += av_rescale_q(1, video_st->codec->time_base, video_st->time_base);
+
+		//frame->pts += av_rescale_q(1, video_st->codec->time_base, video_st->time_base);
+		// }
 		return true;
 	}
 

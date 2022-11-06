@@ -24,7 +24,7 @@ void VGMMultiChannelNoteRenderer::OnNotifyOpen(Obserable& observable)
 	const VGMData::Info& info = vgmData.GetInfo();
 	const VGMData::SystemChannels& systemChannels = vgmData.GetSystemChannels();
 
-	font = videoDevice.CreateFont("arial.ttf", 20);
+	font = videoDevice.CreateFont("arial.ttf", 24);
 }
 
 void VGMMultiChannelNoteRenderer::OnNotifyClose(Obserable& observable)
@@ -73,9 +73,10 @@ void VGMMultiChannelNoteRenderer::OnNotifyUpdate(Obserable& observable)
 		for (int i = 0; i < outputCommand.size(); i++)
 			commandStrings.push_back(outputCommand[i]);
 
-		if (commandStrings.size() > 40)
+#define MAX_COMMAND_STRINGS 40
+		if (commandStrings.size() > MAX_COMMAND_STRINGS)
 		{
-			int remove = commandStrings.size() - 40;
+			int remove = commandStrings.size() - MAX_COMMAND_STRINGS;
 
 			std::list<string>::iterator startItr = commandStrings.begin();
 			std::list<string>::iterator endItr = commandStrings.begin();

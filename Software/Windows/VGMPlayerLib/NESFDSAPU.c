@@ -106,8 +106,6 @@ void NESFDSAPU_WriteRegister(u8 chipID, u32 addr, u32 data, s32* channel, f32* f
 	}
 	else
 	{
-		*channel = 5;
-
 		switch (addr)
 		{
 		case 0x4080:	// Volume Envelope
@@ -135,6 +133,8 @@ void NESFDSAPU_WriteRegister(u8 chipID, u32 addr, u32 data, s32* channel, f32* f
 			{
 				ic->main_addr = 0;
 				ic->volume = (ic->volenv_gain < 0x21) ? ic->volenv_gain : 0x20;
+
+				*channel = 5;
 			}
 			ic->main_frequency = (ic->main_frequency & 0x00FF) | (((s32)data & 0x0F) << 8);
 			break;

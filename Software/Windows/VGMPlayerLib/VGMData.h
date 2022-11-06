@@ -692,7 +692,7 @@ public:
 					if (i < channels[ch].commands.size())
 					{
 						VGMData::Channel::Command& command = channels[ch].commands[i];
-						line += string_format("%04X   ", command.address, command.data);
+						line += string_format("%04X   ", command.data);
 					}
 					else
 					{

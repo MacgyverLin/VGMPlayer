@@ -373,8 +373,6 @@ void apu_regwrite(u8 chipID, u32 address, u8 value, s32* channel, f32* freq)
 	NESAPU *ic = &nesapuChips[chipID];
 	s32 chan = (address & 4) ? 1 : 0;
 
-	*channel = chan;
-
 	switch (address)
 	{
 	/* squares */
@@ -395,18 +393,7 @@ void apu_regwrite(u8 chipID, u32 address, u8 value, s32* channel, f32* freq)
 		{
 			ic->APU.squ[chan].freq = ((((ic->APU.squ[chan].regs[3] & 7) << 8) + value) + 1) << 16;
 			
-			// ic->APU.squ[chan].freq = (144*4 << 16);
-			// 576  ->  G
-			// 288  -> 391.96
-			// 144  -> 783.91
-			// 72   -> 1567.83
-			
-			if ((ic->channel_output_enabled & (1 << (chan))))
-			{
-				*channel = chan;
-				int invF = (ic->APU.squ[chan].freq >> 16);
-				*freq = (invF != 0) ? (144.0f / invF) * 783.91f : 0;
-			}
+			*channel = chan;
 		}
 		break;
 
@@ -419,6 +406,8 @@ void apu_regwrite(u8 chipID, u32 address, u8 value, s32* channel, f32* freq)
 			ic->APU.squ[chan].vbl_length = ic->vbl_times[value >> 3];
 			ic->APU.squ[chan].env_vol = 0;
 			ic->APU.squ[chan].freq = ((((value & 7) << 8) + ic->APU.squ[chan].regs[2]) + 1) << 16;
+
+			*channel = chan;
 		}
 
 		break;
@@ -431,6 +420,8 @@ void apu_regwrite(u8 chipID, u32 address, u8 value, s32* channel, f32* freq)
 		{                                          /* ??? */
 			if (FALSE == ic->APU.tri.counter_started)
 				ic->APU.tri.linear_length = ic->sync_times2[value & 0x7F];
+
+			*channel = 2;
 		}
 
 		break;
@@ -469,6 +460,8 @@ void apu_regwrite(u8 chipID, u32 address, u8 value, s32* channel, f32* freq)
 			ic->APU.tri.counter_started = FALSE;
 			ic->APU.tri.vbl_length = ic->vbl_times[value >> 3];
 			ic->APU.tri.linear_length = ic->sync_times2[ic->APU.tri.regs[0] & 0x7F];
+
+			*channel = 2;
 		}
 
 		break;
@@ -494,6 +487,8 @@ void apu_regwrite(u8 chipID, u32 address, u8 value, s32* channel, f32* freq)
 		{
 			ic->APU.noi.vbl_length = ic->vbl_times[value >> 3];
 			ic->APU.noi.env_vol = 0; /* reset envelope */
+
+			//*channel = 3;
 		}
 		break;
 

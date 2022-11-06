@@ -62,16 +62,22 @@ void VGMBackgroundRenderer::OnNotifyUpdate(Obserable& observable)
 
 	if (systemChannels.HasSampleBufferUpdatedEvent())
 	{
-		int startX = 0;
-		int endX = 1;
+		static float t = 0;
 
-		int startY = 0;
-		int endY = 1;
+		float startX = -1 + t;
+		float endX = 1 + t;
+
+		float startY = -1 + t;
+		float endY = 1 + t;
+		
+		t += 0.0001 * 5;
+		if (t > 1)
+			t = 0;
 
 		/////////////////////////////////////////////////////////////////////////////////
 		videoDevice.MatrixMode(VideoDeviceEnum::PROJECTION);
 		videoDevice.LoadIdentity();
-		videoDevice.Ortho2D(startX, endX, startY, endY);
+		videoDevice.Ortho2D(0, 1, 0, 1);
 		videoDevice.MatrixMode(VideoDeviceEnum::MODELVIEW);
 
 		/////////////////////////////////////////////////////////////////////////////////
@@ -79,11 +85,8 @@ void VGMBackgroundRenderer::OnNotifyUpdate(Obserable& observable)
 
 		videoDevice.Disable(VideoDeviceEnum::BLEND);
 
-		float tileX = ((float)GetRegion().w) / texture.GetWidth();
-		float tileY = ((float)GetRegion().h) / texture.GetWidth();
-
-		tileX = 1.0f;
-		tileY = 1.0f;
+		float tileX = ((float)GetRegion().w) / (texture.GetWidth());
+		float tileY = ((float)GetRegion().h) / (texture.GetHeight());
 
 		texture.SetWrapS(VideoDeviceEnum::REPEAT);
 		texture.SetWrapR(VideoDeviceEnum::REPEAT);
