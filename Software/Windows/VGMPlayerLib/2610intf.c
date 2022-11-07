@@ -14,68 +14,11 @@
 #include <stdlib.h>	// for free
 #include <string.h>	// for memset
 #include <stddef.h>	// for NULL
-#include "vgmdef.h"
+#include "mamedef.h"
 //#include "sndintrf.h"
 //#include "streams.h"
 #include "2610intf.h"
 #include "fm.h"
-#include "ay8910.h"
-
-
-void ym2610_update_request(void* param);
-
-/*typedef struct _ym2610_interface ym2610_interface;
-struct _ym2610_interface
-{
-	//void ( *handler )( const device_config *device, int irq );	// IRQ handler for the YM2610
-	void ( *handler )( int irq );	// IRQ handler for the YM2610
-};*/
-
-/*READ8_DEVICE_HANDLER( ym2610_r );
-WRITE8_DEVICE_HANDLER( ym2610_w );
-
-READ8_DEVICE_HANDLER( ym2610_status_port_a_r );
-READ8_DEVICE_HANDLER( ym2610_status_port_b_r );
-READ8_DEVICE_HANDLER( ym2610_read_port_r );
-
-WRITE8_DEVICE_HANDLER( ym2610_control_port_a_w );
-WRITE8_DEVICE_HANDLER( ym2610_control_port_b_w );
-WRITE8_DEVICE_HANDLER( ym2610_data_port_a_w );
-WRITE8_DEVICE_HANDLER( ym2610_data_port_b_w );
-
-
-DEVICE_GET_INFO( ym2610 );
-DEVICE_GET_INFO( ym2610b );
-
-#define SOUND_YM2610 DEVICE_GET_INFO_NAME( ym2610 )
-#define SOUND_YM2610B DEVICE_GET_INFO_NAME( ym2610b )*/
-
-void ym2610_stream_update(UINT8 ChipID, stream_sample_t** outputs, int samples);
-void ym2610b_stream_update(UINT8 ChipID, stream_sample_t** outputs, int samples);
-void ym2610_stream_update_ay(UINT8 ChipID, stream_sample_t** outputs, int samples);
-
-int device_start_ym2610(UINT8 ChipID, int clock, UINT8 AYDisable, int* AYrate);
-void device_stop_ym2610(UINT8 ChipID);
-void device_reset_ym2610(UINT8 ChipID);
-
-UINT8 ym2610_r(UINT8 ChipID, offs_t offset);
-void ym2610_w(UINT8 ChipID, offs_t offset, UINT8 data);
-
-UINT8 ym2610_status_port_a_r(UINT8 ChipID, offs_t offset);
-UINT8 ym2610_status_port_b_r(UINT8 ChipID, offs_t offset);
-UINT8 ym2610_read_port_r(UINT8 ChipID, offs_t offset);
-
-void ym2610_control_port_a_w(UINT8 ChipID, offs_t offset, UINT8 data);
-void ym2610_control_port_b_w(UINT8 ChipID, offs_t offset, UINT8 data);
-void ym2610_data_port_a_w(UINT8 ChipID, offs_t offset, UINT8 data);
-void ym2610_data_port_b_w(UINT8 ChipID, offs_t offset, UINT8 data);
-
-void ym2610_set_ay_emu_core(UINT8 Emulator);
-void ym2610_write_data_pcmrom(UINT8 ChipID, UINT8 rom_id, offs_t ROMSize, offs_t DataStart,
-	offs_t DataLength, const UINT8* ROMData);
-void ym2610_set_mute_mask(UINT8 ChipID, UINT32 MuteMaskFM, UINT32 MuteMaskAY);
-
-
 
 
 #ifdef ENABLE_ALL_CORES
@@ -97,10 +40,10 @@ struct _ym2610_state
 #define CHTYPE_YM2610	0x22
 
 
-extern UINT8 CHIP_SAMPLING_MODE;
-extern INT32 CHIP_SAMPLE_RATE;
+// extern UINT8 CHIP_SAMPLING_MODE;
+// extern INT32 CHIP_SAMPLE_RATE;
 static UINT8 AY_EMU_CORE = 0x00;
-extern UINT32 SampleRate;
+// extern UINT32 SampleRate;
 
 #define MAX_CHIPS	0x02
 
@@ -303,7 +246,7 @@ void ym2610_stream_update_ay(UINT8 ChipID, stream_sample_t **outputs, int sample
 
 
 //static DEVICE_START( ym2610 )
-int device_start_ym2610(UINT8 ChipID, int clock, UINT8 AYDisable, int* AYrate)
+int device_start_ym2610(UINT8 ChipID, int clock, UINT8 AYDisable, int* AYrate, UINT8 CHIP_SAMPLING_MODE, INT32 CHIP_SAMPLE_RATE)
 {
 	// clock bit 31:	0 - YM2610
 	//					1 - YM2610B
@@ -559,57 +502,3 @@ void ym2610_set_mute_mask(UINT8 ChipID, UINT32 MuteMaskFM, UINT32 MuteMaskAY)
 		default:										DEVICE_GET_INFO_CALL(ym2610);				break;
 	}
 }*/
-
-
-typedef ym2610_state YM2610;
-
-s32 YM2610_Initialize(u8 chipID, u32 clock, u32 sampleRate)
-{
-	int AYrate = 0;
-
-	return device_start_ym2610(chipID, clock, 0, &AYrate);
-}
-
-void YM2610_Shutdown(u8 chipID)
-{
-	device_stop_ym2610(chipID);
-}
-
-void YM2610_Reset(u8 chipID)
-{
-	device_reset_ym2610(chipID);
-}
-
-void YM2610_Update(u8 chipID, s32** buffer, u32 length)
-{
-	ym2610_stream_update(chipID, buffer, length);
-
-	/*
-void ym2610_stream_update(UINT8 ChipID, stream_sample_t** outputs, int samples);
-void ym2610b_stream_update(UINT8 ChipID, stream_sample_t** outputs, int samples);
-void ym2610_stream_update_ay(UINT8 ChipID, stream_sample_t** outputs, int samples);
-*/
-}
-
-u8 YM2610_ReadRegister(u8 chipID, u32 address)
-{
-	return ym2610_r(chipID, address);
-}
-
-void YM2610_WriteRegister(u8 chipID, u32 address, u32 data, s32* channel, f32* freq)
-{
-	ym2610_w(chipID, address, data);
-}
-
-void YM2610_SetChannelEnable(u8 chipID, u8 channel, u8 enable)
-{
-}
-
-u8 YM2610_GetChannelEnable(u8 chipID, u8 channel)
-{
-}
-
-u32 YM2610_GetChannelCount(u8 chipID)
-{
-	return 4;
-}

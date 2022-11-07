@@ -22,7 +22,7 @@
 
 ***************************************************************************/
 
-#include "vgmdef.h"
+#include "mamedef.h"
 #include <stdlib.h>
 #include <string.h>	// for memset
 //#include "emu.h"
@@ -98,13 +98,13 @@ static void make_mixer_table(/*running_machine *machine,*/ k051649_state *info, 
 
 /* generate sound to the mix buffer */
 //static STREAM_UPDATE( k051649_update )
-void k051649_update(UINT8 ChipID, s32 **outputs, int samples)
+void k051649_update(UINT8 ChipID, stream_sample_t **outputs, int samples)
 {
 	//k051649_state *info = (k051649_state *)param;
 	k051649_state *info = &SCC1Data[ChipID];
 	k051649_sound_channel *voice=info->channel_list;
-	s32*buffer = outputs[0];
-	s32*buffer2 = outputs[1];
+	stream_sample_t *buffer = outputs[0];
+	stream_sample_t *buffer2 = outputs[1];
 	short *mix;
 	int i,j;
 
@@ -146,7 +146,7 @@ void k051649_update(UINT8 ChipID, s32 **outputs, int samples)
 }
 
 //static DEVICE_START( k051649 )
-int device_start_k051649(UINT8 ChipID, int clock)
+int device_start_k051649(UINT8 ChipID, int clock, UINT8 CHIP_SAMPLING_MODE, INT32 CHIP_SAMPLE_RATE)
 {
 	//k051649_state *info = get_safe_token(device);
 	k051649_state *info;
@@ -214,7 +214,7 @@ void device_reset_k051649(UINT8 ChipID)
 /********************************************************************************/
 
 //WRITE8_DEVICE_HANDLER( k051649_waveform_w )
-void k051649_waveform_w(UINT8 ChipID, u32 offset, UINT8 data)
+void k051649_waveform_w(UINT8 ChipID, offs_t offset, UINT8 data)
 {
 	//k051649_state *info = get_safe_token(device);
 	k051649_state *info = &SCC1Data[ChipID];
@@ -236,7 +236,7 @@ void k051649_waveform_w(UINT8 ChipID, u32 offset, UINT8 data)
 }
 
 //READ8_DEVICE_HANDLER ( k051649_waveform_r )
-UINT8 k051649_waveform_r(UINT8 ChipID, u32 offset)
+UINT8 k051649_waveform_r(UINT8 ChipID, offs_t offset)
 {
 	//k051649_state *info = get_safe_token(device);
 	k051649_state *info = &SCC1Data[ChipID];
@@ -256,7 +256,7 @@ UINT8 k051649_waveform_r(UINT8 ChipID, u32 offset)
 
 /* SY 20001114: Channel 5 doesn't share the waveform with channel 4 on this chip */
 //WRITE8_DEVICE_HANDLER( k052539_waveform_w )
-void k052539_waveform_w(UINT8 ChipID, u32 offset, UINT8 data)
+void k052539_waveform_w(UINT8 ChipID, offs_t offset, UINT8 data)
 {
 	//k051649_state *info = get_safe_token(device);
 	k051649_state *info = &SCC1Data[ChipID];
@@ -270,7 +270,7 @@ void k052539_waveform_w(UINT8 ChipID, u32 offset, UINT8 data)
 }
 
 //READ8_DEVICE_HANDLER ( k052539_waveform_r )
-UINT8 k052539_waveform_r(UINT8 ChipID, u32 offset)
+UINT8 k052539_waveform_r(UINT8 ChipID, offs_t offset)
 {
 	//k051649_state *info = get_safe_token(device);
 	k051649_state *info = &SCC1Data[ChipID];
@@ -285,7 +285,7 @@ UINT8 k052539_waveform_r(UINT8 ChipID, u32 offset)
 }
 
 //WRITE8_DEVICE_HANDLER( k051649_volume_w )
-void k051649_volume_w(UINT8 ChipID, u32 offset, UINT8 data)
+void k051649_volume_w(UINT8 ChipID, offs_t offset, UINT8 data)
 {
 	//k051649_state *info = get_safe_token(device);
 	k051649_state *info = &SCC1Data[ChipID];
@@ -294,7 +294,7 @@ void k051649_volume_w(UINT8 ChipID, u32 offset, UINT8 data)
 }
 
 //WRITE8_DEVICE_HANDLER( k051649_frequency_w )
-void k051649_frequency_w(UINT8 ChipID, u32 offset, UINT8 data)
+void k051649_frequency_w(UINT8 ChipID, offs_t offset, UINT8 data)
 {
 	//k051649_state *info = get_safe_token(device);
 	k051649_state *info = &SCC1Data[ChipID];
@@ -317,7 +317,7 @@ void k051649_frequency_w(UINT8 ChipID, u32 offset, UINT8 data)
 }
 
 //WRITE8_DEVICE_HANDLER( k051649_keyonoff_w )
-void k051649_keyonoff_w(UINT8 ChipID, u32 offset, UINT8 data)
+void k051649_keyonoff_w(UINT8 ChipID, offs_t offset, UINT8 data)
 {
 	//k051649_state *info = get_safe_token(device);
 	k051649_state *info = &SCC1Data[ChipID];
@@ -332,7 +332,7 @@ void k051649_keyonoff_w(UINT8 ChipID, u32 offset, UINT8 data)
 }
 
 //WRITE8_MEMBER( k051649_device::k051649_test_w )
-void k051649_test_w(UINT8 ChipID, u32 offset, UINT8 data)
+void k051649_test_w(UINT8 ChipID, offs_t offset, UINT8 data)
 {
 	k051649_state *info = &SCC1Data[ChipID];
 	info->test = data;
@@ -340,7 +340,7 @@ void k051649_test_w(UINT8 ChipID, u32 offset, UINT8 data)
 
 
 //READ8_MEMBER ( k051649_device::k051649_test_r )
-UINT8 k051649_test_r(UINT8 ChipID, u32 offset)
+UINT8 k051649_test_r(UINT8 ChipID, offs_t offset)
 {
 	// reading the test register sets it to $ff!
 	k051649_test_w(ChipID, offset, 0xff);
@@ -348,7 +348,7 @@ UINT8 k051649_test_r(UINT8 ChipID, u32 offset)
 }
 
 
-void k051649_w(UINT8 ChipID, u32 offset, UINT8 data)
+void k051649_w(UINT8 ChipID, offs_t offset, UINT8 data)
 {
 	k051649_state *info = &SCC1Data[ChipID];
 	

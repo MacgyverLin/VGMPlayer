@@ -1,7 +1,5 @@
 #pragma once
 
-#include "vgmdef.h"
-
 #define YM_DELTAT_SHIFT    (16)
 
 #define YM_DELTAT_EMULATION_MODE_NORMAL	0

@@ -20,9 +20,9 @@ void VGMMultiChannelNoteRenderer::OnNotifySomething(Obserable& observable)
 void VGMMultiChannelNoteRenderer::OnNotifyOpen(Obserable& observable)
 {
 	VGMData& vgmData = (VGMData&)observable;
-	const VGMHeader& header = vgmData.GetHeader();
-	const VGMData::Info& info = vgmData.GetInfo();
-	const VGMData::SystemChannels& systemChannels = vgmData.GetSystemChannels();
+	
+	const VGMInfo& info = vgmData.GetInfo();
+	const VGMOutputChannels& systemChannels = vgmData.GetOutputChannels();
 
 	font = videoDevice.CreateFont("arial.ttf", 24);
 }
@@ -31,9 +31,9 @@ void VGMMultiChannelNoteRenderer::OnNotifyClose(Obserable& observable)
 {
 	VGMData& vgmData = (VGMData&)observable;
 
-	const VGMHeader& header = vgmData.GetHeader();
-	const VGMData::Info& info = vgmData.GetInfo();
-	const VGMData::SystemChannels& systemChannels = vgmData.GetSystemChannels();
+	
+	const VGMInfo& info = vgmData.GetInfo();
+	const VGMOutputChannels& systemChannels = vgmData.GetOutputChannels();
 
 	videoDevice.DestroyFont(font);
 	font = nullptr;
@@ -62,8 +62,8 @@ void VGMMultiChannelNoteRenderer::OnNotifyResume(Obserable& observable)
 void VGMMultiChannelNoteRenderer::OnNotifyUpdate(Obserable& observable)
 {
 	VGMData& vgmData = (VGMData&)observable;
-	const VGMData::Info& info = vgmData.GetInfo();
-	const VGMData::SystemChannels& systemChannels = vgmData.GetSystemChannels();
+	const VGMInfo& info = vgmData.GetInfo();
+	const VGMOutputChannels& systemChannels = vgmData.GetOutputChannels();
 
 	if (systemChannels.HasSampleBufferUpdatedEvent())
 	{

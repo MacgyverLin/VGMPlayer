@@ -5,8 +5,6 @@
 
 #pragma once
 
-#include "vgmdef.h"
-
 /* --- select emulation chips --- */
 /*
 #define BUILD_YM2203  (HAS_YM2203)		// build YM2203(OPN)   emulator

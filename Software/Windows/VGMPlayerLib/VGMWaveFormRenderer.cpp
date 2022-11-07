@@ -19,18 +19,18 @@ void VGMWaveFormRenderer::OnNotifySomething(Obserable& observable)
 void VGMWaveFormRenderer::OnNotifyOpen(Obserable& observable)
 {
 	VGMData& vgmData = (VGMData&)observable;
-	const VGMHeader& header = vgmData.GetHeader();
-	const VGMData::Info& info = vgmData.GetInfo();
-	const VGMData::SystemChannels& systemChannels = vgmData.GetSystemChannels();
+	
+	const VGMInfo& info = vgmData.GetInfo();
+	const VGMOutputChannels& systemChannels = vgmData.GetOutputChannels();
 }
 
 void VGMWaveFormRenderer::OnNotifyClose(Obserable& observable)
 {
 	VGMData& vgmData = (VGMData&)observable;
 
-	const VGMHeader& header = vgmData.GetHeader();
-	const VGMData::Info& info = vgmData.GetInfo();
-	const VGMData::SystemChannels& systemChannels = vgmData.GetSystemChannels();
+	
+	const VGMInfo& info = vgmData.GetInfo();
+	const VGMOutputChannels& systemChannels = vgmData.GetOutputChannels();
 }
 
 void VGMWaveFormRenderer::OnNotifyPlay(Obserable& observable)
@@ -56,8 +56,8 @@ void VGMWaveFormRenderer::OnNotifyResume(Obserable& observable)
 void VGMWaveFormRenderer::OnNotifyUpdate(Obserable& observable)
 {
 	VGMData& vgmData = (VGMData&)observable;
-	const VGMData::Info& info = vgmData.GetInfo();
-	const VGMData::SystemChannels& systemChannels = vgmData.GetSystemChannels();
+	const VGMInfo& info = vgmData.GetInfo();
+	const VGMOutputChannels& systemChannels = vgmData.GetOutputChannels();
 
 	if (systemChannels.HasSampleBufferUpdatedEvent())
 	{

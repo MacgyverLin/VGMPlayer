@@ -1,6 +1,6 @@
 #include "VGMViewer.h"
 #include "FFT.h"
-#include "VGMFile.h"
+#include "VGMData.h"
 
 VGMViewer::VGMViewer(const string& name_, u32 x_, u32 y_, u32 width_, u32 height_)
 	: VGMObverser()
@@ -42,10 +42,10 @@ void VGMViewer::OnNotifySomething(Obserable& observable)
 
 void VGMViewer::OnNotifyOpen(Obserable& observable)
 {
-	VGMFile& vgmFile = (VGMFile&)observable;
+	VGMData& vgmData = (VGMData&)observable;
 
-	std::string caption = name + vgmFile.GetPath();
-	std::string mp4File = vgmFile.GetPath();
+	std::string caption = name + vgmData.GetInfo().vgmPath;
+	std::string mp4File = vgmData.GetInfo().vgmPath;
 	mp4File = mp4File.substr(0, mp4File.find_last_of('.')) + ".mp4";
 
 	videoDevice.Open(caption.c_str(), x, y, width, height);
@@ -119,8 +119,8 @@ void VGMViewer::OnNotifyResume(Obserable& observable)
 void VGMViewer::OnNotifyUpdate(Obserable& observable)
 {
 	VGMData& vgmData = (VGMData&)observable;
-	const VGMData::Info& info = vgmData.GetInfo();
-	const VGMData::SystemChannels& systemChannels = vgmData.GetSystemChannels();
+	const VGMInfo& info = vgmData.GetInfo();
+	const VGMOutputChannels& systemChannels = vgmData.GetOutputChannels();
 
 	if (systemChannels.HasSampleBufferUpdatedEvent())
 	{

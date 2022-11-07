@@ -18,20 +18,20 @@ void VGMBackgroundRenderer::OnNotifySomething(Obserable& observable)
 void VGMBackgroundRenderer::OnNotifyOpen(Obserable& observable)
 {
 	VGMData& vgmData = (VGMData&)observable;
-	const VGMHeader& header = vgmData.GetHeader();
-	const VGMData::Info& info = vgmData.GetInfo();
-	const VGMData::SystemChannels& systemChannels = vgmData.GetSystemChannels();
+	
+	const VGMInfo& info = vgmData.GetInfo();
+	const VGMOutputChannels& systemChannels = vgmData.GetOutputChannels();
 
-	texture.Load(info.texturePath);
+	texture.Load(info.texturePath.c_str());
 }
 
 void VGMBackgroundRenderer::OnNotifyClose(Obserable& observable)
 {
 	VGMData& vgmData = (VGMData&)observable;
 
-	const VGMHeader& header = vgmData.GetHeader();
-	const VGMData::Info& info = vgmData.GetInfo();
-	const VGMData::SystemChannels& systemChannels = vgmData.GetSystemChannels();
+	
+	const VGMInfo& info = vgmData.GetInfo();
+	const VGMOutputChannels& systemChannels = vgmData.GetOutputChannels();
 }
 
 void VGMBackgroundRenderer::OnNotifyPlay(Obserable& observable)
@@ -57,8 +57,8 @@ void VGMBackgroundRenderer::OnNotifyResume(Obserable& observable)
 void VGMBackgroundRenderer::OnNotifyUpdate(Obserable& observable)
 {
 	VGMData& vgmData = (VGMData&)observable;
-	const VGMData::Info& info = vgmData.GetInfo();
-	const VGMData::SystemChannels& systemChannels = vgmData.GetSystemChannels();
+	const VGMInfo& info = vgmData.GetInfo();
+	const VGMOutputChannels& systemChannels = vgmData.GetOutputChannels();
 
 	if (systemChannels.HasSampleBufferUpdatedEvent())
 	{

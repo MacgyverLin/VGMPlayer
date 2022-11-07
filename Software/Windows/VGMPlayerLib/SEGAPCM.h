@@ -1,12 +1,8 @@
-#ifndef _SegaPCM_h_
-#define _SegaPCM_h_
+/*********************************************************/
+/*    SEGA 8bit PCM                                      */
+/*********************************************************/
 
-#include "vgmdef.h"
-#include "ROM.h"
-
-#ifdef __cplusplus
-extern "C" {
-#endif
+#pragma once
 
 #define   BANK_256    (11)
 #define   BANK_512    (12)
@@ -15,20 +11,28 @@ extern "C" {
 #define   BANK_MASKF    (0xf0<<16)
 #define   BANK_MASKF8   (0xf8<<16)
 
-s32 SEGAPCM_Initialize(u8 chipID, u32 clock, u32 sampleRate);
-void SEGAPCM_Shutdown(u8 chipID);
-void SEGAPCM_Reset(u8 chipID);
-void SEGAPCM_WriteRegister(u8 chipID, u32 address, u32 data, s32* channel, f32* freq);
-u8 SEGAPCM_ReadRegister(u8 chipID, u32 address);
-void SEGAPCM_Update(u8 chipID, s32** buffer, u32 length);
-void SEGAPCM_SetROM(u8 chipID, ROM* rom);
-
-void SEGAPCM_SetChannelEnable(u8 chipID, u8 channel, u8 enable);
-u8 SEGAPCM_GetChannelEnable(u8 chipID, u8 channel);
-u32 SEGAPCM_GetChannelCount(u8 chipID);
-
-#ifdef __cplusplus
+typedef struct _sega_pcm_interface sega_pcm_interface;
+struct _sega_pcm_interface
+{
+	int  bank;
 };
-#endif
 
-#endif
+/*WRITE8_DEVICE_HANDLER( sega_pcm_w );
+READ8_DEVICE_HANDLER( sega_pcm_r );
+
+DEVICE_GET_INFO( segapcm );
+#define SOUND_SEGAPCM DEVICE_GET_INFO_NAME( segapcm )*/
+
+void SEGAPCM_update(UINT8 ChipID, stream_sample_t **outputs, int samples);
+
+int device_start_segapcm(UINT8 ChipID, int clock, int intf_bank, UINT8 CHIP_SAMPLING_MODE, INT32 CHIP_SAMPLE_RATE);
+void device_stop_segapcm(UINT8 ChipID);
+void device_reset_segapcm(UINT8 ChipID);
+
+void sega_pcm_w(UINT8 ChipID, offs_t offset, UINT8 data);
+UINT8 sega_pcm_r(UINT8 ChipID, offs_t offset);
+void sega_pcm_write_rom(UINT8 ChipID, offs_t ROMSize, offs_t DataStart, offs_t DataLength,
+						const UINT8* ROMData);
+
+void segapcm_set_mute_mask(UINT8 ChipID, UINT32 MuteMask);
+

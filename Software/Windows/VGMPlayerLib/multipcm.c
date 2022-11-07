@@ -33,7 +33,7 @@
 
 //#include "emu.h"
 //#include "streams.h"
-#include "vgmdef.h"
+#include "mamedef.h"
 #include <math.h>
 #include <stdlib.h>
 #include <string.h>	// for memset
@@ -142,7 +142,7 @@ static const int val2chan[] =
 #define MAX_CHIPS	0x02
 static MultiPCM MultiPCMData[MAX_CHIPS];
 
-/*MultiPCM *get_safe_token(running_device *device)
+/*INLINE MultiPCM *get_safe_token(running_device *device)
 {
 	assert(device != NULL);
 	assert(device->type() == MULTIPCM);
@@ -300,7 +300,7 @@ static void LFO_Init(void)
 	}
 }
 
-signed int PLFO_Step(struct _LFO *LFO)
+INLINE signed int PLFO_Step(struct _LFO *LFO)
 {
 	int p;
 	LFO->phase+=LFO->phase_step;
@@ -309,7 +309,7 @@ signed int PLFO_Step(struct _LFO *LFO)
 	return p<<(SHIFT-LFO_SHIFT);
 }
 
-signed int ALFO_Step(struct _LFO *LFO)
+INLINE signed int ALFO_Step(struct _LFO *LFO)
 {
 	int p;
 	LFO->phase+=LFO->phase_step;
@@ -464,11 +464,11 @@ static void WriteSlot(MultiPCM *ptChip,struct _SLOT *slot,int reg,unsigned char 
 }
 
 //static STREAM_UPDATE( MultiPCM_update )
-void MultiPCM_update(UINT8 ChipID, s32 **outputs, int samples)
+void MultiPCM_update(UINT8 ChipID, stream_sample_t **outputs, int samples)
 {
 	//MultiPCM *ptChip = (MultiPCM *)param;
 	MultiPCM *ptChip = &MultiPCMData[ChipID];
-	s32  *datap[2];
+	stream_sample_t  *datap[2];
 	int i,sl;
 
 	datap[0] = outputs[0];
@@ -535,7 +535,7 @@ void MultiPCM_update(UINT8 ChipID, s32 **outputs, int samples)
 }
 
 //READ8_DEVICE_HANDLER( multipcm_r )
-UINT8 multipcm_r(UINT8 ChipID, u32 offset)
+UINT8 multipcm_r(UINT8 ChipID, offs_t offset)
 {
 //  MultiPCM *ptChip = get_safe_token(device);
 //	MultiPCM *ptChip = &MultiPCMData[ChipID];
@@ -543,7 +543,7 @@ UINT8 multipcm_r(UINT8 ChipID, u32 offset)
 }
 
 //static DEVICE_START( multipcm )
-int device_start_multipcm(UINT8 ChipID, int clock)
+int device_start_multipcm(UINT8 ChipID, int clock, UINT8 CHIP_SAMPLING_MODE, INT32 CHIP_SAMPLE_RATE)
 {
 	//MultiPCM *ptChip = get_safe_token(device);
 	MultiPCM *ptChip;
@@ -738,7 +738,7 @@ void device_reset_multipcm(UINT8 ChipID)
 
 
 //WRITE8_DEVICE_HANDLER( multipcm_w )
-void multipcm_w(UINT8 ChipID, u32 offset, UINT8 data)
+void multipcm_w(UINT8 ChipID, offs_t offset, UINT8 data)
 {
 	//MultiPCM *ptChip = get_safe_token(device);
 	MultiPCM *ptChip = &MultiPCMData[ChipID];
@@ -791,7 +791,7 @@ void multipcm_bank_write(UINT8 ChipID, UINT8 offset, UINT16 data)
 	return;
 }
 
-void multipcm_write_rom(UINT8 ChipID, u32 ROMSize, u32 DataStart, u32 DataLength,
+void multipcm_write_rom(UINT8 ChipID, offs_t ROMSize, offs_t DataStart, offs_t DataLength,
 						const UINT8* ROMData)
 {
 	MultiPCM *ptChip = &MultiPCMData[ChipID];
