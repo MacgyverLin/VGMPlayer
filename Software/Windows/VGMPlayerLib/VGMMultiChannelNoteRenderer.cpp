@@ -5,6 +5,7 @@ VGMMultiChannelNoteRenderer::VGMMultiChannelNoteRenderer(VideoDevice& videoDevic
 	: VGMRenderer(videoDevice_, name_, region_)
 	, waveScale(waveScale_)
 	, skin(skin_)
+	, font(nullptr)
 {
 }
 
@@ -20,20 +21,22 @@ void VGMMultiChannelNoteRenderer::OnNotifySomething(Obserable& observable)
 void VGMMultiChannelNoteRenderer::OnNotifyOpen(Obserable& observable)
 {
 	VGMData& vgmData = (VGMData&)observable;
-	
-	const VGMInfo& info = vgmData.GetInfo();
-	const VGMOutputChannels& systemChannels = vgmData.GetOutputChannels();
+	const VGMHeader& header = vgmData.GetHeader();
+	const VGMData::Info& info = vgmData.GetInfo();
+	const VGMData::SystemChannels& systemChannels = vgmData.GetSystemChannels();
 
-	font = videoDevice.CreateFont("arial.ttf", 24);
+	font = videoDevice.CreateFont("arial.ttf", 12);
+
+	logo.Load("..//images//QR.jpg");
 }
 
 void VGMMultiChannelNoteRenderer::OnNotifyClose(Obserable& observable)
 {
 	VGMData& vgmData = (VGMData&)observable;
 
-	
-	const VGMInfo& info = vgmData.GetInfo();
-	const VGMOutputChannels& systemChannels = vgmData.GetOutputChannels();
+	const VGMHeader& header = vgmData.GetHeader();
+	const VGMData::Info& info = vgmData.GetInfo();
+	const VGMData::SystemChannels& systemChannels = vgmData.GetSystemChannels();
 
 	videoDevice.DestroyFont(font);
 	font = nullptr;
@@ -62,8 +65,8 @@ void VGMMultiChannelNoteRenderer::OnNotifyResume(Obserable& observable)
 void VGMMultiChannelNoteRenderer::OnNotifyUpdate(Obserable& observable)
 {
 	VGMData& vgmData = (VGMData&)observable;
-	const VGMInfo& info = vgmData.GetInfo();
-	const VGMOutputChannels& systemChannels = vgmData.GetOutputChannels();
+	const VGMData::Info& info = vgmData.GetInfo();
+	const VGMData::SystemChannels& systemChannels = vgmData.GetSystemChannels();
 
 	if (systemChannels.HasSampleBufferUpdatedEvent())
 	{
@@ -126,5 +129,29 @@ void VGMMultiChannelNoteRenderer::OnNotifyUpdate(Obserable& observable)
 
 			y += 24;
 		}
+
+		float scaleY = (((float)region.h * 0.3f / logo.GetHeight()));
+		float texWidth = scaleY * logo.GetWidth();
+		float texHeight = region.h * 0.3f;
+
+		float x0 = (region.w - texWidth) / 2.0f;
+		float y0 = (region.h - texHeight) / 2.0f;
+		float x1 = x0 + texWidth;
+		float y1 = y0 + texHeight;
+		
+		x0 = region.w - texWidth;
+		y0 = 0;
+		x1 = x0 + texWidth;
+		y1 = y0 + texHeight;
+
+		videoDevice.DrawTexSolidRectangle
+		(
+			logo,
+			Vector2(x0, y0), Color::White, Vector2(0, 0),
+			Vector2(x1, y0), Color::White, Vector2(1, 0),
+			Vector2(x1, y1), Color::White, Vector2(1, 1),
+			Vector2(x0, y1), Color::White, Vector2(0, 1)
+		);
+
 	}
 }

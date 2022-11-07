@@ -117,7 +117,7 @@
 #include <stdarg.h>
 #include <math.h>
 
-#include "mamedef.h"
+#include "vgmdef.h"
 //#ifndef __RAINE__
 //#include "sndintrf.h"		/* use M.A.M.E. */
 //#else
@@ -693,7 +693,7 @@ typedef struct
 #define LOG_LEVEL LOG_INF
 
 #ifndef __RAINE__
-#define LOG(n,x) do { if( (n)>=LOG_LEVEL ) logerror x; } while (0)
+#define LOG(n,x) do { if( (n)>=LOG_LEVEL ) vgm_log x; } while (0)
 #endif
 
 /* limitter */

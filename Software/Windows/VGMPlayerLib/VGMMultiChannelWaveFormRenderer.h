@@ -12,14 +12,14 @@ public:
 	{
 	public:
 		Skin(u8 numChannels_ = 2,
-			const Color& bgColor_ = Color(0.3f, 0.3f, 0.3f, 1.0f), const Color& gridColor_ = Color(0.0f, 0.2f, 0.2f, 0.3f), const Color& axisColor_ = Color(0.3f, 0.3f, 0.3f, 1.0f),
-			const Color& leftColor_ = Color(0.0f, 0.5f, 0.0f, 1.0f), const Color& rightColor_ = Color(0.0f, 0.5f, 0.5f, 1.0f))
-		: numChannels(numChannels_)
-		, bgColor(bgColor_)
-		, gridColor(gridColor_)
-		, axisColor(axisColor_)
-		, leftColor(leftColor_)
-		, rightColor(rightColor_)
+			const Color& bgColor_ = Color(0.3f, 0.3f, 0.3f, 1.0f), const Color& gridColor_ = Color(0.0f, 0.2f, 0.2f, 1.0f), const Color& axisColor_ = Color(0.3f, 0.3f, 0.3f, 1.0f),
+			const Color& leftColor_ = Color(0.3f, 1.0f, 0.3f, 1.0f), const Color& rightColor_ = Color(0.3f, 1.0f, 1.0f, 1.0f))
+			: numChannels(numChannels_)
+			, bgColor(bgColor_)
+			, gridColor(gridColor_)
+			, axisColor(axisColor_)
+			, leftColor(leftColor_)
+			, rightColor(rightColor_)
 		{
 		}
 
@@ -49,6 +49,8 @@ private:
 	float waveScale;
 	Skin skin;
 	vector<f32> max;
+
+	Font* font;
 };
 
 #endif

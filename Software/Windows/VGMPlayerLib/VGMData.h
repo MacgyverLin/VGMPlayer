@@ -11,12 +11,12 @@
 #include "vgmdef.h"
 #include <vector>
 #include <string>
-#include <zlib.h>
 #include "Obserable.h"
 using namespace std;
 
+#define VGMPlayer_MIN(a, b) ((a)<(b)) ? (a) : (b)
+#define VGMPlayer_MAX(a, b) ((a)>(b)) ? (a) : (b)
 
-#if 0
 #pragma pack (push,1)
 enum VGMCommand
 {
@@ -435,1093 +435,395 @@ public:
 };
 
 #pragma pack(pop)
-#endif
-
-
-#define CHIP_COUNT	0x29
-typedef struct chip_options
-{
-	bool Disabled;
-	UINT8 EmuCore;
-	UINT8 ChnCnt;
-	// Special Flags:
-	//	YM2612:	Bit 0 - DAC Highpass Enable, Bit 1 - SSG-EG Enable
-	//	YM-OPN:	Bit 0 - Disable AY8910-Part
-	UINT16 SpecialFlags;
-
-	// Channel Mute Mask - 1 Channel is represented by 1 bit
-	UINT32 ChnMute1;
-	// Mask 2 - used by YMF287B for OPL4 Wavetable Synth and by YM2608/YM2610 for PCM
-	UINT32 ChnMute2;
-	// Mask 3 - used for the AY-part of some OPN-chips
-	UINT32 ChnMute3;
-
-	INT16* Panning;
-} CHIP_OPTS;
-
-typedef struct chips_options
-{
-	CHIP_OPTS SN76496;
-	CHIP_OPTS YM2413;
-	CHIP_OPTS YM2612;
-	CHIP_OPTS YM2151;
-	CHIP_OPTS SegaPCM;
-	CHIP_OPTS RF5C68;
-	CHIP_OPTS YM2203;
-	CHIP_OPTS YM2608;
-	CHIP_OPTS YM2610;
-	CHIP_OPTS YM3812;
-	CHIP_OPTS YM3526;
-	CHIP_OPTS Y8950;
-	CHIP_OPTS YMF262;
-	CHIP_OPTS YMF278B;
-	CHIP_OPTS YMF271;
-	CHIP_OPTS YMZ280B;
-	CHIP_OPTS RF5C164;
-	CHIP_OPTS PWM;
-	CHIP_OPTS AY8910;
-	CHIP_OPTS GameBoy;
-	CHIP_OPTS NES;
-	CHIP_OPTS MultiPCM;
-	CHIP_OPTS UPD7759;
-	CHIP_OPTS OKIM6258;
-	CHIP_OPTS OKIM6295;
-	CHIP_OPTS K051649;
-	CHIP_OPTS K054539;
-	CHIP_OPTS HuC6280;
-	CHIP_OPTS C140;
-	CHIP_OPTS K053260;
-	CHIP_OPTS Pokey;
-	CHIP_OPTS QSound;
-	CHIP_OPTS SCSP;
-	CHIP_OPTS WSwan;
-	CHIP_OPTS VSU;
-	CHIP_OPTS SAA1099;
-	CHIP_OPTS ES5503;
-	CHIP_OPTS ES5506;
-	CHIP_OPTS X1_010;
-	CHIP_OPTS C352;
-	CHIP_OPTS GA20;
-	//	CHIP_OPTS OKIM6376;
-} CHIPS_OPTION;
-
-typedef struct _vgm_file_header
-{
-	UINT32 fccVGM;
-	UINT32 lngEOFOffset;
-	UINT32 lngVersion;
-	UINT32 lngHzPSG;
-	UINT32 lngHzYM2413;
-	UINT32 lngGD3Offset;
-	UINT32 lngTotalSamples;
-	UINT32 lngLoopOffset;
-	UINT32 lngLoopSamples;
-	UINT32 lngRate;
-	UINT16 shtPSG_Feedback;
-	UINT8 bytPSG_SRWidth;
-	UINT8 bytPSG_Flags;
-	UINT32 lngHzYM2612;
-	UINT32 lngHzYM2151;
-	UINT32 lngDataOffset;
-	UINT32 lngHzSPCM;
-	UINT32 lngSPCMIntf;
-	UINT32 lngHzRF5C68;
-	UINT32 lngHzYM2203;
-	UINT32 lngHzYM2608;
-	UINT32 lngHzYM2610;
-	UINT32 lngHzYM3812;
-	UINT32 lngHzYM3526;
-	UINT32 lngHzY8950;
-	UINT32 lngHzYMF262;
-	UINT32 lngHzYMF278B;
-	UINT32 lngHzYMF271;
-	UINT32 lngHzYMZ280B;
-	UINT32 lngHzRF5C164;
-	UINT32 lngHzPWM;
-	UINT32 lngHzAY8910;
-	UINT8 bytAYType;
-	UINT8 bytAYFlag;
-	UINT8 bytAYFlagYM2203;
-	UINT8 bytAYFlagYM2608;
-	UINT8 bytVolumeModifier;
-	UINT8 bytReserved2;
-	INT8 bytLoopBase;
-	UINT8 bytLoopModifier;
-	UINT32 lngHzGBDMG;
-	UINT32 lngHzNESAPU;
-	UINT32 lngHzMultiPCM;
-	UINT32 lngHzUPD7759;
-	UINT32 lngHzOKIM6258;
-	UINT8 bytOKI6258Flags;
-	UINT8 bytK054539Flags;
-	UINT8 bytC140Type;
-	UINT8 bytReservedFlags;
-	UINT32 lngHzOKIM6295;
-	UINT32 lngHzK051649;
-	UINT32 lngHzK054539;
-	UINT32 lngHzHuC6280;
-	UINT32 lngHzC140;
-	UINT32 lngHzK053260;
-	UINT32 lngHzPokey;
-	UINT32 lngHzQSound;
-	UINT32 lngHzSCSP;
-	//	UINT32 lngHzOKIM6376;
-		//UINT8 bytReserved[0x04];
-	UINT32 lngExtraOffset;
-	UINT32 lngHzWSwan;
-	UINT32 lngHzVSU;
-	UINT32 lngHzSAA1099;
-	UINT32 lngHzES5503;
-	UINT32 lngHzES5506;
-	UINT8 bytES5503Chns;
-	UINT8 bytES5506Chns;
-	UINT8 bytC352ClkDiv;
-	UINT8 bytESReserved;
-	UINT32 lngHzX1_010;
-	UINT32 lngHzC352;
-	UINT32 lngHzGA20;
-} VGM_HEADER;
-typedef struct _vgm_header_extra
-{
-	UINT32 DataSize;
-	UINT32 Chp2ClkOffset;
-	UINT32 ChpVolOffset;
-} VGM_HDR_EXTRA;
-typedef struct _vgm_extra_chip_data32
-{
-	UINT8 Type;
-	UINT32 Data;
-} VGMX_CHIP_DATA32;
-typedef struct _vgm_extra_chip_data16
-{
-	UINT8 Type;
-	UINT8 Flags;
-	UINT16 Data;
-} VGMX_CHIP_DATA16;
-typedef struct _vgm_extra_chip_extra32
-{
-	UINT8 ChipCnt;
-	VGMX_CHIP_DATA32* CCData;
-} VGMX_CHP_EXTRA32;
-typedef struct _vgm_extra_chip_extra16
-{
-	UINT8 ChipCnt;
-	VGMX_CHIP_DATA16* CCData;
-} VGMX_CHP_EXTRA16;
-typedef struct _vgm_header_extra_data
-{
-	VGMX_CHP_EXTRA32 Clocks;
-	VGMX_CHP_EXTRA16 Volumes;
-} VGM_EXTRA;
-#define VOLUME_MODIF_WRAP	0xC0
-typedef struct _vgm_gd3_tag
-{
-	UINT32 fccGD3;
-	UINT32 lngVersion;
-	UINT32 lngTagLength;
-	wchar_t* strTrackNameE;
-	wchar_t* strTrackNameJ;
-	wchar_t* strGameNameE;
-	wchar_t* strGameNameJ;
-	wchar_t* strSystemNameE;
-	wchar_t* strSystemNameJ;
-	wchar_t* strAuthorNameE;
-	wchar_t* strAuthorNameJ;
-	wchar_t* strReleaseDate;
-	wchar_t* strCreator;
-	wchar_t* strNotes;
-} GD3_TAG;
-typedef struct _vgm_pcm_bank_data
-{
-	UINT32 DataSize;
-	UINT8* Data;
-	UINT32 DataStart;
-} VGM_PCM_DATA;
-typedef struct _vgm_pcm_bank
-{
-	UINT32 BankCount;
-	VGM_PCM_DATA* Bank;
-	UINT32 DataSize;
-	UINT8* Data;
-	UINT32 DataPos;
-	UINT32 BnkPos;
-} VGM_PCM_BANK;
-
-#define FCC_VGM	0x206D6756	// 'Vgm '
-#define FCC_GD3	0x20336447	// 'Gd3 '
-
-typedef void (*strm_func)(UINT8 ChipID, stream_sample_t** outputs, int samples);
-
-typedef struct waveform_16bit_stereo
-{
-	INT16 Left;
-	INT16 Right;
-} WAVE_16BS;
-
-typedef struct waveform_32bit_stereo
-{
-	INT32 Left;
-	INT32 Right;
-} WAVE_32BS;
-
-typedef struct chip_audio_attributes CAUD_ATTR;
-struct chip_audio_attributes
-{
-	UINT32 SmpRate;
-	UINT16 Volume;
-	UINT8 ChipType;
-	UINT8 ChipID;		// 0 - 1st chip, 1 - 2nd chip, etc.
-	// Resampler Type:
-	//	00 - Old
-	//	01 - Upsampling
-	//	02 - Copy
-	//	03 - Downsampling
-	UINT8 Resampler;
-	strm_func StreamUpdate;
-	UINT32 SmpP;		// Current Sample (Playback Rate)
-	UINT32 SmpLast;		// Sample Number Last
-	UINT32 SmpNext;		// Sample Number Next
-	WAVE_32BS LSmpl;	// Last Sample
-	WAVE_32BS NSmpl;	// Next Sample
-	CAUD_ATTR* Paired;
-};
-
-typedef struct chip_audio_struct
-{
-	CAUD_ATTR SN76496;
-	CAUD_ATTR YM2413;
-	CAUD_ATTR YM2612;
-	CAUD_ATTR YM2151;
-	CAUD_ATTR SegaPCM;
-	CAUD_ATTR RF5C68;
-	CAUD_ATTR YM2203;
-	CAUD_ATTR YM2608;
-	CAUD_ATTR YM2610;
-	CAUD_ATTR YM3812;
-	CAUD_ATTR YM3526;
-	CAUD_ATTR Y8950;
-	CAUD_ATTR YMF262;
-	CAUD_ATTR YMF278B;
-	CAUD_ATTR YMF271;
-	CAUD_ATTR YMZ280B;
-	CAUD_ATTR RF5C164;
-	CAUD_ATTR PWM;
-	CAUD_ATTR AY8910;
-	CAUD_ATTR GameBoy;
-	CAUD_ATTR NES;
-	CAUD_ATTR MultiPCM;
-	CAUD_ATTR UPD7759;
-	CAUD_ATTR OKIM6258;
-	CAUD_ATTR OKIM6295;
-	CAUD_ATTR K051649;
-	CAUD_ATTR K054539;
-	CAUD_ATTR HuC6280;
-	CAUD_ATTR C140;
-	CAUD_ATTR K053260;
-	CAUD_ATTR Pokey;
-	CAUD_ATTR QSound;
-	CAUD_ATTR SCSP;
-	CAUD_ATTR WSwan;
-	CAUD_ATTR VSU;
-	CAUD_ATTR SAA1099;
-	CAUD_ATTR ES5503;
-	CAUD_ATTR ES5506;
-	CAUD_ATTR X1_010;
-	CAUD_ATTR C352;
-	CAUD_ATTR GA20;
-	//	CAUD_ATTR OKIM6376;
-} CHIP_AUDIO;
-
-typedef struct chip_aud_list CA_LIST;
-struct chip_aud_list
-{
-	CAUD_ATTR* CAud;
-	CHIP_OPTS* COpts;
-	CA_LIST* next;
-};
-
-typedef struct daccontrol_data
-{
-	bool Enable;
-	UINT8 Bank;
-} DACCTRL_DATA;
-
-typedef struct pcmbank_table
-{
-	UINT8 ComprType;
-	UINT8 CmpSubType;
-	UINT8 BitDec;
-	UINT8 BitCmp;
-	UINT16 EntryCount;
-	void* Entries;
-} PCMBANK_TBL;
-
-// Delays in usec (Port Reads - or microsec)
-#define DELAY_OPL2_REG	 3.3f
-#define DELAY_OPL2_DATA	23.0f
-#define DELAY_OPL3_REG	 0.0f
-//#define DELAY_OPL3_DATA	 0.28f	// fine for ISA cards (like SoundBlaster 16)
-#define DELAY_OPL3_DATA	 13.3f	// required for PCI cards (CMI8738)
-
-#define YM2413_EC_DEFAULT	0x00
-#define YM2413_EC_MEKA		0x01
-
-class VGMInfo
-{
-public:
-	string vgmPath;
-	string texturePath;
-
-	s32 channels;
-	s32 bitPerSamples;
-	s32 sampleRate;
-
-	u32 updateSampleCounts;
-	f32 frameCounter;
-
-#ifdef WIN32
-	INT64 HWusTime;
-#endif
-
-	// Options Variables
-	UINT32 SampleRate;	// Note: also used by some sound cores to determinate the chip sample rate
-	UINT8 CHIP_SAMPLING_MODE;
-	INT32 CHIP_SAMPLE_RATE;
-
-	UINT8 YM2413_EMU_CORE;
-
-	UINT32 OptArr[0x10];
-
-
-	UINT32 VGMMaxLoop;
-	UINT32 VGMPbRate;	// in Hz, ignored if this value or VGM's lngRate Header value is 0
-#ifdef ADDITIONAL_FORMATS
-	extern UINT32 CMFMaxLoop;
-#endif
-	UINT32 FadeTime;
-	UINT32 PauseTime;	// current Pause Time
-
-	float VolumeLevel;
-	bool SurroundSound;
-	UINT8 HardStopOldVGMs;
-	bool FadeRAWLog;
-	//bool FullBufFill;	// Fill Buffer until it's full
-	bool PauseEmulate;
-
-	bool DoubleSSGVol;
-
-	UINT8 ResampleMode;	// 00 - HQ both, 01 - LQ downsampling, 02 - LQ both
-
-
-	UINT16 FMPort;
-	bool FMForce;
-	//bool FMAccurate;
-	bool FMBreakFade;
-	float FMVol;
-	bool FMOPL2Pan;
-
-	CHIPS_OPTION ChipOpts[0x02];
-
-	UINT8 OPL_MODE;
-	UINT8 OPL_CHIPS;
-#ifdef WIN32
-	bool WINNT_MODE;
-#endif
-
-	const char* AppPaths[8];
-
-	bool AutoStopSkip;
-
-	UINT8 FileMode;
-	VGM_HEADER VGMHead;
-	VGM_HDR_EXTRA VGMHeadX;
-	VGM_EXTRA VGMH_Extra;
-	UINT32 VGMDataLen;
-	UINT8* VGMData;
-	GD3_TAG VGMTag;
-
-#define PCM_BANK_COUNT	0x40
-	VGM_PCM_BANK PCMBank[PCM_BANK_COUNT];
-	PCMBANK_TBL PCMTbl;
-	UINT8 DacCtrlUsed;
-	UINT8 DacCtrlUsg[0xFF];
-	DACCTRL_DATA DacCtrl[0xFF];
-
-#ifdef WIN32
-	HANDLE hPlayThread;
-#else
-	pthread_t hPlayThread;
-#endif
-	bool PlayThreadOpen;
-	volatile bool PauseThread;
-	static volatile bool CloseThread;
-	bool ThreadPauseEnable;
-	volatile bool ThreadPauseConfrm;
-	bool ThreadNoWait;	// don't reset the timer
-
-	CHIP_AUDIO ChipAudio[0x02];
-	CAUD_ATTR CA_Paired[0x02][0x03];
-	float MasterVol;
-
-	CA_LIST ChipListBuffer[0x200];
-	CA_LIST* ChipListAll;	// all chips needed for playback (in general)
-	CA_LIST* ChipListPause;	// all chips needed for EmulateWhilePaused
-	//CA_LIST* ChipListOpt;	// ChipListAll minus muted chips
-	CA_LIST* CurChipList;	// pointer to Pause or All [Opt]
-
-#define SMPL_BUFSIZE	0x100
-	INT32* StreamBufs[0x02];
-
-#ifdef MIXER_MUTING
-
-#ifdef WIN32
-	HMIXER hmixer;
-	MIXERCONTROL mixctrl;
-#else
-	int hmixer;
-	UINT16 mixer_vol;
-#endif
-
-#else	//#ifndef MIXER_MUTING
-	float VolumeBak;
-#endif
-
-	UINT32 VGMPos;
-	INT32 VGMSmplPos;
-	INT32 VGMSmplPlayed;
-	INT32 VGMSampleRate;
-	UINT32 VGMPbRateMul;
-	UINT32 VGMPbRateDiv;
-	UINT32 VGMSmplRateMul;
-	UINT32 VGMSmplRateDiv;
-	UINT32 PauseSmpls;
-	bool VGMEnd;
-	bool EndPlay;
-	bool PausePlay;
-	bool FadePlay;
-	bool ForceVGMExec;
-	UINT8 PlayingMode;
-	bool UseFM;
-	UINT32 PlayingTime;
-	UINT32 FadeStart;
-	UINT32 VGMMaxLoopM;
-	UINT32 VGMCurLoop;
-	float VolumeLevelM;
-	float FinalVol;
-	bool ResetPBTimer;
-
-	bool Interpreting;
-
-#ifdef CONSOLE_MODE
-	extern bool ErrorHappened;
-	extern UINT8 CmdList[0x100];
-#endif
-
-	UINT8 IsVGMInit;
-	UINT16 Last95Drum;	// for optvgm debugging
-	UINT16 Last95Max;	// for optvgm debugging
-	UINT32 Last95Freq;	// for optvgm debugging
-
-	bool WriteSmplChunk;
-
-	VGMInfo(const char* vgmPath_, const char* texturePath_, s32 channels_, s32 bitPerSample_, s32 sampleRate_)
-	{
-		vgmPath = vgmPath_;
-		texturePath = texturePath_;
-
-		this->channels = channels_;
-		this->bitPerSamples = bitPerSample_;
-		this->sampleRate = sampleRate_;
-
-		this->updateSampleCounts = 0;
-		this->frameCounter = 0;
-
-		VGMPlay_Init();
-		VGMPlay_Init2();
-
-		VGMMaxLoop = 2;
-		FadeTime = 5000;
-		WriteSmplChunk = true;
-	}
-
-	~VGMInfo()
-	{
-		VGMPlay_DeInit();
-	}
-
-	void VGMPlay_Init()
-	{
-		UINT8 CurChip;
-		UINT8 CurCSet;
-		UINT8 CurChn;
-		CHIP_OPTS* TempCOpt;
-		CAUD_ATTR* TempCAud;
-
-		SampleRate = 44100;
-		FadeTime = 5000;
-		PauseTime = 0;
-
-		HardStopOldVGMs = 0x00;
-		FadeRAWLog = false;
-		VolumeLevel = 1.0f;
-		//FullBufFill = false;
-		FMPort = 0x0000;
-		FMForce = false;
-		//FMAccurate = false;
-		FMBreakFade = false;
-		FMVol = 0.0f;
-		FMOPL2Pan = false;
-		SurroundSound = false;
-		VGMMaxLoop = 0x02;
-		VGMPbRate = 0;
-#ifdef ADDITIONAL_FORMATS
-		CMFMaxLoop = 0x01;
-#endif
-		ResampleMode = 0x00;
-		CHIP_SAMPLING_MODE = 0x00;
-		CHIP_SAMPLE_RATE = 0x00000000;
-		PauseEmulate = false;
-		DoubleSSGVol = false;
-
-		for (CurCSet = 0x00; CurCSet < 0x02; CurCSet++)
-		{
-			TempCAud = (CAUD_ATTR*)&ChipAudio[CurCSet];
-			for (CurChip = 0x00; CurChip < CHIP_COUNT; CurChip++, TempCAud++)
-			{
-				TempCOpt = (CHIP_OPTS*)&ChipOpts[CurCSet] + CurChip;
-
-				TempCOpt->Disabled = false;
-				TempCOpt->EmuCore = 0x00;
-				TempCOpt->SpecialFlags = 0x00;
-				TempCOpt->ChnCnt = 0x00;
-				TempCOpt->ChnMute1 = 0x00;
-				TempCOpt->ChnMute2 = 0x00;
-				TempCOpt->ChnMute3 = 0x00;
-				TempCOpt->Panning = NULL;
-
-				// Set up some important fields to prevent in_vgm from crashing
-				// when clicking on Muting checkboxes after init.
-				TempCAud->ChipType = 0xFF;
-				TempCAud->ChipID = CurCSet;
-				TempCAud->Paired = NULL;
-			}
-			ChipOpts[CurCSet].GameBoy.SpecialFlags = 0x0003;
-			// default options, 0x8000 skips the option write and keeps NSFPlay's default values
-			// TODO: Is this really necessary??
-			ChipOpts[CurCSet].NES.SpecialFlags = 0x8000 |
-				(0x00 << 12) | (0x3B << 4) | (0x01 << 2) | (0x03 << 0);
-			ChipOpts[CurCSet].SCSP.SpecialFlags = 0x0001;	// bypass SCSP DSP
-
-			TempCAud = CA_Paired[CurCSet];
-			for (CurChip = 0x00; CurChip < 0x03; CurChip++, TempCAud++)
-			{
-				TempCAud->ChipType = 0xFF;
-				TempCAud->ChipID = CurCSet;
-				TempCAud->Paired = NULL;
-			}
-
-			// currently the only chips with Panning support are
-			// SN76496 and YM2413, it should be not a problem that it's hardcoded.
-			TempCOpt = (CHIP_OPTS*)&ChipOpts[CurCSet].SN76496;
-			TempCOpt->ChnCnt = 0x04;
-			TempCOpt->Panning = (INT16*)malloc(sizeof(INT16) * TempCOpt->ChnCnt);
-			for (CurChn = 0x00; CurChn < TempCOpt->ChnCnt; CurChn++)
-				TempCOpt->Panning[CurChn] = 0x00;
-
-			TempCOpt = (CHIP_OPTS*)&ChipOpts[CurCSet].YM2413;
-			TempCOpt->ChnCnt = 0x0E;	// 0x09 + 0x05
-			TempCOpt->Panning = (INT16*)malloc(sizeof(INT16) * TempCOpt->ChnCnt);
-			for (CurChn = 0x00; CurChn < TempCOpt->ChnCnt; CurChn++)
-				TempCOpt->Panning[CurChn] = 0x00;
-		}
-
-		for (CurChn = 0; CurChn < 8; CurChn++)
-			AppPaths[CurChn] = NULL;
-
-		AppPaths[0] = "";
-
-		FileMode = 0xFF;
-
-		PausePlay = false;
-
-#ifdef _DEBUG
-		if (sizeof(CHIP_AUDIO) != sizeof(CAUD_ATTR) * CHIP_COUNT)
-		{
-			fprintf(stderr, "Fatal Error! ChipAudio structure invalid!\n");
-			getchar();
-			exit(-1);
-		}
-		if (sizeof(CHIPS_OPTION) != sizeof(CHIP_OPTS) * CHIP_COUNT)
-		{
-			fprintf(stderr, "Fatal Error! ChipOpts structure invalid!\n");
-			getchar();
-			exit(-1);
-		}
-#endif
-
-		return;
-
-	}
-
-	void VGMPlay_Init2(void)
-	{
-#if 0
-		// has to be called after the configuration is loaded
-
-		if (FMPort)
-		{
-#if defined(WIN32) && defined(_MSC_VER)
-			WINNT_MODE = false;
-#endif
-			if (!OPL_MODE)	// OPL not forced
-				OPL_Hardware_Detecton();
-			if (!OPL_MODE)	// no OPL chip found
-				FMPort = 0x0000;	// disable FM
-		}
-		if (FMPort)
-		{
-			// prepare FM Hardware Access and open MIDI Mixer
-#ifdef WIN32
-#ifdef MIXER_MUTING
-			mixerOpen(&hmixer, 0x00, 0x00, 0x00, 0x00);
-			GetMixerControl();
-#endif
-
-			if (WINNT_MODE)
-			{
-				if (OpenPortTalk())
-					return;
-			}
-#else	//#ifndef WIN32
-#ifdef MIXER_MUTING
-			hmixer = open("/dev/mixer", O_RDWR);
-#endif
-
-			if (OpenPortTalk())
-				return;
-#endif
-		}
-#endif
-		StreamBufs[0x00] = (INT32*)malloc(SMPL_BUFSIZE * sizeof(INT32));
-		StreamBufs[0x01] = (INT32*)malloc(SMPL_BUFSIZE * sizeof(INT32));
-
-		if (CHIP_SAMPLE_RATE <= 0)
-			CHIP_SAMPLE_RATE = SampleRate;
-		PlayingMode = 0xFF;
-
-		return;
-	}
-
-	void VGMPlay_DeInit()
-	{
-		UINT8 CurChip;
-		UINT8 CurCSet;
-		CHIP_OPTS* TempCOpt;
-
-		if (FMPort)
-		{
-#ifdef MIXER_MUTING
-#ifdef WIN32
-			mixerClose(hmixer);
-#else
-			close(hmixer);
-#endif
-#endif
-		}
-
-		free(StreamBufs[0x00]);	StreamBufs[0x00] = NULL;
-		free(StreamBufs[0x01]);	StreamBufs[0x01] = NULL;
-
-		for (CurCSet = 0x00; CurCSet < 0x02; CurCSet++)
-		{
-			for (CurChip = 0x00; CurChip < CHIP_COUNT; CurChip++)
-			{
-				TempCOpt = (CHIP_OPTS*)&ChipOpts[CurCSet] + CurChip;
-
-				if (TempCOpt->Panning != NULL)
-				{
-					free(TempCOpt->Panning);	TempCOpt->Panning = NULL;
-				}
-			}
-		}
-
-		return;
-	}
-};
-
-class VGMChannel
-{
-public:
-	class Command
-	{
-	public:
-		Command(float frameCounter, u32 address_, u16 data_)
-			: address(address_)
-			, data(data_)
-		{
-		}
-
-		float frameCounter;
-		u32 address;
-		u16 data;
-	};
-
-	VGMChannel()
-		: commands()
-		, leftSamples(VGM_SAMPLE_BUFFER_SIZE)
-		, rightSamples(VGM_SAMPLE_BUFFER_SIZE)
-	{
-	}
-
-	vector<Command> commands;
-	vector<s32> leftSamples;
-	vector<s32> rightSamples;
-};
-
-#pragma pack (push,1)
-template<class T>
-class TOutputBuffer
-{
-public:
-	TOutputBuffer(int size)
-		: buffer(size * 2)
-	{
-	}
-
-	operator T* ()
-	{
-		return &buffer[0];
-	}
-
-	operator const T* () const
-	{
-		return &buffer[0];
-	}
-
-	T& Get(int i, int channel)
-	{
-		return buffer[(i << 1) + channel];
-	}
-
-	const T& Get(int channel, int i) const
-	{
-		return buffer[(i << 1) + channel];
-	}
-
-	const vector<T>& GetBuffer() const
-	{
-		return buffer;
-	}
-private:
-	vector<T> buffer;
-};
-
-typedef TOutputBuffer<s16> OutputSampleBuffer;
-#pragma pack (pop)
-
-class VGMOutputChannels
-{
-public:
-	VGMOutputChannels()
-		: channels(0)
-
-		, currentSampleIdx(0)
-		, channelSampleBuffers(0)
-		, outputSampleBuffer(VGM_SAMPLE_BUFFER_SIZE)
-
-		, sampleBufferUpdatedEvent(false)
-
-	{
-	}
-
-	void SetChannelsCount(int size)
-	{
-		channels.resize(size);
-
-		channelSampleBuffers.resize(size * 2);
-
-		outputCommands.resize(size);
-	}
-
-	s32 GetChannelsCount() const
-	{
-		return this->channels.size();
-	}
-	//////////////////////////////////////////////////////
-public:
-	int BeginUpdateSamples(int updateSampleCounts)
-	{
-		updateSampleCounts = VGMPlayer_MIN((VGM_SAMPLE_BUFFER_SIZE - currentSampleIdx), updateSampleCounts); // never exceed bufferSize
-		if (updateSampleCounts == 0)
-			return 0;
-
-		channelSampleBuffers.resize(channels.size() * 2);
-		for (int i = 0; i < channels.size(); i++)
-		{
-			channelSampleBuffers[i * 2 + 0] = &channels[i].leftSamples[currentSampleIdx];
-			channelSampleBuffers[i * 2 + 1] = &channels[i].rightSamples[currentSampleIdx];
-		}
-
-		return updateSampleCounts;
-	}
-
-	int HandleUpdateSamples(void (*chipUpdate)(u8, s32**, u32),
-		u32(*chipGetChannelCount)(u8),
-		u8 chipID, s32 baseChannel, u32 length)
-	{
-		chipUpdate(chipID, &channelSampleBuffers[baseChannel], length);
-
-		baseChannel += chipGetChannelCount(chipID);
-
-		return baseChannel;
-	}
-
-	void EndUpdateSamples(int updateSampleCounts)
-	{
-		currentSampleIdx = currentSampleIdx + updateSampleCounts;	// updated samples, sampleIdx+
-		assert(currentSampleIdx <= VGM_SAMPLE_BUFFER_SIZE);
-		if (currentSampleIdx == VGM_SAMPLE_BUFFER_SIZE) //  1/ 50 frame
-		{
-			currentSampleIdx = 0;
-			sampleBufferUpdatedEvent = true;
-
-			FillOutputSampleBuffer();
-
-			FillOutputCommand();
-		}
-	}
-
-	void WriteRegister
-	(
-		void(*WriteRegisterCB)(u8, u32, u32, s32*, f32*),
-		u8 chipID,
-		u32 address, u32 data,
-		f32 frameCounter)
-	{
-		s32 ch = -1;
-		f32 freq = 0;
-
-		WriteRegisterCB(chipID, address, data, &ch, &freq);
-		if (ch != -1)
-		{
-			channels[ch].commands.push_back(VGMChannel::Command(frameCounter, address, data));
-		}
-	}
-private:
-	void FillOutputSampleBuffer()
-	{
-		s16* dest = outputSampleBuffer;
-
-		s32 div = channels.size();
-		for (s32 i = 0; i < VGM_SAMPLE_BUFFER_SIZE; i++) // always fill by fix size VGM_SAMPLE_COUNT
-		{
-			s32 outL = 0;
-			for (s32 ch = 0; ch < channels.size(); ch++)
-				outL += channels[ch].leftSamples[i];
-			outL = outL / div;
-
-			s32 outR = 0;
-			for (int ch = 0; ch < channels.size(); ch++)
-				outR += channels[ch].rightSamples[i];
-			outR = outR / div;
-
-			*dest++ = outL;
-			*dest++ = outR;
-		}
-	}
-
-	template< typename... Args >
-	std::string string_format(const char* format, Args... args)
-	{
-		size_t length = std::snprintf(nullptr, 0, format, args...);
-		if (length <= 0)
-		{
-			return "";
-		}
-
-		char* buf = new char[length + 1];
-		std::snprintf(buf, length + 1, format, args...);
-
-		std::string str(buf);
-		delete[] buf;
-		return std::move(str);
-	}
-
-	void FillOutputCommand()
-	{
-		outputCommands.clear();
-
-		int maxCommandCounts = 0;
-		for (s32 i = 0; i < channels.size(); i++)
-		{
-			if (maxCommandCounts < channels[i].commands.size())
-			{
-				maxCommandCounts = channels[i].commands.size();
-			}
-		}
-
-		for (s32 i = 0; i < maxCommandCounts; i++)
-		{
-			string line;
-
-			for (s32 ch = 0; ch < channels.size(); ch++)
-			{
-				if (i < channels[ch].commands.size())
-				{
-					VGMChannel::Command& command = channels[ch].commands[i];
-					line += string_format("%04X   ", command.data);
-				}
-				else
-				{
-					line += string_format("0000  ");
-				}
-			}
-
-			outputCommands.push_back(line);
-		}
-
-		for (s32 i = 0; i < outputCommands.size(); i++)
-		{
-			//vgm_log("%s\n", outputCommands[i].c_str());
-		}
-	}
-public:
-	const s32& GetChannelLeftSample(int ch, int i) const
-	{
-		return channels[ch].leftSamples[i];
-	}
-
-	const s32& GetChannelRightSample(int ch, int i) const
-	{
-		return channels[ch].rightSamples[i];
-	}
-
-	const s16& GetOutputSample(int channel, int i) const
-	{
-		return outputSampleBuffer.Get(channel, i);
-	}
-
-	const std::vector<s16>& GetOutputSampleBuffer() const
-	{
-		return outputSampleBuffer.GetBuffer();
-	}
-
-	const vector<string>& GetOutputCommands() const
-	{
-		return outputCommands;
-	}
-
-	boolean HasSampleBufferUpdatedEvent() const
-	{
-		return sampleBufferUpdatedEvent;
-	}
-
-	void ClearSampleBufferUpdatedEvent()
-	{
-		sampleBufferUpdatedEvent = false;
-	}
-private:
-	vector<VGMChannel> channels;
-
-	u32 currentSampleIdx;
-	vector<s32*> channelSampleBuffers;
-	OutputSampleBuffer outputSampleBuffer;
-	boolean sampleBufferUpdatedEvent;
-
-	vector<string> outputCommands;
-};
-
-
-class VGMDataImpl;
 
 class VGMData : public Obserable
 {
 public:
-	VGMData(const char* path_, const char* texturePath_, s32 channels_, s32 bitPerSample_, s32 sampleRate_);
+	class Info
+	{
+	public:
+		Info(const char* texturePath_, s32 channels_, s32 bitPerSample_, s32 sampleRate_)
+		{
+			this->channels = channels_;
+			this->bitPerSamples = bitPerSample_;
+			this->sampleRate = sampleRate_;
+
+			this->paused = TRUE;
+			this->playing = FALSE;
+
+			this->updateDataRequest = FALSE;
+			this->updateSampleCounts = 0;
+			this->frameCounter = 0;
+
+			strncpy(this->texturePath, texturePath_, 256);
+		}
+
+		s32 channels;
+		s32 bitPerSamples;
+		s32 sampleRate;
+
+		boolean paused;
+		boolean playing;
+
+		boolean updateDataRequest;
+		u32 updateSampleCounts;
+		f32 frameCounter;
+
+		char texturePath[256];
+	};
+
+	class Channel
+	{
+	public:
+		class Command
+		{
+		public:
+			Command(float frameCounter, u32 address_, u16 data_)
+				: address(address_)
+				, data(data_)
+			{
+			}
+
+			float frameCounter;
+			u32 address;
+			u16 data;
+		};
+
+		Channel()
+			: commands()
+			, leftSamples(VGM_SAMPLE_BUFFER_SIZE)
+			, rightSamples(VGM_SAMPLE_BUFFER_SIZE)
+		{
+		}
+
+		vector<Command> commands;
+		vector<s32> leftSamples;
+		vector<s32> rightSamples;
+	};
+
+#pragma pack (push,1)
+	template<class T>
+	class TOutputBuffer
+	{
+	public:
+		TOutputBuffer(int size)
+			: buffer(size * 2)
+		{
+		}
+
+		operator T* ()
+		{
+			return &buffer[0];
+		}
+
+		operator const T* () const
+		{
+			return &buffer[0];
+		}
+
+		T& Get(int i, int channel)
+		{
+			return buffer[(i << 1) + channel];
+		}
+
+		const T& Get(int channel, int i) const
+		{
+			return buffer[(i << 1) + channel];
+		}
+
+		const vector<T>& GetBuffer() const
+		{
+			return buffer;
+		}
+	private:
+		vector<T> buffer;
+	};
+
+	typedef TOutputBuffer<s16> OutputSampleBuffer;
+#pragma pack (pop)
+
+	class SystemChannels
+	{
+	public:
+		SystemChannels()
+			: channels(0)
+
+			, currentSampleIdx(0)
+			, channelSampleBuffers(0)
+			, outputSampleBuffer(VGM_SAMPLE_BUFFER_SIZE)
+
+			, sampleBufferUpdatedEvent(false)
+
+		{
+		}
+
+		void SetChannelsCount(int size)
+		{
+			channels.resize(size);
+
+			channelSampleBuffers.resize(size * 2);
+
+			outputCommands.resize(size);
+		}
+
+		s32 GetChannelsCount() const
+		{
+			return this->channels.size();
+		}
+		//////////////////////////////////////////////////////
+	public:
+		int BeginUpdateSamples(int updateSampleCounts)
+		{
+			updateSampleCounts = VGMPlayer_MIN((VGM_SAMPLE_BUFFER_SIZE - currentSampleIdx), updateSampleCounts); // never exceed bufferSize
+			if (updateSampleCounts == 0)
+				return 0;
+
+			channelSampleBuffers.resize(channels.size() * 2);
+			for (int i = 0; i < channels.size(); i++)
+			{
+				channelSampleBuffers[i * 2 + 0] = &channels[i].leftSamples[currentSampleIdx];
+				channelSampleBuffers[i * 2 + 1] = &channels[i].rightSamples[currentSampleIdx];
+			}
+
+			return updateSampleCounts;
+		}
+
+		int HandleUpdateSamples(void (*chipUpdate)(u8, s32**, u32),
+			u32(*chipGetChannelCount)(u8),
+			u8 chipID, s32 baseChannel, u32 length)
+		{
+			chipUpdate(chipID, &channelSampleBuffers[baseChannel], length);
+
+			baseChannel += chipGetChannelCount(chipID);
+
+			return baseChannel;
+		}
+
+		void EndUpdateSamples(int updateSampleCounts)
+		{
+			currentSampleIdx = currentSampleIdx + updateSampleCounts;	// updated samples, sampleIdx+
+			assert(currentSampleIdx <= VGM_SAMPLE_BUFFER_SIZE);
+			if (currentSampleIdx == VGM_SAMPLE_BUFFER_SIZE) //  1/ 50 frame
+			{
+				currentSampleIdx = 0;
+				sampleBufferUpdatedEvent = true;
+
+				FillOutputSampleBuffer();
+
+				FillOutputCommand();
+			}
+		}
+
+		void WriteRegister
+		(
+			void(*WriteRegisterCB)(u8, u32, u32, s32*, f32*),
+			u8 chipID,
+			u32 address, u32 data,
+			f32 frameCounter)
+		{
+			s32 ch = -1;
+			f32 freq = 0;
+
+			WriteRegisterCB(chipID, address, data, &ch, &freq);
+			if (ch != -1)
+			{
+				channels[ch].commands.push_back(Channel::Command(frameCounter, address, data));
+			}
+		}
+	private:
+		void FillOutputSampleBuffer()
+		{
+			s16* dest = outputSampleBuffer;
+
+			s32 div = channels.size();
+			for (s32 i = 0; i < VGM_SAMPLE_BUFFER_SIZE; i++) // always fill by fix size VGM_SAMPLE_COUNT
+			{
+				s32 outL = 0;
+				for (s32 ch = 0; ch < channels.size(); ch++)
+					outL += channels[ch].leftSamples[i];
+				outL = outL / div;
+
+				s32 outR = 0;
+				for (int ch = 0; ch < channels.size(); ch++)
+					outR += channels[ch].rightSamples[i];
+				outR = outR / div;
+
+				*dest++ = outL;
+				*dest++ = outR;
+			}
+		}
+
+		template< typename... Args >
+		std::string string_format(const char* format, Args... args)
+		{
+			size_t length = std::snprintf(nullptr, 0, format, args...);
+			if (length <= 0)
+			{
+				return "";
+			}
+
+			char* buf = new char[length + 1];
+			std::snprintf(buf, length + 1, format, args...);
+
+			std::string str(buf);
+			delete[] buf;
+			return std::move(str);
+		}
+
+		void FillOutputCommand()
+		{
+			outputCommands.clear();
+
+			int maxCommandCounts = 0;
+			for (s32 i = 0; i < channels.size(); i++)
+			{
+				if (maxCommandCounts < channels[i].commands.size())
+				{
+					maxCommandCounts = channels[i].commands.size();
+				}
+			}
+
+			for (s32 i = 0; i < maxCommandCounts; i++)
+			{
+				string line;
+
+				for (s32 ch = 0; ch < channels.size(); ch++)
+				{					
+					if (i < channels[ch].commands.size())
+					{
+						VGMData::Channel::Command& command = channels[ch].commands[i];
+						line += string_format("%04X   ", command.data);
+					}
+					else
+					{
+						line += string_format("0000  ");
+					}
+				}
+
+				outputCommands.push_back(line);
+			}
+
+			for (s32 i = 0; i < outputCommands.size(); i++)
+			{
+				//vgm_log("%s\n", outputCommands[i].c_str());
+			}
+		}
+	public:
+		const s32& GetChannelLeftSample(int ch, int i) const
+		{
+			return channels[ch].leftSamples[i];
+		}
+
+		const s32& GetChannelRightSample(int ch, int i) const
+		{
+			return channels[ch].rightSamples[i];
+		}
+
+		int GetChannelCommandCount(int ch) const
+		{
+			return channels[ch].commands.size();
+		}
+
+		const Channel::Command& GetChannelCommand(int ch, int i) const
+		{
+			return channels[ch].commands[i];
+		}
+
+		const s16& GetOutputSample(int channel, int i) const
+		{
+			return outputSampleBuffer.Get(channel, i);
+		}
+
+		const std::vector<s16>& GetOutputSampleBuffer() const
+		{
+			return outputSampleBuffer.GetBuffer();
+		}
+
+		const vector<string>& GetOutputCommands() const
+		{
+			return outputCommands;
+		}
+
+		boolean HasSampleBufferUpdatedEvent() const
+		{
+			return sampleBufferUpdatedEvent;
+		}
+
+		void ClearSampleBufferUpdatedEvent()
+		{
+			sampleBufferUpdatedEvent = false;
+		}
+	private:
+		vector<Channel> channels;
+
+		u32 currentSampleIdx;
+		vector<s32*> channelSampleBuffers;
+		OutputSampleBuffer outputSampleBuffer;
+		boolean sampleBufferUpdatedEvent;
+
+		vector<string> outputCommands;
+	};
+
+	VGMData(const char* texturePath_, s32 channels_, s32 bitPerSample_, s32 sampleRate_);
 	~VGMData();
 
 	u32 GetVersion();
 
 	boolean Open();
 	void Close();
-
 	void Play();
 	void Stop();
-	boolean IsPlaying();
 	void Pause();
 	void Resume();
-	boolean IsPaused();
-
-	void Rewind();
-
 	boolean Update();
 
-	const VGMInfo& GetInfo() const;
-	const VGMOutputChannels& GetOutputChannels() const;
+	boolean IsPlaying();
+	boolean IsPaused();
+
+	void RequestUpdateData();
+
+	const VGMHeader& GetHeader() const;
+	const VGMData::Info& GetInfo() const;
+	const VGMData::SystemChannels& GetSystemChannels() const;
+
+	void SetChannelEnable(u32 channel, bool enable);
+	u8 GetChannelEnable(u32 channel);
 
 	f32 GetFrameCounter() const;
+protected:
+	virtual s32 Read(void* buffer, u32 size);
+	virtual s32 SeekSet(u32 size);
+	virtual s32 SeekCur(u32 size);
+
+	virtual boolean OnOpen() = 0;
+	virtual void OnClose() = 0;
+	virtual void OnPlay() = 0;
+	virtual void OnStop() = 0;
+	virtual void OnPause() = 0;
+	virtual void OnResume() = 0;
+	virtual boolean OnUpdate() = 0;
+	virtual s32 OnRead(void* buffer, u32 size) = 0;
+	virtual s32 OnSeekSet(u32 size) = 0;
+	virtual s32 OnSeekCur(u32 size) = 0;
 
 	/////////////////////////////////////////////////
 	// data decode
 protected:
-	void PauseResume(bool pause);
-	UINT32 FillBuffer(WAVE_16BS* Buffer, UINT32 BufferSize);
+	void HandleDataBlocks();
 
-	void GeneralChipLists(void);
-	void Chips_GeneralActions(UINT8 Mode);
-	INT32 RecalcFadeVolume(void);
-	void ResampleChipStream(CA_LIST* CLst, WAVE_32BS* RetSample, UINT32 Length);
-	void SetupResampler(CAUD_ATTR* CAA);
-	static void ChangeChipSampleRate(void* DataPtr, UINT32 NewSmplRate);
-	UINT32 GetChipClock(VGM_HEADER* FileHead, UINT8 ChipID, UINT8* RetSubType);
-	UINT16 GetChipVolume(VGM_HEADER* FileHead, UINT8 ChipID, UINT8 ChipNum, UINT8 ChipCnt);
-	void AddPCMData(UINT8 Type, UINT32 DataSize, const UINT8* Data);
-
-	void ReadVGMHeader(gzFile hFile, VGM_HEADER* RetVGMHead);
-	wchar_t* MakeEmptyWStr(void);
-	wchar_t* ReadWStrFromFile(gzFile hFile, UINT32* FilePos, UINT32 EOFPos);
-	UINT8 ReadGD3Tag(gzFile hFile, UINT32 GD3Offset, GD3_TAG* RetGD3Tag);
-	void FreeGD3Tag(GD3_TAG* TagData);
-
-	void ReadChipExtraData32(UINT32 StartOffset, VGMX_CHP_EXTRA32* ChpExtra);
-	void ReadChipExtraData16(UINT32 StartOffset, VGMX_CHP_EXTRA16* ChpExtra);
-
-	void InterpretFile(UINT32 SampleCount);
-	INT32 SampleVGM2Pbk_I(INT32 SampleVal);
-	INT32 SamplePbk2VGM_I(INT32 SampleVal);
-	INT32 SampleVGM2Playback(INT32 SampleVal);
-	INT32 SamplePlayback2VGM(INT32 SampleVal);
-	UINT8 GetDACFromPCMBank(void);
-	bool DecompressDataBlk(VGM_PCM_DATA* Bank, UINT32 DataSize, const UINT8* Data);
-	UINT8* GetPointerFromPCMBank(UINT8 Type, UINT32 DataPos);
-	void ReadPCMTable(UINT32 DataSize, const UINT8* Data);
-	void InterpretVGM(UINT32 SampleCount);
-	void RestartPlaying(void);
-
-	void open_fm_option(UINT8 ChipType, UINT8 OptType, UINT32 OptVal);
-	void opl_chip_reset(void);
-	void open_real_fm(void);
-	void reset_real_fm(void);
-	void setup_real_fm(UINT8 ChipType, UINT8 ChipID);
-	void close_real_fm(void);
-	void chip_reg_write(UINT8 ChipType, UINT8 ChipID, UINT8 Port, UINT8 Offset, UINT8 Data);
-
-	void OPL_Hardware_Detecton(void);
-	void OPL_HW_WriteReg(UINT16 Reg, UINT8 Data);
-	void OPL_RegMapper(UINT16 Reg, UINT8 Data);
-	bool SetMuteControl(bool mute);
-	void RefreshVolume(void);
-	void StartSkipping(void);
-	void StopSkipping(void);
-	void ym2413opl_set_emu_core(UINT8 Emulator);
-
+	void HandleDataBlock0x00To0x3F(u32 skipByte0x66, u8 blockType, u32 blockSize);
+	void HandleDataBlock0x40To0x7E(u32 skipByte0x66, u8 blockType, u32 blockSize);
+	void HandleDataBlock0x80To0xBF(u32 skipByte0x66, u8 blockType, u32 blockSize);
 
 	u32 HandleUpdateSamples(u32 updateSampleCounts);
 	void HandleEndOfSound();
 private:
 public:
+protected:
+	VGMHeader header;
+	Info info;
+	SystemChannels systemChannels;
 private:
-	VGMDataImpl* impl;
 };
 
 #endif

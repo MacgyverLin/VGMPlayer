@@ -4,6 +4,7 @@ VGMWaveFormRenderer::VGMWaveFormRenderer(VideoDevice& videoDevice_, const char* 
 	: VGMRenderer(videoDevice_, name_, region_)
 	, waveScale(waveScale_)
 	, skin(skin_)
+	, font(nullptr)
 {
 }
 
@@ -19,18 +20,23 @@ void VGMWaveFormRenderer::OnNotifySomething(Obserable& observable)
 void VGMWaveFormRenderer::OnNotifyOpen(Obserable& observable)
 {
 	VGMData& vgmData = (VGMData&)observable;
-	
-	const VGMInfo& info = vgmData.GetInfo();
-	const VGMOutputChannels& systemChannels = vgmData.GetOutputChannels();
+	const VGMHeader& header = vgmData.GetHeader();
+	const VGMData::Info& info = vgmData.GetInfo();
+	const VGMData::SystemChannels& systemChannels = vgmData.GetSystemChannels();
+
+	font = videoDevice.CreateFont("arial.ttf", 12);
 }
 
 void VGMWaveFormRenderer::OnNotifyClose(Obserable& observable)
 {
 	VGMData& vgmData = (VGMData&)observable;
 
-	
-	const VGMInfo& info = vgmData.GetInfo();
-	const VGMOutputChannels& systemChannels = vgmData.GetOutputChannels();
+	const VGMHeader& header = vgmData.GetHeader();
+	const VGMData::Info& info = vgmData.GetInfo();
+	const VGMData::SystemChannels& systemChannels = vgmData.GetSystemChannels();
+
+	videoDevice.DestroyFont(font);
+	font = nullptr;
 }
 
 void VGMWaveFormRenderer::OnNotifyPlay(Obserable& observable)
@@ -56,8 +62,8 @@ void VGMWaveFormRenderer::OnNotifyResume(Obserable& observable)
 void VGMWaveFormRenderer::OnNotifyUpdate(Obserable& observable)
 {
 	VGMData& vgmData = (VGMData&)observable;
-	const VGMInfo& info = vgmData.GetInfo();
-	const VGMOutputChannels& systemChannels = vgmData.GetOutputChannels();
+	const VGMData::Info& info = vgmData.GetInfo();
+	const VGMData::SystemChannels& systemChannels = vgmData.GetSystemChannels();
 
 	if (systemChannels.HasSampleBufferUpdatedEvent())
 	{
@@ -82,7 +88,7 @@ void VGMWaveFormRenderer::OnNotifyUpdate(Obserable& observable)
 		/////////////////////////////////////////////////////////////////////////////////
 		int startX = 0;
 		int endX = VGM_SAMPLE_BUFFER_SIZE;
-		int divX = 10;
+		int divX = 20;
 
 		int startY = -32767;
 		int endY = 32768;
@@ -99,7 +105,7 @@ void VGMWaveFormRenderer::OnNotifyUpdate(Obserable& observable)
 		{
 			SetViewport(0, ch * 1.0f / 2.0f, 1.0f, 1.0f / 2.0f);
 
-			videoDevice.BlendFunc(VideoDeviceEnum::ONE, VideoDeviceEnum::ONE);
+			videoDevice.BlendFunc(VideoDeviceEnum::SRC_ALPHA, VideoDeviceEnum::ONE_MINUS_SRC_ALPHA);
 			videoDevice.DrawLine(Vector2(startX, 0), skin.gridColor, Vector2(endX, 0), skin.gridColor);
 			for (s32 i = startX; i < endX; i += (endX - startX) / divX)
 			{
@@ -111,6 +117,7 @@ void VGMWaveFormRenderer::OnNotifyUpdate(Obserable& observable)
 			}
 			videoDevice.DrawLine(Vector2(startX, 0), skin.axisColor, Vector2(endX, 0), skin.axisColor);
 
+			videoDevice.BlendFunc(VideoDeviceEnum::SRC_ALPHA, VideoDeviceEnum::ONE);
 			const Color& c = (ch % 2) ? skin.rightColor : skin.leftColor;
 			for (s32 i = startX; i < endX - 3; i += 3)
 			{
@@ -119,5 +126,18 @@ void VGMWaveFormRenderer::OnNotifyUpdate(Obserable& observable)
 				videoDevice.DrawLine(Vector2(i, y0), c, Vector2(i + 3, y1), c);
 			}
 		}
+
+		//////////////////////////////////////////////////////////////////////////////
+		// Draw Name
+		videoDevice.MatrixMode(VideoDeviceEnum::PROJECTION);
+		videoDevice.LoadIdentity();
+		videoDevice.Ortho2D(0, region.w, 0, region.h);
+		videoDevice.MatrixMode(VideoDeviceEnum::MODELVIEW);
+		SetViewport(0, 0, 1, 1);
+
+		videoDevice.SetFont(font);
+		videoDevice.SetFontColor(Color::White);
+		videoDevice.SetFontScale(1.0);
+		videoDevice.DrawText(name.c_str(), 0, region.h - 12);
 	}
 }

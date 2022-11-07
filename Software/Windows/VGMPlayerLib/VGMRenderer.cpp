@@ -21,6 +21,16 @@ Rect VGMRenderer::GetRegion() const
 	return region;
 }
 
+void VGMRenderer::SetName(const char* name_)
+{
+	name = name_;
+}
+
+const char* VGMRenderer::GetName() const
+{
+	return name.c_str();
+}
+
 //////////////////////////////////////////////////////////////////////
 void VGMRenderer::SetViewport(float x_, float y_, float width_, float height_)
 {

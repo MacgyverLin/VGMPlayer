@@ -13,6 +13,9 @@ public:
 public:
 	void SetRegion(Rect region_);
 	Rect GetRegion() const;
+
+	void SetName(const char* name_);
+	const char* GetName() const;
 protected:
 	//////////////////////////////////////////////////////////////////////
 	void SetViewport(float x_, float y_, float width_, float height_);

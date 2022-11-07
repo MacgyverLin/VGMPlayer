@@ -1,5 +1,6 @@
 #pragma once
 
+#include "vgmdef.h"
 //#include "devcb.h"
 #define DEVCB_TYPE_NULL				(0)
 #define DEVCB_NULL							{ DEVCB_TYPE_NULL }
@@ -105,7 +106,7 @@ void ay8910_data_w(UINT8 ChipID, offs_t offset, UINT8 data);*/
 /*********** An interface for SSG of YM2203 ***********/
 
 //void *ay8910_start_ym(void *infoptr, sound_type chip_type, const device_config *device, int clock, const ay8910_interface *intf);
-void *ay8910_start_ym(void *infoptr, unsigned char chip_type, int clock, const ay8910_interface *intf, UINT8 CHIP_SAMPLING_MODE, INT32 CHIP_SAMPLE_RATE);
+void *ay8910_start_ym(void *infoptr, unsigned char chip_type, int clock, const ay8910_interface *intf);
 
 void ay8910_stop_ym(void *chip);
 void ay8910_reset_ym(void *chip);
@@ -115,7 +116,7 @@ int ay8910_read_ym(void *chip);
 
 //void ay8910_update(UINT8 ChipID, stream_sample_t **outputs, int samples);
 void ay8910_update_one(void *param, stream_sample_t **outputs, int samples);
-int ay8910_start(void **chip, int clock, UINT8 chip_type, UINT8 Flags, UINT8 CHIP_SAMPLING_MODE, INT32 CHIP_SAMPLE_RATE);
+int ay8910_start(void **chip, int clock, UINT8 chip_type, UINT8 Flags);
 /*int device_start_ay8910(UINT8 ChipID, int clock, unsigned char chip_type, unsigned char Flags);
 void device_stop_ay8910(UINT8 ChipID);
 void device_reset_ay8910(UINT8 ChipID);*/

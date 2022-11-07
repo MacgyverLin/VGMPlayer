@@ -49,6 +49,7 @@ private:
 	Skin skin;
 
 	Texture2D texture;
+	Font* font;
 };
 
 #endif

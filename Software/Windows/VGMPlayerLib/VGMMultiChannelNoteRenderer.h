@@ -12,12 +12,10 @@ public:
 	class Skin
 	{
 	public:
-		Skin(u8 numColumns_ = 16,
-			u8 numChannels_ = 2,
+		Skin(u8 numChannels_ = 2,
 			const Color& bgColor_ = Color(0.3f, 0.3f, 0.3f, 1.0f), const Color& gridColor_ = Color(0.0f, 0.2f, 0.2f, 1.0f), const Color& axisColor_ = Color(0.3f, 0.3f, 0.3f, 1.0f),
 			const Color& leftColor_ = Color(0.3f, 1.0f, 0.3f, 1.0f), const Color& rightColor_ = Color(0.3f, 1.0f, 1.0f, 1.0f))
-			: numColumns(numColumns_)
-			, numChannels(numChannels_)
+			: numChannels(numChannels_)
 			, bgColor(bgColor_)
 			, gridColor(gridColor_)
 			, axisColor(axisColor_)
@@ -26,7 +24,6 @@ public:
 		{
 		}
 
-		u8 numColumns;
 		u8 numChannels;
 		Color bgColor;
 		Color gridColor;
@@ -52,10 +49,15 @@ protected:
 private:
 	float waveScale;
 	Skin skin;
+	std::list<string> commandStrings;
 
 	Font* font;
 
-	std::list<string> commandStrings;
+	vector<f32> maxLeft;
+	vector<f32> maxRight;
+
+	string titleString;
+	Texture2D logo;
 };
 
 #endif

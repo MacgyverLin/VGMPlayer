@@ -8,6 +8,7 @@
 #include "VideoDevice.h"
 #include "VideoEncoder.h"
 
+#include "VGMTitleRenderer.h"
 #include "VGMBackgroundRenderer.h"
 #include "VGMWaveFormRenderer.h"
 #include "VGMSpectrumRenderer.h"
@@ -42,14 +43,12 @@ private:
 	VideoEncoder videoEncoder;
 
 	VGMBackgroundRenderer vgmBackgroundRenderer;
+
+	VGMTitleRenderer vgmTitleRenderer;
 	VGMWaveFormRenderer vgmWaveFormRenderer;
 	VGMSpectrumRenderer vgmSpectrumRenderer;
 	VGMMultiChannelWaveFormRenderer vgmMultiChannelWaveFormRenderer;
-#ifdef OLDLAYOUT
-	VGMMultiChannelWaveFormRenderer vgmMultiChannelNoteRenderer;
-#else
 	VGMMultiChannelNoteRenderer vgmMultiChannelNoteRenderer;
-#endif
 };
 
 #endif

@@ -54,6 +54,8 @@ private:
 
 	vector<f32> maxLeft;
 	vector<f32> maxRight;
+
+	Font* font;
 };
 
 #endif

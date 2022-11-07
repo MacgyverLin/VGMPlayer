@@ -23,9 +23,10 @@ void VGMAudioPlayer::OnNotifyOpen(Obserable& observable)
 {
 	VGMData& vgmData = (VGMData &)observable;
 
-	
-	const VGMInfo& info = vgmData.GetInfo();
-	const VGMOutputChannels& outputChannels = vgmData.GetOutputChannels();
+
+	const VGMHeader& header = vgmData.GetHeader();
+	const VGMData::Info& info = vgmData.GetInfo();
+	const VGMData::SystemChannels& systemChannels = vgmData.GetSystemChannels();
 
 	boolean rval = outputDevice.Open(info.channels, info.bitPerSamples, info.sampleRate, VGM_OUTPUT_BUFFER_COUNT);
 }
@@ -34,9 +35,9 @@ void VGMAudioPlayer::OnNotifyClose(Obserable& observable)
 {
 	VGMData& vgmData = (VGMData &)observable;
 
-	
-	const VGMInfo& info = vgmData.GetInfo();
-	const VGMOutputChannels& outputChannels = vgmData.GetOutputChannels();
+	const VGMHeader& header = vgmData.GetHeader();
+	const VGMData::Info& info = vgmData.GetInfo();
+	const VGMData::SystemChannels& systemChannels = vgmData.GetSystemChannels();
 
 	outputDevice.Close();
 }
@@ -64,12 +65,12 @@ void VGMAudioPlayer::OnNotifyResume(Obserable& observable)
 void VGMAudioPlayer::OnNotifyUpdate(Obserable& observable)
 {
 	VGMData& vgmData = (VGMData &)observable;
-	const VGMInfo& info = vgmData.GetInfo();
-	const VGMOutputChannels& outputChannels = vgmData.GetOutputChannels();
+	const VGMData::Info& info = vgmData.GetInfo();
+	const VGMData::SystemChannels& systemChannels = vgmData.GetSystemChannels();
 
-	if (outputChannels.HasSampleBufferUpdatedEvent())
+	if (systemChannels.HasSampleBufferUpdatedEvent())
 	{
-		if (!outputDevice.Queue((void*)(&outputChannels.GetOutputSample(0, 0)), VGM_SAMPLE_BUFFER_SIZE * (sizeof(s16) * 2) ))
+		if (!outputDevice.Queue((void*)(&systemChannels.GetOutputSample(0, 0)), VGM_SAMPLE_BUFFER_SIZE * (sizeof(s16) * 2) ))
 			return;
 
 		if (outputDevice.GetDeviceState() != 3)

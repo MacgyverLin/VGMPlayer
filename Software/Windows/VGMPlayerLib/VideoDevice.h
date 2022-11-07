@@ -771,8 +771,10 @@ public:
 
 	int Load(const char* path_, float size_);
 	void RenderText(const char* text, float x, float y, float scale, const Color& color);
+	int GetSize() const;
 private:
 	std::map<char, Character> characters;
+	float size;
 };
 
 class VideoDeviceImpl;
@@ -814,7 +816,7 @@ public:
 	void DrawText(const char* text, float x, float y);
 
 	void DrawPoint(const Vector2& v, const Color& c);
-	void DrawLine(const Vector2& v0, const Color& c0, const Vector2& v1, const Color& c1);
+	void DrawLine(const Vector2& v0, const Color& c0, const Vector2& v1, const Color& c1, float thickness=1);
 	void DrawWireTriangle(const Vector2& v0, const Color& c0, const Vector2& v1, const Color& c1, const Vector2& v2, const Color& c2);
 	void DrawWireRectangle(const Vector2& v0, const Color& c0, const Vector2& v1, const Color& c1, const Vector2& v2, const Color& c2, const Vector2& v3, const Color& c3);
 	void DrawWireCircle(const Vector2& center, f32 radius, const Color& c);

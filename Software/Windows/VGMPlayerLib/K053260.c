@@ -1,372 +1,192 @@
-/*********************************************************
+#include "K053260.h"
 
-    Konami 053260 PCM Sound Chip
-
-*********************************************************/
-
-#include "mamedef.h"
-//#include "emu.h"
-#ifdef _DEBUG
-#include <stdio.h>
-#endif
-#include <stdlib.h>
-#include <string.h>	// for memset
-#include <stddef.h>	// for NULL
-#include "k053260.h"
-
-/* 2004-02-28: Fixed PPCM decoding. Games sound much better now.*/
-
-#define LOG 0
+/* 2004-02-28: Fixed ppcm decoding. Games sound much better now.*/
 
 #define BASE_SHIFT	16
+#define MAXOUT 0x7fff
+#define MINOUT -0x8000
 
-typedef struct _k053260_channel k053260_channel;
-struct _k053260_channel
-{
-	UINT32		rate;
-	UINT32		size;
-	UINT32		start;
-	UINT32		bank;
-	UINT32		volume;
-	int			play;
-	UINT32		pan;
-	UINT32		pos;
-	int			loop;
-	int			ppcm; /* packed PCM ( 4 bit signed ) */
-	int			ppcm_data;
-	UINT8		Muted;
-};
+static u32 nUpdateStep;
 
-typedef struct _k053260_state k053260_state;
-struct _k053260_state
-{
-	//sound_stream *				channel;
-	int							mode;
-	int							regs[0x30];
-	UINT8						*rom;
-	//int							rom_size;
-	UINT32							rom_size;
-	UINT32						*delta_table;
-	k053260_channel				channels[4];
-	//const k053260_interface		*intf;
-	//device_t				*device;
-};
+typedef struct{
+	u32		rate;
+	u32		size;
+	u32		start;
+	u32		bank;
+	u32		volume;
+	s32		Play;
+	u32		pan;
+	u32		pos;
+	s32		loop;
+	s32		ppcm; /* packed PCM ( 4 bit signed ) */
+	s32		ppcm_data;
+}Channel;
 
-#define MAX_CHIPS	0x02
-static k053260_state K053260Data[MAX_CHIPS];
+typedef struct {
+	s32				mode;
+	s32				regs[0x30];
+	u32				*delta_table;
+	Channel			channels[4];
+	ROM*			rom;
+	u32				channel_output_enabled;
+	u32				channel_count;
+}K053260;
 
-/*INLINE k053260_state *get_safe_token(device_t *device)
-{
-	assert(device != NULL);
-	assert(device->type() == K053260);
-	return (k053260_state *)downcast<legacy_device_base *>(device)->token();
-}*/
+#define K053260_CHIPS_COUNT 2
+K053260 k053260Chips[K053260_CHIPS_COUNT];
 
+s32 limit(s32 val, s32 max, s32 min) {
+	if (val > max)
+		val = max;
+	else if (val < min)
+		val = min;
 
-static void InitDeltaTable( k053260_state *ic, int rate, int clock )
-{
-	int		i;
-	double	base = ( double )rate;
-	double	max = (double)(clock); /* Hz */
-	UINT32 val;
+	return val;
+}
 
-	for( i = 0; i < 0x1000; i++ ) {
-		double v = ( double )( 0x1000 - i );
-		double target = (max) / v;
-		double fixed = ( double )( 1 << BASE_SHIFT );
+static void InitDeltaTable(u8 chipID, s32 rate, s32 clock) {
+	s32		i;
+	f64	base = (f64)rate;
+	f64	max = (f64)(clock); /* Hz */
+	u32 val;
+	K053260* ic = &k053260Chips[chipID];
 
-		if ( target && base ) {
-			target = fixed / ( base / target );
-			val = ( UINT32 )target;
-			if ( val == 0 )
+	for (i = 0; i < 0x1000; i++) {
+		f64 v = (f64)(0x1000 - i);
+		f64 target = (max) / v;
+		f64 fixed = (f64)(1 << BASE_SHIFT);
+
+		if (target && base) {
+			target = fixed / (base / target);
+			val = (u32)target;
+			if (val == 0)
 				val = 1;
-		} else
+		}
+		else
 			val = 1;
 
 		ic->delta_table[i] = val;
 	}
 }
 
-//static DEVICE_RESET( k053260 )
-void device_reset_k053260(UINT8 ChipID)
+void check_bounds(u8 chipID, s32 channel)
 {
-	//k053260_state *ic = get_safe_token(device);
-	k053260_state *ic = &K053260Data[ChipID];
-	int i;
+	K053260* ic = &k053260Chips[chipID];
 
-	for( i = 0; i < 4; i++ ) {
+	u32 channel_start = (ic->channels[channel].bank << 16) + ic->channels[channel].start;
+	u32 channel_end = channel_start + ic->channels[channel].size - 1;
+
+	if (channel_start > ROM_getTotalSize(ic->rom))
+	{
+		ic->channels[channel].Play = 0;
+
+		return;
+	}
+
+	if (channel_end > ROM_getTotalSize(ic->rom))
+	{
+		ic->channels[channel].size = ROM_getTotalSize(ic->rom) - channel_start;
+	}
+}
+
+s32 K053260_Initialize(u8 chipID, u32 clock, u32 sampleRate)
+{
+	K053260* ic = &k053260Chips[chipID];
+	memset(ic, 0, sizeof(K053260));
+
+	s32 rate = clock / 32;
+	s32 i;
+
+	nUpdateStep = (s32)(((f32)rate / sampleRate) * 32768);
+
+	ic->mode = 0;
+	ic->rom = 0;
+
+	K053260_Reset(chipID);
+
+	for (i = 0; i < 0x30; i++)
+		ic->regs[i] = 0;
+
+	ic->delta_table = (u32*)malloc(0x1000 * sizeof(u32));
+
+	InitDeltaTable(chipID, rate, clock);
+
+	/* setup SH1 timer if necessary */
+	//	if ( ic->intf->irq )
+	//		timer_pulse( attotime_mul(ATTOTIME_IN_HZ(clock), 32), NULL, 0, ic->intf->irq );
+
+	return -1;
+}
+
+void K053260_Shutdown(u8 chipID)
+{
+	K053260* ic = &k053260Chips[chipID];
+
+	if (ic->delta_table)
+	{
+		free(ic->delta_table);
+		ic->delta_table = 0;
+	}
+
+	/*
+	if (ic->rom)
+	{
+		free(ic->rom);
+		ic->rom = 0;
+	}
+	*/
+
+	nUpdateStep = 0;
+}
+
+void K053260_Reset(u8 chipID)
+{
+	K053260* ic = &k053260Chips[chipID];
+
+	for (s32 i = 0; i < 4; i++)
+	{
 		ic->channels[i].rate = 0;
 		ic->channels[i].size = 0;
 		ic->channels[i].start = 0;
 		ic->channels[i].bank = 0;
 		ic->channels[i].volume = 0;
-		ic->channels[i].play = 0;
+		ic->channels[i].Play = 0;
 		ic->channels[i].pan = 0;
 		ic->channels[i].pos = 0;
 		ic->channels[i].loop = 0;
 		ic->channels[i].ppcm = 0;
 		ic->channels[i].ppcm_data = 0;
 	}
+
+	ic->channel_output_enabled = 0xffffffff;
+	ic->channel_count = 4;
 }
 
-INLINE int limit( int val, int max, int min )
+void K053260_WriteRegister(u8 chipID, u32 address, u32 data, s32* channel, f32* freq)
 {
-	if ( val > max )
-		val = max;
-	else if ( val < min )
-		val = min;
+	s32 i, t;
+	s32 r = address;
+	s32 v = data;
+	K053260* ic = &k053260Chips[chipID];
 
-	return val;
-}
-
-//#define MAXOUT 0x7fff
-#define MAXOUT +0x8000
-#define MINOUT -0x8000
-
-//static STREAM_UPDATE( k053260_update )
-void k053260_update(UINT8 ChipID, stream_sample_t **outputs, int samples)
-{
-	static const INT8 dpcmcnv[] = { 0,1,2,4,8,16,32,64, -128, -64, -32, -16, -8, -4, -2, -1};
-
-	int i, j, lvol[4], rvol[4], play[4], loop[4], ppcm[4];
-	UINT8 *rom[4];
-	UINT32 delta[4], end[4], pos[4];
-	INT8 ppcm_data[4];
-	int dataL, dataR;
-	INT8 d;
-	//k053260_state *ic = (k053260_state *)param;
-	k053260_state *ic = &K053260Data[ChipID];
-
-	/* precache some values */
-	for ( i = 0; i < 4; i++ ) {
-		if (ic->channels[i].Muted)
-		{
-			play[i] = 0;
-			continue;
-		}
-		rom[i]= &ic->rom[ic->channels[i].start + ( ic->channels[i].bank << 16 )];
-		delta[i] = ic->delta_table[ic->channels[i].rate];
-		lvol[i] = ic->channels[i].volume * ic->channels[i].pan;
-		rvol[i] = ic->channels[i].volume * ( 8 - ic->channels[i].pan );
-		end[i] = ic->channels[i].size;
-		pos[i] = ic->channels[i].pos;
-		play[i] = ic->channels[i].play;
-		loop[i] = ic->channels[i].loop;
-		ppcm[i] = ic->channels[i].ppcm;
-		ppcm_data[i] = ic->channels[i].ppcm_data;
-		if ( ppcm[i] )
-			delta[i] /= 2;
-	}
-
-		for ( j = 0; j < samples; j++ ) {
-
-			dataL = dataR = 0;
-
-			for ( i = 0; i < 4; i++ ) {
-				/* see if the voice is on */
-				if ( play[i] ) {
-					/* see if we're done */
-					if ( ( pos[i] >> BASE_SHIFT ) >= end[i] ) {
-
-						ppcm_data[i] = 0;
-						if ( loop[i] )
-							pos[i] = 0;
-						else {
-							play[i] = 0;
-							continue;
-						}
-					}
-
-					if ( ppcm[i] ) { /* Packed PCM */
-						/* we only update the signal if we're starting or a real sound sample has gone by */
-						/* this is all due to the dynamic sample rate conversion */
-						if ( pos[i] == 0 || ( ( pos[i] ^ ( pos[i] - delta[i] ) ) & 0x8000 ) == 0x8000 )
-
-						{
-							int newdata;
-							if ( pos[i] & 0x8000 ){
-
-								newdata = ((rom[i][pos[i] >> BASE_SHIFT]) >> 4) & 0x0f; /*high nybble*/
-							}
-							else{
-								newdata = ( ( rom[i][pos[i] >> BASE_SHIFT] ) ) & 0x0f; /*low nybble*/
-							}
-
-							/*ppcm_data[i] = (( ( ppcm_data[i] * 62 ) >> 6 ) + dpcmcnv[newdata]);
-
-							if ( ppcm_data[i] > 127 )
-								ppcm_data[i] = 127;
-							else
-								if ( ppcm_data[i] < -128 )
-									ppcm_data[i] = -128;*/
-							ppcm_data[i] += dpcmcnv[newdata];
-						}
-
-
-
-						d = ppcm_data[i];
-
-						pos[i] += delta[i];
-					} else { /* PCM */
-						d = rom[i][pos[i] >> BASE_SHIFT];
-
-						pos[i] += delta[i];
-					}
-
-					if ( ic->mode & 2 ) {
-						dataL += ( d * lvol[i] ) >> 2;
-						dataR += ( d * rvol[i] ) >> 2;
-					}
-				}
-			}
-
-			outputs[1][j] = limit( dataL, MAXOUT, MINOUT );
-			outputs[0][j] = limit( dataR, MAXOUT, MINOUT );
-		}
-
-	/* update the regs now */
-	for ( i = 0; i < 4; i++ ) {
-		if (ic->channels[i].Muted)
-			continue;
-		ic->channels[i].pos = pos[i];
-		ic->channels[i].play = play[i];
-		ic->channels[i].ppcm_data = ppcm_data[i];
-	}
-}
-
-//static DEVICE_START( k053260 )
-int device_start_k053260(UINT8 ChipID, int clock, UINT8 CHIP_SAMPLING_MODE, INT32 CHIP_SAMPLE_RATE)
-{
-	//static const k053260_interface defintrf = { 0 };
-	//k053260_state *ic = get_safe_token(device);
-	k053260_state *ic;
-	//int rate = device->clock() / 32;
-	int rate = clock / 32;
-	int i;
-
-	if (ChipID >= MAX_CHIPS)
-		return 0;
-	
-	ic = &K053260Data[ChipID];
-	
-	/* Initialize our chip structure */
-	//ic->device = device;
-	//ic->intf = (device->static_config() != NULL) ? (const k053260_interface *)device->static_config() : &defintrf;
-
-	ic->mode = 0;
-
-	//const memory_region *region = (ic->intf->rgnoverride != NULL) ? device->machine().region(ic->intf->rgnoverride) : device->region();
-
-	//ic->rom = *region;
-	//ic->rom_size = region->bytes();
-	ic->rom = NULL;
-	ic->rom_size = 0x00;
-
-	// has to be done by the player after calling device_start
-	//DEVICE_RESET_CALL(k053260);
-
-	for ( i = 0; i < 0x30; i++ )
-		ic->regs[i] = 0;
-
-	//ic->delta_table = auto_alloc_array( device->machine(), UINT32, 0x1000 );
-	ic->delta_table = (UINT32*)malloc(0x1000 * sizeof(UINT32));
-
-	//ic->channel = device->machine().sound().stream_alloc( *device, 0, 2, rate, ic, k053260_update );
-
-	//InitDeltaTable( ic, rate, device->clock() );
-	InitDeltaTable( ic, rate, clock );
-
-	/* register with the save state system */
-	/*device->save_item(NAME(ic->mode));
-	device->save_item(NAME(ic->regs));
-
-	for ( i = 0; i < 4; i++ )
-	{
-		device->save_item(NAME(ic->channels[i].rate), i);
-		device->save_item(NAME(ic->channels[i].size), i);
-		device->save_item(NAME(ic->channels[i].start), i);
-		device->save_item(NAME(ic->channels[i].bank), i);
-		device->save_item(NAME(ic->channels[i].volume), i);
-		device->save_item(NAME(ic->channels[i].play), i);
-		device->save_item(NAME(ic->channels[i].pan), i);
-		device->save_item(NAME(ic->channels[i].pos), i);
-		device->save_item(NAME(ic->channels[i].loop), i);
-		device->save_item(NAME(ic->channels[i].ppcm), i);
-		device->save_item(NAME(ic->channels[i].ppcm_data), i);
-	}*/
-
-	/* setup SH1 timer if necessary */
-	//if ( ic->intf->irq )
-	//	device->machine().scheduler().timer_pulse( attotime::from_hz(device->clock()) * 32, ic->intf->irq, "ic->intf->irq" );
-	
-	for (i = 0; i < 4; i ++)
-		ic->channels[i].Muted = 0x00;
-	
-	return rate;
-}
-
-void device_stop_k053260(UINT8 ChipID)
-{
-	k053260_state *ic = &K053260Data[ChipID];
-	
-	free(ic->delta_table);
-	free(ic->rom);	ic->rom = NULL;
-	
-	return;
-}
-
-INLINE void check_bounds( k053260_state *ic, int channel )
-{
-
-	int channel_start = ( ic->channels[channel].bank << 16 ) + ic->channels[channel].start;
-	int channel_end = channel_start + ic->channels[channel].size - 1;
-
-	if ( channel_start > ic->rom_size ) {
-		logerror("K53260: Attempting to start playing past the end of the ROM ( start = %06x, end = %06x ).\n", channel_start, channel_end );
-
-		ic->channels[channel].play = 0;
-
+	if (r > 0x2f) {
 		return;
 	}
-
-	if ( channel_end > ic->rom_size ) {
-		logerror("K53260: Attempting to play past the end of the ROM ( start = %06x, end = %06x ).\n", channel_start, channel_end );
-
-		ic->channels[channel].size = ic->rom_size - channel_start;
-	}
-	if (LOG) logerror("K053260: Sample Start = %06x, Sample End = %06x, Sample rate = %04x, PPCM = %s\n", channel_start, channel_end, ic->channels[channel].rate, ic->channels[channel].ppcm ? "yes" : "no" );
-}
-
-//WRITE8_DEVICE_HANDLER( k053260_w )
-void k053260_w(UINT8 ChipID, offs_t offset, UINT8 data)
-{
-	int i, t;
-	int r = offset;
-	int v = data;
-
-	//k053260_state *ic = get_safe_token(device);
-	k053260_state *ic = &K053260Data[ChipID];
-
-	if ( r > 0x2f ) {
-		logerror("K053260: Writing past registers\n" );
-		return;
-	}
-
-	 //ic->channel->update();
 
 	/* before we update the regs, we need to check for a latched reg */
-	if ( r == 0x28 ) {
+	if (r == 0x28) {
 		t = ic->regs[r] ^ v;
 
-		for ( i = 0; i < 4; i++ ) {
-			if ( t & ( 1 << i ) ) {
-				if ( v & ( 1 << i ) ) {
-					ic->channels[i].play = 1;
+		for (i = 0; i < 4; i++) {
+			if (t & (1 << i)) {
+				if (v & (1 << i)) {
+					ic->channels[i].Play = 1;
 					ic->channels[i].pos = 0;
 					ic->channels[i].ppcm_data = 0;
-					check_bounds( ic, i );
-				} else
-					ic->channels[i].play = 0;
+					check_bounds(chipID, i);
+				}
+				else
+					ic->channels[i].Play = 0;
 			}
 		}
 
@@ -378,181 +198,259 @@ void k053260_w(UINT8 ChipID, offs_t offset, UINT8 data)
 	ic->regs[r] = v;
 
 	/* communication registers */
-	if ( r < 8 )
+	if (r < 8)
 		return;
 
 	/* channel setup */
-	if ( r < 0x28 ) {
-		int channel = ( r - 8 ) / 8;
+	if (r < 0x28) {
+		s32 channel = (r - 8) / 8;
 
-		switch ( ( r - 8 ) & 0x07 ) {
-			case 0: /* sample rate low */
-				ic->channels[channel].rate &= 0x0f00;
-				ic->channels[channel].rate |= v;
+		switch ((r - 8) & 0x07) {
+		case 0: /* sample rate low */
+			ic->channels[channel].rate &= 0x0f00;
+			ic->channels[channel].rate |= v;
 			break;
 
-			case 1: /* sample rate high */
-				ic->channels[channel].rate &= 0x00ff;
-				ic->channels[channel].rate |= ( v & 0x0f ) << 8;
+		case 1: /* sample rate high */
+			ic->channels[channel].rate &= 0x00ff;
+			ic->channels[channel].rate |= (v & 0x0f) << 8;
 			break;
 
-			case 2: /* size low */
-				ic->channels[channel].size &= 0xff00;
-				ic->channels[channel].size |= v;
+		case 2: /* size low */
+			ic->channels[channel].size &= 0xff00;
+			ic->channels[channel].size |= v;
 			break;
 
-			case 3: /* size high */
-				ic->channels[channel].size &= 0x00ff;
-				ic->channels[channel].size |= v << 8;
+		case 3: /* size high */
+			ic->channels[channel].size &= 0x00ff;
+			ic->channels[channel].size |= v << 8;
 			break;
 
-			case 4: /* start low */
-				ic->channels[channel].start &= 0xff00;
-				ic->channels[channel].start |= v;
+		case 4: /* start low */
+			ic->channels[channel].start &= 0xff00;
+			ic->channels[channel].start |= v;
 			break;
 
-			case 5: /* start high */
-				ic->channels[channel].start &= 0x00ff;
-				ic->channels[channel].start |= v << 8;
+		case 5: /* start high */
+			ic->channels[channel].start &= 0x00ff;
+			ic->channels[channel].start |= v << 8;
 			break;
 
-			case 6: /* bank */
-				ic->channels[channel].bank = v & 0xff;
+		case 6: /* bank */
+			ic->channels[channel].bank = v & 0xff;
 			break;
 
-			case 7: /* volume is 7 bits. Convert to 8 bits now. */
-				ic->channels[channel].volume = ( ( v & 0x7f ) << 1 ) | ( v & 1 );
+		case 7: /* volume is 7 bits. Convert to 8 bits now. */
+			ic->channels[channel].volume = ((v & 0x7f) << 1) | (v & 1);
 			break;
 		}
 
 		return;
 	}
 
-	switch( r ) {
-		case 0x2a: /* loop, ppcm */
-			for ( i = 0; i < 4; i++ )
-				ic->channels[i].loop = ( v & ( 1 << i ) ) != 0;
+	switch (r) {
+	case 0x2a: /* loop, ppcm */
+		for (i = 0; i < 4; i++)
+			ic->channels[i].loop = (v & (1 << i)) != 0;
 
-			for ( i = 4; i < 8; i++ )
-				ic->channels[i-4].ppcm = ( v & ( 1 << i ) ) != 0;
+		for (i = 4; i < 8; i++)
+			ic->channels[i - 4].ppcm = (v & (1 << i)) != 0;
 		break;
 
-		case 0x2c: /* pan */
-			ic->channels[0].pan = v & 7;
-			ic->channels[1].pan = ( v >> 3 ) & 7;
+	case 0x2c: /* pan */
+		ic->channels[0].pan = v & 7;
+		ic->channels[1].pan = (v >> 3) & 7;
 		break;
 
-		case 0x2d: /* more pan */
-			ic->channels[2].pan = v & 7;
-			ic->channels[3].pan = ( v >> 3 ) & 7;
+	case 0x2d: /* more pan */
+		ic->channels[2].pan = v & 7;
+		ic->channels[3].pan = (v >> 3) & 7;
 		break;
 
-		case 0x2f: /* control */
-			ic->mode = v & 7;
-			/* bit 0 = read ROM */
-			/* bit 1 = enable sound output */
-			/* bit 2 = unknown */
+	case 0x2f: /* control */
+		ic->mode = v & 7;
+		/* bit 0 = read ROM */
+		/* bit 1 = enable sound output */
+		/* bit 2 = unknown */
 		break;
 	}
 }
 
-//READ8_DEVICE_HANDLER( k053260_r )
-UINT8 k053260_r(UINT8 ChipID, offs_t offset)
+inline s8 K053260_GetSample(u8 chipID, u32 address)
 {
-	//k053260_state *ic = get_safe_token(device);
-	k053260_state *ic = &K053260Data[ChipID];
+	K053260* ic = &k053260Chips[chipID];
 
-	switch ( offset ) {
-		case 0x29: /* channel status */
-			{
-				int i, status = 0;
+	return *(s8*)ROM_getPtr(ic->rom, address);
+}
 
-				for ( i = 0; i < 4; i++ )
-					status |= ic->channels[i].play << i;
+u8 K053260_ReadRegister(u8 chipID, u32 address)
+{
+	K053260* ic = &k053260Chips[chipID];
 
-				return status;
+	switch (address) {
+	case 0x29: /* channel status */
+	{
+		s32 i, status = 0;
+
+		for (i = 0; i < 4; i++)
+			status |= ic->channels[i].Play << i;
+
+		return status;
+	}
+	break;
+
+	case 0x2e: /* read rom */
+		if (ic->mode & 1) {
+			u32 offs = ic->channels[0].start + (ic->channels[0].pos >> BASE_SHIFT) + (ic->channels[0].bank << 16);
+
+			ic->channels[0].pos += (1 << 16);
+
+			if (offs > ROM_getTotalSize(ic->rom)) {
+
+				return 0;
 			}
+
+			return K053260_GetSample(chipID, offs);
+		}
 		break;
+	}
 
-		case 0x2e: /* read ROM */
-			if ( ic->mode & 1 )
+	return ic->regs[address];
+}
+
+void K053260_Update(u8 chipID, s32** buffer, u32 length)
+{
+	static const s8 dpcmcnv[] = { 0,1,2,4,8,16,32,64, -128, -64, -32, -16, -8, -4, -2, -1 };
+
+	s32 lvol[4], rvol[4], Play[4], loop[4], ppcm[4];
+	u32 romStartAddr[4];
+	u32 delta[4], end[4], pos[4];
+	s8 ppcm_data[4];
+	s8 d;
+	K053260* ic = &k053260Chips[chipID];
+
+	/* precache some values */
+	for (int i = 0; i < ic->channel_count; i++)
+	{
+		u32 address = ic->channels[i].start + (ic->channels[i].bank << 16) + 1;
+		
+		romStartAddr[i] = address;
+
+		delta[i] = (ic->delta_table[ic->channels[i].rate] * nUpdateStep) >> 15;
+		lvol[i] = ic->channels[i].volume * ic->channels[i].pan;
+		rvol[i] = ic->channels[i].volume * (8 - ic->channels[i].pan);
+		end[i] = ic->channels[i].size - 1;
+		pos[i] = ic->channels[i].pos;
+		Play[i] = ic->channels[i].Play;
+		loop[i] = ic->channels[i].loop;
+		ppcm[i] = ic->channels[i].ppcm;
+		ppcm_data[i] = ic->channels[i].ppcm_data;
+		if (ppcm[i])
+			delta[i] /= 2;
+	}
+
+	for (u32 sample = 0; sample < length; sample++) 
+	{
+		for (int ch = 0; ch < ic->channel_count; ch++)
+		{
+			if ((ic->channel_output_enabled & (1 << (ch))) == 0)
 			{
-				UINT32 offs = ic->channels[0].start + ( ic->channels[0].pos >> BASE_SHIFT ) + ( ic->channels[0].bank << 16 );
+				buffer[((ch) << 1) + 0][sample] = 0;
+				buffer[((ch) << 1) + 1][sample] = 0;
+			}
+			else
+			{
+				/* see if the voice is on */
+				if (Play[ch]) {
+					/* see if we're done */
+					if ((pos[ch] >> BASE_SHIFT) >= end[ch])
+					{
 
-				ic->channels[0].pos += ( 1 << 16 );
+						ppcm_data[ch] = 0;
+						if (loop[ch])
+							pos[ch] = 0;
+						else {
+							Play[ch] = 0;
+							continue;
+						}
+					}
 
-				if ( offs > ic->rom_size ) {
-					//logerror("%s: K53260: Attempting to read past ROM size in ROM Read Mode (offs = %06x, size = %06x).\n", device->machine().describe_context(),offs,ic->rom_size );
-					logerror("K53260: Attempting to read past ROM size in ROM Read Mode (offs = %06x, size = %06x).\n", offs,ic->rom_size );
+					if (ppcm[ch]) { /* Packed PCM */
+								   /* we only update the signal if we're starting or a real sound sample has gone by */
+								   /* this is all due to the dynamic sample rate convertion */
+						if (pos[ch] == 0 || ((pos[ch] ^ (pos[ch] - delta[ch])) & 0x8000) == 0x8000)
 
-					return 0;
+						{
+							s32 newdata;
+							if (pos[ch] & 0x8000) {
+								newdata = (K053260_GetSample(chipID, ((romStartAddr[ch] + (pos[ch] >> BASE_SHIFT)))) >> 4) & 0x0f;
+							}
+							else
+							{
+								newdata = (K053260_GetSample(chipID, ((romStartAddr[ch] + (pos[ch] >> BASE_SHIFT))))) & 0x0f; /*low nybble*/
+							}
+
+							ppcm_data[ch] += dpcmcnv[newdata];
+						}
+
+						d = ppcm_data[ch];
+
+						pos[ch] += delta[ch];
+					}
+					else
+					{ /* PCM */
+						/* PCM */
+						d = K053260_GetSample(chipID, romStartAddr[ch] + (pos[ch] >> BASE_SHIFT));
+						pos[ch] += delta[ch];
+					}
+
+					buffer[((ch) << 1) + 0][sample] = 0;
+					buffer[((ch) << 1) + 1][sample] = 0;
+					if (ic->mode & 2)
+					{
+						buffer[((ch) << 1) + 0][sample] = ((d * lvol[ch]) >> 2);
+						buffer[((ch) << 1) + 1][sample] = ((d * rvol[ch]) >> 2);
+					}
 				}
-
-				return ic->rom[offs];
 			}
-		break;
+		}
 	}
 
-	return ic->regs[offset];
-}
-
-void k053260_write_rom(UINT8 ChipID, offs_t ROMSize, offs_t DataStart, offs_t DataLength,
-					   const UINT8* ROMData)
-{
-	k053260_state *info = &K053260Data[ChipID];
-	
-	if (info->rom_size != ROMSize)
-	{
-		info->rom = (UINT8*)realloc(info->rom, ROMSize);
-		info->rom_size = ROMSize;
-		memset(info->rom, 0xFF, ROMSize);
-	}
-	if (DataStart > ROMSize)
-		return;
-	if (DataStart + DataLength > ROMSize)
-		DataLength = ROMSize - DataStart;
-	
-	memcpy(info->rom + DataStart, ROMData, DataLength);
-	
-	return;
-}
-
-
-void k053260_set_mute_mask(UINT8 ChipID, UINT32 MuteMask)
-{
-	k053260_state *info = &K053260Data[ChipID];
-	UINT8 CurChn;
-	
-	for (CurChn = 0; CurChn < 4; CurChn ++)
-		info->channels[CurChn].Muted = (MuteMask >> CurChn) & 0x01;
-	
-	return;
-}
-
-/**************************************************************************
- * Generic get_info
- **************************************************************************/
-
-/*DEVICE_GET_INFO( k053260 )
-{
-	switch (state)
-	{
-		// --- the following bits of info are returned as 64-bit signed integers --- //
-		case DEVINFO_INT_TOKEN_BYTES:					info->i = sizeof(k053260_state);				break;
-
-		// --- the following bits of info are returned as pointers to data or functions --- //
-		case DEVINFO_FCT_START:							info->start = DEVICE_START_NAME( k053260 );		break;
-		case DEVINFO_FCT_STOP:							// nothing //									break;
-		case DEVINFO_FCT_RESET:							info->reset = DEVICE_RESET_NAME( k053260 );		break;
-
-		// --- the following bits of info are returned as NULL-terminated strings --- //
-		case DEVINFO_STR_NAME:							strcpy(info->s, "K053260");						break;
-		case DEVINFO_STR_FAMILY:						strcpy(info->s, "Konami custom");				break;
-		case DEVINFO_STR_VERSION:						strcpy(info->s, "1.0");							break;
-		case DEVINFO_STR_SOURCE_FILE:					strcpy(info->s, __FILE__);						break;
-		case DEVINFO_STR_CREDITS:						strcpy(info->s, "Copyright Nicola Salmoria and the MAME Team"); break;
+	/* update the regs now */
+	for (int i = 0; i < 4; i++) {
+		ic->channels[i].pos = pos[i];
+		ic->channels[i].Play = Play[i];
+		ic->channels[i].ppcm_data = ppcm_data[i];
 	}
 }
 
+void K053260_SetROM(u8 chipID, ROM* rom)
+{
+	K053260* ic = &k053260Chips[chipID];
 
-DEFINE_LEGACY_SOUND_DEVICE(K053260, k053260);*/
+	ic->rom = rom;
+}
+
+void K053260_SetChannelEnable(u8 chipID, u8 channel, u8 enable)
+{
+	K053260* ic = &k053260Chips[chipID];
+
+	if (enable)
+		ic->channel_output_enabled |= (1 << channel);
+	else
+		ic->channel_output_enabled &= (~(1 << channel));
+}
+
+u8 K053260_GetChannelEnable(u8 chipID, u8 channel)
+{
+	K053260* ic = &k053260Chips[chipID];
+
+	return (ic->channel_output_enabled & (1 << channel)) != 0;
+}
+
+u32 K053260_GetChannelCount(u8 chipID)
+{
+	K053260* ic = &k053260Chips[chipID];
+
+	return ic->channel_count;
+}

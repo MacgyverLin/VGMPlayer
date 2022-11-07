@@ -21,6 +21,7 @@ const Color Color::Red(0.5f, 0.0f, 0.0f, 1.0f);
 const Color Color::Mangenta(0.5f, 0.0f, 0.5f, 1.0f);
 const Color Color::Brown(0.5f, 0.5f, 0.0f, 1.0f);
 const Color Color::Grey(0.5f, 0.5f, 0.5f, 1.0f);
+
 const Color Color::BrightBlue(0.0f, 0.0f, 1.0f, 1.0f);
 const Color Color::BrightGreen(0.0f, 1.0f, 0.0f, 1.0f);
 const Color Color::BrightCyan(0.0f, 1.0f, 1.0f, 1.0f);
@@ -766,6 +767,7 @@ Font::~Font()
 
 int Font::Load(const char* path_, float size_)
 {
+	size = size_;
 	FT_Library ft;
 
 	// All functions return a value different than 0 whenever an error occurred
@@ -816,11 +818,11 @@ int Font::Load(const char* path_, float size_)
 			(
 				GL_TEXTURE_2D,
 				0,
-				GL_LUMINANCE,
+				GL_ALPHA,
 				face->glyph->bitmap.width,
 				face->glyph->bitmap.rows,
 				0,
-				GL_LUMINANCE,
+				GL_ALPHA,
 				GL_UNSIGNED_BYTE,
 				face->glyph->bitmap.buffer
 			);
@@ -860,7 +862,8 @@ void Font::RenderText(const char* text, float x, float y, float scale, const Col
 	//glActiveTexture(GL_TEXTURE0);
 	
 	//glBindVertexArray(VAO);
-
+	glEnable(GL_BLEND);
+	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
 	// iterate through all characters
 	for(int i = 0; i < strlen(text); i++)
@@ -925,6 +928,11 @@ void Font::RenderText(const char* text, float x, float y, float scale, const Col
 	
 	//glBindVertexArray(0);
 	//glBindTexture(GL_TEXTURE_2D, 0);
+}
+
+int Font::GetSize()const
+{
+	return size;
 }
 
 //////////////////////////////////////////////////////////////////////////////////
@@ -1158,19 +1166,44 @@ void VideoDevice::DrawPoint(const Vector2& v, const Color& c)
 	glEnd();
 }
 
-void VideoDevice::DrawLine(const Vector2& v0, const Color& c0, const Vector2& v1, const Color& c1)
+void VideoDevice::DrawLine(const Vector2& v0, const Color& c0, const Vector2& v1, const Color& c1, float thickness)
 {
-	glDisable(GL_TEXTURE_2D);
+	if (thickness == 1)
+	{
+		glDisable(GL_TEXTURE_2D);
 
-	glBegin(GL_LINES);
+		glBegin(GL_LINES);
 
-	glColor4fv((f32*)&c0);
-	glVertex2fv((f32*)&v0);
+		glColor4fv((f32*)&c0);
+		glVertex2fv((f32*)&v0);
 
-	glColor4fv((f32*)&c1);
-	glVertex2fv((f32*)&v1);
+		glColor4fv((f32*)&c1);
+		glVertex2fv((f32*)&v1);
 
-	glEnd();
+		glEnd();
+	}
+	else
+	{
+		glDisable(GL_TEXTURE_2D);
+
+		Vector2 v2 = v1; v2.y += thickness;
+		Vector2 v3 = v0; v3.y += thickness;
+		glBegin(GL_QUADS);
+
+		glColor4fv((f32*)&c0);
+		glVertex2fv((f32*)&v0);
+
+		glColor4fv((f32*)&c1);
+		glVertex2fv((f32*)&v1);
+
+		glColor4fv((f32*)&c1);
+		glVertex2fv((f32*)&v2);
+
+		glColor4fv((f32*)&c0);
+		glVertex2fv((f32*)&v3);
+
+		glEnd();
+	}
 }
 
 void VideoDevice::DrawWireTriangle(const Vector2& v0, const Color& c0, const Vector2& v1, const Color& c1, const Vector2& v2, const Color& c2)
