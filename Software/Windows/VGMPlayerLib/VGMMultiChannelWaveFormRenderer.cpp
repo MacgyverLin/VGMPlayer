@@ -151,8 +151,8 @@ void VGMMultiChannelWaveFormRenderer::OnNotifyUpdate(Obserable& observable)
 			Color c = Color::BrightCyan;
 			for (UINT32 i = startX; i < endX - 3; i += 3)
 			{
-				UINT32 y0 = outputChannels.GetChannelLeftSample(ch, i + 0) * waveScale;
-				UINT32 y1 = outputChannels.GetChannelLeftSample(ch, i + 3) * waveScale;
+				FLOAT32 y0 = outputChannels.GetChannelLeftSample(ch, i + 0) * waveScale;
+				FLOAT32 y1 = outputChannels.GetChannelLeftSample(ch, i + 3) * waveScale;
 				videoDevice.DrawLine(Vector2(i, y0), c, Vector2(i + 3, y1), c);
 			}
 		}
