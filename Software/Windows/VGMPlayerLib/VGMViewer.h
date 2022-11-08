@@ -18,7 +18,7 @@
 class VGMViewer : public VGMObverser
 {
 public:
-	VGMViewer(const string& name_, u32 x_, u32 y_, u32 width_, u32 height_);
+	VGMViewer(const string& name_, UINT32 x_, UINT32 y_, UINT32 width_, UINT32 height_);
 	virtual ~VGMViewer();
 protected:
 	virtual void OnNotifySomething(Obserable& vgmData);
@@ -28,16 +28,16 @@ protected:
 	virtual void OnNotifyStop(Obserable& vgmData);
 	virtual void OnNotifyPause(Obserable& vgmData);
 	virtual void OnNotifyResume(Obserable& vgmData);
-	virtual void OnNotifyUpdate(Obserable& vgmData);
+	virtual void OnNotifyUpdate(Obserable& vgmData, bool needUpdateSample);
 private:
 public:
 protected:
 private:
 	string name;
-	u32 x;
-	u32 y;
-	u32 width;
-	u32 height;
+	UINT32 x;
+	UINT32 y;
+	UINT32 width;
+	UINT32 height;
 
 	VideoDevice videoDevice;
 	VideoEncoder videoEncoder;

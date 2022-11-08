@@ -10,74 +10,74 @@ Obserable::~Obserable()
 
 void Obserable::Attach(Observer& observer)
 {
-	observers.push() = &observer;
+	observers.push_back(&observer);
 }
 
 void Obserable::Detach(Observer& observer)
 {
-	//observers.remove(&observer);
+	observers.remove(&observer);
 }
 
 void Obserable::NotifySomething()
 {
-	for(u32 i=0; i<observers.size(); i++)
+	for(auto& observer : observers)
 	{
-		observers[i]->OnNotifySomething(*this);
+		observer->OnNotifySomething(*this);
 	}
 }
 
 void Obserable::NotifyOpen()
 {
-	for(u32 i=0; i<observers.size(); i++)
+	for (auto& observer : observers)
 	{
-		observers[i]->OnNotifyOpen(*this);
+		observer->OnNotifyOpen(*this);
 	}
 }
 
 void Obserable::NotifyClose()
 {
-	for(u32 i=0; i<observers.size(); i++)
+	for (auto& observer : observers)
 	{
-		observers[i]->OnNotifyClose(*this);
+		observer->OnNotifyClose(*this);
 	}
 }
 
 void Obserable::NotifyPlay()
 {
-	for(u32 i=0; i<observers.size(); i++)
+	for (auto& observer : observers)
 	{
-		observers[i]->OnNotifyPlay(*this);
+		observer->OnNotifyPlay(*this);
 	}
 }
 
 void Obserable::NotifyStop()
 {
-	for(u32 i=0; i<observers.size(); i++)
+	for (auto& observer : observers)
 	{
-		observers[i]->OnNotifyStop(*this);
+		observer->OnNotifyStop(*this);
 	}
 }
 
 void Obserable::NotifyPause()
 {
-	for(u32 i=0; i<observers.size(); i++)
+	for (auto& observer : observers)
 	{
-		observers[i]->OnNotifyPause(*this);
+		observer->OnNotifyPause(*this);
 	}
 }
 
 void Obserable::NotifyResume()
 {
-	for(u32 i=0; i<observers.size(); i++)
+	for (auto& observer : observers)
 	{
-		observers[i]->OnNotifyResume(*this);
+		observer->OnNotifyResume(*this);
 	}
 }
 
-void Obserable::NotifyUpdate()
+void Obserable::NotifyUpdate(bool needUpdateSample)
 {
-	for(u32 i=0; i<observers.size(); i++)
+	for (auto& observer : observers)
 	{
-		observers[i]->OnNotifyUpdate(*this);
+		observer->OnNotifyUpdate(*this, needUpdateSample);
 	}
 }

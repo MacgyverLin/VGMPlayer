@@ -1,22 +1,53 @@
-#ifndef _VGMDef_h_
-#define _VGMDef_h_
-
+#ifndef _vgmdef_h_
+#define _vgmdef_h_
 
 #include <windows.h>
 #include <assert.h>
 
-
 //typedef unsigned char boolean;
-typedef signed long long s64;
-typedef signed int s32;
-typedef signed short s16;
-typedef signed char s8;
-typedef unsigned long long u64;
-typedef unsigned int u32;
-typedef unsigned short u16;
-typedef unsigned char u8;
-typedef float f32;
-typedef double f64;
+typedef signed long long INT64;
+typedef signed int INT32;
+typedef signed short INT16;
+typedef signed char INT8;
+typedef unsigned long long UINT64;
+typedef unsigned int UINT32;
+typedef unsigned short UINT16;
+typedef unsigned char UINT8;
+typedef float FLOAT32;
+typedef double FLOAT64;
+
+#include "../stdbool.h"
+
+/* offsets and addresses are 32-bit (for now...) */
+typedef UINT32	offs_t;
+
+/* stream_sample_t is used to represent a single sample in a sound stream */
+typedef INT32 stream_sample_t;
+typedef void (*strm_func)(UINT8 ChipID, stream_sample_t** outputs, int samples);
+
+extern stream_sample_t* DUMMYBUF[];
+typedef void (*SRATE_CALLBACK)(void*, UINT32);
+
+extern void chip_reg_write(UINT8 ChipType, UINT8 ChipID, UINT8 Port, UINT8 Offset, UINT8 Data);
+
+#if defined(_MSC_VER)
+//#define INLINE	static __forceinline
+#define INLINE	static __inline
+#elif defined(__GNUC__)
+#define INLINE	static __inline__
+#else
+#define INLINE	static inline
+#endif
+
+// #define VGM_LITTLE_ENDIAN
+
+#define DISABLE_HW_SUPPORT	// disable support for OPL hardware
+#define FUINT8	unsigned int
+#define FUINT16	unsigned int
+
+#define logerror printf
+
+extern char* FindFile(const char* FileName);
 
 #define NO_CLAMP
 #define M_PI 3.141592654f
@@ -30,31 +61,5 @@ typedef double f64;
 
 #define VGMPlayer_MIN(a, b) ((a)<(b)) ? (a) : (b)
 #define VGMPlayer_MAX(a, b) ((a)>(b)) ? (a) : (b)
-
-typedef void* (*RomReadCallBack)(u8 chipID, u32 address);
-typedef void(*RomLoadCallBack)(u8 chipID, u32 startAddress, u8* data, u32 length, u32 totalROMLength);
-
-
-
-
-//////////////
-#define INLINE
-
-typedef s64 INT64;
-typedef s32 INT32;
-typedef s16 INT16;
-typedef s8 INT8;
-typedef u64 UINT64;
-typedef u32 UINT32;
-typedef u16 UINT16;
-typedef u8 UINT8;
-typedef f32 F32;
-typedef f64 F64;
-typedef INT32 stream_sample_t;
-typedef UINT32 offs_t;
-
-typedef void (*SRATE_CALLBACK)(void*, UINT32);
-extern stream_sample_t* DUMMYBUF[];
-
 
 #endif

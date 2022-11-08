@@ -1,6 +1,5 @@
 #include "VGMViewer.h"
 #include "FFT.h"
-#include "VGMFile.h"
 
 Rect GetRegion4(int width, int height)
 {
@@ -27,7 +26,7 @@ Rect GetRegion0(int width, int height)
 	return Rect(0, height / 4 * 0.0f, width, height / 4 * 1.5f);
 }
 
-VGMViewer::VGMViewer(const string& name_, u32 x_, u32 y_, u32 width_, u32 height_)
+VGMViewer::VGMViewer(const string& name_, UINT32 x_, UINT32 y_, UINT32 width_, UINT32 height_)
 	: VGMObverser()
 	, name(name_)
 	, x(x_)
@@ -35,14 +34,14 @@ VGMViewer::VGMViewer(const string& name_, u32 x_, u32 y_, u32 width_, u32 height
 	, width(width_)
 	, height(height_)
 
-	, vgmBackgroundRenderer				(videoDevice, "Background"		, Rect(0, 0, width, height), VGMBackgroundRenderer::Skin())
+	, vgmBackgroundRenderer(videoDevice, "Background", Rect(0, 0, width, height), VGMBackgroundRenderer::Skin())
 
-	, vgmTitleRenderer					(videoDevice , "Title"			, GetRegion4(width, height), VGMTitleRenderer::Skin())
+	, vgmTitleRenderer(videoDevice, "Title", GetRegion4(width, height), VGMTitleRenderer::Skin())
 
-	, vgmWaveFormRenderer				(videoDevice, "Output Wave"		, GetRegion3(width, height), 5.0f, VGMWaveFormRenderer::Skin())
-	, vgmMultiChannelWaveFormRenderer	(videoDevice, "Channels  Wave"  , GetRegion2(width, height), 5.0f, VGMMultiChannelWaveFormRenderer::Skin())
-	, vgmSpectrumRenderer				(videoDevice, "Spectrum"		, GetRegion1(width, height), 5.0f, VGMSpectrumRenderer::Skin())
-	, vgmMultiChannelNoteRenderer		(videoDevice, "Notes"		    , GetRegion0(width, height), 1.0f, VGMMultiChannelNoteRenderer::Skin())
+	, vgmWaveFormRenderer(videoDevice, "Output Wave", GetRegion3(width, height), 1.0f, VGMWaveFormRenderer::Skin())
+	, vgmMultiChannelWaveFormRenderer(videoDevice, "Channels  Wave", GetRegion2(width, height), 1.0f, VGMMultiChannelWaveFormRenderer::Skin())
+	, vgmSpectrumRenderer(videoDevice, "Spectrum", GetRegion1(width, height), 0.7f, VGMSpectrumRenderer::Skin())
+	, vgmMultiChannelNoteRenderer(videoDevice, "Notes", GetRegion0(width, height), 1.0f, VGMMultiChannelNoteRenderer::Skin())
 {
 }
 
@@ -74,16 +73,16 @@ std::string ReplaceAll(std::string str, const std::string& from, const std::stri
 
 void VGMViewer::OnNotifyOpen(Obserable& observable)
 {
-	VGMFile& vgmFile = (VGMFile&)observable;
+	VGMData& vgmData = (VGMData&)observable;
 
-	std::string caption = name + vgmFile.GetPath();
-	std::string mp4File = vgmFile.GetPath();
+	std::string caption = name + vgmData.GetPath();
+	std::string mp4File = vgmData.GetPath();
 	mp4File = mp4File.substr(0, mp4File.find_last_of('.')) + ".mp4";
 
 	videoDevice.Open(caption.c_str(), x, y, width, height);
 	videoEncoder.Initiate(mp4File.c_str(), width, height);
 
-	std::string title = vgmFile.GetPath();
+	std::string title = vgmData.GetPath();
 	title = title.substr(0, mp4File.find_last_of('.'));
 	title = title.substr(mp4File.find_first_of('/'));
 
@@ -162,13 +161,13 @@ void VGMViewer::OnNotifyResume(Obserable& observable)
 	vgmMultiChannelNoteRenderer.OnNotifyResume(observable);
 }
 
-void VGMViewer::OnNotifyUpdate(Obserable& observable)
+void VGMViewer::OnNotifyUpdate(Obserable& observable, bool needUpdateSample)
 {
 	VGMData& vgmData = (VGMData&)observable;
-	const VGMData::Info& info = vgmData.GetInfo();
-	const VGMData::SystemChannels& systemChannels = vgmData.GetSystemChannels();
+	const VGMInfo& vgmInfo = vgmData.GetInfo();
+	const VGMOutputChannels& outputChannels = vgmData.GetOutputChannels();
 
-	if (systemChannels.HasSampleBufferUpdatedEvent())
+	if (needUpdateSample)
 	{
 		videoDevice.MakeCurrent();
 		videoDevice.ClearColor(Color(0.0, 0.0, 0.0, 1.0));
@@ -185,6 +184,6 @@ void VGMViewer::OnNotifyUpdate(Obserable& observable)
 
 		Vector<unsigned char> colorBuffer;
 		videoDevice.ReadPixels(colorBuffer);
-		videoEncoder.Update(colorBuffer, systemChannels.GetOutputSampleBuffer());
+		videoEncoder.Update(colorBuffer, outputChannels.GetOutputSampleBuffer());
 	}
 }

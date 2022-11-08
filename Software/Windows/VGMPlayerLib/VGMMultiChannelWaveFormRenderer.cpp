@@ -20,9 +20,9 @@ void VGMMultiChannelWaveFormRenderer::OnNotifySomething(Obserable& observable)
 void VGMMultiChannelWaveFormRenderer::OnNotifyOpen(Obserable& observable)
 {
 	VGMData& vgmData = (VGMData&)observable;
-	const VGMHeader& header = vgmData.GetHeader();
-	const VGMData::Info& info = vgmData.GetInfo();
-	const VGMData::SystemChannels& systemChannels = vgmData.GetSystemChannels();
+	
+	const VGMInfo& vgmInfo = vgmData.GetInfo();
+		const VGMOutputChannels& outputChannels = vgmData.GetOutputChannels();
 
 	font = videoDevice.CreateFont("arial.ttf", 12);
 }
@@ -30,9 +30,9 @@ void VGMMultiChannelWaveFormRenderer::OnNotifyOpen(Obserable& observable)
 void VGMMultiChannelWaveFormRenderer::OnNotifyClose(Obserable& observable)
 {
 	VGMData& vgmData = (VGMData&)observable;
-	const VGMHeader& header = vgmData.GetHeader();
-	const VGMData::Info& info = vgmData.GetInfo();
-	const VGMData::SystemChannels& systemChannels = vgmData.GetSystemChannels();
+	
+	const VGMInfo& vgmInfo = vgmData.GetInfo();
+		const VGMOutputChannels& outputChannels = vgmData.GetOutputChannels();
 
 	videoDevice.DestroyFont(font);
 	font = nullptr;
@@ -61,12 +61,10 @@ void VGMMultiChannelWaveFormRenderer::OnNotifyResume(Obserable& observable)
 void VGMMultiChannelWaveFormRenderer::OnNotifyUpdate(Obserable& observable)
 {
 	VGMData& vgmData = (VGMData&)observable;
-	const VGMHeader& header = vgmData.GetHeader();
-	const VGMData::Info& info = vgmData.GetInfo();
-	const VGMData::SystemChannels& systemChannels = vgmData.GetSystemChannels();
+	const VGMInfo& vgmInfo = vgmData.GetInfo();
+	const VGMOutputChannels& outputChannels = vgmData.GetOutputChannels();
 
-	if (systemChannels.HasSampleBufferUpdatedEvent())
-	{
+
 		/////////////////////////////////////////////////////////////////////////////////
 		videoDevice.MatrixMode(VideoDeviceEnum::PROJECTION);
 		videoDevice.LoadIdentity();
@@ -113,11 +111,11 @@ void VGMMultiChannelWaveFormRenderer::OnNotifyUpdate(Obserable& observable)
 
 			SetViewport(x * channelViewportWidth, y * channelViewportHeight, channelViewportWidth, channelViewportHeight);
 			
-			for (s32 i = startX; i < endX; i += (endX - startX) / divX)
+			for (UINT32 i = startX; i < endX; i += (endX - startX) / divX)
 			{
 				videoDevice.DrawLine(Vector2(i, startY), skin.gridColor, Vector2(i, endY), skin.gridColor);
 			}
-			for (s32 i = startY; i < endY; i += (endY - startY) / 10)
+			for (UINT32 i = startY; i < endY; i += (endY - startY) / 10)
 			{
 				videoDevice.DrawLine(Vector2(startX, i), skin.gridColor, Vector2(endX, i), skin.gridColor);
 			}
@@ -133,7 +131,7 @@ void VGMMultiChannelWaveFormRenderer::OnNotifyUpdate(Obserable& observable)
 
 		//////////////////////////////////////////////////////////////////////////////
 		// draw channel	
-		for (int ch = 0; ch < systemChannels.GetChannelsCount(); ch++)
+		for (int ch = 0; ch < outputChannels.GetChannelsCount(); ch++)
 		{
 			float channelViewportWidth  = 1.0f / 4;
 			float channelViewportHeight = 1.0f / 4;
@@ -151,10 +149,10 @@ void VGMMultiChannelWaveFormRenderer::OnNotifyUpdate(Obserable& observable)
 			float i = ((float)(ch % 3) + 3) / 5;
 			// Color c = Color(48.0f * i / 255.0f, 19.0f * i / 255.0f, 210.0f * i / 255.0f, 1.0f);
 			Color c = Color::BrightCyan;
-			for (s32 i = startX; i < endX - 3; i += 3)
+			for (UINT32 i = startX; i < endX - 3; i += 3)
 			{
-				s32 y0 = systemChannels.GetChannelLeftSample(ch, i + 0) * waveScale;
-				s32 y1 = systemChannels.GetChannelLeftSample(ch, i + 3) * waveScale;
+				UINT32 y0 = outputChannels.GetChannelLeftSample(ch, i + 0) * waveScale;
+				UINT32 y1 = outputChannels.GetChannelLeftSample(ch, i + 3) * waveScale;
 				videoDevice.DrawLine(Vector2(i, y0), c, Vector2(i + 3, y1), c);
 			}
 		}
@@ -171,5 +169,4 @@ void VGMMultiChannelWaveFormRenderer::OnNotifyUpdate(Obserable& observable)
 		videoDevice.SetFontScale(1.0);
 		videoDevice.SetFontColor(Color::BrightCyan);
 		videoDevice.DrawText(name.c_str(), 0, region.h - font->GetSize());
-	}
 }

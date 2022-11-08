@@ -12,7 +12,7 @@ public:
 	class Skin
 	{
 	public:
-		Skin(u8 numChannels_ = 2,
+		Skin(UINT8 numChannels_ = 2,
 			const Color& bgColor_ = Color(0.3f, 0.3f, 0.3f, 1.0f), const Color& gridColor_ = Color(0.0f, 0.2f, 0.2f, 1.0f), const Color& axisColor_ = Color(0.3f, 0.3f, 0.3f, 1.0f),
 			const Color& leftColor_ = Color(0.3f, 1.0f, 0.3f, 1.0f), const Color& rightColor_ = Color(0.3f, 1.0f, 1.0f, 1.0f))
 			: numChannels(numChannels_)
@@ -24,7 +24,7 @@ public:
 		{
 		}
 
-		u8 numChannels;
+		UINT8 numChannels;
 		Color bgColor;
 		Color gridColor;
 		Color axisColor;
@@ -53,8 +53,8 @@ private:
 
 	Font* font;
 
-	vector<f32> maxLeft;
-	vector<f32> maxRight;
+	vector<FLOAT32> maxLeft;
+	vector<FLOAT32> maxRight;
 
 	string titleString;
 	Texture2D logo;

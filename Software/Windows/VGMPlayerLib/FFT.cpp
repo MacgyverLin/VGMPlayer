@@ -23,10 +23,10 @@ void conjugate_complex(int n, complex in[], complex out[])
 * 返回: 无
 * 说明:
 *******************************************************************************/
-void c_abs(complex f[], f32 out[], int n)
+void c_abs(complex f[], FLOAT32 out[], int n)
 {
 	int i = 0;
-	f32 t;
+	FLOAT32 t;
 	for (i = 0; i < n; i++)
 	{
 		t = f[i].real * f[i].real + f[i].imag * f[i].imag;

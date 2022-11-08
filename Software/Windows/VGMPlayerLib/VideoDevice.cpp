@@ -904,21 +904,21 @@ void Font::RenderText(const char* text, float x, float y, float scale, const Col
 
 		glBegin(GL_QUADS);
 
-		glTexCoord2fv((f32*)&t[0]);
-		glColor4fv((f32*)&c);
-		glVertex2fv((f32*)&v[0]);
+		glTexCoord2fv((FLOAT32*)&t[0]);
+		glColor4fv((FLOAT32*)&c);
+		glVertex2fv((FLOAT32*)&v[0]);
 
-		glTexCoord2fv((f32*)&t[1]);
-		glColor4fv((f32*)&c);
-		glVertex2fv((f32*)&v[1]);
+		glTexCoord2fv((FLOAT32*)&t[1]);
+		glColor4fv((FLOAT32*)&c);
+		glVertex2fv((FLOAT32*)&v[1]);
 
-		glTexCoord2fv((f32*)&t[2]);
-		glColor4fv((f32*)&c);
-		glVertex2fv((f32*)&v[2]);
+		glTexCoord2fv((FLOAT32*)&t[2]);
+		glColor4fv((FLOAT32*)&c);
+		glVertex2fv((FLOAT32*)&v[2]);
 
-		glTexCoord2fv((f32*)&t[3]);
-		glColor4fv((f32*)&c);
-		glVertex2fv((f32*)&v[3]);
+		glTexCoord2fv((FLOAT32*)&t[3]);
+		glColor4fv((FLOAT32*)&c);
+		glVertex2fv((FLOAT32*)&v[3]);
 
 		glEnd();
 
@@ -977,7 +977,7 @@ VideoDevice::~VideoDevice()
 	}
 }
 
-boolean VideoDevice::Open(const string& name_, u32 x_, u32 y_, u32 width_, u32 height_)
+boolean VideoDevice::Open(const string& name_, UINT32 x_, UINT32 y_, UINT32 width_, UINT32 height_)
 {
 	// Create impl->window
 	impl->window = SDL_CreateWindow(name_.c_str(), x_, y_, width_, height_, SDL_WINDOW_OPENGL | SDL_WINDOW_SHOWN);
@@ -1161,7 +1161,7 @@ void VideoDevice::DrawPoint(const Vector2& v, const Color& c)
 	glBegin(GL_POINTS);
 
 	glColor4f(c.r, c.g, c.b, c.a);
-	glVertex2fv((f32*)&v);
+	glVertex2fv((FLOAT32*)&v);
 	
 	glEnd();
 }
@@ -1174,11 +1174,11 @@ void VideoDevice::DrawLine(const Vector2& v0, const Color& c0, const Vector2& v1
 
 		glBegin(GL_LINES);
 
-		glColor4fv((f32*)&c0);
-		glVertex2fv((f32*)&v0);
+		glColor4fv((FLOAT32*)&c0);
+		glVertex2fv((FLOAT32*)&v0);
 
-		glColor4fv((f32*)&c1);
-		glVertex2fv((f32*)&v1);
+		glColor4fv((FLOAT32*)&c1);
+		glVertex2fv((FLOAT32*)&v1);
 
 		glEnd();
 	}
@@ -1190,17 +1190,17 @@ void VideoDevice::DrawLine(const Vector2& v0, const Color& c0, const Vector2& v1
 		Vector2 v3 = v0; v3.y += thickness;
 		glBegin(GL_QUADS);
 
-		glColor4fv((f32*)&c0);
-		glVertex2fv((f32*)&v0);
+		glColor4fv((FLOAT32*)&c0);
+		glVertex2fv((FLOAT32*)&v0);
 
-		glColor4fv((f32*)&c1);
-		glVertex2fv((f32*)&v1);
+		glColor4fv((FLOAT32*)&c1);
+		glVertex2fv((FLOAT32*)&v1);
 
-		glColor4fv((f32*)&c1);
-		glVertex2fv((f32*)&v2);
+		glColor4fv((FLOAT32*)&c1);
+		glVertex2fv((FLOAT32*)&v2);
 
-		glColor4fv((f32*)&c0);
-		glVertex2fv((f32*)&v3);
+		glColor4fv((FLOAT32*)&c0);
+		glVertex2fv((FLOAT32*)&v3);
 
 		glEnd();
 	}
@@ -1212,14 +1212,14 @@ void VideoDevice::DrawWireTriangle(const Vector2& v0, const Color& c0, const Vec
 
 	glBegin(GL_LINE_LOOP);
 
-	glColor4fv((f32*)&c0);
-	glVertex2fv((f32*)&v0);
+	glColor4fv((FLOAT32*)&c0);
+	glVertex2fv((FLOAT32*)&v0);
 
-	glColor4fv((f32*)&c1);
-	glVertex2fv((f32*)&v1);
+	glColor4fv((FLOAT32*)&c1);
+	glVertex2fv((FLOAT32*)&v1);
 
-	glColor4fv((f32*)&c2);
-	glVertex2fv((f32*)&v2);
+	glColor4fv((FLOAT32*)&c2);
+	glVertex2fv((FLOAT32*)&v2);
 
 	glEnd();
 }
@@ -1230,22 +1230,22 @@ void VideoDevice::DrawWireRectangle(const Vector2& v0, const Color& c0, const Ve
 
 	glBegin(GL_LINE_LOOP);
 
-	glColor4fv((f32*)&c0);
-	glVertex2fv((f32*)&v0);
+	glColor4fv((FLOAT32*)&c0);
+	glVertex2fv((FLOAT32*)&v0);
 
-	glColor4fv((f32*)&c1);
-	glVertex2fv((f32*)&v1);
+	glColor4fv((FLOAT32*)&c1);
+	glVertex2fv((FLOAT32*)&v1);
 
-	glColor4fv((f32*)&c2);
-	glVertex2fv((f32*)&v2);
+	glColor4fv((FLOAT32*)&c2);
+	glVertex2fv((FLOAT32*)&v2);
 
-	glColor4fv((f32*)&c3);
-	glVertex2fv((f32*)&v3);
+	glColor4fv((FLOAT32*)&c3);
+	glVertex2fv((FLOAT32*)&v3);
 
 	glEnd();
 }
 
-void VideoDevice::DrawWireCircle(const Vector2& center, f32 radius, const Color& c)
+void VideoDevice::DrawWireCircle(const Vector2& center, FLOAT32 radius, const Color& c)
 {
 }
 
@@ -1255,14 +1255,14 @@ void VideoDevice::DrawSolidTriangle(const Vector2& v0, const Color& c0, const Ve
 
 	glBegin(GL_TRIANGLES);
 
-	glColor4fv((f32*)&c0);
-	glVertex2fv((f32*)&v0);
+	glColor4fv((FLOAT32*)&c0);
+	glVertex2fv((FLOAT32*)&v0);
 
-	glColor4fv((f32*)&c1);
-	glVertex2fv((f32*)&v1);
+	glColor4fv((FLOAT32*)&c1);
+	glVertex2fv((FLOAT32*)&v1);
 
-	glColor4fv((f32*)&c2);
-	glVertex2fv((f32*)&v2);
+	glColor4fv((FLOAT32*)&c2);
+	glVertex2fv((FLOAT32*)&v2);
 
 	glEnd();
 }
@@ -1273,26 +1273,26 @@ void VideoDevice::DrawSolidRectangle(const Vector2& v0, const Color& c0, const V
 
 	glBegin(GL_QUADS);
 
-	glColor4fv((f32*)&c0);
-	glVertex2fv((f32*)&v0);
+	glColor4fv((FLOAT32*)&c0);
+	glVertex2fv((FLOAT32*)&v0);
 
-	glColor4fv((f32*)&c1);
-	glVertex2fv((f32*)&v1);
+	glColor4fv((FLOAT32*)&c1);
+	glVertex2fv((FLOAT32*)&v1);
 
-	glColor4fv((f32*)&c2);
-	glVertex2fv((f32*)&v2);
+	glColor4fv((FLOAT32*)&c2);
+	glVertex2fv((FLOAT32*)&v2);
 
-	glColor4fv((f32*)&c3);
-	glVertex2fv((f32*)&v3);
+	glColor4fv((FLOAT32*)&c3);
+	glVertex2fv((FLOAT32*)&v3);
 
 	glEnd();
 }
 
-void VideoDevice::DrawSolidCircle(const Vector2& center, f32 radius, const Color& c)
+void VideoDevice::DrawSolidCircle(const Vector2& center, FLOAT32 radius, const Color& c)
 {
 }
 
-void VideoDevice::DrawPrimitive(u32 primitive, const Vector2* vertices, const Color* colors, u32 count)
+void VideoDevice::DrawPrimitive(UINT32 primitive, const Vector2* vertices, const Color* colors, UINT32 count)
 {
 	glDisable(GL_TEXTURE_2D);
 
@@ -1308,10 +1308,10 @@ void VideoDevice::DrawTexPoint(const Texture2D& texture, const Vector2& v, const
 	glEnable(GL_TEXTURE_2D);
 	texture.Bind();
 
-	glTexCoord2fv((f32*)&t);
-	glColor4fv((f32*)&c);
+	glTexCoord2fv((FLOAT32*)&t);
+	glColor4fv((FLOAT32*)&c);
 	glBegin(GL_POINTS);
-	glVertex2fv((f32*)&v);
+	glVertex2fv((FLOAT32*)&v);
 	glEnd();
 }
 
@@ -1322,13 +1322,13 @@ void VideoDevice::DrawTexLine(const Texture2D& texture, const Vector2& v0, const
 
 	glBegin(GL_LINES);
 
-	glTexCoord2fv((f32*)&t0);
-	glColor4fv((f32*)&c0);
-	glVertex2fv((f32*)&v0);
+	glTexCoord2fv((FLOAT32*)&t0);
+	glColor4fv((FLOAT32*)&c0);
+	glVertex2fv((FLOAT32*)&v0);
 
-	glTexCoord2fv((f32*)&t1);
-	glColor4fv((f32*)&c1);
-	glVertex2fv((f32*)&v1);
+	glTexCoord2fv((FLOAT32*)&t1);
+	glColor4fv((FLOAT32*)&c1);
+	glVertex2fv((FLOAT32*)&v1);
 
 	glEnd();
 }
@@ -1340,17 +1340,17 @@ void VideoDevice::DrawTexWireTriangle(const Texture2D& texture, const Vector2& v
 
 	glBegin(GL_LINE_LOOP);
 
-	glTexCoord2fv((f32*)&t0);
-	glColor4fv((f32*)&c0);
-	glVertex2fv((f32*)&v0);
+	glTexCoord2fv((FLOAT32*)&t0);
+	glColor4fv((FLOAT32*)&c0);
+	glVertex2fv((FLOAT32*)&v0);
 
-	glTexCoord2fv((f32*)&t1);
-	glColor4fv((f32*)&c1);
-	glVertex2fv((f32*)&v1);
+	glTexCoord2fv((FLOAT32*)&t1);
+	glColor4fv((FLOAT32*)&c1);
+	glVertex2fv((FLOAT32*)&v1);
 
-	glTexCoord2fv((f32*)&t2);
-	glColor4fv((f32*)&c2);
-	glVertex2fv((f32*)&v2);
+	glTexCoord2fv((FLOAT32*)&t2);
+	glColor4fv((FLOAT32*)&c2);
+	glVertex2fv((FLOAT32*)&v2);
 
 	glEnd();
 }
@@ -1366,21 +1366,21 @@ void VideoDevice::DrawTexWireRectangle(const Texture2D& texture,
 
 	glBegin(GL_LINES);
 
-	glTexCoord2fv((f32*)&t0);
-	glColor4fv((f32*)&c0);
-	glVertex2fv((f32*)&v0);
+	glTexCoord2fv((FLOAT32*)&t0);
+	glColor4fv((FLOAT32*)&c0);
+	glVertex2fv((FLOAT32*)&v0);
 
-	glTexCoord2fv((f32*)&t1);
-	glColor4fv((f32*)&c1);
-	glVertex2fv((f32*)&v1);
+	glTexCoord2fv((FLOAT32*)&t1);
+	glColor4fv((FLOAT32*)&c1);
+	glVertex2fv((FLOAT32*)&v1);
 
-	glTexCoord2fv((f32*)&t2);
-	glColor4fv((f32*)&c2);
-	glVertex2fv((f32*)&v2);
+	glTexCoord2fv((FLOAT32*)&t2);
+	glColor4fv((FLOAT32*)&c2);
+	glVertex2fv((FLOAT32*)&v2);
 
-	glTexCoord2fv((f32*)&t3);
-	glColor4fv((f32*)&c3);
-	glVertex2fv((f32*)&v3);
+	glTexCoord2fv((FLOAT32*)&t3);
+	glColor4fv((FLOAT32*)&c3);
+	glVertex2fv((FLOAT32*)&v3);
 
 	glEnd();
 }
@@ -1395,17 +1395,17 @@ void VideoDevice::DrawTexSolidTriangle(const Texture2D& texture,
 
 	glBegin(GL_TRIANGLES);
 
-	glTexCoord2fv((f32*)&t0);
-	glColor4fv((f32*)&c0);
-	glVertex2fv((f32*)&v0);
+	glTexCoord2fv((FLOAT32*)&t0);
+	glColor4fv((FLOAT32*)&c0);
+	glVertex2fv((FLOAT32*)&v0);
 
-	glTexCoord2fv((f32*)&t1);
-	glColor4fv((f32*)&c1);
-	glVertex2fv((f32*)&v1);
+	glTexCoord2fv((FLOAT32*)&t1);
+	glColor4fv((FLOAT32*)&c1);
+	glVertex2fv((FLOAT32*)&v1);
 
-	glTexCoord2fv((f32*)&t2);
-	glColor4fv((f32*)&c2);
-	glVertex2fv((f32*)&v2);
+	glTexCoord2fv((FLOAT32*)&t2);
+	glColor4fv((FLOAT32*)&c2);
+	glVertex2fv((FLOAT32*)&v2);
 
 	glEnd();
 }
@@ -1422,26 +1422,26 @@ void VideoDevice::DrawTexSolidRectangle(const Texture2D& texture,
 
 	glBegin(GL_QUADS);
 
-	glTexCoord2fv((f32*)&t0);
-	glColor4fv((f32*)&c0);
-	glVertex2fv((f32*)&v0);
+	glTexCoord2fv((FLOAT32*)&t0);
+	glColor4fv((FLOAT32*)&c0);
+	glVertex2fv((FLOAT32*)&v0);
 
-	glTexCoord2fv((f32*)&t1);
-	glColor4fv((f32*)&c1);
-	glVertex2fv((f32*)&v1);
+	glTexCoord2fv((FLOAT32*)&t1);
+	glColor4fv((FLOAT32*)&c1);
+	glVertex2fv((FLOAT32*)&v1);
 
-	glTexCoord2fv((f32*)&t2);
-	glColor4fv((f32*)&c2);
-	glVertex2fv((f32*)&v2);
+	glTexCoord2fv((FLOAT32*)&t2);
+	glColor4fv((FLOAT32*)&c2);
+	glVertex2fv((FLOAT32*)&v2);
 
-	glTexCoord2fv((f32*)&t3);
-	glColor4fv((f32*)&c3);
-	glVertex2fv((f32*)&v3);
+	glTexCoord2fv((FLOAT32*)&t3);
+	glColor4fv((FLOAT32*)&c3);
+	glVertex2fv((FLOAT32*)&v3);
 
 	glEnd();
 }
 
-void VideoDevice::DrawTexPrimitive(const Texture2D& texture, u32 primitive, const Vector2* v, const Color* c, const Vector2* t, u32 count)
+void VideoDevice::DrawTexPrimitive(const Texture2D& texture, UINT32 primitive, const Vector2* v, const Color* c, const Vector2* t, UINT32 count)
 {
 	glEnable(GL_TEXTURE_2D);
 	texture.Bind();

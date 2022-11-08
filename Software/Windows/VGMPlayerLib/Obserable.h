@@ -3,8 +3,7 @@
 
 #include "vgmdef.h"
 #include "Observer.h"
-#include "Array.h"
-
+#include <list>
 using namespace std;
 
 class Obserable
@@ -23,9 +22,9 @@ protected:
 	void NotifyStop();
 	void NotifyPause();
 	void NotifyResume();
-	void NotifyUpdate();
+	void NotifyUpdate(bool needUpdateSample);
 private:
-	Vector<Observer *> observers;
+	list<Observer *> observers;
 };
 
 #endif

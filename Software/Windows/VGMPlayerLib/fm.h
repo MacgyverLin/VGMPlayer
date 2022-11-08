@@ -5,8 +5,6 @@
 
 #pragma once
 
-#include "vgmdef.h"
-
 /* --- select emulation chips --- */
 /*
 #define BUILD_YM2203  (HAS_YM2203)		// build YM2203(OPN)   emulator
@@ -236,5 +234,8 @@ void ym2612_postload(void *chip);
 
 void ym2612_set_mutemask(void *chip, UINT32 MuteMask);
 void ym2612_setoptions(UINT8 Flags);
+
+void ym2612_setISVGMInit(UINT8 Flags);
+
 #endif /* (BUILD_YM2612||BUILD_YM3438) */
 

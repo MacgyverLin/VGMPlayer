@@ -1,27 +1,32 @@
-#ifndef _K053260_h_
-#define _K053260_h_
+/*********************************************************
 
-#include "vgmdef.h"
-#include "ROM.h"
+    Konami 053260 PCM/ADPCM Sound Chip
 
-#ifdef __cplusplus
-extern "C" {
-#endif
+*********************************************************/
 
-s32 K053260_Initialize(u8 chipID, u32 clock, u32 sampleRate);
-void K053260_Shutdown(u8 chipID);
-void K053260_Reset(u8 chipID);
-void K053260_WriteRegister(u8 chipID, u32 address, u32 data, s32* channel, f32* freq);
-u8 K053260_ReadRegister(u8 chipID, u32 address);
-void K053260_Update(u8 chipID, s32** buffer, u32 length);
-void K053260_SetROM(u8 chipID, ROM* rom);
+#pragma once
 
-void K053260_SetChannelEnable(u8 chipID, u8 channel, u8 enable);
-u8 K053260_GetChannelEnable(u8 chipID, u8 channel);
-u32 K053260_GetChannelCount(u8 chipID);
+//#include "devlegcy.h"
 
-#ifdef __cplusplus
-};
-#endif
+/*typedef struct _k053260_interface k053260_interface;
+struct _k053260_interface {
+	const char *rgnoverride;
+	timer_expired_func irq;			// called on SH1 complete cycle ( clock / 32 ) //
+};*/
 
-#endif
+
+void k053260_update(UINT8 ChipID, stream_sample_t **outputs, int samples);
+int device_start_k053260(UINT8 ChipID, int clock, UINT8 CHIP_SAMPLING_MODE, INT32 CHIP_SAMPLE_RATE, UINT32 SampleRate);
+void device_stop_k053260(UINT8 ChipID);
+void device_reset_k053260(UINT8 ChipID);
+
+//WRITE8_DEVICE_HANDLER( k053260_w );
+//READ8_DEVICE_HANDLER( k053260_r );
+void k053260_w(UINT8 ChipID, offs_t offset, UINT8 data);
+UINT8 k053260_r(UINT8 ChipID, offs_t offset);
+
+void k053260_write_rom(UINT8 ChipID, offs_t ROMSize, offs_t DataStart, offs_t DataLength,
+					   const UINT8* ROMData);
+void k053260_set_mute_mask(UINT8 ChipID, UINT32 MuteMask);
+
+//DECLARE_LEGACY_SOUND_DEVICE(K053260, k053260);

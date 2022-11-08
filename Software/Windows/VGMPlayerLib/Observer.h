@@ -16,7 +16,7 @@ protected:
 	virtual void OnNotifyStop(Obserable& obserable) = 0;
 	virtual void OnNotifyPause(Obserable& obserable) = 0;
 	virtual void OnNotifyResume(Obserable& obserable) = 0;
-	virtual void OnNotifyUpdate(Obserable& obserable) = 0;
+	virtual void OnNotifyUpdate(Obserable& obserable, bool needUpdateSample) = 0;
 private:
 public:
 protected:

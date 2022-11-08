@@ -12,7 +12,7 @@
 #include <string.h>	// for memset
 #include <stddef.h>	// for NULL
 #include <math.h>
-#include "vgmdef.h"
+#include "mamedef.h"
 #ifdef _DEBUG
 #include <stdio.h>
 #endif
@@ -144,7 +144,7 @@ static void k054539_keyoff(k054539_state *info, int channel)
 }
 
 //static STREAM_UPDATE( k054539_update )
-void k054539_update(UINT8 ChipID, s32 **outputs, int samples)
+void k054539_update(UINT8 ChipID, stream_sample_t **outputs, int samples)
 {
 	//k054539_state *info = (k054539_state *)param;
 	k054539_state *info = &K054539Data[ChipID];
@@ -413,7 +413,7 @@ static int k054539_init_chip(k054539_state *info, int clock)
 }
 
 //WRITE8_DEVICE_HANDLER( k054539_w )
-void k054539_w(UINT8 ChipID, u32 offset, UINT8 data)
+void k054539_w(UINT8 ChipID, offs_t offset, UINT8 data)
 {
 	//k054539_state *info = get_safe_token(device);
 	k054539_state *info = &K054539Data[ChipID];
@@ -564,7 +564,7 @@ static void reset_zones(k054539_state *info)
 }
 
 //READ8_DEVICE_HANDLER( k054539_r )
-UINT8 k054539_r(UINT8 ChipID, u32 offset)
+UINT8 k054539_r(UINT8 ChipID, offs_t offset)
 {
 	//k054539_state *info = get_safe_token(device);
 	k054539_state *info = &K054539Data[ChipID];
@@ -588,7 +588,7 @@ UINT8 k054539_r(UINT8 ChipID, u32 offset)
 }
 
 //static DEVICE_START( k054539 )
-int device_start_k054539(UINT8 ChipID, int clock)
+int device_start_k054539(UINT8 ChipID, int clock, UINT8 CHIP_SAMPLING_MODE, INT32 CHIP_SAMPLE_RATE, UINT32 SampleRate)
 {
 	//static const k054539_interface defintrf = { 0 };
 	int i;
@@ -664,7 +664,7 @@ void device_reset_k054539(UINT8 ChipID)
 	return;
 }
 
-void k054539_write_rom(UINT8 ChipID, u32 ROMSize, u32 DataStart, u32 DataLength,
+void k054539_write_rom(UINT8 ChipID, offs_t ROMSize, offs_t DataStart, offs_t DataLength,
 					   const UINT8* ROMData)
 {
 	k054539_state *info = &K054539Data[ChipID];

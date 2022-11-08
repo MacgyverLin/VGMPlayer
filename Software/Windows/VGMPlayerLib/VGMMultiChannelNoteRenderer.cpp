@@ -21,9 +21,9 @@ void VGMMultiChannelNoteRenderer::OnNotifySomething(Obserable& observable)
 void VGMMultiChannelNoteRenderer::OnNotifyOpen(Obserable& observable)
 {
 	VGMData& vgmData = (VGMData&)observable;
-	const VGMHeader& header = vgmData.GetHeader();
-	const VGMData::Info& info = vgmData.GetInfo();
-	const VGMData::SystemChannels& systemChannels = vgmData.GetSystemChannels();
+	
+	const VGMInfo& vgmInfo = vgmData.GetInfo();
+		const VGMOutputChannels& outputChannels = vgmData.GetOutputChannels();
 
 	font = videoDevice.CreateFont("arial.ttf", 12);
 
@@ -34,9 +34,9 @@ void VGMMultiChannelNoteRenderer::OnNotifyClose(Obserable& observable)
 {
 	VGMData& vgmData = (VGMData&)observable;
 
-	const VGMHeader& header = vgmData.GetHeader();
-	const VGMData::Info& info = vgmData.GetInfo();
-	const VGMData::SystemChannels& systemChannels = vgmData.GetSystemChannels();
+	
+	const VGMInfo& vgmInfo = vgmData.GetInfo();
+		const VGMOutputChannels& outputChannels = vgmData.GetOutputChannels();
 
 	videoDevice.DestroyFont(font);
 	font = nullptr;
@@ -65,13 +65,12 @@ void VGMMultiChannelNoteRenderer::OnNotifyResume(Obserable& observable)
 void VGMMultiChannelNoteRenderer::OnNotifyUpdate(Obserable& observable)
 {
 	VGMData& vgmData = (VGMData&)observable;
-	const VGMData::Info& info = vgmData.GetInfo();
-	const VGMData::SystemChannels& systemChannels = vgmData.GetSystemChannels();
+	const VGMInfo& vgmInfo = vgmData.GetInfo();
+	const VGMOutputChannels& outputChannels = vgmData.GetOutputChannels();
 
-	if (systemChannels.HasSampleBufferUpdatedEvent())
-	{
+	
 		/////////////////////////////////////////////////////////////////////////////////
-		const vector<string>& outputCommand = systemChannels.GetOutputCommands();
+		const vector<string>& outputCommand = outputChannels.GetOutputCommands();
 
 		for (int i = 0; i < outputCommand.size(); i++)
 			commandStrings.push_back(outputCommand[i]);
@@ -119,7 +118,7 @@ void VGMMultiChannelNoteRenderer::OnNotifyUpdate(Obserable& observable)
 		videoDevice.SetFont(font);
 		videoDevice.SetFontColor(Color::White);
 
-		float scale = 20.0 * 1.0f / systemChannels.GetChannelsCount();
+		float scale = 20.0 * 1.0f / outputChannels.GetChannelsCount();
 		videoDevice.SetFontScale(1.0);
 
 		int y = 0;
@@ -152,6 +151,4 @@ void VGMMultiChannelNoteRenderer::OnNotifyUpdate(Obserable& observable)
 			Vector2(x1, y1), Color::White, Vector2(1, 1),
 			Vector2(x0, y1), Color::White, Vector2(0, 1)
 		);
-
-	}
 }

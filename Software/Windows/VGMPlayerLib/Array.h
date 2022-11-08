@@ -7,7 +7,7 @@ template<class T>
 class Array
 {
 public:
-	Array(u32 size_)
+	Array(UINT32 size_)
 	{
 		_m = new T[size_];
 		_size = size_;
@@ -19,34 +19,34 @@ public:
 		_m = 0;
 	}
 
-	T& operator[] (u32 i)
+	T& operator[] (UINT32 i)
 	{
 		assert(i < _size);
 
 		return _m[i];
 	}
 
-	const T& operator[] (u32 i) const
+	const T& operator[] (UINT32 i) const
 	{
 		assert(i < _size);
 
 		return _m[i];
 	}
 
-	u32 size() const
+	UINT32 size() const
 	{
 		return _size;
 	}
 
 	T *_m;
-	u32 _size;
+	UINT32 _size;
 };
 
 template<class T>
 class Vector
 {
 public:
-	Vector(u32 size_ = 0)
+	Vector(UINT32 size_ = 0)
 	{
 		if (size_ != 0)
 			_m = new T[size_];
@@ -69,14 +69,14 @@ public:
 		_capacity = 0;
 	}
 
-	T& operator[] (u32 i)
+	T& operator[] (UINT32 i)
 	{
 		assert(i < _size);
 
 		return _m[i];
 	}
 
-	const T& operator[] (u32 i) const
+	const T& operator[] (UINT32 i) const
 	{
 		assert(i < _size);
 
@@ -85,7 +85,7 @@ public:
 
 	T& push()
 	{
-		u32 oldSize = _size;
+		UINT32 oldSize = _size;
 		if (_size <= _capacity || _capacity == 0)
 		{
 			expand(_size+1);
@@ -94,9 +94,9 @@ public:
 		return _m[oldSize];
 	}
 
-	s32 find(T& t) const
+	INT32 find(T& t) const
 	{
-		for (u32 i = 0; i < _size; i++)
+		for (UINT32 i = 0; i < _size; i++)
 		{
 			if (_m[i] == t)
 			{
@@ -109,7 +109,7 @@ public:
 
 	void remove(T& t)
 	{
-		s32 idx = find(t);
+		INT32 idx = find(t);
 		if (idx != -1)
 		{
 			if (idx != _size - 1)
@@ -131,7 +131,7 @@ public:
 		return rval;
 	}
 
-	void resize(u32 newsize_)
+	void resize(UINT32 newsize_)
 	{
 		if (newsize_ > _capacity)
 		{
@@ -143,17 +143,17 @@ public:
 		}
 	}
 
-	u32 size() const
+	UINT32 size() const
 	{
 		return _size;
 	}
 
-	u32 capacity() const
+	UINT32 capacity() const
 	{
 		return _capacity;
 	}
 private:
-	void expand(u32 newsize_)
+	void expand(UINT32 newsize_)
 	{
 		T* temp = new T[newsize_];
 		memset(temp, 0, sizeof(T) * newsize_);
@@ -174,14 +174,14 @@ private:
 		_capacity = newsize_;
 	}
 
-	void shrink(u32 newsize_)
+	void shrink(UINT32 newsize_)
 	{
 		_size = newsize_;
 	}
 
 	T *_m;
-	u32 _size;
-	u32 _capacity;
+	UINT32 _size;
+	UINT32 _capacity;
 };
 
 #endif

@@ -11,7 +11,7 @@ public:
 	VGMAudioPlayer();
 	virtual ~VGMAudioPlayer();
 
-	u32 GetQueued();
+	UINT32 GetQueued();
 protected:
 	virtual void OnNotifySomething(Obserable& vgmData);
 	virtual void OnNotifyOpen(Obserable& vgmData);
@@ -20,7 +20,7 @@ protected:
 	virtual void OnNotifyStop(Obserable& vgmData);
 	virtual void OnNotifyPause(Obserable& vgmData);
 	virtual void OnNotifyResume(Obserable& vgmData);
-	virtual void OnNotifyUpdate(Obserable& vgmData);
+	virtual void OnNotifyUpdate(Obserable& vgmData, bool needUpdateSample);
 private:
 public:
 protected:

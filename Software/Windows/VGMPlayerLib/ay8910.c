@@ -112,7 +112,7 @@ has twice the steps, happening twice as fast.
 ***************************************************************************/
 
 #include <stddef.h>	// for NULL
-#include "vgmdef.h"
+#include "mamedef.h"
 //#include "sndintrf.h"
 //#include "streams.h"
 //#include "cpuintrf.h"
@@ -884,7 +884,7 @@ static void build_mixer_table(ay8910_context *psg)
  *************************************/
 
 //void *ay8910_start_ym(void *infoptr, sound_type chip_type, const device_config *device, int clock, const ay8910_interface *intf)
-void *ay8910_start_ym(void *infoptr, unsigned char chip_type, int clock, const ay8910_interface *intf)
+void *ay8910_start_ym(void *infoptr, unsigned char chip_type, int clock, const ay8910_interface *intf, UINT8 CHIP_SAMPLING_MODE, INT32 CHIP_SAMPLE_RATE, UINT32 SampleRate)
 {
 	ay8910_context *info = (ay8910_context *)infoptr;
 	int master_clock = clock;
@@ -1135,7 +1135,7 @@ int ay8910_read_ym(void *chip)
 	
 	return clock / 8;
 }*/
-int ay8910_start(void **chip, int clock, UINT8 chip_type, UINT8 Flags)
+int ay8910_start(void **chip, int clock, UINT8 chip_type, UINT8 Flags, UINT8 CHIP_SAMPLING_MODE, INT32 CHIP_SAMPLE_RATE, UINT32 SampleRate)
 {
 	static const ay8910_interface generic_ay8910 =
 	{
@@ -1152,7 +1152,7 @@ int ay8910_start(void **chip, int clock, UINT8 chip_type, UINT8 Flags)
 	*chip = psg;
 	
 	intf.flags = Flags;
-	ay8910_start_ym(psg, chip_type, clock, &intf);
+	ay8910_start_ym(psg, chip_type, clock, &intf, CHIP_SAMPLING_MODE, CHIP_SAMPLE_RATE, SampleRate);
 	
 	if (Flags & YM2149_PIN26_LOW)
 		return clock / 16;

@@ -11,8 +11,8 @@ public:
 	class Skin
 	{
 	public:
-		Skin(u8 numColumns_ = 32,
-			 u8 numChannels_ = 2,
+		Skin(UINT8 numColumns_ = 32,
+			 UINT8 numChannels_ = 2,
 			const Color& bgColor_ = Color(0.3f, 0.3f, 0.3f, 1.0f), const Color& gridColor_ = Color(0.0f, 0.2f, 0.2f, 1.0f), const Color& axisColor_ = Color(0.3f, 0.3f, 0.3f, 1.0f),
 			const Color& leftColor_ = Color(0.3f, 1.0f, 0.3f, 1.0f), const Color& rightColor_ = Color(0.3f, 1.0f, 1.0f, 1.0f))
 			: numColumns(numColumns_)
@@ -25,8 +25,8 @@ public:
 		{
 		}
 
-		u8 numColumns;
-		u8 numChannels;
+		UINT8 numColumns;
+		UINT8 numChannels;
 		Color bgColor;
 		Color gridColor;
 		Color axisColor;
@@ -52,8 +52,8 @@ private:
 	float waveScale;
 	Skin skin;
 
-	vector<f32> maxLeft;
-	vector<f32> maxRight;
+	vector<FLOAT32> maxLeft;
+	vector<FLOAT32> maxRight;
 
 	Font* font;
 };
