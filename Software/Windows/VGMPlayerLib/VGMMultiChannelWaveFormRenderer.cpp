@@ -20,9 +20,9 @@ void VGMMultiChannelWaveFormRenderer::OnNotifySomething(Obserable& observable)
 void VGMMultiChannelWaveFormRenderer::OnNotifyOpen(Obserable& observable)
 {
 	VGMData& vgmData = (VGMData&)observable;
-	
+
 	const VGMInfo& vgmInfo = vgmData.GetInfo();
-		const VGMOutputChannels& outputChannels = vgmData.GetOutputChannels();
+	const VGMOutputChannels& outputChannels = vgmData.GetOutputChannels();
 
 	font = videoDevice.CreateFont("arial.ttf", 12);
 }
@@ -30,9 +30,9 @@ void VGMMultiChannelWaveFormRenderer::OnNotifyOpen(Obserable& observable)
 void VGMMultiChannelWaveFormRenderer::OnNotifyClose(Obserable& observable)
 {
 	VGMData& vgmData = (VGMData&)observable;
-	
+
 	const VGMInfo& vgmInfo = vgmData.GetInfo();
-		const VGMOutputChannels& outputChannels = vgmData.GetOutputChannels();
+	const VGMOutputChannels& outputChannels = vgmData.GetOutputChannels();
 
 	videoDevice.DestroyFont(font);
 	font = nullptr;
@@ -52,7 +52,7 @@ void VGMMultiChannelWaveFormRenderer::OnNotifyPause(Obserable& observable)
 {
 	VGMData& vgmData = (VGMData&)observable;
 }
- 
+
 void VGMMultiChannelWaveFormRenderer::OnNotifyResume(Obserable& observable)
 {
 	VGMData& vgmData = (VGMData&)observable;
@@ -65,108 +65,108 @@ void VGMMultiChannelWaveFormRenderer::OnNotifyUpdate(Obserable& observable)
 	const VGMOutputChannels& outputChannels = vgmData.GetOutputChannels();
 
 
-		/////////////////////////////////////////////////////////////////////////////////
-		videoDevice.MatrixMode(VideoDeviceEnum::PROJECTION);
-		videoDevice.LoadIdentity();
-		videoDevice.Ortho2D(0, 1, 0, 1);
-		videoDevice.MatrixMode(VideoDeviceEnum::MODELVIEW);
+	/////////////////////////////////////////////////////////////////////////////////
+	videoDevice.MatrixMode(VideoDeviceEnum::PROJECTION);
+	videoDevice.LoadIdentity();
+	videoDevice.Ortho2D(0, 1, 0, 1);
+	videoDevice.MatrixMode(VideoDeviceEnum::MODELVIEW);
 
-		SetViewport(0, 0, 1, 1);
+	SetViewport(0, 0, 1, 1);
 
-		videoDevice.Disable(VideoDeviceEnum::BLEND);
+	videoDevice.Disable(VideoDeviceEnum::BLEND);
+	videoDevice.DrawWireRectangle
+	(
+		Vector2(0.0, 0.0), Color::Grey,
+		Vector2(1.0, 0.0), Color::Grey,
+		Vector2(1.0, 1.0), Color::Grey,
+		Vector2(0.0, 1.0), Color::Grey
+	);
+
+	/////////////////////////////////////////////////////////////////////////////////
+	int startX = 0;
+	int endX = VGM_SAMPLE_BUFFER_SIZE; //sampleCount;
+	int divX = 20;
+
+	int startY = -32767; //sampleCount/2;
+	int endY = 32768; //sampleCount;
+	int divY = 3;
+
+	videoDevice.MatrixMode(VideoDeviceEnum::PROJECTION);
+	videoDevice.LoadIdentity();
+	videoDevice.Ortho2D(startX, endX, startY, endY);
+	videoDevice.MatrixMode(VideoDeviceEnum::MODELVIEW);
+
+	//////////////////////////////////////////////////////////////////////////////
+	// draw grid
+	videoDevice.Enable(VideoDeviceEnum::BLEND);
+	videoDevice.BlendFunc(VideoDeviceEnum::SRC_ALPHA, VideoDeviceEnum::ONE_MINUS_SRC_ALPHA);
+
+	for (int ch = 0; ch < 16; ch++)
+	{
+		float channelViewportWidth = 1.0f / 4;
+		float channelViewportHeight = 1.0f / 4;
+
+		int x = ch % 4;
+		int y = ch / 4;
+
+		SetViewport(x * channelViewportWidth, y * channelViewportHeight, channelViewportWidth, channelViewportHeight);
+
+		for (UINT32 i = startX; i < endX; i += (endX - startX) / divX)
+		{
+			videoDevice.DrawLine(Vector2(i, startY), skin.gridColor, Vector2(i, endY), skin.gridColor);
+		}
+		for (UINT32 i = startY; i < endY; i += (endY - startY) / 10)
+		{
+			videoDevice.DrawLine(Vector2(startX, i), skin.gridColor, Vector2(endX, i), skin.gridColor);
+		}
+
 		videoDevice.DrawWireRectangle
 		(
-			Vector2(0.0, 0.0), Color::Grey,
-			Vector2(1.0, 0.0), Color::Grey,
-			Vector2(1.0, 1.0), Color::Grey,
-			Vector2(0.0, 1.0), Color::Grey
+			Vector2(startX, startY), Color::Grey,
+			Vector2(startX, endY), Color::Grey,
+			Vector2(endX, endY), Color::Grey,
+			Vector2(endX, startY), Color::Grey
 		);
+	}
 
-		/////////////////////////////////////////////////////////////////////////////////
-		int startX = 0;
-		int endX = VGM_SAMPLE_BUFFER_SIZE; //sampleCount;
-		int divX = 20;
+	//////////////////////////////////////////////////////////////////////////////
+	// draw channel	
+	for (int ch = 0; ch < outputChannels.GetChannelsCount(); ch++)
+	{
+		float channelViewportWidth = 1.0f / 4;
+		float channelViewportHeight = 1.0f / 4;
 
-		int startY = -32767; //sampleCount/2;
-		int endY = 32768; //sampleCount;
-		int divY = 3;
+		int x = ch % 4;
+		int y = ch / 4;
 
-		videoDevice.MatrixMode(VideoDeviceEnum::PROJECTION);
-		videoDevice.LoadIdentity();
-		videoDevice.Ortho2D(startX, endX, startY, endY);
-		videoDevice.MatrixMode(VideoDeviceEnum::MODELVIEW);
+		float vx = x * channelViewportWidth;
+		float vy = y * channelViewportHeight;
+		float vw = channelViewportWidth;
+		float vh = channelViewportHeight;
 
-		//////////////////////////////////////////////////////////////////////////////
-		// draw grid
-		videoDevice.Enable(VideoDeviceEnum::BLEND);
-		videoDevice.BlendFunc(VideoDeviceEnum::SRC_ALPHA, VideoDeviceEnum::ONE_MINUS_SRC_ALPHA);
+		SetViewport(vx, vy, vw, vh);
 
-		for (int ch = 0; ch < 16; ch++)
+		float i = ((float)(ch % 3) + 3) / 5;
+		// Color c = Color(48.0f * i / 255.0f, 19.0f * i / 255.0f, 210.0f * i / 255.0f, 1.0f);
+		Color c = Color::BrightCyan;
+		for (UINT32 i = startX; i < endX - 3; i += 3)
 		{
-			float channelViewportWidth = 1.0f / 4;
-			float channelViewportHeight = 1.0f / 4;
-
-			int x = ch % 4;
-			int y = ch / 4;
-
-			SetViewport(x * channelViewportWidth, y * channelViewportHeight, channelViewportWidth, channelViewportHeight);
-			
-			for (UINT32 i = startX; i < endX; i += (endX - startX) / divX)
-			{
-				videoDevice.DrawLine(Vector2(i, startY), skin.gridColor, Vector2(i, endY), skin.gridColor);
-			}
-			for (UINT32 i = startY; i < endY; i += (endY - startY) / 10)
-			{
-				videoDevice.DrawLine(Vector2(startX, i), skin.gridColor, Vector2(endX, i), skin.gridColor);
-			}
-
-			videoDevice.DrawWireRectangle
-			(
-				Vector2(startX, startY), Color::Grey,
-				Vector2(startX, endY), Color::Grey,
-				Vector2(endX, endY), Color::Grey,
-				Vector2(endX, startY), Color::Grey
-			);
+			FLOAT32 y0 = outputChannels.GetChannelLeftSample(ch, i + 0) * waveScale;
+			FLOAT32 y1 = outputChannels.GetChannelLeftSample(ch, i + 3) * waveScale;
+			videoDevice.DrawLine(Vector2(i, y0), c, Vector2(i + 3, y1), c);
 		}
+	}
 
-		//////////////////////////////////////////////////////////////////////////////
-		// draw channel	
-		for (int ch = 0; ch < outputChannels.GetChannelsCount(); ch++)
-		{
-			float channelViewportWidth  = 1.0f / 4;
-			float channelViewportHeight = 1.0f / 4;
+	//////////////////////////////////////////////////////////////////////////////
+	// Draw Name
+	videoDevice.MatrixMode(VideoDeviceEnum::PROJECTION);
+	videoDevice.LoadIdentity();
+	videoDevice.Ortho2D(0, region.w, 0, region.h);
+	videoDevice.MatrixMode(VideoDeviceEnum::MODELVIEW);
+	SetViewport(0, 0, 1, 1);
 
-			int x = ch % 4;
-			int y = ch / 4;
-
-			float vx = x * channelViewportWidth;
-			float vy = y * channelViewportHeight;
-			float vw = channelViewportWidth;
-			float vh = channelViewportHeight;
-
-			SetViewport(vx, vy, vw, vh);
-
-			float i = ((float)(ch % 3) + 3) / 5;
-			// Color c = Color(48.0f * i / 255.0f, 19.0f * i / 255.0f, 210.0f * i / 255.0f, 1.0f);
-			Color c = Color::BrightCyan;
-			for (UINT32 i = startX; i < endX - 3; i += 3)
-			{
-				UINT32 y0 = outputChannels.GetChannelLeftSample(ch, i + 0) * waveScale;
-				UINT32 y1 = outputChannels.GetChannelLeftSample(ch, i + 3) * waveScale;
-				videoDevice.DrawLine(Vector2(i, y0), c, Vector2(i + 3, y1), c);
-			}
-		}
-
-		//////////////////////////////////////////////////////////////////////////////
-		// Draw Name
-		videoDevice.MatrixMode(VideoDeviceEnum::PROJECTION);
-		videoDevice.LoadIdentity();
-		videoDevice.Ortho2D(0, region.w, 0, region.h);
-		videoDevice.MatrixMode(VideoDeviceEnum::MODELVIEW);
-		SetViewport(0, 0, 1, 1);
-
-		videoDevice.SetFont(font);
-		videoDevice.SetFontScale(1.0);
-		videoDevice.SetFontColor(Color::BrightCyan);
-		videoDevice.DrawText(name.c_str(), 0, region.h - font->GetSize());
+	videoDevice.SetFont(font);
+	videoDevice.SetFontScale(1.0);
+	videoDevice.SetFontColor(Color::BrightCyan);
+	videoDevice.DrawText(name.c_str(), 0, region.h - font->GetSize());
 }

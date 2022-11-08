@@ -68,23 +68,6 @@ void VGMSpectrumRenderer::OnNotifyUpdate(Obserable& observable)
 
 
 	/////////////////////////////////////////////////////////////////////////////////
-	videoDevice.MatrixMode(VideoDeviceEnum::PROJECTION);
-	videoDevice.LoadIdentity();
-	videoDevice.Ortho2D(0, 1, 0, 1);
-	videoDevice.MatrixMode(VideoDeviceEnum::MODELVIEW);
-
-	SetViewport(0, 0, 1, 1);
-
-	videoDevice.Disable(VideoDeviceEnum::BLEND);
-	videoDevice.DrawWireRectangle
-	(
-		Vector2(0, 0), Color::Grey,
-		Vector2(1, 0), Color::Grey,
-		Vector2(1, 1), Color::Grey,
-		Vector2(0, 1), Color::Grey
-	);
-
-	/////////////////////////////////////////////////////////////////////////////////
 	int fftSampleCount = skin.numColumns * 2;
 	int startX = 0;// ;
 	int endX = fftSampleCount / 2;
@@ -242,4 +225,29 @@ void VGMSpectrumRenderer::OnNotifyUpdate(Obserable& observable)
 	videoDevice.SetFontColor(Color::White);
 	videoDevice.SetFontScale(1.0);
 	videoDevice.DrawText(name.c_str(), 0, region.h - 12);
+
+	/////////////////////////////////////////////////////////////////////////////////
+	videoDevice.MatrixMode(VideoDeviceEnum::PROJECTION);
+	videoDevice.LoadIdentity();
+	videoDevice.Ortho2D(0, 1, 0, 1);
+	videoDevice.MatrixMode(VideoDeviceEnum::MODELVIEW);
+
+	SetViewport(0, 0, 1, 1);
+
+	videoDevice.Disable(VideoDeviceEnum::BLEND);
+	videoDevice.DrawWireRectangle
+	(
+		Vector2(0, 0), Color::Grey,
+		Vector2(0.5, 0), Color::Grey,
+		Vector2(0.5, 1), Color::Grey,
+		Vector2(0, 1), Color::Grey
+	);
+
+	videoDevice.DrawWireRectangle
+	(
+		Vector2(0.5, 0), Color::Grey,
+		Vector2(1.0, 0), Color::Grey,
+		Vector2(1.0, 1), Color::Grey,
+		Vector2(0.5, 1), Color::Grey
+	);
 }

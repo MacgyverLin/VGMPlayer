@@ -117,10 +117,18 @@ void VGMWaveFormRenderer::OnNotifyUpdate(Obserable& observable)
 		const Color& c = (ch % 2) ? skin.rightColor : skin.leftColor;
 		for (UINT32 i = startX; i < endX - 3; i += 3)
 		{
-			UINT32 y0 = outputChannels.GetOutputSample(ch, i + 0) * waveScale;
-			UINT32 y1 = outputChannels.GetOutputSample(ch, i + 3) * waveScale;
+			FLOAT32 y0 = outputChannels.GetOutputSample(ch, i + 0) * waveScale;
+			FLOAT32 y1 = outputChannels.GetOutputSample(ch, i + 3) * waveScale;
 			videoDevice.DrawLine(Vector2(i, y0), c, Vector2(i + 3, y1), c);
 		}
+
+		videoDevice.DrawWireRectangle
+		(
+			Vector2(startX, startY), Color::Grey,
+			Vector2(startX, endY), Color::Grey,
+			Vector2(endX, endY), Color::Grey,
+			Vector2(endX, startY), Color::Grey
+		);
 	}
 
 	//////////////////////////////////////////////////////////////////////////////
