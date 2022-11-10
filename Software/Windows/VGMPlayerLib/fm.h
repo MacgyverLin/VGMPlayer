@@ -145,7 +145,7 @@ void ym2203_reset_chip(void *chip);
 /*
 ** update one of chip
 */
-void ym2203_update_one(void *chip, FMSAMPLE **buffer, int length);
+void ym2203_update_one(void *chip, FMSAMPLE **buffer, int length, stream_sample_t** channeoutputs, int channelcount);
 
 /*
 ** Write
@@ -181,7 +181,7 @@ void * ym2608_init(void *param, int baseclock, int rate,
                FM_TIMERHANDLER TimerHandler,FM_IRQHANDLER IRQHandler, const ssg_callbacks *ssg);
 void ym2608_shutdown(void *chip);
 void ym2608_reset_chip(void *chip);
-void ym2608_update_one(void *chip, FMSAMPLE **buffer, int length);
+void ym2608_update_one(void *chip, FMSAMPLE **buffer, int length, stream_sample_t** channeoutputs, int channelcount);
 
 int ym2608_write(void *chip, int a,unsigned char v);
 unsigned char ym2608_read(void *chip,int a);
@@ -202,10 +202,10 @@ void * ym2610_init(void *param, int baseclock, int rate,
                FM_TIMERHANDLER TimerHandler,FM_IRQHANDLER IRQHandler, const ssg_callbacks *ssg);
 void ym2610_shutdown(void *chip);
 void ym2610_reset_chip(void *chip);
-void ym2610_update_one(void *chip, FMSAMPLE **buffer, int length);
+void ym2610_update_one(void *chip, FMSAMPLE **buffer, int length, stream_sample_t** channeoutputs, int channelcount);
 
 #if BUILD_YM2610B
-void ym2610b_update_one(void *chip, FMSAMPLE **buffer, int length);
+void ym2610b_update_one(void *chip, FMSAMPLE **buffer, int length, stream_sample_t** channeoutputs, int channelcount);
 #endif /* BUILD_YM2610B */
 
 int ym2610_write(void *chip, int a,unsigned char v);
@@ -225,7 +225,7 @@ void * ym2612_init(void *param, int baseclock, int rate,
                FM_TIMERHANDLER TimerHandler,FM_IRQHANDLER IRQHandler);
 void ym2612_shutdown(void *chip);
 void ym2612_reset_chip(void *chip);
-void ym2612_update_one(void *chip, FMSAMPLE **buffer, int length);
+void ym2612_update_one(void *chip, FMSAMPLE **buffer, int length, stream_sample_t** channeoutputs, int channelcount);
 
 int ym2612_write(void *chip, int a,unsigned char v);
 unsigned char ym2612_read(void *chip,int a);

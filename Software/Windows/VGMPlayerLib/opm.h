@@ -271,7 +271,7 @@ typedef struct {
     opm_writebuf writebuf[OPN_WRITEBUF_SIZE];
 } opm_t;
 
-void OPM_GenerateStream(opm_t *chip, int32_t **sndptr, uint32_t numsamples);
+void OPM_GenerateStream(opm_t *chip, int32_t **sndptr, uint32_t numsamples, int32_t** channeoutputs, uint32_t channelcount);
 void OPM_Reset(opm_t* chip, uint32_t rate, uint32_t clock);
 void OPM_WriteBuffered(opm_t* chip, uint32_t port, uint8_t data);
 void OPM_SetMute(opm_t *chip, uint32_t mute);

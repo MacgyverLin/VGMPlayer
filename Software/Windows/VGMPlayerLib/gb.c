@@ -1109,7 +1109,7 @@ INLINE UINT32 gb_noise_period_cycles(gb_sound_t *gb)
 }
 
 
-void gameboy_update(UINT8 ChipID, stream_sample_t **outputs, int samples)
+void gameboy_update(UINT8 ChipID, stream_sample_t **outputs, int samples, stream_sample_t** channeoutputs, int channelcount)
 {
 	gb_sound_t *gb = &GBSoundData[ChipID];
 	stream_sample_t sample, left, right;

@@ -10,7 +10,7 @@
 
 #define QSOUND_CLOCK    4000000   /* default 4MHz clock */
 
-void qsoundm_update(UINT8 ChipID, stream_sample_t **outputs, int samples);
+void qsoundm_update(UINT8 ChipID, stream_sample_t **outputs, int samples, stream_sample_t** channeoutputs, int channelcount);
 int device_start_qsoundm(UINT8 ChipID, int clock, UINT8 CHIP_SAMPLING_MODE, INT32 CHIP_SAMPLE_RATE, UINT32 SampleRate);
 void device_stop_qsoundm(UINT8 ChipID);
 void device_reset_qsoundm(UINT8 ChipID);

@@ -2,7 +2,7 @@
 
 #pragma once
 
-void c140_update(UINT8 ChipID, stream_sample_t **outputs, int samples);
+void c140_update(UINT8 ChipID, stream_sample_t **outputs, int samples, stream_sample_t** channeoutputs, int channelcount);
 int device_start_c140(UINT8 ChipID, int clock, int banking_type, UINT8 CHIP_SAMPLING_MODE, INT32 CHIP_SAMPLE_RATE, UINT32 SampleRate);
 void device_stop_c140(UINT8 ChipID);
 void device_reset_c140(UINT8 ChipID);

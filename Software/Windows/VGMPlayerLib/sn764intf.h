@@ -8,7 +8,7 @@ WRITE8_DEVICE_HANDLER( ym2413_data_port_w );
 DEVICE_GET_INFO( ym2413 );
 #define SOUND_YM2413 DEVICE_GET_INFO_NAME( ym2413 )*/
 
-void sn764xx_stream_update(UINT8 ChipID, stream_sample_t **outputs, int samples);
+void sn764xx_stream_update(UINT8 ChipID, stream_sample_t **outputs, int samples, stream_sample_t** channeoutputs, int channelcount);
 
 int device_start_sn764xx(UINT8 ChipID, int clock, int shiftregwidth, int noisetaps,
 						 int negate, int stereo, int clockdivider, int freq0, UINT8 CHIP_SAMPLING_MODE, INT32 CHIP_SAMPLE_RATE, UINT32 SampleRate);

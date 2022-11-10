@@ -23,18 +23,18 @@ static UINT8 EMU_CORE = 0x00;
 #define MAX_CHIPS	0x02
 static c6280_state C6280Data[MAX_CHIPS];
 
-void c6280_update(UINT8 ChipID, stream_sample_t **outputs, int samples)
+void c6280_update(UINT8 ChipID, stream_sample_t **outputs, int samples, stream_sample_t** channeoutputs, int channelcount)
 {
 	c6280_state* info = &C6280Data[ChipID];
 	switch(EMU_CORE)
 	{
 #ifdef ENABLE_ALL_CORES
 	case EC_MAME:
-		c6280m_update(info->chip, outputs, samples);
+		c6280m_update(info->chip, outputs, samples, channeoutputs, channelcount);
 		break;
 #endif
 	case EC_OOTAKE:
-		PSG_Mix(info->chip, outputs, samples);
+		PSG_Mix(info->chip, outputs, samples, channeoutputs, channelcount);
 		break;
 	}
 }

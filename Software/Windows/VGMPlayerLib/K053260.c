@@ -124,7 +124,7 @@ INLINE int limit( int val, int max, int min )
 #define MINOUT -0x8000
 
 //static STREAM_UPDATE( k053260_update )
-void k053260_update(UINT8 ChipID, stream_sample_t **outputs, int samples)
+void k053260_update(UINT8 ChipID, stream_sample_t **outputs, int samples, stream_sample_t** channeoutputs, int channelcount)
 {
 	static const INT8 dpcmcnv[] = { 0,1,2,4,8,16,32,64, -128, -64, -32, -16, -8, -4, -2, -1};
 

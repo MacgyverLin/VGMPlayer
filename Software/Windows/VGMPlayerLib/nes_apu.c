@@ -653,7 +653,7 @@ logerror("invalid apu write: $%02X at $%04X\n", value, address);
 
 /* UPDATE SOUND BUFFER USING CURRENT DATA */
 //INLINE void apu_update(nesapu_state *info, stream_sample_t *buffer16, int samples)
-INLINE void apu_update(nesapu_state *info, stream_sample_t **buffer16, int samples)
+INLINE void apu_update(nesapu_state *info, stream_sample_t **buffer16, int samples, stream_sample_t** channeoutputs, int channelcount)
 {
 	int accum;
 	stream_sample_t* bufL = buffer16[0];
@@ -746,12 +746,12 @@ void nes_psg_w(void* chip, offs_t offset, UINT8 data)
 
 /* UPDATE APU SYSTEM */
 //static STREAM_UPDATE( nes_psg_update_sound )
-void nes_psg_update_sound(void* chip, stream_sample_t **outputs, int samples)
+void nes_psg_update_sound(void* chip, stream_sample_t **outputs, int samples, stream_sample_t** channeoutputs, int channelcount)
 {
 	//nesapu_state *info = (nesapu_state *)param;
 	nesapu_state *info = (nesapu_state*)chip;
 	//apu_update(info, outputs[0], samples);
-	apu_update(info, outputs, samples);
+	apu_update(info, outputs, samples, channeoutputs, channelcount);
 }
 
 

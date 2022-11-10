@@ -116,11 +116,11 @@ static void Y8950KeyboardHandler_w(void *param,unsigned char data)
 }
 
 //static STREAM_UPDATE( y8950_stream_update )
-void y8950_stream_update(UINT8 ChipID, stream_sample_t **outputs, int samples)
+void y8950_stream_update(UINT8 ChipID, stream_sample_t **outputs, int samples, stream_sample_t** channeoutputs, int channelcount)
 {
 	//y8950_state *info = (y8950_state *)param;
 	y8950_state *info = &Y8950Data[ChipID];
-	y8950_update_one(info->chip, outputs, samples);
+	y8950_update_one(info->chip, outputs, samples, channeoutputs, channelcount);
 }
 
 static void _stream_update(void *param/*, int interval*/)
@@ -128,7 +128,7 @@ static void _stream_update(void *param/*, int interval*/)
 	y8950_state *info = (y8950_state *)param;
 	//stream_update(info->stream);
 	
-	y8950_update_one(info->chip, DUMMYBUF, 0);
+	y8950_update_one(info->chip, DUMMYBUF, 0, DUMMYBUF, 0);
 }
 
 

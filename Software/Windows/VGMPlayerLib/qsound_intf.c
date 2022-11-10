@@ -148,16 +148,16 @@ UINT8 qsound_r(UINT8 ChipID, offs_t offset)
 	return 0;
 }
 
-void qsound_update(UINT8 ChipID, stream_sample_t **outputs, int samples)
+void qsound_update(UINT8 ChipID, stream_sample_t **outputs, int samples, stream_sample_t** channeoutputs, int channelcount)
 {
 	switch(EMU_CORE)
 	{
 #ifdef ENABLE_ALL_CORES
 	case EC_MAME:
-		qsoundm_update(ChipID, outputs, samples); return;
+		qsoundm_update(ChipID, outputs, samples, channeoutputs, channelcount); return;
 #endif
 	case EC_CTR:
-		qsoundc_update(ChipID, outputs, samples); return;
+		qsoundc_update(ChipID, outputs, samples, channeoutputs, channelcount); return;
 	}
 }
 

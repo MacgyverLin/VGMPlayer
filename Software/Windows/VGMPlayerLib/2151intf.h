@@ -17,7 +17,7 @@ WRITE8_DEVICE_HANDLER( ym2151_data_port_w );
 
 DEVICE_GET_INFO( ym2151 );
 #define SOUND_YM2151 DEVICE_GET_INFO_NAME( ym2151 )*/
-void ym2151_update(UINT8 ChipID, stream_sample_t **outputs, int samples);
+void ym2151_update(UINT8 ChipID, stream_sample_t **outputs, int samples, stream_sample_t** channeoutputs, int channelcount);
 
 int device_start_ym2151(UINT8 ChipID, int clock, UINT8 CHIP_SAMPLING_MODE, INT32 CHIP_SAMPLE_RATE, UINT32 SampleRate);
 void device_stop_ym2151(UINT8 ChipID);

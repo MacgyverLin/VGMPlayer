@@ -73,7 +73,7 @@ static ga20_state GA20Data[MAX_CHIPS];
 
 
 //static STREAM_UPDATE( IremGA20_update )
-void IremGA20_update(UINT8 ChipID, stream_sample_t **outputs, int samples)
+void IremGA20_update(UINT8 ChipID, stream_sample_t **outputs, int samples, stream_sample_t** channeoutputs, int channelcount)
 {
 	//ga20_state *chip = (ga20_state *)param;
 	ga20_state *chip = &GA20Data[ChipID];

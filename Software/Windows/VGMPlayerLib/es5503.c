@@ -165,7 +165,7 @@ static void es5503_halt_osc(ES5503Chip *chip, int onum, int type, UINT32 *accumu
 }
 
 //static STREAM_UPDATE( es5503_pcm_update )
-void es5503_pcm_update(UINT8 ChipID, stream_sample_t **outputs, int samples)
+void es5503_pcm_update(UINT8 ChipID, stream_sample_t **outputs, int samples, stream_sample_t** channeoutputs, int channelcount)
 {
 	// Note: The advantage of NOT using this buffer is not only less RAM usage,
 	//       but also a huge speedup. This is, because the array is not marked

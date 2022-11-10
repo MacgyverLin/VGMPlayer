@@ -355,7 +355,7 @@ static void qsound_set_command(qsound_state *chip, UINT8 address, UINT16 data)
 
 
 //static STREAM_UPDATE( qsoundm_update )
-void qsoundm_update(UINT8 ChipID, stream_sample_t **outputs, int samples)
+void qsoundm_update(UINT8 ChipID, stream_sample_t **outputs, int samples, stream_sample_t** channeoutputs, int channelcount)
 {
 	//qsound_state *chip = (qsound_state *)param;
 	qsound_state *chip = &QSoundData[ChipID];

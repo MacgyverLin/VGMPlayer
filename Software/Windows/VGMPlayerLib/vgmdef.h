@@ -23,7 +23,7 @@ typedef UINT32	offs_t;
 
 /* stream_sample_t is used to represent a single sample in a sound stream */
 typedef INT32 stream_sample_t;
-typedef void (*strm_func)(UINT8 ChipID, stream_sample_t** outputs, int samples);
+typedef void (*strm_func)(UINT8 ChipID, stream_sample_t** outputs, int samples, stream_sample_t** channeoutputs, int channelcount);
 
 extern stream_sample_t* DUMMYBUF[];
 typedef void (*SRATE_CALLBACK)(void*, UINT32);
@@ -58,6 +58,8 @@ extern char* FindFile(const char* FileName);
 #define VGM_OUTPUT_BUFFER_COUNT		4   // 64 Frames
 
 #define VGM_NOTE_BUFFER_SIZE		(64)
+
+#define CHANNEL_BUFFER_COUNT		(32)
 
 #define VGMPlayer_MIN(a, b) ((a)<(b)) ? (a) : (b)
 #define VGMPlayer_MAX(a, b) ((a)>(b)) ? (a) : (b)

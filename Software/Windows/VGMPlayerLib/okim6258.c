@@ -168,7 +168,7 @@ static INT16 clock_adpcm(okim6258_state *chip, UINT8 nibble)
 ***********************************************************************************************/
 
 //static STREAM_UPDATE( okim6258_update )
-void okim6258_update(UINT8 ChipID, stream_sample_t **outputs, int samples)
+void okim6258_update(UINT8 ChipID, stream_sample_t **outputs, int samples, stream_sample_t** channeoutputs, int channelcount)
 {
 	//okim6258_state *chip = (okim6258_state *)param;
 	okim6258_state *chip = &OKIM6258Data[ChipID];

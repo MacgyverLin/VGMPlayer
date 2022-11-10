@@ -100,7 +100,7 @@ static void TimerHandler(void *param,int c,int period)
 
 
 //static STREAM_UPDATE( ym3812_stream_update )
-void ym3812_stream_update(UINT8 ChipID, stream_sample_t **outputs, int samples)
+void ym3812_stream_update(UINT8 ChipID, stream_sample_t **outputs, int samples, stream_sample_t** channeoutputs, int channelcount)
 {
 	//ym3812_state *info = (ym3812_state *)param;
 	ym3812_state *info = &YM3812Data[ChipID];
@@ -108,11 +108,11 @@ void ym3812_stream_update(UINT8 ChipID, stream_sample_t **outputs, int samples)
 	{
 #ifdef ENABLE_ALL_CORES
 	case EC_MAME:
-		ym3812_update_one(info->chip, outputs, samples);
+		ym3812_update_one(info->chip, outputs, samples, channeoutputs, channelcount);
 		break;
 #endif
 	case EC_DBOPL:
-		adlib_OPL2_getsample(info->chip, outputs, samples);
+		adlib_OPL2_getsample(info->chip, outputs, samples, channeoutputs, channelcount);
 		break;
 	}
 }
@@ -126,11 +126,11 @@ static void _stream_update(void * param/*, int interval*/)
 	{
 #ifdef ENABLE_ALL_CORES
 	case EC_MAME:
-		ym3812_update_one(info->chip, DUMMYBUF, 0);
+		ym3812_update_one(info->chip, DUMMYBUF, 0, DUMMYBUF, 0);
 		break;
 #endif
 	case EC_DBOPL:
-		adlib_OPL2_getsample(info->chip, DUMMYBUF, 0);
+		adlib_OPL2_getsample(info->chip, DUMMYBUF, 0, DUMMYBUF, 0);
 		break;
 	}
 }

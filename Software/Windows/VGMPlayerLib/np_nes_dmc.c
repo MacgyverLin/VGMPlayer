@@ -447,7 +447,7 @@ static void Tick(NES_DMC* dmc, UINT32 clocks)
 	dmc->out[2] = calc_dmc(dmc, clocks);
 }
 
-UINT32 NES_DMC_np_Render(void* chip, INT32 b[2])
+UINT32 NES_DMC_np_Render(void* chip, INT32 b[2], stream_sample_t** channeoutputs, int channelcount)
 {
 	NES_DMC* dmc = (NES_DMC*)chip;
 	UINT32 clocks;

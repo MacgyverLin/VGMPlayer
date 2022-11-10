@@ -1238,7 +1238,7 @@ void ADLIBEMU(write_index)(void *chip, UINT32 port, UINT8 val)
 #endif
 
 //void adlib_getsample(Bit16s* sndptr, Bits numsamples)
-void ADLIBEMU(getsample)(void *chip, INT32** sndptr, INT32 numsamples)
+void ADLIBEMU(getsample)(void *chip, INT32** sndptr, INT32 numsamples, INT32** channeoutputs, INT32 channelcount)
 {
 	OPL_DATA* OPL = (OPL_DATA*)chip;
 	

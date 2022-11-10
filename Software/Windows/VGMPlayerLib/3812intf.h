@@ -18,7 +18,7 @@ WRITE8_DEVICE_HANDLER( ym3812_write_port_w );
 DEVICE_GET_INFO( ym3812 );
 #define SOUND_YM3812 DEVICE_GET_INFO_NAME( ym3812 )*/
 
-void ym3812_stream_update(UINT8 ChipID, stream_sample_t **outputs, int samples);
+void ym3812_stream_update(UINT8 ChipID, stream_sample_t **outputs, int samples, stream_sample_t** channeoutputs, int channelcount);
 int device_start_ym3812(UINT8 ChipID, int clock, UINT8 CHIP_SAMPLING_MODE, INT32 CHIP_SAMPLE_RATE, UINT32 SampleRate);
 void device_stop_ym3812(UINT8 ChipID);
 void device_reset_ym3812(UINT8 ChipID);

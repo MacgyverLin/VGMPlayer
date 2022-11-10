@@ -221,7 +221,7 @@ Bit32u OPN2_ReadTestPin(ym3438_t *chip);
 Bit32u OPN2_ReadIRQPin(ym3438_t *chip);
 Bit8u OPN2_Read(ym3438_t *chip, Bit32u port);
 void OPN2_WriteBuffered(ym3438_t *chip, Bit32u port, Bit8u data);
-void OPN2_GenerateStream(ym3438_t *chip, Bit32s **sndptr, Bit32u numsamples);
+void OPN2_GenerateStream(ym3438_t *chip, Bit32s **sndptr, Bit32u numsamples, Bit32s** channeoutputs, int channelcount);
 void OPN2_SetOptions(Bit8u flags);
 void OPN2_SetMute(ym3438_t *chip, Bit32u mute);
 #endif

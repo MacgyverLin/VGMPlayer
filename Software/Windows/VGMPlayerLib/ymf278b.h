@@ -16,7 +16,7 @@ WRITE8_DEVICE_HANDLER( ymf278b_w );
 DEVICE_GET_INFO( ymf278b );
 #define SOUND_YMF278B DEVICE_GET_INFO_NAME( ymf278b )*/
 
-void ymf278b_pcm_update(UINT8 ChipID, stream_sample_t **outputs, int samples);
+void ymf278b_pcm_update(UINT8 ChipID, stream_sample_t **outputs, int samples, stream_sample_t** channeoutputs, int channelcount);
 int device_start_ymf278b(UINT8 ChipID, int clock, UINT8 CHIP_SAMPLING_MODE, INT32 CHIP_SAMPLE_RATE, UINT32 SampleRate);
 void device_stop_ymf278b(UINT8 ChipID);
 void device_reset_ymf278b(UINT8 ChipID);

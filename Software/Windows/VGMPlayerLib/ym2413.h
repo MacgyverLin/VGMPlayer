@@ -33,7 +33,7 @@ void ym2413_shutdown(void *chip);
 void ym2413_reset_chip(void *chip);
 void ym2413_write(void *chip, int a, int v);
 unsigned char ym2413_read(void *chip, int a);
-void ym2413_update_one(void *chip, SAMP **buffers, int length);
+void ym2413_update_one(void *chip, SAMP **buffers, int length, stream_sample_t** channeoutputs, int channelcount);
 
 typedef void (*OPLL_UPDATEHANDLER)(void *param,int min_interval_us);
 

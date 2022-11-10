@@ -628,7 +628,7 @@ int ymf278b_anyActive(YMF278BChip* chip)
 	return 0;
 }
 
-void ymf278b_pcm_update(UINT8 ChipID, stream_sample_t** outputs, int samples)
+void ymf278b_pcm_update(UINT8 ChipID, stream_sample_t** outputs, int samples, stream_sample_t** channeoutputs, int channelcount)
 {
 	YMF278BChip* chip = &YMF278BData[ChipID];
 	int i;
@@ -639,7 +639,7 @@ void ymf278b_pcm_update(UINT8 ChipID, stream_sample_t** outputs, int samples)
 	if (chip->FMEnabled)
 	{
 		/* memset is done by ymf262_update */
-		ymf262_update_one(chip->fmchip, outputs, samples);
+		ymf262_update_one(chip->fmchip, outputs, samples, channeoutputs, channelcount);
 		// apply FM mixing level
 		vl = mix_level[chip->fm_l] - 8;	vl = chip->volume[vl];
 		vr = mix_level[chip->fm_r] - 8;	vr = chip->volume[vr];

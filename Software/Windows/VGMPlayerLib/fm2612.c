@@ -2241,7 +2241,7 @@ static void init_tables(void)
 /*******************************************************************************/
 
 /* Generate samples for one of the YM2612s */
-void ym2612_update_one(void *chip, FMSAMPLE **buffer, int length)
+void ym2612_update_one(void *chip, FMSAMPLE **buffer, int length, stream_sample_t** channeoutputs, int channelcount)
 {
 	YM2612 *F2612 = (YM2612 *)chip;
 	FM_OPN *OPN   = &F2612->OPN;

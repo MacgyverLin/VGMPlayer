@@ -51,7 +51,7 @@ DECLARE_LEGACY_SOUND_DEVICE(NES, nesapu);*/
 UINT8 nes_psg_r(void* chip, offs_t offset);
 void nes_psg_w(void* chip, offs_t offset, UINT8 data);
 
-void nes_psg_update_sound(void* chip, stream_sample_t **outputs, int samples);
+void nes_psg_update_sound(void* chip, stream_sample_t **outputs, int samples, stream_sample_t** channeoutputs, int channelcount);
 void* device_start_nesapu(int clock, int rate, UINT8 CHIP_SAMPLING_MODE, INT32 CHIP_SAMPLE_RATE, UINT32 SampleRate);
 void device_stop_nesapu(void* chip);
 void device_reset_nesapu(void* chip);

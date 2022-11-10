@@ -98,7 +98,7 @@ static void make_mixer_table(/*running_machine *machine,*/ k051649_state *info, 
 
 /* generate sound to the mix buffer */
 //static STREAM_UPDATE( k051649_update )
-void k051649_update(UINT8 ChipID, stream_sample_t **outputs, int samples)
+void k051649_update(UINT8 ChipID, stream_sample_t **outputs, int samples, stream_sample_t** channeoutputs, int channelcount)
 {
 	//k051649_state *info = (k051649_state *)param;
 	k051649_state *info = &SCC1Data[ChipID];

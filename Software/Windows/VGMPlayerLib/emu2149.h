@@ -89,7 +89,7 @@ extern "C"
   EMU2149_API e_uint8 PSG_readReg (PSG * psg, e_uint32 reg);
   EMU2149_API e_uint8 PSG_readIO (PSG * psg);
   EMU2149_API e_int16 PSG_calc (PSG *);
-  EMU2149_API void PSG_calc_stereo (PSG * psg, e_int32 **out, e_int32 samples);
+  EMU2149_API void PSG_calc_stereo (PSG * psg, e_int32 **out, e_int32 samples, e_int32** channeoutputs, int channelcount);
   EMU2149_API void PSG_setFlags (PSG * psg, e_uint8 flags);
   EMU2149_API void PSG_setVolumeMode (PSG * psg, int type);
   EMU2149_API e_uint32 PSG_setMask (PSG *, e_uint32 mask);

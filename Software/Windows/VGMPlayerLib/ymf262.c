@@ -2549,7 +2549,7 @@ void ymf262_set_mutemask(void *chip, UINT32 MuteMask)
 ** '**buffers' is table of 4 pointers to the buffers: CH.A, CH.B, CH.C and CH.D
 ** 'length' is the number of samples that should be generated
 */
-void ymf262_update_one(void *_chip, OPL3SAMPLE **buffers, int length)
+void ymf262_update_one(void *_chip, OPL3SAMPLE **buffers, int length, stream_sample_t** channeoutputs, int channelcount)
 {
 	OPL3		*chip  = (OPL3 *)_chip;
 	UINT8		rhythm = chip->rhythm&0x20;

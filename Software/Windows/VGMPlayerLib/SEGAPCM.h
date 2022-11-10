@@ -23,7 +23,7 @@ READ8_DEVICE_HANDLER( sega_pcm_r );
 DEVICE_GET_INFO( segapcm );
 #define SOUND_SEGAPCM DEVICE_GET_INFO_NAME( segapcm )*/
 
-void SEGAPCM_update(UINT8 ChipID, stream_sample_t **outputs, int samples);
+void SEGAPCM_update(UINT8 ChipID, stream_sample_t **outputs, int samples, stream_sample_t** channeoutputs, int channelcount);
 
 int device_start_segapcm(UINT8 ChipID, int clock, int intf_bank, UINT8 CHIP_SAMPLING_MODE, INT32 CHIP_SAMPLE_RATE, UINT32 SampleRate);
 void device_stop_segapcm(UINT8 ChipID);

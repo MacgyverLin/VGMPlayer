@@ -53,7 +53,7 @@ static ym2413_state YM2413Data[MAX_CHIPS];
 }*/
 
 #ifdef UNUSED_FUNCTION
-void YM2413DAC_update(int chip,stream_sample_t **inputs, stream_sample_t **_buffer,int length)
+void YM2413DAC_update(int chip,stream_sample_t **inputs, stream_sample_t **_buffer, int length)
 {
     INT16 *buffer = _buffer[0];
     static int out = 0;
@@ -66,7 +66,7 @@ void YM2413DAC_update(int chip,stream_sample_t **inputs, stream_sample_t **_buff
 }
 #endif
 
-static void _emu2413_calc_stereo(OPLL *opll, INT32 **out, int samples)
+static void _emu2413_calc_stereo(OPLL *opll, INT32 **out, int samples, stream_sample_t** channeoutputs, int channelcount)
 {
 	INT32 *bufL = out[0];
 	INT32 *bufR = out[1];
@@ -126,21 +126,21 @@ static void _emu2413_set_mute_mask(OPLL *opll, UINT32 MuteMask)
 }
 
 //static STREAM_UPDATE( ym2413_stream_update )
-void ym2413_stream_update(UINT8 ChipID, stream_sample_t **outputs, int samples)
+void ym2413_stream_update(UINT8 ChipID, stream_sample_t **outputs, int samples, stream_sample_t** channeoutputs, int channelcount)
 {
 	ym2413_state *info = &YM2413Data[ChipID];
 	switch(EMU_CORE)
 	{
 #ifdef ENABLE_ALL_CORES
 	case EC_MAME:
-		ym2413_update_one(info->chip, outputs, samples);
+		ym2413_update_one(info->chip, outputs, samples, channeoutputs, channelcount);
 		break;
 	case EC_NUKED:
-		OPLL_GenerateStream(info->chip, outputs, samples);
+		OPLL_GenerateStream(info->chip, outputs, samples, channeoutputs, channelcount);
 		break;
 #endif
 	case EC_EMU2413:
-		_emu2413_calc_stereo(info->chip, outputs, samples);
+		_emu2413_calc_stereo(info->chip, outputs, samples, channeoutputs, channelcount);
 		break;
 	}
 }
@@ -154,14 +154,14 @@ static void _stream_update(void *param, int interval)
 	{
 #ifdef ENABLE_ALL_CORES
 	case EC_MAME:
-		ym2413_update_one(info->chip, DUMMYBUF, 0);
+		ym2413_update_one(info->chip, DUMMYBUF, 0, DUMMYBUF, 0);
 		break;
 	case EC_NUKED:
-		// OPLL_GenerateStream(info->chip, DUMMYBUF, 0);
+		// OPLL_GenerateStream(info->chip, DUMMYBUF, 0, DUMMYBUF, 0);
 		break;
 #endif
 	case EC_EMU2413:
-		_emu2413_calc_stereo(info->chip, DUMMYBUF, 0);
+		_emu2413_calc_stereo(info->chip, DUMMYBUF, 0, DUMMYBUF, 0);
 		break;
 	}
 }

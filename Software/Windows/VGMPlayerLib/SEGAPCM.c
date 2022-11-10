@@ -49,7 +49,7 @@ static void sega_pcm_fwrite_romusage(UINT8 ChipID);
 }*/
 
 //static STREAM_UPDATE( SEGAPCM_update )
-void SEGAPCM_update(UINT8 ChipID, stream_sample_t **outputs, int samples)
+void SEGAPCM_update(UINT8 ChipID, stream_sample_t **outputs, int samples, stream_sample_t** channeoutputs, int channelcount)
 {
 	//segapcm_state *spcm = (segapcm_state *)param;
 	segapcm_state *spcm = &SPCMData[ChipID];

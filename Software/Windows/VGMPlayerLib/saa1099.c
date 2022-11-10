@@ -226,7 +226,7 @@ static void saa1099_envelope(saa1099_state *saa, int ch)
 
 
 //static STREAM_UPDATE( saa1099_update )
-void saa1099_update(UINT8 ChipID, stream_sample_t **outputs, int samples)
+void saa1099_update(UINT8 ChipID, stream_sample_t **outputs, int samples, stream_sample_t** channeoutputs, int channelcount)
 {
 	//saa1099_state *saa = (saa1099_state *)param;
 	saa1099_state *saa = &SAA1099Data[ChipID];

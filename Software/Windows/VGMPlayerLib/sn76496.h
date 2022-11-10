@@ -26,7 +26,7 @@ UINT8 sn76496_ready_r(void *chip, offs_t offset);
 void sn76496_write_reg(void *chip, offs_t offset, UINT8 data);
 void sn76496_stereo_w(void *chip, offs_t offset, UINT8 data);
 
-void SN76496Update(void *chip, stream_sample_t **outputs, int samples);
+void SN76496Update(void *chip, stream_sample_t **outputs, int samples, stream_sample_t** channeoutputs, int channelcount);
 unsigned long int sn76496_start(void **chip, int clock, int shiftregwidth, int noisetaps,
 								int negate, int stereo, int clockdivider, int freq0);
 void sn76496_shutdown(void *chip);

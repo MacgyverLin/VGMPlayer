@@ -2328,7 +2328,7 @@ void ym3812_set_update_handler(void *chip,OPL_UPDATEHANDLER UpdateHandler,void *
 ** '*buffer' is the output buffer pointer
 ** 'length' is the number of samples that should be generated
 */
-void ym3812_update_one(void *chip, OPLSAMPLE **buffer, int length)
+void ym3812_update_one(void *chip, OPLSAMPLE **buffer, int length, stream_sample_t** channeoutputs, int channelcount)
 {
 	FM_OPL		*OPL = (FM_OPL *)chip;
 	UINT8		rhythm = OPL->rhythm&0x20;
@@ -2463,7 +2463,7 @@ void ym3526_set_update_handler(void *chip,OPL_UPDATEHANDLER UpdateHandler,void *
 ** '*buffer' is the output buffer pointer
 ** 'length' is the number of samples that should be generated
 */
-void ym3526_update_one(void *chip, OPLSAMPLE **buffer, int length)
+void ym3526_update_one(void *chip, OPLSAMPLE **buffer, int length, stream_sample_t** channeoutputs, int channelcount)
 {
 	FM_OPL		*OPL = (FM_OPL *)chip;
 	UINT8		rhythm = OPL->rhythm&0x20;
@@ -2538,7 +2538,7 @@ static void Y8950_deltat_status_reset(void *chip, UINT8 changebits)
 	OPL_STATUS_RESET(Y8950, changebits);
 }
 
-void *y8950_init(UINT32 clock, UINT32 rate)
+void *y8950_init(UINT32 clock, UINT32 rate, UINT8 CHIP_SAMPLING_MODE, INT32 CHIP_SAMPLE_RATE, UINT32 SampleRate)
 {
 	/* emulator create */
 	FM_OPL *Y8950 = OPLCreate(clock,rate,OPL_TYPE_Y8950);
@@ -2648,7 +2648,7 @@ void y8950_write_pcmrom(void *chip, offs_t ROMSize, offs_t DataStart,
 ** '*buffer' is the output buffer pointer
 ** 'length' is the number of samples that should be generated
 */
-void y8950_update_one(void *chip, OPLSAMPLE **buffer, int length)
+void y8950_update_one(void *chip, OPLSAMPLE **buffer, int length, stream_sample_t** channeoutputs, int channelcount)
 {
 	int i;
 	FM_OPL		*OPL = (FM_OPL *)chip;

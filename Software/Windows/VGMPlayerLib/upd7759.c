@@ -504,7 +504,7 @@ static void advance_state(upd7759_state *chip)
 *************************************************************/
 
 //static STREAM_UPDATE( upd7759_update )
-void upd7759_update(UINT8 ChipID, stream_sample_t **outputs, int samples)
+void upd7759_update(UINT8 ChipID, stream_sample_t **outputs, int samples, stream_sample_t** channeoutputs, int channelcount)
 {
 	//upd7759_state *chip = (upd7759_state *)param;
 	upd7759_state *chip = &UPD7759Data[ChipID];

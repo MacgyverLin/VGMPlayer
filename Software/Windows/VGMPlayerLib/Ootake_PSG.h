@@ -46,7 +46,8 @@ PSG_Mix(
 //	Sint16*		pDst,				// 出力先バッファ 
 	void*		chip,
 	Sint32**	pDst,
-	Sint32		nSample);			// 書き出すサンプル数 
+	Sint32		nSample,
+	Sint32** channeoutputs, INT32 channelcount);			// 書き出すサンプル数 
 
 /*void
 PSG_SetSampleRate(

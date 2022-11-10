@@ -46,7 +46,7 @@ UINT8 es550x_r(UINT8 ChipID, offs_t offset);
 void es550x_w(UINT8 ChipID, offs_t offset, UINT8 data);
 void es550x_w16(UINT8 ChipID, offs_t offset, UINT16 data);
 
-void es5506_update(UINT8 ChipID, stream_sample_t **outputs, int samples);
+void es5506_update(UINT8 ChipID, stream_sample_t **outputs, int samples, stream_sample_t** channeoutputs, int channelcount);
 int device_start_es5506(UINT8 ChipID, int clock, int channels, UINT8 CHIP_SAMPLING_MODE, INT32 CHIP_SAMPLE_RATE, UINT32 SampleRate);
 void device_stop_es5506(UINT8 ChipID);
 void device_reset_es5506(UINT8 ChipID);

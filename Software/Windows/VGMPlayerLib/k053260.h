@@ -15,7 +15,7 @@ struct _k053260_interface {
 };*/
 
 
-void k053260_update(UINT8 ChipID, stream_sample_t **outputs, int samples);
+void k053260_update(UINT8 ChipID, stream_sample_t **outputs, int samples, stream_sample_t** channeoutputs, int channelcount);
 int device_start_k053260(UINT8 ChipID, int clock, UINT8 CHIP_SAMPLING_MODE, INT32 CHIP_SAMPLE_RATE, UINT32 SampleRate);
 void device_stop_k053260(UINT8 ChipID);
 void device_reset_k053260(UINT8 ChipID);

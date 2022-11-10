@@ -435,7 +435,7 @@ calc_stereo (PSG * psg, e_int32 out[2])
 }
 
 EMU2149_API void
-PSG_calc_stereo (PSG * psg, e_int32 **out, e_int32 samples)
+PSG_calc_stereo (PSG * psg, e_int32 **out, e_int32 samples, e_int32** channeoutputs, int channelcount)
 {
   e_int32 *bufMO = out[0];
   e_int32 *bufRO = out[1];

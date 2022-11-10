@@ -2146,7 +2146,7 @@ void ym2413_set_update_handler(void *chip,OPLL_UPDATEHANDLER UpdateHandler,void 
 ** '*buffer' is the output buffer pointer
 ** 'length' is the number of samples that should be generated
 */
-void ym2413_update_one(void *_chip, SAMP **buffers, int length)
+void ym2413_update_one(void *_chip, SAMP **buffers, int length, stream_sample_t** channeoutputs, int channelcount)
 {
 	YM2413		*chip  = (YM2413 *)_chip;
 	UINT8		rhythm = chip->rhythm&0x20;

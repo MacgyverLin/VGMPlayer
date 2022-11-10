@@ -550,7 +550,8 @@ PSG_Mix(
 //	Sint16*		pDst,		// 出力先バッファ //Kitao更新。PSG専用バッファにしたためSint16に。
 	void*		chip,
 	Sint32**	pDst,
-	Sint32		nSample)	// 書き出すサンプル数 
+	Sint32		nSample, 
+	stream_sample_t** channeoutputs, int channelcount)	// 書き出すサンプル数 
 {
 	huc6280_state* info = (huc6280_state*)chip;
 	PSG*		PSGChn;

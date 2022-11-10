@@ -124,7 +124,7 @@ static x1_010_state X1010Data[MAX_CHIPS];
  generate sound to the mix buffer
 --------------------------------------------------------------*/
 //static STREAM_UPDATE( seta_update )
-void seta_update(UINT8 ChipID, stream_sample_t **outputs, int samples)
+void seta_update(UINT8 ChipID, stream_sample_t **outputs, int samples, stream_sample_t** channeoutputs, int channelcount)
 {
 	//x1_010_state *info = (x1_010_state *)param;
 	x1_010_state *info = &X1010Data[ChipID];

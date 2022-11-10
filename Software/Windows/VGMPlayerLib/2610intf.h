@@ -33,9 +33,9 @@ DEVICE_GET_INFO( ym2610b );
 #define SOUND_YM2610 DEVICE_GET_INFO_NAME( ym2610 )
 #define SOUND_YM2610B DEVICE_GET_INFO_NAME( ym2610b )*/
 
-void ym2610_stream_update(UINT8 ChipID, stream_sample_t **outputs, int samples);
-void ym2610b_stream_update(UINT8 ChipID, stream_sample_t **outputs, int samples);
-void ym2610_stream_update_ay(UINT8 ChipID, stream_sample_t **outputs, int samples);
+void ym2610_stream_update(UINT8 ChipID, stream_sample_t **outputs, int samples, stream_sample_t** channeoutputs, int channelcount);
+void ym2610b_stream_update(UINT8 ChipID, stream_sample_t **outputs, int samples, stream_sample_t** channeoutputs, int channelcount);
+void ym2610_stream_update_ay(UINT8 ChipID, stream_sample_t **outputs, int samples, stream_sample_t** channeoutputs, int channelcount);
 
 int device_start_ym2610(UINT8 ChipID, int clock, UINT8 AYDisable, int* AYrate, UINT8 CHIP_SAMPLING_MODE, INT32 CHIP_SAMPLE_RATE, UINT32 SampleRate);
 void device_stop_ym2610(UINT8 ChipID);
