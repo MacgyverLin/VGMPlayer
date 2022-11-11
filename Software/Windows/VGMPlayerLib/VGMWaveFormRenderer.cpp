@@ -21,7 +21,7 @@ void VGMWaveFormRenderer::OnNotifyOpen(Obserable& observable)
 {
 	VGMData& vgmData = (VGMData&)observable;
 	const VGMInfo& vgmInfo = vgmData.GetInfo();
-	const VGMOutputChannels& outputChannels = vgmData.GetOutputChannels();
+	
 
 	font = videoDevice.CreateFont("arial.ttf", 12);
 }
@@ -31,7 +31,7 @@ void VGMWaveFormRenderer::OnNotifyClose(Obserable& observable)
 	VGMData& vgmData = (VGMData&)observable;
 
 	const VGMInfo& vgmInfo = vgmData.GetInfo();
-	const VGMOutputChannels& outputChannels = vgmData.GetOutputChannels();
+	
 
 	videoDevice.DestroyFont(font);
 	font = nullptr;
@@ -61,7 +61,7 @@ void VGMWaveFormRenderer::OnNotifyUpdate(Obserable& observable)
 {
 	VGMData& vgmData = (VGMData&)observable;
 	const VGMInfo& vgmInfo = vgmData.GetInfo();
-	const VGMOutputChannels& outputChannels = vgmData.GetOutputChannels();
+	
 
 	/////////////////////////////////////////////////////////////////////////////////
 	videoDevice.MatrixMode(VideoDeviceEnum::PROJECTION);
@@ -114,12 +114,28 @@ void VGMWaveFormRenderer::OnNotifyUpdate(Obserable& observable)
 		videoDevice.DrawLine(Vector2(startX, 0), skin.axisColor, Vector2(endX, 0), skin.axisColor);
 
 		videoDevice.BlendFunc(VideoDeviceEnum::SRC_ALPHA, VideoDeviceEnum::ONE);
-		const Color& c = (ch % 2) ? skin.rightColor : skin.leftColor;
-		for (UINT32 i = startX; i < endX - 3; i += 3)
+
+		if ((ch % 2))
 		{
-			FLOAT32 y0 = outputChannels.GetOutputSample(ch, i + 0) * waveScale;
-			FLOAT32 y1 = outputChannels.GetOutputSample(ch, i + 3) * waveScale;
-			videoDevice.DrawLine(Vector2(i, y0), c, Vector2(i + 3, y1), c);
+			int stepX = 10;
+			const Color& c = skin.rightColor;
+			for (UINT32 i = startX; i < endX - stepX; i += stepX)
+			{
+				FLOAT32 y0 = vgmInfo.GetOutputBufferSample(i + 0).Right * waveScale;
+				FLOAT32 y1 = vgmInfo.GetOutputBufferSample(i + stepX).Right * waveScale;
+				videoDevice.DrawLine(Vector2(i, y0), c, Vector2(i + stepX, y1), c);
+			}
+		}
+		else
+		{
+			int stepX = 10;
+			const Color& c = skin.leftColor;
+			for (UINT32 i = startX; i < endX - stepX; i += stepX)
+			{
+				FLOAT32 y0 = vgmInfo.GetOutputBufferSample(i + 0).Left * waveScale;
+				FLOAT32 y1 = vgmInfo.GetOutputBufferSample(i + stepX).Left * waveScale;
+				videoDevice.DrawLine(Vector2(i, y0), c, Vector2(i + stepX, y1), c);
+			}
 		}
 
 		videoDevice.DrawWireRectangle

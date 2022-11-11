@@ -23,7 +23,7 @@ void VGMSpectrumRenderer::OnNotifyOpen(Obserable& observable)
 	VGMData& vgmData = (VGMData&)observable;
 
 	const VGMInfo& vgmInfo = vgmData.GetInfo();
-	const VGMOutputChannels& outputChannels = vgmData.GetOutputChannels();
+	
 
 	font = videoDevice.CreateFont("arial.ttf", 12);
 }
@@ -34,7 +34,7 @@ void VGMSpectrumRenderer::OnNotifyClose(Obserable& observable)
 
 
 	const VGMInfo& vgmInfo = vgmData.GetInfo();
-	const VGMOutputChannels& outputChannels = vgmData.GetOutputChannels();
+	
 
 	videoDevice.DestroyFont(font);
 	font = nullptr;
@@ -64,7 +64,7 @@ void VGMSpectrumRenderer::OnNotifyUpdate(Obserable& observable)
 {
 	VGMData& vgmData = (VGMData&)observable;
 	const VGMInfo& vgmInfo = vgmData.GetInfo();
-	const VGMOutputChannels& outputChannels = vgmData.GetOutputChannels();
+	
 
 
 	/////////////////////////////////////////////////////////////////////////////////
@@ -82,8 +82,7 @@ void VGMSpectrumRenderer::OnNotifyUpdate(Obserable& observable)
 
 	vector<complex> left(fftSampleCount);
 	vector<complex> right(fftSampleCount);
-	FLOAT32 leftIdx = 0;
-	FLOAT32 rightIdx = 0;
+	UINT32 sampleIdx = 0;
 	for (int i = 0; i < fftSampleCount; i++)
 	{
 		complex* l = &left[i];
@@ -96,14 +95,13 @@ void VGMSpectrumRenderer::OnNotifyUpdate(Obserable& observable)
 
 		for (int j = 0; j < N; j++)
 		{
-			l->real += outputChannels.GetOutputSample(0, leftIdx + j);
-			r->real += outputChannels.GetOutputSample(1, rightIdx + j);
+			l->real += vgmInfo.GetOutputBufferSample(sampleIdx + j).Left;
+			r->real += vgmInfo.GetOutputBufferSample(sampleIdx + j).Right;
 		}
 		l->real /= N;
 		r->real /= N;
 
-		leftIdx += N;
-		rightIdx += N;
+		sampleIdx += N;
 	}
 
 	fft(fftSampleCount, &left[0]);

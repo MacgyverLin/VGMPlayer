@@ -380,7 +380,7 @@ static void Tick(NES_FDS* fds, UINT32 clocks)
 	fds->last_vol = vol_out;
 }
 
-UINT32 NES_FDS_Render(void* chip, INT32 b[2], stream_sample_t** channeoutputs, UINT32 channelcount)
+UINT32 NES_FDS_Render(void* chip, INT32 b[2], WAVE_32BS** channeloutputs, UINT32 channelcount)
 {
 	NES_FDS* fds = (NES_FDS*)chip;
 

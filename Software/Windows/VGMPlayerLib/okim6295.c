@@ -334,7 +334,7 @@ static void generate_adpcm(okim6295_state *chip, struct ADPCMVoice *voice, INT16
 ***********************************************************************************************/
 
 //static STREAM_UPDATE( okim6295_update )
-void okim6295_update(UINT8 ChipID, stream_sample_t **outputs, int samples, stream_sample_t** channeoutputs, int channelcount)
+void okim6295_update(UINT8 ChipID, stream_sample_t **outputs, int samples, WAVE_32BS** channeloutputs, int channelcount)
 {
 	//okim6295_state *chip = (okim6295_state *)param;
 	okim6295_state *chip = &OKIM6295Data[ChipID];

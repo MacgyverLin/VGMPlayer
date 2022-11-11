@@ -22,7 +22,6 @@ void VGMMultiChannelWaveFormRenderer::OnNotifyOpen(Obserable& observable)
 	VGMData& vgmData = (VGMData&)observable;
 
 	const VGMInfo& vgmInfo = vgmData.GetInfo();
-	const VGMOutputChannels& outputChannels = vgmData.GetOutputChannels();
 
 	font = videoDevice.CreateFont("arial.ttf", 12);
 }
@@ -32,7 +31,6 @@ void VGMMultiChannelWaveFormRenderer::OnNotifyClose(Obserable& observable)
 	VGMData& vgmData = (VGMData&)observable;
 
 	const VGMInfo& vgmInfo = vgmData.GetInfo();
-	const VGMOutputChannels& outputChannels = vgmData.GetOutputChannels();
 
 	videoDevice.DestroyFont(font);
 	font = nullptr;
@@ -62,8 +60,6 @@ void VGMMultiChannelWaveFormRenderer::OnNotifyUpdate(Obserable& observable)
 {
 	VGMData& vgmData = (VGMData&)observable;
 	const VGMInfo& vgmInfo = vgmData.GetInfo();
-	const VGMOutputChannels& outputChannels = vgmData.GetOutputChannels();
-
 
 	/////////////////////////////////////////////////////////////////////////////////
 	videoDevice.MatrixMode(VideoDeviceEnum::PROJECTION);
@@ -101,13 +97,15 @@ void VGMMultiChannelWaveFormRenderer::OnNotifyUpdate(Obserable& observable)
 	videoDevice.Enable(VideoDeviceEnum::BLEND);
 	videoDevice.BlendFunc(VideoDeviceEnum::SRC_ALPHA, VideoDeviceEnum::ONE_MINUS_SRC_ALPHA);
 
-	for (int ch = 0; ch < 16; ch++)
-	{
-		float channelViewportWidth = 1.0f / 4;
-		float channelViewportHeight = 1.0f / 4;
+	int xCount = 4;
+	int yCount = vgmInfo.GetOutputChannelBufferCount() / xCount;
 
-		int x = ch % 4;
-		int y = ch / 4;
+	for (int ch = 0; ch < vgmInfo.GetOutputChannelBufferCount(); ch++)
+	{
+		float channelViewportWidth = 1.0f / xCount;
+		float channelViewportHeight = 1.0f / yCount;
+		int x = ch % xCount;
+		int y = ch / xCount;
 
 		SetViewport(x * channelViewportWidth, y * channelViewportHeight, channelViewportWidth, channelViewportHeight);
 
@@ -130,30 +128,29 @@ void VGMMultiChannelWaveFormRenderer::OnNotifyUpdate(Obserable& observable)
 	}
 
 	//////////////////////////////////////////////////////////////////////////////
-	// draw channel	
-	for (int ch = 0; ch < outputChannels.GetChannelsCount(); ch++)
+	// draw channel
+	int stepX = 3;
+	for (int ch = 0; ch < vgmInfo.GetOutputChannelBufferCount(); ch++)
 	{
-		float channelViewportWidth = 1.0f / 4;
-		float channelViewportHeight = 1.0f / 4;
+		float channelViewportWidth = 1.0f / xCount;
+		float channelViewportHeight = 1.0f / yCount;
+		int x = ch % xCount;
+		int y = ch / xCount;
 
-		int x = ch % 4;
-		int y = ch / 4;
+		SetViewport(x * channelViewportWidth, y * channelViewportHeight, channelViewportWidth, channelViewportHeight);
 
-		float vx = x * channelViewportWidth;
-		float vy = y * channelViewportHeight;
-		float vw = channelViewportWidth;
-		float vh = channelViewportHeight;
-
-		SetViewport(vx, vy, vw, vh);
-
-		float i = ((float)(ch % 3) + 3) / 5;
-		// Color c = Color(48.0f * i / 255.0f, 19.0f * i / 255.0f, 210.0f * i / 255.0f, 1.0f);
-		Color c = Color::BrightCyan;
-		for (UINT32 i = startX; i < endX - 3; i += 3)
+		for (UINT32 i = startX; i < (endX - stepX) ; i += stepX)
 		{
-			FLOAT32 y0 = outputChannels.GetChannelLeftSample(ch, i + 0) * waveScale;
-			FLOAT32 y1 = outputChannels.GetChannelLeftSample(ch, i + 3) * waveScale;
-			videoDevice.DrawLine(Vector2(i, y0), c, Vector2(i + 3, y1), c);
+			FLOAT32 y0 = vgmInfo.GetOutputChannelBufferSample(ch, i + 0).Left * waveScale + 16384;
+			FLOAT32 y1 = vgmInfo.GetOutputChannelBufferSample(ch, i + stepX).Left * waveScale + 16384;
+			videoDevice.DrawLine(Vector2(i, y0), skin.leftColor, Vector2(i + stepX, y1), skin.leftColor);
+		}
+
+		for (UINT32 i = startX; i < endX - stepX; i += stepX)
+		{
+			FLOAT32 y0 = vgmInfo.GetOutputChannelBufferSample(ch, i + 0).Right * waveScale / 2 - 16384;
+			FLOAT32 y1 = vgmInfo.GetOutputChannelBufferSample(ch, i + stepX).Right * waveScale / 2 - 16384;
+			videoDevice.DrawLine(Vector2(i, y0), skin.rightColor, Vector2(i + stepX, y1), skin.rightColor);
 		}
 	}
 
@@ -169,4 +166,20 @@ void VGMMultiChannelWaveFormRenderer::OnNotifyUpdate(Obserable& observable)
 	videoDevice.SetFontScale(1.0);
 	videoDevice.SetFontColor(Color::BrightCyan);
 	videoDevice.DrawText(name.c_str(), 0, region.h - font->GetSize());
+
+	for (int ch = 0; ch < vgmInfo.GetOutputChannelBufferCount(); ch++)
+	{
+		float channelViewportWidth = 1.0f / xCount;
+		float channelViewportHeight = 1.0f / yCount;
+		int x = ch % xCount;
+		int y = ch / xCount;
+		
+		videoDevice.SetFont(font);
+		videoDevice.SetFontScale(1.0);
+		videoDevice.SetFontColor(Color::BrightCyan);
+
+		char buf[10];
+		sprintf(buf, "ch%02d", ch);
+		videoDevice.DrawText(buf, x * channelViewportWidth * region.w, y * channelViewportHeight * region.h);
+	}
 }

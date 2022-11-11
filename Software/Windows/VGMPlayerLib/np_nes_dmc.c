@@ -290,7 +290,7 @@ static void FrameSequence(NES_DMC* dmc, int s)
 
 }
 
-// 三角波チャンネルの計算 戻り値は0-15
+// ??????????? ????0-15
 UINT32 calc_tri(NES_DMC* dmc, UINT32 clocks)
 {
 	static UINT32 tritbl[32] = 
@@ -377,7 +377,7 @@ UINT32 calc_noise(NES_DMC* dmc, UINT32 clocks)
 	return accum / (clocks * count);
 }
 
-// DMCチャンネルの計算 戻り値は0-127
+// DMC???????? ????0-127
 UINT32 calc_dmc(NES_DMC* dmc, UINT32 clocks)
 {
 	dmc->counter[2] += clocks;
@@ -447,7 +447,7 @@ static void Tick(NES_DMC* dmc, UINT32 clocks)
 	dmc->out[2] = calc_dmc(dmc, clocks);
 }
 
-UINT32 NES_DMC_np_Render(void* chip, INT32 b[2], stream_sample_t** channeoutputs, int channelcount)
+UINT32 NES_DMC_np_Render(void* chip, INT32 b[2], WAVE_32BS** channeloutputs, int channelcount)
 {
 	NES_DMC* dmc = (NES_DMC*)chip;
 	UINT32 clocks;
@@ -827,12 +827,12 @@ bool NES_DMC_np_Write(void* chip, UINT32 adr, UINT32 val)
 
 	case 0x4012:
 		dmc->adr_reg = val&0xff;
-		// ここでdaddressは更新されない
+		// ???daddress???????
 		break;
 
 	case 0x4013:
 		dmc->len_reg = val&0xff;
-		// ここでlengthは更新されない
+		// ???length???????
 		break;
 
 	default:

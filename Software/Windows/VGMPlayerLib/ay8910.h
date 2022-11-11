@@ -114,7 +114,7 @@ void ay8910_write_ym(void *chip, int addr, int data);
 int ay8910_read_ym(void *chip);
 
 //void ay8910_update(UINT8 ChipID, stream_sample_t **outputs, int samples);
-void ay8910_update_one(void *param, stream_sample_t **outputs, int samples, stream_sample_t** channeoutputs, int channelcount);
+void ay8910_update_one(void *param, stream_sample_t **outputs, int samples, WAVE_32BS** channeloutputs, int channelcount);
 int ay8910_start(void **chip, int clock, UINT8 chip_type, UINT8 Flags, UINT8 CHIP_SAMPLING_MODE, INT32 CHIP_SAMPLE_RATE, UINT32 SampleRate);
 /*int device_start_ay8910(UINT8 ChipID, int clock, unsigned char chip_type, unsigned char Flags);
 void device_stop_ay8910(UINT8 ChipID);

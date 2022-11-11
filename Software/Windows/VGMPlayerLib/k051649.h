@@ -15,7 +15,7 @@ WRITE8_DEVICE_HANDLER( k052539_waveform_w );
 
 DECLARE_LEGACY_SOUND_DEVICE(K051649, k051649);*/
 
-void k051649_update(UINT8 ChipID, stream_sample_t **outputs, int samples, stream_sample_t** channeoutputs, int channelcount);
+void k051649_update(UINT8 ChipID, stream_sample_t **outputs, int samples, WAVE_32BS** channeloutputs, int channelcount);
 int device_start_k051649(UINT8 ChipID, int clock, UINT8 CHIP_SAMPLING_MODE, INT32 CHIP_SAMPLE_RATE, UINT32 SampleRate);
 void device_stop_k051649(UINT8 ChipID);
 void device_reset_k051649(UINT8 ChipID);

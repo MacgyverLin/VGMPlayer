@@ -277,7 +277,7 @@ void sn76496_write_reg(void *chip, offs_t offset, UINT8 data)
 }
 
 //static STREAM_UPDATE( SN76496Update )
-void SN76496Update(void *chip, stream_sample_t **outputs, int samples, stream_sample_t** channeoutputs, int channelcount)
+void SN76496Update(void *chip, stream_sample_t **outputs, int samples, WAVE_32BS** channeloutputs, int channelcount)
 {
 	int i;
 	//sn76496_state *R = (sn76496_state *)param;

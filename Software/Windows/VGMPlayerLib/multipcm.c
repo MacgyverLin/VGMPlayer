@@ -464,7 +464,7 @@ static void WriteSlot(MultiPCM *ptChip,struct _SLOT *slot,int reg,unsigned char 
 }
 
 //static STREAM_UPDATE( MultiPCM_update )
-void MultiPCM_update(UINT8 ChipID, stream_sample_t **outputs, int samples, stream_sample_t** channeoutputs, int channelcount)
+void MultiPCM_update(UINT8 ChipID, stream_sample_t **outputs, int samples, WAVE_32BS** channeloutputs, int channelcount)
 {
 	//MultiPCM *ptChip = (MultiPCM *)param;
 	MultiPCM *ptChip = &MultiPCMData[ChipID];

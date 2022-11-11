@@ -192,14 +192,14 @@ void ym2608_update_request(void *param)
 }
 
 //static STREAM_UPDATE( ym2608_stream_update )
-void ym2608_stream_update(UINT8 ChipID, stream_sample_t **outputs, int samples, stream_sample_t** channeoutputs, int channelcount)
+void ym2608_stream_update(UINT8 ChipID, stream_sample_t **outputs, int samples, WAVE_32BS** channeloutputs, int channelcount)
 {
 	//ym2608_state *info = (ym2608_state *)param;
 	ym2608_state *info = &YM2608Data[ChipID];
-	ym2608_update_one(info->chip, outputs, samples, channeoutputs, channelcount);
+	ym2608_update_one(info->chip, outputs, samples, channeloutputs, channelcount);
 }
 
-void ym2608_stream_update_ay(UINT8 ChipID, stream_sample_t **outputs, int samples, stream_sample_t** channeoutputs, int channelcount)
+void ym2608_stream_update_ay(UINT8 ChipID, stream_sample_t **outputs, int samples, WAVE_32BS** channeloutputs, int channelcount)
 {
 	//ym2608_state *info = (ym2608_state *)param;
 	ym2608_state *info = &YM2608Data[ChipID];
@@ -210,11 +210,11 @@ void ym2608_stream_update_ay(UINT8 ChipID, stream_sample_t **outputs, int sample
 		{
 #ifdef ENABLE_ALL_CORES
 		case EC_MAME:
-			ay8910_update_one(info->psg, outputs, samples, channeoutputs, channelcount);
+			ay8910_update_one(info->psg, outputs, samples, channeloutputs, channelcount);
 			break;
 #endif
 		case EC_EMU2149:
-			PSG_calc_stereo((PSG*)info->psg, outputs, samples, channeoutputs, channelcount);
+			PSG_calc_stereo((PSG*)info->psg, outputs, samples, channeloutputs, channelcount);
 			break;
 		}
 	}

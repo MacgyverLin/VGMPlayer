@@ -20,7 +20,7 @@ void VGMBackgroundRenderer::OnNotifyOpen(Obserable& observable)
 {
 	VGMData& vgmData = (VGMData&)observable;
 	const VGMInfo& vgmInfo = vgmData.GetInfo();
-	const VGMOutputChannels& outputChannels = vgmData.GetOutputChannels();
+	
 
 	texture.Load(vgmInfo.texturePath.c_str());
 
@@ -31,7 +31,7 @@ void VGMBackgroundRenderer::OnNotifyClose(Obserable& observable)
 {
 	VGMData& vgmData = (VGMData&)observable;
 	const VGMInfo& vgmInfo = vgmData.GetInfo();
-	const VGMOutputChannels& outputChannels = vgmData.GetOutputChannels();
+	
 
 	videoDevice.DestroyFont(font);
 	font = nullptr;
@@ -61,7 +61,7 @@ void VGMBackgroundRenderer::OnNotifyUpdate(Obserable& observable)
 {
 	VGMData& vgmData = (VGMData&)observable;
 	const VGMInfo& vgmInfo = vgmData.GetInfo();
-	const VGMOutputChannels& outputChannels = vgmData.GetOutputChannels();
+	
 
 
 	static float t1 = 0;

@@ -13,7 +13,7 @@ struct _x1_010_interface
 };*/
 
 
-void seta_update(UINT8 ChipID, stream_sample_t **outputs, int samples, stream_sample_t** channeoutputs, int channelcount);
+void seta_update(UINT8 ChipID, stream_sample_t **outputs, int samples, WAVE_32BS** channeloutputs, int channelcount);
 int device_start_x1_010(UINT8 ChipID, int clock, UINT8 CHIP_SAMPLING_MODE, INT32 CHIP_SAMPLE_RATE, UINT32 SampleRate);
 void device_stop_x1_010(UINT8 ChipID);
 void device_reset_x1_010(UINT8 ChipID);

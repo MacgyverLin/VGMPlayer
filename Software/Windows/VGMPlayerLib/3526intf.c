@@ -86,11 +86,11 @@ static void TimerHandler(void *param,int c,int period)
 
 
 //static STREAM_UPDATE( ym3526_stream_update )
-void ym3526_stream_update(UINT8 ChipID, stream_sample_t **outputs, int samples, stream_sample_t** channeoutputs, int channelcount)
+void ym3526_stream_update(UINT8 ChipID, stream_sample_t **outputs, int samples, WAVE_32BS** channeloutputs, int channelcount)
 {
 	//ym3526_state *info = (ym3526_state *)param;
 	ym3526_state *info = &YM3526Data[ChipID];
-	ym3526_update_one(info->chip, outputs, samples, channeoutputs, channelcount);
+	ym3526_update_one(info->chip, outputs, samples, channeloutputs, channelcount);
 }
 
 static void _stream_update(void *param/*, int interval*/)

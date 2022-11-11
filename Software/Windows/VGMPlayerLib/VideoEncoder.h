@@ -17,7 +17,7 @@ public:
     virtual ~VideoEncoder();
 
     bool Initiate(const char* filename, int width, int height);
-    bool Update(const Vector<unsigned char>& videoBuffer, const std::vector<INT16>& audioBuffer);
+    bool Update(const Vector<unsigned char>& videoBuffer, const std::vector<WAVE_16BS>& audioBuffer);
     void Terminate();
 private:
     VideoEncoderImpl* impl;

@@ -155,7 +155,7 @@ void ws_audio_done(UINT8 ChipID)
 	return;
 }
 
-void ws_audio_update(UINT8 ChipID, stream_sample_t** buffer, int length, stream_sample_t** channeoutputs, int channelcount)
+void ws_audio_update(UINT8 ChipID, stream_sample_t** buffer, int length, WAVE_32BS** channeloutputs, int channelcount)
 {
 	wsa_state* chip = &WSAData[ChipID];
 	stream_sample_t* bufL;

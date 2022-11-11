@@ -112,7 +112,7 @@ static void memstream_sample_check(rf5c68_state *chip, UINT32 addr, UINT16 Speed
 }
 
 //static STREAM_UPDATE( rf5c68_update )
-void rf5c68_update(UINT8 ChipID, stream_sample_t **outputs, int samples, stream_sample_t** channeoutputs, int channelcount)
+void rf5c68_update(UINT8 ChipID, stream_sample_t **outputs, int samples, WAVE_32BS** channeloutputs, int channelcount)
 {
 	//rf5c68_state *chip = (rf5c68_state *)param;
 	rf5c68_state *chip = &RF5C68Data[ChipID];

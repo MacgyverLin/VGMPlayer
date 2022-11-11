@@ -227,7 +227,7 @@ static void c6280_write(c6280_t *p, int offset, int data)
 
 
 //static STREAM_UPDATE( c6280_update )
-void c6280m_update(void* param, stream_sample_t **outputs, int samples, stream_sample_t** channeoutputs, int channelcount)
+void c6280m_update(void* param, stream_sample_t **outputs, int samples, WAVE_32BS** channeloutputs, int channelcount)
 {
     static const int scale_tab[] = {
         0x00, 0x03, 0x05, 0x07, 0x09, 0x0B, 0x0D, 0x0F,

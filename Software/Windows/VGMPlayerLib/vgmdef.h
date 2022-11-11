@@ -18,12 +18,24 @@ typedef double FLOAT64;
 
 #include "../stdbool.h"
 
+typedef struct waveform_16bit_stereo
+{
+	INT16 Left;
+	INT16 Right;
+} WAVE_16BS;
+
+typedef struct waveform_32bit_stereo
+{
+	INT32 Left;
+	INT32 Right;
+} WAVE_32BS;
+
 /* offsets and addresses are 32-bit (for now...) */
 typedef UINT32	offs_t;
 
 /* stream_sample_t is used to represent a single sample in a sound stream */
 typedef INT32 stream_sample_t;
-typedef void (*strm_func)(UINT8 ChipID, stream_sample_t** outputs, int samples, stream_sample_t** channeoutputs, int channelcount);
+typedef void (*strm_func)(UINT8 ChipID, stream_sample_t** outputs, int samples, WAVE_32BS** channeloutputs, int channelcount);
 
 extern stream_sample_t* DUMMYBUF[];
 typedef void (*SRATE_CALLBACK)(void*, UINT32);
@@ -63,5 +75,7 @@ extern char* FindFile(const char* FileName);
 
 #define VGMPlayer_MIN(a, b) ((a)<(b)) ? (a) : (b)
 #define VGMPlayer_MAX(a, b) ((a)>(b)) ? (a) : (b)
+
+
 
 #endif

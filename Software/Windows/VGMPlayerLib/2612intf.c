@@ -127,7 +127,7 @@ void ym2612_update_request(void *param)
 /***********************************************************/
 
 //static STREAM_UPDATE( ym2612_stream_update )
-void ym2612_stream_update(UINT8 ChipID, stream_sample_t **outputs, int samples, stream_sample_t** channeoutputs, int channelcount)
+void ym2612_stream_update(UINT8 ChipID, stream_sample_t **outputs, int samples, WAVE_32BS** channeloutputs, int channelcount)
 {
 	//ym2612_state *info = (ym2612_state *)param;
 	ym2612_state *info = &YM2612Data[ChipID];
@@ -138,13 +138,13 @@ void ym2612_stream_update(UINT8 ChipID, stream_sample_t **outputs, int samples, 
 	switch(EMU_CORE)
 	{
 	case EC_MAME:
-		ym2612_update_one(info->chip, outputs, samples, channeoutputs, channelcount);
+		ym2612_update_one(info->chip, outputs, samples, channeloutputs, channelcount);
 		break;
 #ifdef ENABLE_ALL_CORES
 	case EC_GENS:
-		YM2612_ClearBuffer(GensBuf, samples, channeoutputs, channelcount);
-		YM2612_Update(info->chip, GensBuf, samples, channeoutputs, channelcount);
-		YM2612_DacAndTimers_Update(info->chip, GensBuf, samples, channeoutputs, channelcount);
+		YM2612_ClearBuffer(GensBuf, samples, channeloutputs, channelcount);
+		YM2612_Update(info->chip, GensBuf, samples, channeloutputs, channelcount);
+		YM2612_DacAndTimers_Update(info->chip, GensBuf, samples, channeloutputs, channelcount);
 		for (i = 0x00; i < samples; i ++)
 		{
 			outputs[0x00][i] = (stream_sample_t)GensBuf[0x00][i];
@@ -152,7 +152,7 @@ void ym2612_stream_update(UINT8 ChipID, stream_sample_t **outputs, int samples, 
 		}
 		break;
 	case EC_NUKED:
-		OPN2_GenerateStream(info->chip, outputs, samples, channeoutputs, channelcount);
+		OPN2_GenerateStream(info->chip, outputs, samples, channeloutputs, channelcount);
 		break;
 #endif
 	}

@@ -36,18 +36,18 @@ static UINT8 EMU_CORE = 0x00;
 #define MAX_CHIPS	0x02
 static ayxx_state AYxxData[MAX_CHIPS];
 
-void ayxx_stream_update(UINT8 ChipID, stream_sample_t **outputs, int samples, stream_sample_t** channeoutputs, int channelcount)
+void ayxx_stream_update(UINT8 ChipID, stream_sample_t **outputs, int samples, WAVE_32BS** channeloutputs, int channelcount)
 {
 	ayxx_state *info = &AYxxData[ChipID];
 	switch(EMU_CORE)
 	{
 #ifdef ENABLE_ALL_CORES
 	case EC_MAME:
-		ay8910_update_one(info->chip, outputs, samples, channeoutputs, channelcount);
+		ay8910_update_one(info->chip, outputs, samples, channeloutputs, channelcount);
 		break;
 #endif
 	case EC_EMU2149:
-		PSG_calc_stereo((PSG*)info->chip, outputs, samples, channeoutputs, channelcount);
+		PSG_calc_stereo((PSG*)info->chip, outputs, samples, channeloutputs, channelcount);
 		break;
 	}
 }

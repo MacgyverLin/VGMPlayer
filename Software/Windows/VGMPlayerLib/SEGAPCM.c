@@ -49,7 +49,7 @@ static void sega_pcm_fwrite_romusage(UINT8 ChipID);
 }*/
 
 //static STREAM_UPDATE( SEGAPCM_update )
-void SEGAPCM_update(UINT8 ChipID, stream_sample_t **outputs, int samples, stream_sample_t** channeoutputs, int channelcount)
+void SEGAPCM_update(UINT8 ChipID, stream_sample_t **outputs, int samples, WAVE_32BS** channeloutputs, int channelcount)
 {
 	//segapcm_state *spcm = (segapcm_state *)param;
 	segapcm_state *spcm = &SPCMData[ChipID];
@@ -84,68 +84,6 @@ void SEGAPCM_update(UINT8 ChipID, stream_sample_t **outputs, int samples, stream
 	/* loop over channels */
 	for (ch = 0; ch < 16; ch++)
 	{
-#if 0
-//if (! SegaPCM_NewCore)
-//{
-		/* only process active channels */
-		if (!(spcm->ram[0x86+8*ch] & 1) && ! spcm->Muted[ch])
-		{
-			UINT8 *base = spcm->ram+8*ch;
-			UINT8 flags = base[0x86];
-			const UINT8 *rom = spcm->rom + ((flags & spcm->bankmask) << spcm->bankshift);
-#ifdef _DEBUG
-			UINT8 *romusage = spcm->romusage + ((flags & spcm->bankmask) << spcm->bankshift);
-#endif
-			UINT32 addr = (base[5] << 16) | (base[4] << 8) | spcm->low[ch];
-			UINT16 loop = (base[0x85] << 8) | base[0x84];
-			UINT8 end = base[6] + 1;
-			UINT8 delta = base[7];
-			UINT8 voll = base[2] & 0x7F;
-			UINT8 volr = base[3] & 0x7F;
-			int i;
-
-			/* loop over samples on this channel */
-			for (i = 0; i < samples; i++)
-			{
-				INT8 v = 0;
-
-				/* handle looping if we've hit the end */
-				if ((addr >> 16) == end)
-				{
-					if (!(flags & 2))
-						addr = loop << 8;
-					else
-					{
-						flags |= 1;
-						break;
-					}
-				}
-
-				/* fetch the sample */
-				v = rom[(addr >> 8) & rgnmask] - 0x80;
-#ifdef _DEBUG
-				if ((romusage[(addr >> 8) & rgnmask] & 0x03) == 0x02 && (voll || volr))
-					fprintf(stderr, "Access to empty ROM section! (0x%06lX)\n",
-							((flags & spcm->bankmask) << spcm->bankshift) + (addr >> 8) & rgnmask);
-				romusage[(addr >> 8) & rgnmask] |= 0x01;
-#endif
-
-				/* apply panning and advance */
-				outputs[0][i] += v * voll;
-				outputs[1][i] += v * volr;
-				addr += delta;
-			}
-
-			/* store back the updated address and info */
-			base[0x86] = flags;
-			base[4] = addr >> 8;
-			base[5] = addr >> 16;
-			spcm->low[ch] = flags & 1 ? 0 : addr;
-		}
-//}
-//else
-//{
-#else
 		UINT8 *regs = spcm->ram+8*ch;
 
 		/* only process active channels */
@@ -187,8 +125,13 @@ void SEGAPCM_update(UINT8 ChipID, stream_sample_t **outputs, int samples, stream
 
 				/* apply panning and advance */
 				// fixed Bitmask for volume multiplication, thanks to ctr -Valley Bell
+				channeloutputs[ch][i].Left = v * (regs[2] & 0x7F);
+				channeloutputs[ch][i].Right = v * (regs[3] & 0x7F);
+
 				outputs[0][i] += v * (regs[2] & 0x7F);
 				outputs[1][i] += v * (regs[3] & 0x7F);
+
+
 				addr = (addr + regs[7]) & 0xffffff;
 			}
 
@@ -197,8 +140,10 @@ void SEGAPCM_update(UINT8 ChipID, stream_sample_t **outputs, int samples, stream
 			regs[0x85] = addr >> 16;
 			spcm->low[ch] = regs[0x86] & 1 ? 0 : addr;
 		}
-//}
-#endif
+		else
+		{
+			memset(channeloutputs[ch], 0, samples * sizeof(WAVE_32BS));
+		}
 	}
 }
 

@@ -893,7 +893,7 @@ static void generate_samples(es5506_state *chip, INT32 **outputs, int offset, in
 ***********************************************************************************************/
 
 //static STREAM_UPDATE( es5506_update )
-void es5506_update(UINT8 ChipID, stream_sample_t **outputs, int samples, stream_sample_t** channeoutputs, int channelcount)
+void es5506_update(UINT8 ChipID, stream_sample_t **outputs, int samples, WAVE_32BS** channeloutputs, int channelcount)
 {
 	//es5506_state *chip = (es5506_state *)param;
 	es5506_state *chip = &ES5506Data[ChipID];

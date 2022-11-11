@@ -29,8 +29,8 @@ WRITE8_DEVICE_HANDLER( ym2608_data_port_b_w );
 DEVICE_GET_INFO( ym2608 );
 #define SOUND_YM2608 DEVICE_GET_INFO_NAME( ym2608 )*/
 
-void ym2608_stream_update(UINT8 ChipID, stream_sample_t **outputs, int samples, stream_sample_t** channeoutputs, int channelcount);
-void ym2608_stream_update_ay(UINT8 ChipID, stream_sample_t **outputs, int samples, stream_sample_t** channeoutputs, int channelcount);
+void ym2608_stream_update(UINT8 ChipID, stream_sample_t **outputs, int samples, WAVE_32BS** channeloutputs, int channelcount);
+void ym2608_stream_update_ay(UINT8 ChipID, stream_sample_t **outputs, int samples, WAVE_32BS** channeloutputs, int channelcount);
 
 int device_start_ym2608(UINT8 ChipID, int clock, UINT8 AYDisable, UINT8 AYFlags, int* AYrate, UINT8 CHIP_SAMPLING_MODE, INT32 CHIP_SAMPLE_RATE, UINT32 SampleRate);
 void device_stop_ym2608(UINT8 ChipID);

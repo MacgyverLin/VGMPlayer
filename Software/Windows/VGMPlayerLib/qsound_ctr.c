@@ -216,7 +216,7 @@ void qsoundc_write_data(UINT8 ChipID, UINT8 address, UINT16 data)
 	return;
 }
 
-void qsoundc_update(UINT8 ChipID, stream_sample_t **outputs, int samples, stream_sample_t** channeoutputs, int channelcount)
+void qsoundc_update(UINT8 ChipID, stream_sample_t **outputs, int samples, WAVE_32BS** channeloutputs, int channelcount)
 {
 	struct qsound_chip* chip = &QSoundData[ChipID];
 	UINT32 curSmpl;

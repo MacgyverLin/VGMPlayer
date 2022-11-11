@@ -17,18 +17,6 @@ using namespace std;
 #define VGMPlayer_MIN(a, b) ((a)<(b)) ? (a) : (b)
 #define VGMPlayer_MAX(a, b) ((a)>(b)) ? (a) : (b)
 
-typedef struct waveform_16bit_stereo
-{
-	INT16 Left;
-	INT16 Right;
-} WAVE_16BS;
-
-typedef struct waveform_32bit_stereo
-{
-	INT32 Left;
-	INT32 Right;
-} WAVE_32BS;
-
 typedef struct chip_audio_attributes CAUD_ATTR;
 struct chip_audio_attributes
 {
@@ -48,6 +36,9 @@ struct chip_audio_attributes
 	UINT32 SmpNext;		// Sample Number Next
 	WAVE_32BS LSmpl;	// Last Sample
 	WAVE_32BS NSmpl;	// Next Sample
+
+	UINT8 ChannelCount;
+	
 	CAUD_ATTR* Paired;
 };
 
@@ -194,8 +185,8 @@ typedef struct _vgm_file_header
 	UINT32 fccVGM;
 	UINT32 lngEOFOffset;
 	UINT32 lngVersion;
-	UINT32 lngHzPSG;
-	UINT32 lngHzYM2413;
+	UINT32 lngHzPSG;			// 4
+	UINT32 lngHzYM2413;			// 9
 	UINT32 lngGD3Offset;
 	UINT32 lngTotalSamples;
 	UINT32 lngLoopOffset;
@@ -204,29 +195,29 @@ typedef struct _vgm_file_header
 	UINT16 shtPSG_Feedback;
 	UINT8 bytPSG_SRWidth;
 	UINT8 bytPSG_Flags;
-	UINT32 lngHzYM2612;
-	UINT32 lngHzYM2151;
+	UINT32 lngHzYM2612;			// 6
+	UINT32 lngHzYM2151;			// 8
 	UINT32 lngDataOffset;
-	UINT32 lngHzSPCM;
+	UINT32 lngHzSPCM;			// 8
 	UINT32 lngSPCMIntf;
-	UINT32 lngHzRF5C68;
-	UINT32 lngHzYM2203;
-	UINT32 lngHzYM2608;
-	UINT32 lngHzYM2610;
-	UINT32 lngHzYM3812;
-	UINT32 lngHzYM3526;
-	UINT32 lngHzY8950;
-	UINT32 lngHzYMF262;
-	UINT32 lngHzYMF278B;
-	UINT32 lngHzYMF271;
-	UINT32 lngHzYMZ280B;
-	UINT32 lngHzRF5C164;
+	UINT32 lngHzRF5C68;			// 8
+	UINT32 lngHzYM2203;			// 3	
+	UINT32 lngHzYM2608;			// 7
+	UINT32 lngHzYM2610;			// 7
+	UINT32 lngHzYM3812;			// 9
+	UINT32 lngHzYM3526;			// 9
+	UINT32 lngHzY8950;			// 8
+	UINT32 lngHzYMF262;			// 18
+	UINT32 lngHzYMF278B;		// 18
+	UINT32 lngHzYMF271;			// 12
+	UINT32 lngHzYMZ280B;		// 8
+	UINT32 lngHzRF5C164;		// 8
 	UINT32 lngHzPWM;
-	UINT32 lngHzAY8910;
+	UINT32 lngHzAY8910;			// 3
 	UINT8 bytAYType;
 	UINT8 bytAYFlag;
-	UINT8 bytAYFlagYM2203;
-	UINT8 bytAYFlagYM2608;
+	UINT8 bytAYFlagYM2203;		// 3
+	UINT8 bytAYFlagYM2608;		// 6
 	UINT8 bytVolumeModifier;
 	UINT8 bytReserved2;
 	INT8 bytLoopBase;
@@ -234,7 +225,7 @@ typedef struct _vgm_file_header
 	UINT32 lngHzGBDMG;
 	UINT32 lngHzNESAPU;
 	UINT32 lngHzMultiPCM;
-	UINT32 lngHzUPD7759;
+	UINT32 lngHzUPD7759;		// 1
 	UINT32 lngHzOKIM6258;
 	UINT8 bytOKI6258Flags;
 	UINT8 bytK054539Flags;
@@ -401,289 +392,6 @@ typedef struct _dro_version_header_2
 #define FCC_DRO1	0x41524244	// 'DBRA'
 #define FCC_DRO2	0x4C504F57	// 'WOPL'
 
-#pragma pack (push,1)
-template<class T>
-class TOutputBuffer
-{
-public:
-	TOutputBuffer(int size)
-		: buffer(size * 2)
-	{
-	}
-
-	~TOutputBuffer()
-	{
-	}
-
-	operator T* ()
-	{
-		return &buffer[0];
-	}
-
-	operator const T* () const
-	{
-		return &buffer[0];
-	}
-
-	T& Get(int i, int channel)
-	{
-		return buffer[(i << 1) + channel];
-	}
-
-	const T& Get(int channel, int i) const
-	{
-		return buffer[(i << 1) + channel];
-	}
-
-	const vector<T>& GetBuffer() const
-	{
-		return buffer;
-	}
-
-	T* GetBuffer()
-	{
-		return &buffer[0];
-	}
-private:
-	vector<T> buffer;
-};
-
-typedef TOutputBuffer<INT16> OutputSampleBuffer;
-#pragma pack (pop)
-
-class VGMChannel
-{
-public:
-	class Command
-	{
-	public:
-		Command(float frameCounter, UINT32 address_, UINT16 data_)
-			: address(address_)
-			, data(data_)
-		{
-		}
-
-		float frameCounter;
-		UINT32 address;
-		UINT16 data;
-	};
-
-	VGMChannel()
-		: commands()
-		, leftSamples(VGM_SAMPLE_BUFFER_SIZE)
-		, rightSamples(VGM_SAMPLE_BUFFER_SIZE)
-	{
-	}
-
-	~VGMChannel()
-	{
-	}
-
-	vector<Command> commands;
-	vector<INT32> leftSamples;
-	vector<INT32> rightSamples;
-};
-
-class VGMOutputChannels
-{
-public:
-	VGMOutputChannels()
-		: channels(0)
-
-		, currentSampleIdx(0)
-
-		, channelSampleBuffers(0)
-		, outputSampleBuffer(VGM_SAMPLE_BUFFER_SIZE)
-	{
-	}
-
-	~VGMOutputChannels()
-	{
-	}
-
-	void SetChannelsCount(int size)
-	{
-		channels.resize(size);
-
-		channelSampleBuffers.resize(size * 2);
-
-		outputCommands.resize(size);
-	}
-
-	INT32 GetChannelsCount() const
-	{
-		return channels.size();
-	}
-	//////////////////////////////////////////////////////
-public:
-	int BeginUpdateSamples(int updateSampleCounts)
-	{
-		updateSampleCounts = VGMPlayer_MIN((VGM_SAMPLE_BUFFER_SIZE - currentSampleIdx), updateSampleCounts); // never exceed bufferSize
-		if (updateSampleCounts == 0)
-			return 0;
-
-		channelSampleBuffers.resize(channels.size() * 2);
-		for (size_t i = 0; i < channels.size(); i++)
-		{
-			channelSampleBuffers[i * 2 + 0] = &channels[i].leftSamples[currentSampleIdx];
-			channelSampleBuffers[i * 2 + 1] = &channels[i].rightSamples[currentSampleIdx];
-		}
-
-		return updateSampleCounts;
-	}
-
-	int HandleUpdateSamples(void (*chipUpdate)(UINT8, INT32**, UINT32),
-		UINT32(*chipGetChannelCount)(UINT8),
-		UINT8 chipID, INT32 baseChannel, UINT32 length)
-	{
-		chipUpdate(chipID, &channelSampleBuffers[baseChannel], length);
-
-		baseChannel += chipGetChannelCount(chipID);
-
-		return baseChannel;
-	}
-
-	void EndUpdateSamples(int updateSampleCounts)
-	{
-		currentSampleIdx = currentSampleIdx + updateSampleCounts;	// updated samples, sampleIdx+
-		assert(currentSampleIdx <= VGM_SAMPLE_BUFFER_SIZE);
-		if (currentSampleIdx == VGM_SAMPLE_BUFFER_SIZE) //  1/ 50 frame
-		{
-			currentSampleIdx = 0;
-
-			// FillOutputSampleBuffer();
-
-			FillOutputCommand();
-		}
-	}
-private:
-	void FillOutputSampleBuffer()
-	{
-		INT16* dest = outputSampleBuffer;
-
-		INT32 div = channels.size();
-		for (INT32 i = 0; i < VGM_SAMPLE_BUFFER_SIZE; i++) // always fill by fix size VGM_SAMPLE_COUNT
-		{
-			INT32 outL = 0;
-			for (size_t ch = 0; ch < channels.size(); ch++)
-				outL += channels[ch].leftSamples[i];
-			outL = outL / div;
-
-			INT32 outR = 0;
-			for (size_t ch = 0; ch < channels.size(); ch++)
-				outR += channels[ch].rightSamples[i];
-			outR = outR / div;
-
-			*dest++ = outL;
-			*dest++ = outR;
-		}
-	}
-
-	template< typename... Args >
-	std::string string_format(const char* format, Args... args)
-	{
-		size_t length = std::snprintf(nullptr, 0, format, args...);
-		if (length <= 0)
-		{
-			return "";
-		}
-
-		char* buf = new char[length + 1];
-		std::snprintf(buf, length + 1, format, args...);
-
-		std::string str(buf);
-		delete[] buf;
-		return std::move(str);
-	}
-
-	void FillOutputCommand()
-	{
-		outputCommands.clear();
-
-		size_t maxCommandCounts = 0;
-		for (size_t i = 0; i < channels.size(); i++)
-		{
-			if (maxCommandCounts < channels[i].commands.size())
-			{
-				maxCommandCounts = channels[i].commands.size();
-			}
-		}
-
-		for (size_t i = 0; i < maxCommandCounts; i++)
-		{
-			string line;
-
-			for (size_t ch = 0; ch < channels.size(); ch++)
-			{
-				if (i < channels[ch].commands.size())
-				{
-					VGMChannel::Command& command = channels[ch].commands[i];
-					line += string_format("%04X   ", command.data);
-				}
-				else
-				{
-					line += string_format("0000  ");
-				}
-			}
-
-			outputCommands.push_back(line);
-		}
-
-		for (size_t i = 0; i < outputCommands.size(); i++)
-		{
-			//vgm_log("%s\n", outputCommands[i].c_str());
-		}
-	}
-public:
-	const INT32& GetChannelLeftSample(int ch, int i) const
-	{
-		return channels[ch].leftSamples[i];
-	}
-
-	const INT32& GetChannelRightSample(int ch, int i) const
-	{
-		return channels[ch].rightSamples[i];
-	}
-
-	int GetChannelCommandCount(int ch) const
-	{
-		return channels[ch].commands.size();
-	}
-
-	const VGMChannel::Command& GetChannelCommand(int ch, int i) const
-	{
-		return channels[ch].commands[i];
-	}
-
-	const INT16& GetOutputSample(int channel, int i) const
-	{
-		return outputSampleBuffer.Get(channel, i);
-	}
-
-	const std::vector<INT16>& GetOutputSampleBuffer() const
-	{
-		return outputSampleBuffer.GetBuffer();
-	}
-
-	INT16* GetOutputSampleBuffer()
-	{
-		return outputSampleBuffer.GetBuffer();
-	}
-
-	const vector<string>& GetOutputCommands() const
-	{
-		return outputCommands;
-	}
-private:
-	vector<VGMChannel> channels;
-
-	UINT32 currentSampleIdx;
-	vector<INT32*> channelSampleBuffers;
-	OutputSampleBuffer outputSampleBuffer;
-
-	vector<string> outputCommands;
-};
-
 class VGMInfo
 {
 public:
@@ -708,13 +416,71 @@ public:
 	{
 	}
 
+	UINT32 GetOutputChannelBufferCount() const
+	{
+		return OutputChannelBuffers.size();
+	}
+
+	vector<WAVE_32BS*>& GetOutputChannelBuffers()
+	{
+		return OutputChannelBuffers;
+	}
+
+	WAVE_32BS** GetOutputChannelBuffersPtr()
+	{
+		return &OutputChannelBuffers[0];
+	}
+	
+	const WAVE_32BS* GetOutputChannelBuffer(int channel) const
+	{
+		assert(channel < OutputChannelBuffers.size());
+
+		return OutputChannelBuffers[channel];
+	}
+
+	UINT32 GetOutputChannelBufferSampleCount(int channel)
+	{
+		return VGM_SAMPLE_BUFFER_SIZE;
+	}
+
+	const WAVE_32BS& GetOutputChannelBufferSample(int channel, int sampleIdx) const
+	{
+		const  WAVE_32BS* sample = GetOutputChannelBuffer(channel);
+		
+		assert(sampleIdx < VGM_SAMPLE_BUFFER_SIZE);
+		return sample[sampleIdx];
+	}
+
+	const WAVE_16BS* GetOutputBufferPtr() const
+	{
+		return &OutputBuffer[0];
+	}
+
+	WAVE_16BS* GetOutputBufferPtr()
+	{
+		return &OutputBuffer[0];
+	}
+
+	const vector<WAVE_16BS>& GetOutputBuffer() const
+	{
+		return OutputBuffer;
+	}
+
+	UINT32 GetOutputBufferSampleCount()
+	{
+		return OutputBuffer.size();
+	}
+
+	const WAVE_16BS& GetOutputBufferSample(int sampleIdx) const
+	{
+		return OutputBuffer[sampleIdx];
+	}
+
 	///////////////////////////////////////////////////////////////////////
 	string path;
 	string texturePath;
 	INT32 channels;
 	INT32 bitPerSamples;
-
-	VGMOutputChannels outputChannels;
 
 	///////////////////////////////////////////////////////////////////////
 	// Options Variables
@@ -827,7 +593,10 @@ public:
 #define SMPL_BUFSIZE	0x100
 	INT32* StreamBufs[0x02];
 	
-	INT32* ChannelStreamBufs[CHANNEL_BUFFER_COUNT];
+	vector<WAVE_32BS*> ChannelBuffers;
+
+	vector<WAVE_32BS*> OutputChannelBuffers;
+	vector<WAVE_16BS> OutputBuffer;
 #ifdef MIXER_MUTING
 
 #ifdef WIN32
@@ -905,11 +674,6 @@ public:
 	boolean Update(bool needUpdateSample);
 
 	const VGMInfo& GetInfo() const;
-	const VGMOutputChannels& GetOutputChannels() const;
-public:
-	bool IsRequestedUpdateSample();
-	void RequestedUpdateSample();
-	void ClearRequestedUpdateSample();
 private:
 protected:
 private:
@@ -948,9 +712,9 @@ private:
 	void StopSkipping(void);
 	UINT8 StartThread(void);
 	UINT8 StopThread(void);
-	UINT32 FillBuffer(WAVE_16BS* Buffer, UINT32 BufferSize);
+	UINT32 FillBuffer(UINT32 BufferSize, bool fillBuffer);
 
-	void ResampleChipStream(CA_LIST* CLst, WAVE_32BS* RetSample, UINT32 Length);
+	void ResampleChipStream(CA_LIST* CLst, WAVE_32BS* RetOutputSample, UINT32 Length, UINT32& BaseChannelIdx);
 	INT32 RecalcFadeVolume(void);
 	void InterpretFile(UINT32 SampleCount);
 	void Chips_GeneralActions(UINT8 Mode);

@@ -186,7 +186,7 @@ void SN76489_GGStereoWrite(SN76489_Context* chip, int data)
 }
 
 //void SN76489_Update(SN76489_Context* chip, INT16 **buffer, int length)
-void SN76489_Update(SN76489_Context* chip, INT32 **buffer, int length, stream_sample_t** channeoutputs, int channelcount)
+void SN76489_Update(SN76489_Context* chip, INT32 **buffer, int length, WAVE_32BS** channeloutputs, int channelcount)
 {
 	int i, j;
 	int NGPMode;

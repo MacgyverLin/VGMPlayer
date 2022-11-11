@@ -14,7 +14,7 @@ struct _c6280_interface
 void c6280m_w(void* chip, offs_t offset, UINT8 data);
 UINT8 c6280m_r(void* chip, offs_t offset);
 
-void c6280m_update(void* param, stream_sample_t **outputs, int samples, stream_sample_t** channeoutputs, int channelcount);
+void c6280m_update(void* param, stream_sample_t **outputs, int samples, WAVE_32BS** channeloutputs, int channelcount);
 void* device_start_c6280m(int clock, int rate, UINT8 CHIP_SAMPLING_MODE, INT32 CHIP_SAMPLE_RATE, UINT32 SampleRate);
 void device_stop_c6280m(void* chip);
 void device_reset_c6280m(void* chip);

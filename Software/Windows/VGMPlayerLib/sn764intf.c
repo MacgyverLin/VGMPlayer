@@ -31,17 +31,17 @@ static UINT8 EMU_CORE = 0x00;
 #define MAX_CHIPS	0x02
 static sn764xx_state SN764xxData[MAX_CHIPS];
 
-void sn764xx_stream_update(UINT8 ChipID, stream_sample_t **outputs, int samples, stream_sample_t** channeoutputs, int channelcount)
+void sn764xx_stream_update(UINT8 ChipID, stream_sample_t **outputs, int samples, WAVE_32BS** channeloutputs, int channelcount)
 {
 	sn764xx_state *info = &SN764xxData[ChipID];
 	switch(EMU_CORE)
 	{
 	case EC_MAME:
-		SN76496Update(info->chip, outputs, samples, channeoutputs, channelcount);
+		SN76496Update(info->chip, outputs, samples, channeloutputs, channelcount);
 		break;
 #ifdef ENABLE_ALL_CORES
 	case EC_MAXIM:
-		SN76489_Update((SN76489_Context*)info->chip, outputs, samples, channeoutputs, channelcount);
+		SN76489_Update((SN76489_Context*)info->chip, outputs, samples, channeloutputs, channelcount);
 		break;
 #endif
 	}

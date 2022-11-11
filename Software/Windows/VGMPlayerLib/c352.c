@@ -165,7 +165,7 @@ static void c352_ramp_volume(C352_Voice* v,int ch,UINT8 val)
         v->curr_vol[ch] += (vol_delta>0) ? -1 : 1;
 }
 
-void c352_update(UINT8 ChipID, stream_sample_t **outputs, int samples, stream_sample_t** channeoutputs, int channelcount)
+void c352_update(UINT8 ChipID, stream_sample_t **outputs, int samples, WAVE_32BS** channeloutputs, int channelcount)
 {
     C352 *c = &C352Data[ChipID];
     int i, j;

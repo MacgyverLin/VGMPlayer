@@ -23,7 +23,7 @@ void VGMAudioPlayer::OnNotifyOpen(Obserable& observable)
 {
 	VGMData& vgmData = (VGMData&)observable;
 	const VGMInfo& vgmInfo = vgmData.GetInfo();
-	const VGMOutputChannels& outputChannels = vgmData.GetOutputChannels();
+	
 
 	boolean rval = outputDevice.Open(vgmInfo.channels, vgmInfo.bitPerSamples, vgmInfo.SampleRate, VGM_OUTPUT_BUFFER_COUNT);
 }
@@ -32,7 +32,7 @@ void VGMAudioPlayer::OnNotifyClose(Obserable& observable)
 {
 	VGMData& vgmData = (VGMData&)observable;
 	const VGMInfo& vgmInfo = vgmData.GetInfo();
-	const VGMOutputChannels& outputChannels = vgmData.GetOutputChannels();
+	
 
 	outputDevice.Close();
 }
@@ -61,11 +61,10 @@ void VGMAudioPlayer::OnNotifyUpdate(Obserable& observable, bool needUpdateSample
 {
 	VGMData& vgmData = (VGMData&)observable;
 	const VGMInfo& vgmInfo = vgmData.GetInfo();
-	const VGMOutputChannels& outputChannels = vgmData.GetOutputChannels();
-
+	
 	if (needUpdateSample)
 	{
-		if (!outputDevice.Queue((void*)(&outputChannels.GetOutputSample(0, 0)), VGM_SAMPLE_BUFFER_SIZE * (sizeof(INT16) * 2)))
+		if (!outputDevice.Queue(vgmInfo.GetOutputBufferPtr(), VGM_SAMPLE_BUFFER_SIZE * (sizeof(WAVE_16BS))))
 			return;
 
 		if (outputDevice.GetDeviceState() != 3)

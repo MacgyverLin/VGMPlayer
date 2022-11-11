@@ -20,7 +20,7 @@ struct _scsp_interface
 void scsp_set_ram_base(device_t *device, void *base);*/
 
 
-void SCSP_Update(UINT8 ChipID, stream_sample_t **outputs, int samples, stream_sample_t** channeoutputs, int channelcount);
+void SCSP_Update(UINT8 ChipID, stream_sample_t **outputs, int samples, WAVE_32BS** channeloutputs, int channelcount);
 int device_start_scsp(UINT8 ChipID, int clock, UINT8 CHIP_SAMPLING_MODE, INT32 CHIP_SAMPLE_RATE, UINT32 SampleRate);
 void device_stop_scsp(UINT8 ChipID);
 void device_reset_scsp(UINT8 ChipID);

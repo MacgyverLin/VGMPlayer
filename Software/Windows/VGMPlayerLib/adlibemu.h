@@ -12,7 +12,7 @@ void ADLIBEMU(stop)(void *chip);
 void ADLIBEMU(reset)(void *chip);
 
 void ADLIBEMU(writeIO)(void *chip, UINT32 addr, UINT8 val);
-void ADLIBEMU(getsample)(void *chip, INT32 ** sndptr, INT32 numsamples, stream_sample_t** channeoutputs, int channelcount);
+void ADLIBEMU(getsample)(void *chip, INT32 ** sndptr, INT32 numsamples, WAVE_32BS** channeloutputs, int channelcount);
 
 UINT32 ADLIBEMU(reg_read)(void *chip, UINT32 port);
 void ADLIBEMU(write_index)(void *chip, UINT32 port, UINT8 val);

@@ -99,7 +99,7 @@ void PWM_Recalc_Scale(pwm_chip* chip);
 void PWM_Set_Cycle(pwm_chip* chip, unsigned int cycle);
 void PWM_Set_Int(pwm_chip* chip, unsigned int int_time);
 
-void PWM_Update(pwm_chip* chip, int **buf, int length, stream_sample_t** channeoutputs, int channelcount);
+void PWM_Update(pwm_chip* chip, int **buf, int length, WAVE_32BS** channeloutputs, int channelcount);
 
 
 // extern UINT8 CHIP_SAMPLING_MODE;
@@ -312,7 +312,7 @@ INLINE int PWM_Update_Scale(pwm_chip* chip, int PWM_In)
 }
 
 
-void PWM_Update(pwm_chip* chip, int **buf, int length, stream_sample_t** channeoutputs, int channelcount)
+void PWM_Update(pwm_chip* chip, int **buf, int length, WAVE_32BS** channeloutputs, int channelcount)
 {
 	int tmpOutL;
 	int tmpOutR;
@@ -340,11 +340,11 @@ void PWM_Update(pwm_chip* chip, int **buf, int length, stream_sample_t** channeo
 }
 
 
-void pwm_update(UINT8 ChipID, stream_sample_t **outputs, int samples, stream_sample_t** channeoutputs, int channelcount)
+void pwm_update(UINT8 ChipID, stream_sample_t **outputs, int samples, WAVE_32BS** channeloutputs, int channelcount)
 {
 	pwm_chip *chip = &PWM_Chip[ChipID];
 	
-	PWM_Update(chip, outputs, samples, channeoutputs, channelcount);
+	PWM_Update(chip, outputs, samples, channeloutputs, channelcount);
 }
 
 int device_start_pwm(UINT8 ChipID, int clock, UINT8 CHIP_SAMPLING_MODE, INT32 CHIP_SAMPLE_RATE, UINT32 SampleRate)

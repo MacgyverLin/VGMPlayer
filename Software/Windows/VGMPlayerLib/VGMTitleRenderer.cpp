@@ -20,7 +20,7 @@ void VGMTitleRenderer::OnNotifyOpen(Obserable& observable)
 {
 	VGMData& vgmData = (VGMData&)observable;
 	const VGMInfo& vgmInfo = vgmData.GetInfo();
-	const VGMOutputChannels& outputChannels = vgmData.GetOutputChannels();
+	
 
 	texture.Load(vgmInfo.texturePath.c_str());
 
@@ -39,7 +39,7 @@ void VGMTitleRenderer::OnNotifyClose(Obserable& observable)
 
 
 	const VGMInfo& vgmInfo = vgmData.GetInfo();
-	const VGMOutputChannels& outputChannels = vgmData.GetOutputChannels();
+	
 
 	videoDevice.DestroyFont(font);
 	font = nullptr;
@@ -69,7 +69,7 @@ void VGMTitleRenderer::OnNotifyUpdate(Obserable& observable)
 {
 	VGMData& vgmData = (VGMData&)observable;
 	const VGMInfo& vgmInfo = vgmData.GetInfo();
-	const VGMOutputChannels& outputChannels = vgmData.GetOutputChannels();
+	
 
 	float scaleY = (((float)region.h / texture.GetHeight()));
 	float texWidth = scaleY * texture.GetWidth();

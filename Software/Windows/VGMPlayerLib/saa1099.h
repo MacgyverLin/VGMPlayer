@@ -13,7 +13,7 @@ void saa1099_control_w(UINT8 ChipID, offs_t offset, UINT8 data);
 void saa1099_data_w(UINT8 ChipID, offs_t offset, UINT8 data);
 
 //DECLARE_LEGACY_SOUND_DEVICE(SAA1099, saa1099);
-void saa1099_update(UINT8 ChipID, stream_sample_t **outputs, int samples, stream_sample_t** channeoutputs, int channelcount);
+void saa1099_update(UINT8 ChipID, stream_sample_t **outputs, int samples, WAVE_32BS** channeloutputs, int channelcount);
 int device_start_saa1099(UINT8 ChipID, int clock, UINT8 CHIP_SAMPLING_MODE, INT32 CHIP_SAMPLE_RATE, UINT32 SampleRate);
 void device_stop_saa1099(UINT8 ChipID);
 void device_reset_saa1099(UINT8 ChipID);

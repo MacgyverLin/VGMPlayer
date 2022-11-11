@@ -17,7 +17,7 @@ WRITE8_DEVICE_HANDLER( ym3526_write_port_w );
 
 DEVICE_GET_INFO( ym3526 );
 #define SOUND_YM3526 DEVICE_GET_INFO_NAME( ym3526 )*/
-void ym3526_stream_update(UINT8 ChipID, stream_sample_t **outputs, int samples, stream_sample_t** channeoutputs, int channelcount);
+void ym3526_stream_update(UINT8 ChipID, stream_sample_t **outputs, int samples, WAVE_32BS** channeloutputs, int channelcount);
 int device_start_ym3526(UINT8 ChipID, int clock, UINT8 CHIP_SAMPLING_MODE, INT32 CHIP_SAMPLE_RATE, UINT32 SampleRate);
 void device_stop_ym3526(UINT8 ChipID);
 void device_reset_ym3526(UINT8 ChipID);

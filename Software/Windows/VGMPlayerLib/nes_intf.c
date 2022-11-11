@@ -45,7 +45,7 @@ static UINT16 NesOptions = 0x8000;
 
 static void nes_set_chip_option(UINT8 ChipID);
 
-void nes_stream_update(UINT8 ChipID, stream_sample_t **outputs, int samples, stream_sample_t** channeoutputs, int channelcount)
+void nes_stream_update(UINT8 ChipID, stream_sample_t **outputs, int samples, WAVE_32BS** channeloutputs, int channelcount)
 {
 	nes_state *info = &NESAPUData[ChipID];
 	int CurSmpl;
@@ -55,14 +55,14 @@ void nes_stream_update(UINT8 ChipID, stream_sample_t **outputs, int samples, str
 	{
 #ifdef ENABLE_ALL_CORES
 	case EC_MAME:
-		nes_psg_update_sound(info->chip_apu, outputs, samples, channeoutputs, channelcount);
+		nes_psg_update_sound(info->chip_apu, outputs, samples, channeloutputs, channelcount);
 		break;
 #endif
 	case EC_NSFPLAY:
 		for (CurSmpl = 0x00; CurSmpl < samples; CurSmpl ++)
 		{
-			NES_APU_np_Render(info->chip_apu, &Buffer[0], channeoutputs, channelcount);
-			NES_DMC_np_Render(info->chip_dmc, &Buffer[2], channeoutputs, channelcount);
+			NES_APU_np_Render(info->chip_apu, &Buffer[0], channeloutputs, channelcount);
+			NES_DMC_np_Render(info->chip_dmc, &Buffer[2], channeloutputs, channelcount);
 			outputs[0][CurSmpl] = Buffer[0] + Buffer[2];
 			outputs[1][CurSmpl] = Buffer[1] + Buffer[3];
 		}
@@ -73,7 +73,7 @@ void nes_stream_update(UINT8 ChipID, stream_sample_t **outputs, int samples, str
 	{
 		for (CurSmpl = 0x00; CurSmpl < samples; CurSmpl ++)
 		{
-			NES_FDS_Render(info->chip_fds, &Buffer[0], channeoutputs, channelcount);
+			NES_FDS_Render(info->chip_fds, &Buffer[0], channeloutputs, channelcount);
 			outputs[0][CurSmpl] += Buffer[0];
 			outputs[1][CurSmpl] += Buffer[1];
 		}

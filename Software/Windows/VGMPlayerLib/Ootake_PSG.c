@@ -551,7 +551,7 @@ PSG_Mix(
 	void*		chip,
 	Sint32**	pDst,
 	Sint32		nSample, 
-	stream_sample_t** channeoutputs, int channelcount)	// 書き出すサンプル数 
+	WAVE_32BS** channeloutputs, int channelcount)	// 書き出すサンプル数 
 {
 	huc6280_state* info = (huc6280_state*)chip;
 	PSG*		PSGChn;

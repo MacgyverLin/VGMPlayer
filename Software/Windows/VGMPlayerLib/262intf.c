@@ -86,7 +86,7 @@ static void timer_handler_262(void *param,int timer, int period)
 }
 
 //static STREAM_UPDATE( ymf262_stream_update )
-void ymf262_stream_update(UINT8 ChipID, stream_sample_t **outputs, int samples, stream_sample_t** channeoutputs, int channelcount)
+void ymf262_stream_update(UINT8 ChipID, stream_sample_t **outputs, int samples, WAVE_32BS** channeloutputs, int channelcount)
 {
 	//ymf262_state *info = (ymf262_state *)param;
 	ymf262_state *info = &YMF262Data[ChipID];
@@ -94,11 +94,11 @@ void ymf262_stream_update(UINT8 ChipID, stream_sample_t **outputs, int samples, 
 	{
 #ifdef ENABLE_ALL_CORES
 	case EC_MAME:
-		ymf262_update_one(info->chip, outputs, samples, channeoutputs, channelcount);
+		ymf262_update_one(info->chip, outputs, samples, channeloutputs, channelcount);
 		break;
 #endif
 	case EC_DBOPL:
-		adlib_OPL3_getsample(info->chip, outputs, samples, channeoutputs, channelcount);
+		adlib_OPL3_getsample(info->chip, outputs, samples, channeloutputs, channelcount);
 		break;
 	}
 }

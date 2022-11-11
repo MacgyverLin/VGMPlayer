@@ -126,8 +126,8 @@ int YM2612_End(ym2612_ *YM2612);
 int YM2612_Reset(ym2612_ *YM2612);
 int YM2612_Read(ym2612_ *YM2612);
 int YM2612_Write(ym2612_ *YM2612, unsigned char adr, unsigned char data);
-void YM2612_ClearBuffer(int **buffer, int length, stream_sample_t** channeoutputs, int channelcount);
-void YM2612_Update(ym2612_ *YM2612, int **buf, int length, stream_sample_t** channeoutputs, int channelcount);
+void YM2612_ClearBuffer(int **buffer, int length, WAVE_32BS** channeloutputs, int channelcount);
+void YM2612_Update(ym2612_ *YM2612, int **buf, int length, WAVE_32BS** channeloutputs, int channelcount);
 /*int YM2612_Save(ym2612_ *YM2612, unsigned char SAVE[0x200]);
 int YM2612_Restore(ym2612_ *YM2612, unsigned char SAVE[0x200]);*/
 
@@ -138,7 +138,7 @@ void YM2612_SetOptions(int Flags);
 
 /* Gens */
 
-void YM2612_DacAndTimers_Update(ym2612_ *YM2612, int **buffer, int length, stream_sample_t** channeoutputs, int channelcount);
+void YM2612_DacAndTimers_Update(ym2612_ *YM2612, int **buffer, int length, WAVE_32BS** channeloutputs, int channelcount);
 void YM2612_Special_Update(ym2612_ *YM2612);
 
 /* end */

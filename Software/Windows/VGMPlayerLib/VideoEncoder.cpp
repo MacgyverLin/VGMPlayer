@@ -206,7 +206,7 @@ private:
 
 
 
-	void write_audio_frame(AVFormatContext* oc, AVStream* st, const std::vector<INT16>& audioBuffer)
+	void write_audio_frame(AVFormatContext* oc, AVStream* st, const std::vector<WAVE_16BS>& audioBuffer)
 	{
 		AVCodecContext* c;
 		AVPacket pkt = { 0 }; // data and size must be 0;
@@ -217,7 +217,7 @@ private:
 		c = st->codec;
 
 		// get_audio_frame((int16_t*)src_samples_data[0], src_nb_samples, c->channels);
-		memcpy((int16_t*)src_samples_data[0], &audioBuffer[0], audioBuffer.size() * sizeof(INT16));
+		memcpy((int16_t*)src_samples_data[0], &audioBuffer[0], audioBuffer.size() * sizeof(WAVE_16BS));
 
 		/* convert samples from native format to destination codec format, using the resampler */
 		if (swr_ctx)
@@ -512,7 +512,7 @@ public:
 		return true;
 	}
 
-	bool Update(const Vector<unsigned char>& videoBuffer, const std::vector<INT16>& audioBuffer)
+	bool Update(const Vector<unsigned char>& videoBuffer, const std::vector<WAVE_16BS>& audioBuffer)
 	{
 		/* Compute current audio and video time. */
 		audio_time = audio_st ? audio_st->pts.val * av_q2d(audio_st->time_base) : 0.0;
@@ -594,7 +594,7 @@ bool VideoEncoder::Initiate(const char* filename, int width, int height)
 	return true;
 }
 
-bool VideoEncoder::Update(const Vector<unsigned char>& videoBuffer, const std::vector<INT16>& audioBuffer)
+bool VideoEncoder::Update(const Vector<unsigned char>& videoBuffer, const std::vector<WAVE_16BS>& audioBuffer)
 {
 	assert(impl);
 

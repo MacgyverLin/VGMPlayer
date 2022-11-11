@@ -17,7 +17,7 @@ public:
 	INT32 Play();
 	INT32 Stop();
 	INT32 Update();
-	INT32 Queue(void* data_, int dataSize_);
+	INT32 Queue(const void* data_, int dataSize_);
 	INT32 GetQueued();
 	void SetVolume(FLOAT32 volume_);
 	FLOAT32 GetVolume();

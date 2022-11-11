@@ -2399,9 +2399,9 @@ INLINE signed int acc_calc(signed int value)
 *   '**buffers' is table of pointers to the buffers: left and right
 *   'length' is the number of samples that should be generated
 */
-void ym2151_update_one(void *chip, SAMP **buffers, int length, stream_sample_t** channeoutputs, int channelcount)
+void ym2151_update_one(void *chip, SAMP **buffers, int length, WAVE_32BS** channeloutputs, int channelcount)
 {
-	int i, chn;
+	int i, j, chn;
 	signed int outl,outr;
 	SAMP *bufL, *bufR;
 
@@ -2458,6 +2458,14 @@ void ym2151_update_one(void *chip, SAMP **buffers, int length, stream_sample_t**
 		SAVE_SINGLE_CHANNEL(6)
 		chan7_calc();
 		SAVE_SINGLE_CHANNEL(7)
+
+		for (j = 0; j < channelcount; j++)
+		{
+			WAVE_32BS* sample = (channeloutputs[j]);
+
+			sample[i].Left  = chanout[j] & PSG->pan[(j << 1) + 0];
+			sample[i].Right = chanout[j] & PSG->pan[(j << 1) + 1];
+		}
 
 		outl = chanout[0] & PSG->pan[0];
 		outr = chanout[0] & PSG->pan[1];

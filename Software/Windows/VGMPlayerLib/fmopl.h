@@ -54,7 +54,7 @@ void ym3812_reset_chip(void *chip);
 int  ym3812_write(void *chip, int a, int v);
 unsigned char ym3812_read(void *chip, int a);
 int  ym3812_timer_over(void *chip, int c);
-void ym3812_update_one(void *chip, OPLSAMPLE **buffer, int length, stream_sample_t** channeoutputs, int channelcount);
+void ym3812_update_one(void *chip, OPLSAMPLE **buffer, int length, WAVE_32BS** channeloutputs, int channelcount);
 
 void ym3812_set_timer_handler(void *chip, OPL_TIMERHANDLER TimerHandler, void *param);
 void ym3812_set_irq_handler(void *chip, OPL_IRQHANDLER IRQHandler, void *param);
@@ -86,7 +86,7 @@ int  ym3526_timer_over(void *chip, int c);
 ** '*buffer' is the output buffer pointer
 ** 'length' is the number of samples that should be generated
 */
-void ym3526_update_one(void *chip, OPLSAMPLE **buffer, int length, stream_sample_t** channeoutputs, int channelcount);
+void ym3526_update_one(void *chip, OPLSAMPLE **buffer, int length, WAVE_32BS** channeloutputs, int channelcount);
 
 void ym3526_set_timer_handler(void *chip, OPL_TIMERHANDLER TimerHandler, void *param);
 void ym3526_set_irq_handler(void *chip, OPL_IRQHANDLER IRQHandler, void *param);
@@ -110,7 +110,7 @@ void y8950_reset_chip(void *chip);
 int  y8950_write(void *chip, int a, int v);
 unsigned char y8950_read (void *chip, int a);
 int  y8950_timer_over(void *chip, int c);
-void y8950_update_one(void *chip, OPLSAMPLE **buffer, int length, OPLSAMPLE** channeoutputs, int channelcount);
+void y8950_update_one(void *chip, OPLSAMPLE **buffer, int length, WAVE_32BS** channeloutputs, int channelcount);
 
 void y8950_set_timer_handler(void *chip, OPL_TIMERHANDLER TimerHandler, void *param);
 void y8950_set_irq_handler(void *chip, OPL_IRQHANDLER IRQHandler, void *param);

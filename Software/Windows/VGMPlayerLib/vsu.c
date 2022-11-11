@@ -564,7 +564,7 @@ static void VSU_Update(vsu_state* chip, INT32 timestamp, int* outleft, int* outr
 }*/
 
 
-void vsu_stream_update(UINT8 ChipID, stream_sample_t **outputs, int samples, stream_sample_t** channeoutputs, int channelcount)
+void vsu_stream_update(UINT8 ChipID, stream_sample_t **outputs, int samples, WAVE_32BS** channeloutputs, int channelcount)
 {
 	vsu_state* chip = &VSUData[ChipID];
 	int curSmpl;

@@ -632,12 +632,12 @@ static void ay8910_write_reg(ay8910_context *psg, int r, int v)
 	
 	memset(outputs[0], 0x00, samples * sizeof(stream_sample_t));
 	memset(outputs[1], 0x00, samples * sizeof(stream_sample_t));
-	ay8910_update_one(psg, outputs, samples, channeoutputs, channelcount);
+	ay8910_update_one(psg, outputs, samples, channeloutputs, channelcount);
 	
 	return;
 }*/
 
-void ay8910_update_one(void *param, stream_sample_t **outputs, int samples, stream_sample_t** channeoutputs, int channelcount)
+void ay8910_update_one(void *param, stream_sample_t **outputs, int samples, WAVE_32BS** channeloutputs, int channelcount)
 {
 	ay8910_context *psg = (ay8910_context *)param;
 	stream_sample_t *buf[NUM_CHANNELS];

@@ -183,7 +183,7 @@ INT32 AudioDevice::Update()
 	return -1;
 }
 
-INT32 AudioDevice::Queue(void* data_, int dataSize_)
+INT32 AudioDevice::Queue(const void* data_, int dataSize_)
 {
 	ALenum format = 0;
 	ALuint error = 0;

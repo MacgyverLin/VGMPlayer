@@ -1,6 +1,6 @@
 #pragma once
 
-void ayxx_stream_update(UINT8 ChipID, stream_sample_t **outputs, int samples, stream_sample_t** channeoutputs, int channelcount);
+void ayxx_stream_update(UINT8 ChipID, stream_sample_t **outputs, int samples, WAVE_32BS** channeloutputs, int channelcount);
 
 int device_start_ayxx(UINT8 ChipID, int clock, UINT8 chip_type, UINT8 Flags, UINT8 CHIP_SAMPLING_MODE, INT32 CHIP_SAMPLE_RATE, UINT32 SampleRate);
 void device_stop_ayxx(UINT8 ChipID);

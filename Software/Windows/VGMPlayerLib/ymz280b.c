@@ -635,7 +635,7 @@ static int generate_pcm16(struct YMZ280BVoice *voice, UINT8 *base, UINT32 size, 
 ***********************************************************************************************/
 
 //static STREAM_UPDATE( ymz280b_update )
-void ymz280b_update(UINT8 ChipID, stream_sample_t **outputs, int samples, stream_sample_t** channeoutputs, int channelcount)
+void ymz280b_update(UINT8 ChipID, stream_sample_t **outputs, int samples, WAVE_32BS** channeloutputs, int channelcount)
 {
 	//ymz280b_state *chip = (ymz280b_state *)param;
 	ymz280b_state *chip = &YMZ280BData[ChipID];

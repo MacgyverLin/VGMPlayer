@@ -1,6 +1,8 @@
 /* emu2149.h */
 #ifndef _EMU2149_H_
 #define _EMU2149_H_
+
+#include "mamedef.h"
 #include "emutypes.h"
 
 /*#ifdef EMU2149_DLL_EXPORTS
@@ -89,7 +91,7 @@ extern "C"
   EMU2149_API e_uint8 PSG_readReg (PSG * psg, e_uint32 reg);
   EMU2149_API e_uint8 PSG_readIO (PSG * psg);
   EMU2149_API e_int16 PSG_calc (PSG *);
-  EMU2149_API void PSG_calc_stereo (PSG * psg, e_int32 **out, e_int32 samples, e_int32** channeoutputs, int channelcount);
+  EMU2149_API void PSG_calc_stereo (PSG * psg, e_int32 **out, e_int32 samples, WAVE_32BS** channeloutputs, int channelcount);
   EMU2149_API void PSG_setFlags (PSG * psg, e_uint8 flags);
   EMU2149_API void PSG_setVolumeMode (PSG * psg, int type);
   EMU2149_API e_uint32 PSG_setMask (PSG *, e_uint32 mask);

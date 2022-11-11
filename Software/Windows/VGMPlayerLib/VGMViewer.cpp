@@ -13,17 +13,17 @@ Rect GetRegion3(int width, int height)
 
 Rect GetRegion2(int width, int height)
 {
-	return Rect(0, height / 4 * 1.75f, width, height / 4 * 0.75f);
+	return Rect(0, height / 4 * 1.5f, width, height / 4 * 1.0f);
 }
 
 Rect GetRegion1(int width, int height)
 {
-	return Rect(0, height / 4 * 1.5f, width, height / 4 * 0.25f);
+	return Rect(0, height / 4 * 1.0f, width, height / 4 * 0.5f);
 }
 
 Rect GetRegion0(int width, int height)
 {
-	return Rect(0, height / 4 * 0.0f, width, height / 4 * 1.5f);
+	return Rect(0, height / 4 * 0.0f, width, height / 4 * 1.0f);
 }
 
 VGMViewer::VGMViewer(const string& name_, UINT32 x_, UINT32 y_, UINT32 width_, UINT32 height_)
@@ -165,7 +165,7 @@ void VGMViewer::OnNotifyUpdate(Obserable& observable, bool needUpdateSample)
 {
 	VGMData& vgmData = (VGMData&)observable;
 	const VGMInfo& vgmInfo = vgmData.GetInfo();
-	const VGMOutputChannels& outputChannels = vgmData.GetOutputChannels();
+	
 
 	if (needUpdateSample)
 	{
@@ -184,6 +184,6 @@ void VGMViewer::OnNotifyUpdate(Obserable& observable, bool needUpdateSample)
 
 		Vector<unsigned char> colorBuffer;
 		videoDevice.ReadPixels(colorBuffer);
-		videoEncoder.Update(colorBuffer, outputChannels.GetOutputSampleBuffer());
+		videoEncoder.Update(colorBuffer, vgmInfo.GetOutputBuffer());
 	}
 }

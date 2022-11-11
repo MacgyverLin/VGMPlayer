@@ -16,7 +16,7 @@ struct _upd7759_interface
 	void (*drqcallback)(int param);	/* drq callback (per chip, slave mode only) */
 };
 
-void upd7759_update(UINT8 ChipID, stream_sample_t **outputs, int samples, stream_sample_t** channeoutputs, int channelcount);
+void upd7759_update(UINT8 ChipID, stream_sample_t **outputs, int samples, WAVE_32BS** channeloutputs, int channelcount);
 void device_reset_upd7759(UINT8 ChipID);
 int device_start_upd7759(UINT8 ChipID, int clock, UINT8 CHIP_SAMPLING_MODE, INT32 CHIP_SAMPLE_RATE, UINT32 SampleRate);
 void device_stop_upd7759(UINT8 ChipID);

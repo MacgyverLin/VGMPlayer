@@ -1,6 +1,6 @@
 #pragma once
 
-void qsoundc_update(UINT8 ChipID, stream_sample_t **outputs, int samples, stream_sample_t** channeoutputs, int channelcount);
+void qsoundc_update(UINT8 ChipID, stream_sample_t **outputs, int samples, WAVE_32BS** channeloutputs, int channelcount);
 int device_start_qsound_ctr(UINT8 ChipID, int clock, UINT8 CHIP_SAMPLING_MODE, INT32 CHIP_SAMPLE_RATE, UINT32 SampleRate);
 void device_stop_qsound_ctr(UINT8 ChipID);
 void device_reset_qsound_ctr(UINT8 ChipID);

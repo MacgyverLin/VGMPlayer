@@ -2328,7 +2328,7 @@ void ym3812_set_update_handler(void *chip,OPL_UPDATEHANDLER UpdateHandler,void *
 ** '*buffer' is the output buffer pointer
 ** 'length' is the number of samples that should be generated
 */
-void ym3812_update_one(void *chip, OPLSAMPLE **buffer, int length, stream_sample_t** channeoutputs, int channelcount)
+void ym3812_update_one(void *chip, OPLSAMPLE **buffer, int length, WAVE_32BS** channeloutputs, int channelcount)
 {
 	FM_OPL		*OPL = (FM_OPL *)chip;
 	UINT8		rhythm = OPL->rhythm&0x20;
@@ -2463,7 +2463,7 @@ void ym3526_set_update_handler(void *chip,OPL_UPDATEHANDLER UpdateHandler,void *
 ** '*buffer' is the output buffer pointer
 ** 'length' is the number of samples that should be generated
 */
-void ym3526_update_one(void *chip, OPLSAMPLE **buffer, int length, stream_sample_t** channeoutputs, int channelcount)
+void ym3526_update_one(void *chip, OPLSAMPLE **buffer, int length, WAVE_32BS** channeloutputs, int channelcount)
 {
 	FM_OPL		*OPL = (FM_OPL *)chip;
 	UINT8		rhythm = OPL->rhythm&0x20;
@@ -2648,7 +2648,7 @@ void y8950_write_pcmrom(void *chip, offs_t ROMSize, offs_t DataStart,
 ** '*buffer' is the output buffer pointer
 ** 'length' is the number of samples that should be generated
 */
-void y8950_update_one(void *chip, OPLSAMPLE **buffer, int length, stream_sample_t** channeoutputs, int channelcount)
+void y8950_update_one(void *chip, OPLSAMPLE **buffer, int length, WAVE_32BS** channeloutputs, int channelcount)
 {
 	int i;
 	FM_OPL		*OPL = (FM_OPL *)chip;

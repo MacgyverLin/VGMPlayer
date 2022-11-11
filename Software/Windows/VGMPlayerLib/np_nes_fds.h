@@ -4,7 +4,7 @@
 void* NES_FDS_Create(int clock, int rate);
 void NES_FDS_Destroy(void* chip);
 void NES_FDS_Reset(void* chip);
-UINT32 NES_FDS_Render(void* chip, INT32 b[2], INT32** channeoutputs, UINT32 channelcount);
+UINT32 NES_FDS_Render(void* chip, INT32 b[2], WAVE_32BS** channeloutputs, UINT32 channelcount);
 bool NES_FDS_Write(void* chip, UINT32 adr, UINT32 val);
 bool NES_FDS_Read(void* chip, UINT32 adr, UINT32* val);
 void NES_FDS_SetRate(void* chip, double r);

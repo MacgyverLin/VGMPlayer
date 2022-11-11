@@ -1541,7 +1541,7 @@ void OPN2_GenerateResampled(ym3438_t *chip, Bit32s *buf)
     chip->samplecnt += 1 << RSM_FRAC;
 }
 
-void OPN2_GenerateStream(ym3438_t *chip, Bit32s **sndptr, Bit32u numsamples, stream_sample_t** channeoutputs, int channelcount)
+void OPN2_GenerateStream(ym3438_t *chip, Bit32s **sndptr, Bit32u numsamples, WAVE_32BS** channeloutputs, int channelcount)
 {
     Bit32u i;
     Bit32s *smpl, *smpr;

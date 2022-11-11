@@ -144,7 +144,7 @@ static void k054539_keyoff(k054539_state *info, int channel)
 }
 
 //static STREAM_UPDATE( k054539_update )
-void k054539_update(UINT8 ChipID, stream_sample_t **outputs, int samples, stream_sample_t** channeoutputs, int channelcount)
+void k054539_update(UINT8 ChipID, stream_sample_t **outputs, int samples, WAVE_32BS** channeloutputs, int channelcount)
 {
 	//k054539_state *info = (k054539_state *)param;
 	k054539_state *info = &K054539Data[ChipID];

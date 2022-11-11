@@ -7,7 +7,7 @@ void NES_DMC_np_Reset(void *chip);
 void NES_DMC_np_SetRate(void* chip, double rate);
 void NES_DMC_np_SetPal(void* chip, bool is_pal);
 void NES_DMC_np_SetAPU(void* chip, void* apu_);
-UINT32 NES_DMC_np_Render(void* chip, INT32 b[2], stream_sample_t** channeoutputs, int channelcount);
+UINT32 NES_DMC_np_Render(void* chip, INT32 b[2], WAVE_32BS** channeloutputs, int channelcount);
 void NES_DMC_np_SetMemory(void* chip, const UINT8* r);
 bool NES_DMC_np_Write(void* chip, UINT32 adr, UINT32 val);
 bool NES_DMC_np_Read(void* chip, UINT32 adr, UINT32* val);

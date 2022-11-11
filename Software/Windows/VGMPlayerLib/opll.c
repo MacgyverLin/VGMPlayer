@@ -1294,7 +1294,7 @@ void OPLL_GenerateResampled(opll_t *chip, int32_t *buf)
     chip->samplecnt += 1 << RSM_FRAC;
 }
 
-void OPLL_GenerateStream(opll_t* chip, int32_t** sndptr, uint32_t numsamples, int32_t** channeoutputs, int channelcount)
+void OPLL_GenerateStream(opll_t* chip, int32_t** sndptr, uint32_t numsamples, WAVE_32BS** channeloutputs, int channelcount)
 {
     uint32_t i;
     int32_t* smpl, * smpr;

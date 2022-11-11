@@ -24,7 +24,7 @@ WRITE8_DEVICE_HANDLER( ymz280b_w );
 DEVICE_GET_INFO( ymz280b );
 #define SOUND_YMZ280B DEVICE_GET_INFO_NAME( ymz280b )*/
 
-void ymz280b_update(UINT8 ChipID, stream_sample_t **outputs, int samples, stream_sample_t** channeoutputs, int channelcount);
+void ymz280b_update(UINT8 ChipID, stream_sample_t **outputs, int samples, WAVE_32BS** channeloutputs, int channelcount);
 int device_start_ymz280b(UINT8 ChipID, int clock, UINT8 CHIP_SAMPLING_MODE, INT32 CHIP_SAMPLE_RATE, UINT32 SampleRate);
 void device_stop_ymz280b(UINT8 ChipID);
 void device_reset_ymz280b(UINT8 ChipID);

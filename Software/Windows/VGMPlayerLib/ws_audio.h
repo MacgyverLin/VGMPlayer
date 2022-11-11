@@ -4,7 +4,7 @@
 int ws_audio_init(UINT8 ChipID, int clock, UINT8 CHIP_SAMPLING_MODE, INT32 CHIP_SAMPLE_RATE, UINT32 SampleRate);
 void ws_audio_reset(UINT8 ChipID);
 void ws_audio_done(UINT8 ChipID);
-void ws_audio_update(UINT8 ChipID, stream_sample_t** buffer, int length, stream_sample_t** channeoutputs, int channelcount);
+void ws_audio_update(UINT8 ChipID, stream_sample_t** buffer, int length, WAVE_32BS** channeloutputs, int channelcount);
 void ws_audio_port_write(UINT8 ChipID, UINT8 port, UINT8 value);
 UINT8 ws_audio_port_read(UINT8 ChipID, UINT8 port);
 //void ws_audio_process(void);

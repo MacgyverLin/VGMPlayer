@@ -677,7 +677,7 @@ static void set_feedback(YMF271Chip *chip, int slotnum, INT64 inp)
 }
 
 //static STREAM_UPDATE( ymf271_update )
-void ymf271_update(UINT8 ChipID, stream_sample_t **outputs, int samples, stream_sample_t** channeoutputs, int channelcount)
+void ymf271_update(UINT8 ChipID, stream_sample_t **outputs, int samples, WAVE_32BS** channeloutputs, int channelcount)
 {
 	int i, j;
 	int op;

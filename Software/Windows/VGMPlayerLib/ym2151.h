@@ -66,7 +66,7 @@ void ym2151_reset_chip(void *chip);
 ** '**buffers' is table of pointers to the buffers: left and right
 ** 'length' is the number of samples that should be generated
 */
-void ym2151_update_one(void *chip, SAMP **buffers, int length, stream_sample_t** channeoutputs, int channelcount);
+void ym2151_update_one(void *chip, SAMP **buffers, int length, WAVE_32BS** channeloutputs, int channelcount);
 
 /* write 'v' to register 'r' on YM2151 chip number 'n'*/
 void ym2151_write_reg(void *chip, int r, int v);

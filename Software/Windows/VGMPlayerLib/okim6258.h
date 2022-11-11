@@ -23,7 +23,7 @@ struct _okim6258_interface
 #define	OUTPUT_10BITS		0
 #define	OUTPUT_12BITS		1
 
-void okim6258_update(UINT8 ChipID, stream_sample_t **outputs, int samples, stream_sample_t** channeoutputs, int channelcount);
+void okim6258_update(UINT8 ChipID, stream_sample_t **outputs, int samples, WAVE_32BS** channeloutputs, int channelcount);
 int device_start_okim6258(UINT8 ChipID, int clock, int divider, int adpcm_type, int output_12bits, UINT8 CHIP_SAMPLING_MODE, INT32 CHIP_SAMPLE_RATE, UINT32 SampleRate);
 void device_stop_okim6258(UINT8 ChipID);
 void device_reset_okim6258(UINT8 ChipID);

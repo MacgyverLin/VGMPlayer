@@ -540,7 +540,7 @@ struct _pokey_state
 static pokey_state PokeyData[MAX_CHIPS];
 
 //static STREAM_UPDATE( pokey_update )
-void pokey_update(UINT8 ChipID, stream_sample_t **outputs, int samples, stream_sample_t** channeoutputs, int channelcount)
+void pokey_update(UINT8 ChipID, stream_sample_t **outputs, int samples, WAVE_32BS** channeloutputs, int channelcount)
 {
 	//pokey_state *chip = (pokey_state *)param;
 	pokey_state *chip = &PokeyData[ChipID];

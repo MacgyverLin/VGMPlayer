@@ -431,11 +431,11 @@ int PCM_Update(UINT8 ChipID, int **buf, int Length)
 }
 
 
-void rf5c164_update(UINT8 ChipID, stream_sample_t **outputs, int samples, stream_sample_t** channeoutputs, int channelcount)
+void rf5c164_update(UINT8 ChipID, stream_sample_t **outputs, int samples, WAVE_32BS** channeloutputs, int channelcount)
 {
 	struct pcm_chip_ *chip = &PCM_Chip[ChipID];
 	
-	PCM_Update(ChipID, outputs, samples, channeoutputs, channelcount);
+	PCM_Update(ChipID, outputs, samples, channeloutputs, channelcount);
 }
 
 int device_start_rf5c164(UINT8 ChipID, int clock, UINT8 CHIP_SAMPLING_MODE, INT32 CHIP_SAMPLE_RATE, UINT32 SampleRate)

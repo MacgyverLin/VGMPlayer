@@ -2,6 +2,7 @@
 #include <stdio.h>
 
 stream_sample_t* DUMMYBUF[0x02] = { NULL, NULL };
+stream_sample_t* DUMMY_CHANNEL_BUF[32] = { 0 };
 
 void chip_reg_write(UINT8 ChipType, UINT8 ChipID,
 	UINT8 Port, UINT8 Offset, UINT8 Data)

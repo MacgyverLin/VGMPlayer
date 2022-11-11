@@ -50,7 +50,7 @@ static ym2151_state YM2151Data[MAX_CHIPS];
 
 
 //static STREAM_UPDATE( ym2151_update )
-void ym2151_update(UINT8 ChipID, stream_sample_t **outputs, int samples, stream_sample_t** channeoutputs, int channelcount)
+void ym2151_update(UINT8 ChipID, stream_sample_t **outputs, int samples, WAVE_32BS** channeloutputs, int channelcount)
 {
 	//ym2151_state *info = (ym2151_state *)param;
 	ym2151_state *info = &YM2151Data[ChipID];
@@ -58,11 +58,11 @@ void ym2151_update(UINT8 ChipID, stream_sample_t **outputs, int samples, stream_
 	switch (EMU_CORE)
 	{
 	case EC_MAME:
-		ym2151_update_one(info->chip, outputs, samples, channeoutputs, channelcount);
+		ym2151_update_one(info->chip, outputs, samples, channeloutputs, channelcount);
 		break;
 #ifdef ENABLE_ALL_CORES
 	case EC_NUKED:
-		OPM_GenerateStream(info->chip, outputs, samples, channeoutputs, channelcount);
+		OPM_GenerateStream(info->chip, outputs, samples, channeloutputs, channelcount);
 		break;
 #endif
 	}

@@ -2120,7 +2120,7 @@ typedef struct
 } YM2203;
 
 /* Generate samples for one of the YM2203s */
-void ym2203_update_one(void *chip, FMSAMPLE **buffer, int length, stream_sample_t** channeoutputs, int channelcount)
+void ym2203_update_one(void *chip, FMSAMPLE **buffer, int length, WAVE_32BS** channeloutputs, int channelcount)
 {
 	YM2203 *F2203 = (YM2203 *)chip;
 	FM_OPN *OPN =   &F2203->OPN;
@@ -3322,7 +3322,7 @@ INLINE void YM2608IRQMaskWrite(FM_OPN *OPN, YM2608 *F2608, int v)
 }
 
 /* Generate samples for one of the YM2608s */
-void ym2608_update_one(void *chip, FMSAMPLE **buffer, int length, stream_sample_t** channeoutputs, int channelcount)
+void ym2608_update_one(void *chip, FMSAMPLE **buffer, int length, WAVE_32BS** channeloutputs, int channelcount)
 {
 	YM2608 *F2608 = (YM2608 *)chip;
 	FM_OPN *OPN   = &F2608->OPN;
@@ -3939,7 +3939,7 @@ void ym2608_set_mutemask(void *chip, UINT32 MuteMask)
 /* YM2610(OPNB) */
 
 /* Generate samples for one of the YM2610s */
-void ym2610_update_one(void *chip, FMSAMPLE **buffer, int length, stream_sample_t** channeoutputs, int channelcount)
+void ym2610_update_one(void *chip, FMSAMPLE **buffer, int length, WAVE_32BS** channeloutputs, int channelcount)
 {
 	YM2610 *F2610 = (YM2610 *)chip;
 	FM_OPN *OPN   = &F2610->OPN;
@@ -4098,7 +4098,7 @@ void ym2610_update_one(void *chip, FMSAMPLE **buffer, int length, stream_sample_
 
 #if BUILD_YM2610B
 /* Generate samples for one of the YM2610Bs */
-void ym2610b_update_one(void *chip, FMSAMPLE **buffer, int length, stream_sample_t** channeoutputs, int channelcount)
+void ym2610b_update_one(void *chip, FMSAMPLE **buffer, int length, WAVE_32BS** channeloutputs, int channelcount)
 {
 	YM2610 *F2610 = (YM2610 *)chip;
 	FM_OPN *OPN   = &F2610->OPN;

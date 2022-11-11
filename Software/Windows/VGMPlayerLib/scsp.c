@@ -1281,7 +1281,7 @@ INLINE INT32 SCSP_UpdateSlot(scsp_state *scsp, struct _SLOT *slot)
 	return sample;
 }
 
-INLINE void SCSP_DoMasterSamples(scsp_state *scsp, stream_sample_t **outputs, int nsamples, stream_sample_t** channeoutputs, int channelcount)
+INLINE void SCSP_DoMasterSamples(scsp_state *scsp, stream_sample_t **outputs, int nsamples, WAVE_32BS** channeloutputs, int channelcount)
 {
 	stream_sample_t *bufr,*bufl;
 	int sl, s, i;
@@ -1454,14 +1454,14 @@ int SCSP_IRQCB(void *param)
 #endif
 
 //static STREAM_UPDATE( SCSP_Update )
-void SCSP_Update(UINT8 ChipID, stream_sample_t **outputs, int samples, stream_sample_t** channeoutputs, int channelcount)
+void SCSP_Update(UINT8 ChipID, stream_sample_t **outputs, int samples, WAVE_32BS** channeloutputs, int channelcount)
 {
 	//scsp_state *scsp = (scsp_state *)param;
 	scsp_state *scsp = &SCSPData[ChipID];
 	//bufferl = outputs[0];
 	//bufferr = outputs[1];
 	//length = samples;
-	SCSP_DoMasterSamples(scsp, outputs, samples, channeoutputs, channelcount);
+	SCSP_DoMasterSamples(scsp, outputs, samples, channeloutputs, channelcount);
 }
 
 //static DEVICE_START( scsp )

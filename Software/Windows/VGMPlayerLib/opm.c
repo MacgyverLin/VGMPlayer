@@ -2089,7 +2089,7 @@ void OPM_GenerateResampled(opm_t *chip, int32_t *buf)
     chip->samplecnt += 1 << RSM_FRAC;
 }
 
-void OPM_GenerateStream(opm_t *chip, int32_t **sndptr, uint32_t numsamples, int32_t** channeoutputs, uint32_t channelcount)
+void OPM_GenerateStream(opm_t *chip, int32_t **sndptr, uint32_t numsamples, WAVE_32BS** channeloutputs, uint32_t channelcount)
 {
     uint32_t i;
     int32_t *smpl, *smpr;

@@ -291,7 +291,7 @@ void c140_set_base(UINT8 ChipID, void *base)
 }*/
 
 //static STREAM_UPDATE( update_stereo )
-void c140_update(UINT8 ChipID, stream_sample_t **outputs, int samples, stream_sample_t** channeoutputs, int channelcount)
+void c140_update(UINT8 ChipID, stream_sample_t **outputs, int samples, WAVE_32BS** channeloutputs, int channelcount)
 {
 	//c140_state *info = (c140_state *)param;
 	c140_state *info = &C140Data[ChipID];

@@ -43,6 +43,7 @@ public:
 	virtual void OnNotifyResume(Obserable& vgmData);
 	virtual void OnNotifyUpdate(Obserable& vgmData);
 private:
+	void DrawGrid(Obserable& observable);
 public:
 protected:
 private:

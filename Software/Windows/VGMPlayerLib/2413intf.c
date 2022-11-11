@@ -66,7 +66,7 @@ void YM2413DAC_update(int chip,stream_sample_t **inputs, stream_sample_t **_buff
 }
 #endif
 
-static void _emu2413_calc_stereo(OPLL *opll, INT32 **out, int samples, stream_sample_t** channeoutputs, int channelcount)
+static void _emu2413_calc_stereo(OPLL *opll, INT32 **out, int samples, WAVE_32BS** channeloutputs, int channelcount)
 {
 	INT32 *bufL = out[0];
 	INT32 *bufR = out[1];
@@ -126,21 +126,21 @@ static void _emu2413_set_mute_mask(OPLL *opll, UINT32 MuteMask)
 }
 
 //static STREAM_UPDATE( ym2413_stream_update )
-void ym2413_stream_update(UINT8 ChipID, stream_sample_t **outputs, int samples, stream_sample_t** channeoutputs, int channelcount)
+void ym2413_stream_update(UINT8 ChipID, stream_sample_t **outputs, int samples, WAVE_32BS** channeloutputs, int channelcount)
 {
 	ym2413_state *info = &YM2413Data[ChipID];
 	switch(EMU_CORE)
 	{
 #ifdef ENABLE_ALL_CORES
 	case EC_MAME:
-		ym2413_update_one(info->chip, outputs, samples, channeoutputs, channelcount);
+		ym2413_update_one(info->chip, outputs, samples, channeloutputs, channelcount);
 		break;
 	case EC_NUKED:
-		OPLL_GenerateStream(info->chip, outputs, samples, channeoutputs, channelcount);
+		OPLL_GenerateStream(info->chip, outputs, samples, channeloutputs, channelcount);
 		break;
 #endif
 	case EC_EMU2413:
-		_emu2413_calc_stereo(info->chip, outputs, samples, channeoutputs, channelcount);
+		_emu2413_calc_stereo(info->chip, outputs, samples, channeloutputs, channelcount);
 		break;
 	}
 }
