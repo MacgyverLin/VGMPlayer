@@ -2251,6 +2251,7 @@ void ym2612_update_one(void *chip, FMSAMPLE **buffer, int length, WAVE_32BS** ch
 	INT32 dacout;
 	FM_CH	*cch[6];
 	int lt,rt;
+	int ch;
 
 	/* set bufer */
 	bufL = buffer[0];
@@ -2371,6 +2372,20 @@ void ym2612_update_one(void *chip, FMSAMPLE **buffer, int length, WAVE_32BS** ch
 		else if (out_fm[4] < -8192) out_fm[4] = -8192;
 		if (out_fm[5] > 8192) out_fm[5] = 8192;
 		else if (out_fm[5] < -8192) out_fm[5] = -8192;
+
+		for (ch = 0; ch < channelcount; ch++)
+		{
+			if (F2612->dac_test && ch == 4)
+			{
+				channeloutputs[ch][i].Left = dacout;
+				channeloutputs[ch][i].Right = dacout;
+			}
+			else
+			{
+				channeloutputs[ch][i].Left = ((out_fm[ch] >> 0) & OPN->pan[(ch << 1) + 0]);
+				channeloutputs[ch][i].Right = ((out_fm[ch] >> 0) & OPN->pan[(ch << 1) + 1]);
+			}
+		}
 
 		/* 6-channels mixing  */
 		lt  = ((out_fm[0]>>0) & OPN->pan[0]);
@@ -2608,7 +2623,7 @@ void ym2612_reset_chip(void *chip)
 /* n = number  */
 /* a = address */
 /* v = value   */
-int ym2612_write(void *chip, int a, UINT8 v)
+int ym2612_write(void *chip, int a, UINT8 v, UINT32* ch, UINT32* chValue)
 {
 	YM2612 *F2612 = (YM2612 *)chip;
 	int addr;

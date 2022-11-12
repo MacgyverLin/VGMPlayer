@@ -31,17 +31,17 @@ void device_stop_ym2612(UINT8 ChipID);
 void device_reset_ym2612(UINT8 ChipID);
 
 UINT8 ym2612_r(UINT8 ChipID, offs_t offset);
-void ym2612_w(UINT8 ChipID, offs_t offset, UINT8 data);
+void ym2612_w(UINT8 ChipID, offs_t offset, UINT8 data, UINT32* ch, UINT32* chValue);
 
 UINT8 ym2612_status_port_a_r(UINT8 ChipID, offs_t offset);
 UINT8 ym2612_status_port_b_r(UINT8 ChipID, offs_t offset);
 UINT8 ym2612_data_port_a_r(UINT8 ChipID, offs_t offset);
 UINT8 ym2612_data_port_b_r(UINT8 ChipID, offs_t offset);
 
-void ym2612_control_port_a_w(UINT8 ChipID, offs_t offset, UINT8 data);
-void ym2612_control_port_b_w(UINT8 ChipID, offs_t offset, UINT8 data);
-void ym2612_data_port_a_w(UINT8 ChipID, offs_t offset, UINT8 data);
-void ym2612_data_port_b_w(UINT8 ChipID, offs_t offset, UINT8 data);
+void ym2612_control_port_a_w(UINT8 ChipID, offs_t offset, UINT8 data, UINT32* ch, UINT32* chValue);
+void ym2612_control_port_b_w(UINT8 ChipID, offs_t offset, UINT8 data, UINT32* ch, UINT32* chValue);
+void ym2612_data_port_a_w(UINT8 ChipID, offs_t offset, UINT8 data, UINT32* ch, UINT32* chValue);
+void ym2612_data_port_b_w(UINT8 ChipID, offs_t offset, UINT8 data, UINT32* ch, UINT32* chValue);
 
 void ym2612_set_emu_core(UINT8 Emulator);
 void ym2612_set_options(UINT8 Flags);

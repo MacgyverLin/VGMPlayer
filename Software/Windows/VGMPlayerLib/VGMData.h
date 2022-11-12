@@ -392,6 +392,14 @@ typedef struct _dro_version_header_2
 #define FCC_DRO1	0x41524244	// 'DBRA'
 #define FCC_DRO2	0x4C504F57	// 'WOPL'
 
+struct CPUCommand
+{
+	FLOAT32 seconds;
+	UINT32 ch;
+	UINT32 chValue;
+	std::string command;
+};
+
 class VGMInfo
 {
 public:
@@ -476,11 +484,21 @@ public:
 		return OutputBuffer[sampleIdx];
 	}
 
+	const list<CPUCommand>& GetOutputCommands() const
+	{
+		return OutputCPUCommands;
+	}
+
 	///////////////////////////////////////////////////////////////////////
 	string path;
 	string texturePath;
 	INT32 channels;
 	INT32 bitPerSamples;
+
+	vector<WAVE_32BS*> ChannelBuffers;
+	vector<WAVE_32BS*> OutputChannelBuffers;
+	vector<WAVE_16BS> OutputBuffer;
+	list<CPUCommand> OutputCPUCommands;
 
 	///////////////////////////////////////////////////////////////////////
 	// Options Variables
@@ -592,11 +610,6 @@ public:
 
 #define SMPL_BUFSIZE	0x100
 	INT32* StreamBufs[0x02];
-	
-	vector<WAVE_32BS*> ChannelBuffers;
-
-	vector<WAVE_32BS*> OutputChannelBuffers;
-	vector<WAVE_16BS> OutputBuffer;
 #ifdef MIXER_MUTING
 
 #ifdef WIN32
@@ -674,6 +687,7 @@ public:
 	boolean Update(bool needUpdateSample);
 
 	const VGMInfo& GetInfo() const;
+	void ClearCommand(float time);
 private:
 protected:
 private:
@@ -723,6 +737,7 @@ private:
 	void SetupResampler(UINT32 CurCSet, UINT32 CurChip, UINT32& BaseChannelIdx, bool UsePairedChip);
 	// void SetupResampler(CAUD_ATTR* CAA, UINT32& BaseChannelIdx, UINT32 ChnCnt);
 	void InterpretVGM(UINT32 SampleCount);
+	CPUCommand GetCommand(UINT32 ch, UINT32 chValue);
 
 	UINT8 GetDACFromPCMBank(void);
 	UINT8* GetPointerFromPCMBank(UINT8 Type, UINT32 DataPos);
@@ -744,7 +759,7 @@ private:
 	void InterpretOther(UINT32 SampleCount);
 	UINT32 GetMIDIDelay(UINT32* DelayLen);
 	UINT16 MIDINote2FNum(UINT8 Note, INT8 Pitch);
-	void SendMIDIVolume(UINT8 ChipID, UINT8 Channel, UINT8 Command, UINT8 ChnIns, UINT8 Volume);
+	void SendMIDIVolume(UINT8 ChipID, UINT8 Channel, UINT8 Command, UINT8 ChnIns, UINT8 Volume, UINT32* ch, UINT32* chValue);
 	bool OpenOtherFile(const char* FileName);
 public:
 	static void ChangeChipSampleRate(void* DataPtr, UINT32 NewSmplRate);

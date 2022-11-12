@@ -9,7 +9,7 @@ void device_stop_c352(UINT8 ChipID);
 void device_reset_c352(UINT8 ChipID);
 
 UINT16 c352_r(UINT8 ChipID, offs_t offset);
-void c352_w(UINT8 ChipID, offs_t offset, UINT16 data);
+void c352_w(UINT8 ChipID, offs_t offset, UINT16 data, UINT32* ch, UINT32* chValue);
 
 void c352_write_rom(UINT8 ChipID, offs_t ROMSize, offs_t DataStart, offs_t DataLength,
 					const UINT8* ROMData);

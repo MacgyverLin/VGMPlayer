@@ -49,11 +49,11 @@
 #define SUBSTAIN  2
 #define RELEASE   3
 
-// SIN_LBITS <= 16
-// LFO_HBITS <= 16
-// (SIN_LBITS + SIN_HBITS) <= 26
-// (ENV_LBITS + ENV_HBITS) <= 28
-// (LFO_LBITS + LFO_HBITS) <= 28
+ // SIN_LBITS <= 16
+ // LFO_HBITS <= 16
+ // (SIN_LBITS + SIN_HBITS) <= 26
+ // (ENV_LBITS + ENV_HBITS) <= 28
+ // (LFO_LBITS + LFO_HBITS) <= 28
 
 #define SIN_HBITS      12                // Sinus phase counter int part
 #define SIN_LBITS      (26 - SIN_HBITS)          // Sinus phase counter float part (best setting)
@@ -119,9 +119,9 @@
  ********************************************/
 
 
-//struct ym2612__ YM2612;
+ //struct ym2612__ YM2612;
 
-int *SIN_TAB[SIN_LENGHT];          // SINUS TABLE (pointer on TL TABLE)
+int* SIN_TAB[SIN_LENGHT];          // SINUS TABLE (pointer on TL TABLE)
 int TL_TAB[TL_LENGHT * 2];          // TOTAL LEVEL TABLE (positif and minus)
 unsigned int ENV_TAB[2 * ENV_LENGHT + 8];  // ENV CURVE TABLE (attack & decay)
 
@@ -143,7 +143,7 @@ int LFO_FREQ_TAB[LFO_LENGHT];        // LFO FMS TABLE
 
 int LFO_INC_TAB[8];              // LFO step table
 
-void (* const UPDATE_CHAN[8 * 8])(ym2612_ *YM2612, channel_ *CH, int **buf, int lenght) =    // Update Channel functions pointer table
+void (* const UPDATE_CHAN[8 * 8])(ym2612_* YM2612, channel_* CH, int** buf, int lenght, WAVE_32BS* channeloutputs, int channelcount) =    // Update Channel functions pointer table
 {
   Update_Chan_Algo0,
   Update_Chan_Algo1,
@@ -182,7 +182,7 @@ void (* const UPDATE_CHAN[8 * 8])(ym2612_ *YM2612, channel_ *CH, int **buf, int 
   Update_Chan_Algo7_LFO_Int
 };
 
-void (* const ENV_NEXT_EVENT[8])(slot_ *SL) =    // Next Enveloppe phase functions pointer table
+void (* const ENV_NEXT_EVENT[8])(slot_* SL) =    // Next Enveloppe phase functions pointer table
 {
   Env_Attack_Next,
   Env_Decay_Next,
@@ -196,21 +196,21 @@ void (* const ENV_NEXT_EVENT[8])(slot_ *SL) =    // Next Enveloppe phase functio
 
 const unsigned int DT_DEF_TAB[4 * 32] =
 {
-// FD = 0
-  0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-  0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+	// FD = 0
+	  0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+	  0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
 
-// FD = 1
-  0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 2, 2, 2, 2,
-  2, 3, 3, 3, 4, 4, 4, 5, 5, 6, 6, 7, 8, 8, 8, 8,
+	  // FD = 1
+		0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 2, 2, 2, 2,
+		2, 3, 3, 3, 4, 4, 4, 5, 5, 6, 6, 7, 8, 8, 8, 8,
 
-// FD = 2
-  1, 1, 1, 1, 2, 2, 2, 2, 2, 3, 3, 3, 4, 4, 4, 5,
-  5, 6, 6, 7, 8, 8, 9, 10, 11, 12, 13, 14, 16, 16, 16, 16,
+		// FD = 2
+		  1, 1, 1, 1, 2, 2, 2, 2, 2, 3, 3, 3, 4, 4, 4, 5,
+		  5, 6, 6, 7, 8, 8, 9, 10, 11, 12, 13, 14, 16, 16, 16, 16,
 
-// FD = 3
-  2, 2, 2, 2, 2, 3, 3, 3, 4, 4, 4, 5, 5, 6, 6, 7,
-  8 , 8, 9, 10, 11, 12, 13, 14, 16, 17, 19, 20, 22, 22, 22, 22
+		  // FD = 3
+			2, 2, 2, 2, 2, 3, 3, 3, 4, 4, 4, 5, 5, 6, 6, 7,
+			8 , 8, 9, 10, 11, 12, 13, 14, 16, 17, 19, 20, 22, 22, 22, 22
 };
 
 const unsigned int FKEY_TAB[16] =
@@ -238,7 +238,7 @@ int int_cnt;                // Interpolation calculation
 
 
 #if YM_DEBUG_LEVEL > 0            // Debug
-FILE *debug_file = NULL;
+FILE* debug_file = NULL;
 #endif
 
 
@@ -256,7 +256,7 @@ FILE *debug_file = NULL;
 int YM2612_Enable;
 int YM2612_Improv;
 //int DAC_Enable = 1;
-int *YM_Buf[2];
+int* YM_Buf[2];
 int YM_Len = 0;
 int YM2612_Enable_SSGEG = 1; // enable SSG-EG envelope (causes inacurate sound sometimes - rodrigo)
 int DAC_Highpass_Enable = 1; // sometimes it creates a terrible noise
@@ -269,53 +269,53 @@ int DAC_Highpass_Enable = 1; // sometimes it creates a terrible noise
  ***********************************************/
 
 
-INLINE void CALC_FINC_SL(slot_ *SL, int finc, int kc)
+INLINE void CALC_FINC_SL(slot_* SL, int finc, int kc)
 {
-  int ksr;
+	int ksr;
 
-  SL->Finc = (finc + SL->DT[kc]) * SL->MUL;
+	SL->Finc = (finc + SL->DT[kc]) * SL->MUL;
 
-  ksr = kc >> SL->KSR_S;  // keycode atténuation
+	ksr = kc >> SL->KSR_S;  // keycode atténuation
 
 #if YM_DEBUG_LEVEL > 1
-  fprintf(debug_file, "FINC = %d  SL->Finc = %d\n", finc, SL->Finc);
+	fprintf(debug_file, "FINC = %d  SL->Finc = %d\n", finc, SL->Finc);
 #endif
 
 	if (SL->KSR != ksr)		// si le KSR a chang?alors
 	{						// les différents taux pour l'enveloppe sont mis ?jour
-    SL->KSR = ksr;
+		SL->KSR = ksr;
 
-    SL->EincA = SL->AR[ksr];
-    SL->EincD = SL->DR[ksr];
-    SL->EincS = SL->SR[ksr];
-    SL->EincR = SL->RR[ksr];
+		SL->EincA = SL->AR[ksr];
+		SL->EincD = SL->DR[ksr];
+		SL->EincS = SL->SR[ksr];
+		SL->EincR = SL->RR[ksr];
 
-    if(SL->Ecurp == ATTACK) SL->Einc = SL->EincA;
-    else if(SL->Ecurp == DECAY) SL->Einc = SL->EincD;
-    else if(SL->Ecnt < ENV_END)
-    {
-      if(SL->Ecurp == SUBSTAIN) SL->Einc = SL->EincS;
-      else if(SL->Ecurp == RELEASE) SL->Einc = SL->EincR;
-    }
+		if (SL->Ecurp == ATTACK) SL->Einc = SL->EincA;
+		else if (SL->Ecurp == DECAY) SL->Einc = SL->EincD;
+		else if (SL->Ecnt < ENV_END)
+		{
+			if (SL->Ecurp == SUBSTAIN) SL->Einc = SL->EincS;
+			else if (SL->Ecurp == RELEASE) SL->Einc = SL->EincR;
+		}
 
 #if YM_DEBUG_LEVEL > 1
-  fprintf(debug_file, "KSR = %.4X  EincA = %.8X EincD = %.8X EincS = %.8X EincR = %.8X\n", ksr, SL->EincA, SL->EincD, SL->EincS, SL->EincR);
+		fprintf(debug_file, "KSR = %.4X  EincA = %.8X EincD = %.8X EincS = %.8X EincR = %.8X\n", ksr, SL->EincA, SL->EincD, SL->EincS, SL->EincR);
 #endif
-  }
+	}
 }
 
 
-INLINE void CALC_FINC_CH(channel_ *CH)
+INLINE void CALC_FINC_CH(channel_* CH)
 {
-  int finc, kc;
+	int finc, kc;
 
-  finc = FINC_TAB[CH->FNUM[0]] >> (7 - CH->FOCT[0]);
-  kc = CH->KC[0];
+	finc = FINC_TAB[CH->FNUM[0]] >> (7 - CH->FOCT[0]);
+	kc = CH->KC[0];
 
-  CALC_FINC_SL(&CH->SLOT[0], finc, kc);
-  CALC_FINC_SL(&CH->SLOT[1], finc, kc);
-  CALC_FINC_SL(&CH->SLOT[2], finc, kc);
-  CALC_FINC_SL(&CH->SLOT[3], finc, kc);
+	CALC_FINC_SL(&CH->SLOT[0], finc, kc);
+	CALC_FINC_SL(&CH->SLOT[1], finc, kc);
+	CALC_FINC_SL(&CH->SLOT[2], finc, kc);
+	CALC_FINC_SL(&CH->SLOT[3], finc, kc);
 }
 
 
@@ -325,476 +325,482 @@ INLINE void CALC_FINC_CH(channel_ *CH)
  ***********************************************/
 
 
-INLINE void KEY_ON(channel_ *CH, int nsl)
+INLINE void KEY_ON(channel_* CH, int nsl)
 {
-  slot_ *SL = &(CH->SLOT[nsl]);  // on recupère le bon pointeur de slot
+	slot_* SL = &(CH->SLOT[nsl]);  // on recupère le bon pointeur de slot
 
-  if(SL->Ecurp == RELEASE)    // la touche est-elle relâchée ?
-  {
-    SL->Fcnt = 0;
+	if (SL->Ecurp == RELEASE)    // la touche est-elle relâchée ?
+	{
+		SL->Fcnt = 0;
 
-    // Fix Ecco 2 splash sound
+		// Fix Ecco 2 splash sound
 
-    SL->Ecnt = (DECAY_TO_ATTACK[ENV_TAB[SL->Ecnt >> ENV_LBITS]] + ENV_ATTACK) & SL->ChgEnM;
-    SL->ChgEnM = 0xFFFFFFFF;
+		SL->Ecnt = (DECAY_TO_ATTACK[ENV_TAB[SL->Ecnt >> ENV_LBITS]] + ENV_ATTACK) & SL->ChgEnM;
+		SL->ChgEnM = 0xFFFFFFFF;
 
-//    SL->Ecnt = DECAY_TO_ATTACK[ENV_TAB[SL->Ecnt >> ENV_LBITS]] + ENV_ATTACK;
-//    SL->Ecnt = 0;
+		//    SL->Ecnt = DECAY_TO_ATTACK[ENV_TAB[SL->Ecnt >> ENV_LBITS]] + ENV_ATTACK;
+		//    SL->Ecnt = 0;
 
-    SL->Einc = SL->EincA;
-    SL->Ecmp = ENV_DECAY;
-    SL->Ecurp = ATTACK;
-  }
+		SL->Einc = SL->EincA;
+		SL->Ecmp = ENV_DECAY;
+		SL->Ecurp = ATTACK;
+	}
 }
 
 
-INLINE void KEY_OFF(channel_ *CH, int nsl)
+INLINE void KEY_OFF(channel_* CH, int nsl)
 {
-  slot_ *SL = &(CH->SLOT[nsl]);  // on recupère le bon pointeur de slot
+	slot_* SL = &(CH->SLOT[nsl]);  // on recupère le bon pointeur de slot
 
-  if(SL->Ecurp != RELEASE)    // la touche est-elle appuyée ?
-  {
-    if(SL->Ecnt < ENV_DECAY)  // attack phase ?
-    {
-      SL->Ecnt = (ENV_TAB[SL->Ecnt >> ENV_LBITS] << ENV_LBITS) + ENV_DECAY;
-    }
+	if (SL->Ecurp != RELEASE)    // la touche est-elle appuyée ?
+	{
+		if (SL->Ecnt < ENV_DECAY)  // attack phase ?
+		{
+			SL->Ecnt = (ENV_TAB[SL->Ecnt >> ENV_LBITS] << ENV_LBITS) + ENV_DECAY;
+		}
 
-    SL->Einc = SL->EincR;
-    SL->Ecmp = ENV_END;
-    SL->Ecurp = RELEASE;
-  }
+		SL->Einc = SL->EincR;
+		SL->Ecmp = ENV_END;
+		SL->Ecurp = RELEASE;
+	}
 }
 
 
-INLINE void CSM_Key_Control(ym2612_ *YM2612)
+INLINE void CSM_Key_Control(ym2612_* YM2612)
 {
-  KEY_ON(&YM2612->CHANNEL[2], 0);
-  KEY_ON(&YM2612->CHANNEL[2], 1);
-  KEY_ON(&YM2612->CHANNEL[2], 2);
-  KEY_ON(&YM2612->CHANNEL[2], 3);
+	KEY_ON(&YM2612->CHANNEL[2], 0);
+	KEY_ON(&YM2612->CHANNEL[2], 1);
+	KEY_ON(&YM2612->CHANNEL[2], 2);
+	KEY_ON(&YM2612->CHANNEL[2], 3);
 }
 
 
-int SLOT_SET(ym2612_ *YM2612, int Adr, unsigned char data)
+int SLOT_SET(ym2612_* YM2612, int Adr, unsigned char data, UINT32* ch, UINT32* chValue)
 {
-  channel_ *CH;
-  slot_ *SL;
-  int nch, nsl;
+	channel_* CH;
+	slot_* SL;
+	int nch, nsl;
 
-  if((nch = Adr & 3) == 3) return 1;
-  nsl = (Adr >> 2) & 3;
+	if ((nch = Adr & 3) == 3) return 1;
+	nsl = (Adr >> 2) & 3;
 
-  if(Adr & 0x100) nch += 3;
+	if (Adr & 0x100) nch += 3;
 
-  CH = &(YM2612->CHANNEL[nch]);
-  SL = &(CH->SLOT[nsl]);
+	CH = &(YM2612->CHANNEL[nch]);
+	SL = &(CH->SLOT[nsl]);
 
-  switch(Adr & 0xF0)
-  {
-    case 0x30:
-      if(SL->MUL = (data & 0x0F)) SL->MUL <<= 1;
-      else SL->MUL = 1;
+	*ch = nch;
+	*chValue = data;
 
-      SL->DT = DT_TAB[(data >> 4) & 7];
+	switch (Adr & 0xF0)
+	{
+	case 0x30:
+		if (SL->MUL = (data & 0x0F)) SL->MUL <<= 1;
+		else SL->MUL = 1;
 
-      CH->SLOT[0].Finc = -1;
+		SL->DT = DT_TAB[(data >> 4) & 7];
+
+		CH->SLOT[0].Finc = -1;
 
 #if YM_DEBUG_LEVEL > 1
-      fprintf(debug_file, "CHANNEL[%d], SLOT[%d] DTMUL = %.2X\n", nch, nsl, data & 0x7F);
+		fprintf(debug_file, "CHANNEL[%d], SLOT[%d] DTMUL = %.2X\n", nch, nsl, data & 0x7F);
 #endif
-      break;
+		break;
 
-    case 0x40:
-      SL->TL = data & 0x7F;
+	case 0x40:
+		SL->TL = data & 0x7F;
 
-      // SOR2 do a lot of TL adjustement and this fix R.Shinobi jump sound...
-      YM2612_Special_Update(YM2612);
+		// SOR2 do a lot of TL adjustement and this fix R.Shinobi jump sound...
+		YM2612_Special_Update(YM2612);
 
 #if((ENV_HBITS - 7) < 0)
-      SL->TLL = SL->TL >> (7 - ENV_HBITS);
+		SL->TLL = SL->TL >> (7 - ENV_HBITS);
 #else
-      SL->TLL = SL->TL << (ENV_HBITS - 7);
+		SL->TLL = SL->TL << (ENV_HBITS - 7);
 #endif
 
 #if YM_DEBUG_LEVEL > 1
-      fprintf(debug_file, "CHANNEL[%d], SLOT[%d] TL = %.2X\n", nch, nsl, SL->TL);
+		fprintf(debug_file, "CHANNEL[%d], SLOT[%d] TL = %.2X\n", nch, nsl, SL->TL);
 #endif
-      break;
+		break;
 
-    case 0x50:
-      SL->KSR_S = 3 - (data >> 6);
+	case 0x50:
+		SL->KSR_S = 3 - (data >> 6);
 
-      CH->SLOT[0].Finc = -1;
+		CH->SLOT[0].Finc = -1;
 
-      if(data &= 0x1F) SL->AR = &AR_TAB[data << 1];
-      else SL->AR = &NULL_RATE[0];
+		if (data &= 0x1F) SL->AR = &AR_TAB[data << 1];
+		else SL->AR = &NULL_RATE[0];
 
-      SL->EincA = SL->AR[SL->KSR];
-      if(SL->Ecurp == ATTACK) SL->Einc = SL->EincA;
+		SL->EincA = SL->AR[SL->KSR];
+		if (SL->Ecurp == ATTACK) SL->Einc = SL->EincA;
 
 #if YM_DEBUG_LEVEL > 1
-      fprintf(debug_file, "CHANNEL[%d], SLOT[%d] AR = %.2X  EincA = %.6X\n", nch, nsl, data, SL->EincA);
+		fprintf(debug_file, "CHANNEL[%d], SLOT[%d] AR = %.2X  EincA = %.6X\n", nch, nsl, data, SL->EincA);
 #endif
-      break;
+		break;
 
-    case 0x60:
-      if(SL->AMSon = (data & 0x80)) SL->AMS = CH->AMS;
-      else SL->AMS = 31;
+	case 0x60:
+		if (SL->AMSon = (data & 0x80)) SL->AMS = CH->AMS;
+		else SL->AMS = 31;
 
-      if(data &= 0x1F) SL->DR = &DR_TAB[data << 1];
-      else SL->DR = &NULL_RATE[0];
+		if (data &= 0x1F) SL->DR = &DR_TAB[data << 1];
+		else SL->DR = &NULL_RATE[0];
 
-      SL->EincD = SL->DR[SL->KSR];
-      if(SL->Ecurp == DECAY) SL->Einc = SL->EincD;
+		SL->EincD = SL->DR[SL->KSR];
+		if (SL->Ecurp == DECAY) SL->Einc = SL->EincD;
 
 #if YM_DEBUG_LEVEL > 1
-      fprintf(debug_file, "CHANNEL[%d], SLOT[%d] AMS = %d  DR = %.2X  EincD = %.6X\n", nch, nsl, SL->AMSon, data, SL->EincD);
+		fprintf(debug_file, "CHANNEL[%d], SLOT[%d] AMS = %d  DR = %.2X  EincD = %.6X\n", nch, nsl, SL->AMSon, data, SL->EincD);
 #endif
-      break;
+		break;
 
-    case 0x70:
-      if(data &= 0x1F) SL->SR = &DR_TAB[data << 1];
-      else SL->SR = &NULL_RATE[0];
+	case 0x70:
+		if (data &= 0x1F) SL->SR = &DR_TAB[data << 1];
+		else SL->SR = &NULL_RATE[0];
 
-      SL->EincS = SL->SR[SL->KSR];
-      if((SL->Ecurp == SUBSTAIN) && (SL->Ecnt < ENV_END)) SL->Einc = SL->EincS;
+		SL->EincS = SL->SR[SL->KSR];
+		if ((SL->Ecurp == SUBSTAIN) && (SL->Ecnt < ENV_END)) SL->Einc = SL->EincS;
 
 #if YM_DEBUG_LEVEL > 1
-      fprintf(debug_file, "CHANNEL[%d], SLOT[%d] SR = %.2X  EincS = %.6X\n", nch, nsl, data, SL->EincS);
+		fprintf(debug_file, "CHANNEL[%d], SLOT[%d] SR = %.2X  EincS = %.6X\n", nch, nsl, data, SL->EincS);
 #endif
-      break;
+		break;
 
-    case 0x80:
-      SL->SLL = SL_TAB[data >> 4];
+	case 0x80:
+		SL->SLL = SL_TAB[data >> 4];
 
-      SL->RR = &DR_TAB[((data & 0xF) << 2) + 2];
+		SL->RR = &DR_TAB[((data & 0xF) << 2) + 2];
 
-      SL->EincR = SL->RR[SL->KSR];
-      if((SL->Ecurp == RELEASE) && (SL->Ecnt < ENV_END)) SL->Einc = SL->EincR;
+		SL->EincR = SL->RR[SL->KSR];
+		if ((SL->Ecurp == RELEASE) && (SL->Ecnt < ENV_END)) SL->Einc = SL->EincR;
 
 #if YM_DEBUG_LEVEL > 1
-      fprintf(debug_file, "CHANNEL[%d], SLOT[%d] SL = %.8X\n", nch, nsl, SL->SLL);
-      fprintf(debug_file, "CHANNEL[%d], SLOT[%d] RR = %.2X  EincR = %.2X\n", nch, nsl, ((data & 0xF) << 1) | 2, SL->EincR);
+		fprintf(debug_file, "CHANNEL[%d], SLOT[%d] SL = %.8X\n", nch, nsl, SL->SLL);
+		fprintf(debug_file, "CHANNEL[%d], SLOT[%d] RR = %.2X  EincR = %.2X\n", nch, nsl, ((data & 0xF) << 1) | 2, SL->EincR);
 #endif
-      break;
+		break;
 
-    case 0x90:
-      /* SSG-EG envelope shapes :
-      //
-      // E  At Al H
-      //
-      // 1  0  0  0  \\\\
-      //
-      // 1  0  0  1  \___
-      //
-      // 1  0  1  0  \/\/
-      //              ___
-      // 1  0  1  1  \
-      //
-      // 1  1  0  0  ////
-      //              ___
-      // 1  1  0  1  /
-      //
-      // 1  1  1  0  /\/\
-      //
-      // 1  1  1  1  /___
-      //
-      // E  = SSG-EG enable
-      // At = Start negate
-      // Al = Altern
-      // H  = Hold */
-      if(YM2612_Enable_SSGEG)
-      {
-        if(data & 0x08) SL->SEG = data & 0x0F;
-        else SL->SEG = 0;
+	case 0x90:
+		/* SSG-EG envelope shapes :
+		//
+		// E  At Al H
+		//
+		// 1  0  0  0  \\\\
+		//
+		// 1  0  0  1  \___
+		//
+		// 1  0  1  0  \/\/
+		//              ___
+		// 1  0  1  1  \
+		//
+		// 1  1  0  0  ////
+		//              ___
+		// 1  1  0  1  /
+		//
+		// 1  1  1  0  /\/\
+		//
+		// 1  1  1  1  /___
+		//
+		// E  = SSG-EG enable
+		// At = Start negate
+		// Al = Altern
+		// H  = Hold */
+		if (YM2612_Enable_SSGEG)
+		{
+			if (data & 0x08) SL->SEG = data & 0x0F;
+			else SL->SEG = 0;
 
 #if YM_DEBUG_LEVEL > 1
-        fprintf(debug_file, "CHANNEL[%d], SLOT[%d] SSG-EG = %.2X\n", nch, nsl, data);
+			fprintf(debug_file, "CHANNEL[%d], SLOT[%d] SSG-EG = %.2X\n", nch, nsl, data);
 #endif
-      }
-      break;
-  }
+		}
+		break;
+	}
 
-  return 0;
+	return 0;
 }
 
 
-int CHANNEL_SET(ym2612_ *YM2612, int Adr, unsigned char data)
+int CHANNEL_SET(ym2612_* YM2612, int Adr, unsigned char data, UINT32* ch, UINT32* chValue)
 {
-  channel_ *CH;
-  int num;
+	channel_* CH;
+	int num;
 
-  if((num = Adr & 3) == 3) return 1;
+	if ((num = Adr & 3) == 3) return 1;
 
-  switch(Adr & 0xFC)
-  {
-    case 0xA0:
-      if(Adr & 0x100) num += 3;
-      CH = &(YM2612->CHANNEL[num]);
+	switch (Adr & 0xFC)
+	{
+	case 0xA0:
+		if (Adr & 0x100) num += 3;
+		CH = &(YM2612->CHANNEL[num]);
 
-      YM2612_Special_Update(YM2612);
+		YM2612_Special_Update(YM2612);
 
-      CH->FNUM[0] = (CH->FNUM[0] & 0x700) + data;
-      CH->KC[0] = (CH->FOCT[0] << 2) | FKEY_TAB[CH->FNUM[0] >> 7];
+		CH->FNUM[0] = (CH->FNUM[0] & 0x700) + data;
+		CH->KC[0] = (CH->FOCT[0] << 2) | FKEY_TAB[CH->FNUM[0] >> 7];
 
-      CH->SLOT[0].Finc = -1;
-
-#if YM_DEBUG_LEVEL > 1
-      fprintf(debug_file, "CHANNEL[%d] part1 FNUM = %d  KC = %d\n", num, CH->FNUM[0], CH->KC[0]);
-#endif
-      break;
-
-    case 0xA4:
-      if(Adr & 0x100) num += 3;
-      CH = &(YM2612->CHANNEL[num]);
-
-      YM2612_Special_Update(YM2612);
-
-      CH->FNUM[0] = (CH->FNUM[0] & 0x0FF) + ((int) (data & 0x07) << 8);
-      CH->FOCT[0] = (data & 0x38) >> 3;
-      CH->KC[0] = (CH->FOCT[0] << 2) | FKEY_TAB[CH->FNUM[0] >> 7];
-
-      CH->SLOT[0].Finc = -1;
+		CH->SLOT[0].Finc = -1;
 
 #if YM_DEBUG_LEVEL > 1
-      fprintf(debug_file, "CHANNEL[%d] part2 FNUM = %d  FOCT = %d  KC = %d\n", num, CH->FNUM[0], CH->FOCT[0], CH->KC[0]);
+		fprintf(debug_file, "CHANNEL[%d] part1 FNUM = %d  KC = %d\n", num, CH->FNUM[0], CH->KC[0]);
 #endif
-      break;
+		break;
 
-    case 0xA8:
-      if(Adr < 0x100)
-      {
-        num++;
+	case 0xA4:
+		if (Adr & 0x100) num += 3;
+		CH = &(YM2612->CHANNEL[num]);
 
-        YM2612_Special_Update(YM2612);
+		YM2612_Special_Update(YM2612);
 
-        YM2612->CHANNEL[2].FNUM[num] = (YM2612->CHANNEL[2].FNUM[num] & 0x700) + data;
-        YM2612->CHANNEL[2].KC[num] = (YM2612->CHANNEL[2].FOCT[num] << 2) | FKEY_TAB[YM2612->CHANNEL[2].FNUM[num] >> 7];
+		CH->FNUM[0] = (CH->FNUM[0] & 0x0FF) + ((int)(data & 0x07) << 8);
+		CH->FOCT[0] = (data & 0x38) >> 3;
+		CH->KC[0] = (CH->FOCT[0] << 2) | FKEY_TAB[CH->FNUM[0] >> 7];
 
-        YM2612->CHANNEL[2].SLOT[0].Finc = -1;
+		CH->SLOT[0].Finc = -1;
 
 #if YM_DEBUG_LEVEL > 1
-        fprintf(debug_file, "CHANNEL[2] part1 FNUM[%d] = %d  KC[%d] = %d\n", num, YM2612->CHANNEL[2].FNUM[num], num, YM2612->CHANNEL[2].KC[num]);
+		fprintf(debug_file, "CHANNEL[%d] part2 FNUM = %d  FOCT = %d  KC = %d\n", num, CH->FNUM[0], CH->FOCT[0], CH->KC[0]);
 #endif
-      }
-      break;
+		break;
 
-    case 0xAC:
-      if(Adr < 0x100)
-      {
-        num++;
+	case 0xA8:
+		if (Adr < 0x100)
+		{
+			num++;
 
-        YM2612_Special_Update(YM2612);
+			YM2612_Special_Update(YM2612);
 
-        YM2612->CHANNEL[2].FNUM[num] = (YM2612->CHANNEL[2].FNUM[num] & 0x0FF) + ((int) (data & 0x07) << 8);
-        YM2612->CHANNEL[2].FOCT[num] = (data & 0x38) >> 3;
-        YM2612->CHANNEL[2].KC[num] = (YM2612->CHANNEL[2].FOCT[num] << 2) | FKEY_TAB[YM2612->CHANNEL[2].FNUM[num] >> 7];
+			YM2612->CHANNEL[2].FNUM[num] = (YM2612->CHANNEL[2].FNUM[num] & 0x700) + data;
+			YM2612->CHANNEL[2].KC[num] = (YM2612->CHANNEL[2].FOCT[num] << 2) | FKEY_TAB[YM2612->CHANNEL[2].FNUM[num] >> 7];
 
-        YM2612->CHANNEL[2].SLOT[0].Finc = -1;
+			YM2612->CHANNEL[2].SLOT[0].Finc = -1;
 
 #if YM_DEBUG_LEVEL > 1
-        fprintf(debug_file, "CHANNEL[2] part2 FNUM[%d] = %d  FOCT[%d] = %d  KC[%d] = %d\n", num, YM2612->CHANNEL[2].FNUM[num], num, YM2612->CHANNEL[2].FOCT[num], num, YM2612->CHANNEL[2].KC[num]);
+			fprintf(debug_file, "CHANNEL[2] part1 FNUM[%d] = %d  KC[%d] = %d\n", num, YM2612->CHANNEL[2].FNUM[num], num, YM2612->CHANNEL[2].KC[num]);
 #endif
-      }
-      break;
+		}
+		break;
 
-    case 0xB0:
-      if(Adr & 0x100) num += 3;
-      CH = &(YM2612->CHANNEL[num]);
+	case 0xAC:
+		if (Adr < 0x100)
+		{
+			num++;
 
-      if(CH->ALGO != (data & 7))
-      {
-        // Fix VectorMan 2 heli sound (level 1)
-        YM2612_Special_Update(YM2612);
+			YM2612_Special_Update(YM2612);
 
-        CH->ALGO = data & 7;
+			YM2612->CHANNEL[2].FNUM[num] = (YM2612->CHANNEL[2].FNUM[num] & 0x0FF) + ((int)(data & 0x07) << 8);
+			YM2612->CHANNEL[2].FOCT[num] = (data & 0x38) >> 3;
+			YM2612->CHANNEL[2].KC[num] = (YM2612->CHANNEL[2].FOCT[num] << 2) | FKEY_TAB[YM2612->CHANNEL[2].FNUM[num] >> 7];
 
-        CH->SLOT[0].ChgEnM = 0;
-        CH->SLOT[1].ChgEnM = 0;
-        CH->SLOT[2].ChgEnM = 0;
-        CH->SLOT[3].ChgEnM = 0;
-      }
-
-      CH->FB = 9 - ((data >> 3) & 7);                // Real thing ?
-
-//      if(CH->FB = ((data >> 3) & 7)) CH->FB = 9 - CH->FB;    // Thunder force 4 (music stage 8), Gynoug, Aladdin bug sound...
-//      else CH->FB = 31;
+			YM2612->CHANNEL[2].SLOT[0].Finc = -1;
 
 #if YM_DEBUG_LEVEL > 1
-      fprintf(debug_file, "CHANNEL[%d] ALGO = %d  FB = %d\n", num, CH->ALGO, CH->FB);
+			fprintf(debug_file, "CHANNEL[2] part2 FNUM[%d] = %d  FOCT[%d] = %d  KC[%d] = %d\n", num, YM2612->CHANNEL[2].FNUM[num], num, YM2612->CHANNEL[2].FOCT[num], num, YM2612->CHANNEL[2].KC[num]);
 #endif
-      break;
+		}
+		break;
 
-    case 0xB4:
-      if(Adr & 0x100) num += 3;
-      CH = &(YM2612->CHANNEL[num]);
+	case 0xB0:
+		if (Adr & 0x100) num += 3;
+		CH = &(YM2612->CHANNEL[num]);
 
-      YM2612_Special_Update(YM2612);
+		if (CH->ALGO != (data & 7))
+		{
+			// Fix VectorMan 2 heli sound (level 1)
+			YM2612_Special_Update(YM2612);
 
-      if(data & 0x80) CH->LEFT = 0xFFFFFFFF;
-      else CH->LEFT = 0;
+			CH->ALGO = data & 7;
 
-      if(data & 0x40) CH->RIGHT = 0xFFFFFFFF;
-      else CH->RIGHT = 0;
+			CH->SLOT[0].ChgEnM = 0;
+			CH->SLOT[1].ChgEnM = 0;
+			CH->SLOT[2].ChgEnM = 0;
+			CH->SLOT[3].ChgEnM = 0;
+		}
 
-      CH->AMS = LFO_AMS_TAB[(data >> 4) & 3];
-      CH->FMS = LFO_FMS_TAB[data & 7];
+		CH->FB = 9 - ((data >> 3) & 7);                // Real thing ?
 
-      if(CH->SLOT[0].AMSon) CH->SLOT[0].AMS = CH->AMS;
-      else CH->SLOT[0].AMS = 31;
-      if(CH->SLOT[1].AMSon) CH->SLOT[1].AMS = CH->AMS;
-      else CH->SLOT[1].AMS = 31;
-      if(CH->SLOT[2].AMSon) CH->SLOT[2].AMS = CH->AMS;
-      else CH->SLOT[2].AMS = 31;
-      if(CH->SLOT[3].AMSon) CH->SLOT[3].AMS = CH->AMS;
-      else CH->SLOT[3].AMS = 31;
+  //      if(CH->FB = ((data >> 3) & 7)) CH->FB = 9 - CH->FB;    // Thunder force 4 (music stage 8), Gynoug, Aladdin bug sound...
+  //      else CH->FB = 31;
+
+#if YM_DEBUG_LEVEL > 1
+		fprintf(debug_file, "CHANNEL[%d] ALGO = %d  FB = %d\n", num, CH->ALGO, CH->FB);
+#endif
+		break;
+
+	case 0xB4:
+		if (Adr & 0x100) num += 3;
+		CH = &(YM2612->CHANNEL[num]);
+
+		YM2612_Special_Update(YM2612);
+
+		if (data & 0x80) CH->LEFT = 0xFFFFFFFF;
+		else CH->LEFT = 0;
+
+		if (data & 0x40) CH->RIGHT = 0xFFFFFFFF;
+		else CH->RIGHT = 0;
+
+		CH->AMS = LFO_AMS_TAB[(data >> 4) & 3];
+		CH->FMS = LFO_FMS_TAB[data & 7];
+
+		if (CH->SLOT[0].AMSon) CH->SLOT[0].AMS = CH->AMS;
+		else CH->SLOT[0].AMS = 31;
+		if (CH->SLOT[1].AMSon) CH->SLOT[1].AMS = CH->AMS;
+		else CH->SLOT[1].AMS = 31;
+		if (CH->SLOT[2].AMSon) CH->SLOT[2].AMS = CH->AMS;
+		else CH->SLOT[2].AMS = 31;
+		if (CH->SLOT[3].AMSon) CH->SLOT[3].AMS = CH->AMS;
+		else CH->SLOT[3].AMS = 31;
 
 #if YM_DEBUG_LEVEL > 0
-      fprintf(debug_file, "CHANNEL[%d] AMS = %d  FMS = %d\n", num, CH->AMS, CH->FMS);
+		fprintf(debug_file, "CHANNEL[%d] AMS = %d  FMS = %d\n", num, CH->AMS, CH->FMS);
 #endif
-      break;
-  }
+		break;
+	}
 
-  return 0;
+	*ch = num;
+	*chValue = data;
+
+	return 0;
 }
 
 
-int YM_SET(ym2612_ *YM2612, int Adr, unsigned char data)
+int YM_SET(ym2612_* YM2612, int Adr, unsigned char data)
 {
-  channel_ *CH;
-  int nch;
+	channel_* CH;
+	int nch;
 
-  switch(Adr)
-  {
-    case 0x22:
-      if(data & 8)
-      {
-        // Cool Spot music 1, LFO modified severals time which
-        // distord the sound, have to check that on a real genesis...
+	switch (Adr)
+	{
+	case 0x22:
+		if (data & 8)
+		{
+			// Cool Spot music 1, LFO modified severals time which
+			// distord the sound, have to check that on a real genesis...
 
-        YM2612->LFOinc = LFO_INC_TAB[data & 7];
-
-#if YM_DEBUG_LEVEL > 0
-        fprintf(debug_file, "\nLFO Enable, LFOinc = %.8X   %d\n", YM2612->LFOinc, data & 7);
-#endif
-      }
-      else
-      {
-        YM2612->LFOinc = YM2612->LFOcnt = 0;
+			YM2612->LFOinc = LFO_INC_TAB[data & 7];
 
 #if YM_DEBUG_LEVEL > 0
-        fprintf(debug_file, "\nLFO Disable\n");
+			fprintf(debug_file, "\nLFO Enable, LFOinc = %.8X   %d\n", YM2612->LFOinc, data & 7);
 #endif
-      }
-      break;
+		}
+		else
+		{
+			YM2612->LFOinc = YM2612->LFOcnt = 0;
 
-    case 0x24:
-      YM2612->TimerA = (YM2612->TimerA & 0x003) | (((int) data) << 2);
+#if YM_DEBUG_LEVEL > 0
+			fprintf(debug_file, "\nLFO Disable\n");
+#endif
+		}
+		break;
 
-      if(YM2612->TimerAL != (1024 - YM2612->TimerA) << 12)
-      {
-        YM2612->TimerAcnt = YM2612->TimerAL = (1024 - YM2612->TimerA) << 12;
+	case 0x24:
+		YM2612->TimerA = (YM2612->TimerA & 0x003) | (((int)data) << 2);
+
+		if (YM2612->TimerAL != (1024 - YM2612->TimerA) << 12)
+		{
+			YM2612->TimerAcnt = YM2612->TimerAL = (1024 - YM2612->TimerA) << 12;
 
 #if YM_DEBUG_LEVEL > 1
-        fprintf(debug_file, "Timer A Set = %.8X\n", YM2612->TimerAcnt);
+			fprintf(debug_file, "Timer A Set = %.8X\n", YM2612->TimerAcnt);
 #endif
-      }
-      break;
+		}
+		break;
 
-    case 0x25:
-      YM2612->TimerA = (YM2612->TimerA & 0x3fc) | (data & 3);
+	case 0x25:
+		YM2612->TimerA = (YM2612->TimerA & 0x3fc) | (data & 3);
 
-      if(YM2612->TimerAL != (1024 - YM2612->TimerA) << 12)
-      {
-        YM2612->TimerAcnt = YM2612->TimerAL = (1024 - YM2612->TimerA) << 12;
+		if (YM2612->TimerAL != (1024 - YM2612->TimerA) << 12)
+		{
+			YM2612->TimerAcnt = YM2612->TimerAL = (1024 - YM2612->TimerA) << 12;
 
 #if YM_DEBUG_LEVEL > 1
-        fprintf(debug_file, "Timer A Set = %.8X\n", YM2612->TimerAcnt);
+			fprintf(debug_file, "Timer A Set = %.8X\n", YM2612->TimerAcnt);
 #endif
-      }
-      break;
+		}
+		break;
 
-    case 0x26:
-      YM2612->TimerB = data;
+	case 0x26:
+		YM2612->TimerB = data;
 
-      if(YM2612->TimerBL != (256 - YM2612->TimerB) << (4 + 12))
-      {
-        YM2612->TimerBcnt = YM2612->TimerBL = (256 - YM2612->TimerB) << (4 + 12);
+		if (YM2612->TimerBL != (256 - YM2612->TimerB) << (4 + 12))
+		{
+			YM2612->TimerBcnt = YM2612->TimerBL = (256 - YM2612->TimerB) << (4 + 12);
 
 #if YM_DEBUG_LEVEL > 1
-        fprintf(debug_file, "Timer B Set = %.8X\n", YM2612->TimerBcnt);
+			fprintf(debug_file, "Timer B Set = %.8X\n", YM2612->TimerBcnt);
 #endif
-      }
-      break;
+		}
+		break;
 
-    case 0x27:
-      // Paramètre divers
-      // b7 = CSM MODE
-      // b6 = 3 slot mode
-      // b5 = reset b
-      // b4 = reset a
-      // b3 = timer enable b
-      // b2 = timer enable a
-      // b1 = load b
-      // b0 = load a
+	case 0x27:
+		// Paramètre divers
+		// b7 = CSM MODE
+		// b6 = 3 slot mode
+		// b5 = reset b
+		// b4 = reset a
+		// b3 = timer enable b
+		// b2 = timer enable a
+		// b1 = load b
+		// b0 = load a
 
-      if((data ^ YM2612->Mode) & 0x40)
-      {
-        // We changed the channel 2 mode, so recalculate phase step
-        // This fix the punch sound in Street of Rage 2
+		if ((data ^ YM2612->Mode) & 0x40)
+		{
+			// We changed the channel 2 mode, so recalculate phase step
+			// This fix the punch sound in Street of Rage 2
 
-        YM2612_Special_Update(YM2612);
+			YM2612_Special_Update(YM2612);
 
-        YM2612->CHANNEL[2].SLOT[0].Finc = -1;    // recalculate phase step
-      }
+			YM2612->CHANNEL[2].SLOT[0].Finc = -1;    // recalculate phase step
+		}
 
-//      if((data & 2) && (YM2612->Status & 2)) YM2612->TimerBcnt = YM2612->TimerBL;
-//      if((data & 1) && (YM2612->Status & 1)) YM2612->TimerAcnt = YM2612->TimerAL;
+		//      if((data & 2) && (YM2612->Status & 2)) YM2612->TimerBcnt = YM2612->TimerBL;
+		//      if((data & 1) && (YM2612->Status & 1)) YM2612->TimerAcnt = YM2612->TimerAL;
 
-//      YM2612->Status &= (~data >> 4);          // Reset du Status au cas ou c'est demand?
-      YM2612->Status &= (~data >> 4) & (data >> 2);  // Reset Status
+		//      YM2612->Status &= (~data >> 4);          // Reset du Status au cas ou c'est demand?
+		YM2612->Status &= (~data >> 4) & (data >> 2);  // Reset Status
 
-      YM2612->Mode = data;
+		YM2612->Mode = data;
 
 #if YM_DEBUG_LEVEL > 0
-      fprintf(debug_file, "Mode reg = %.2X\n", data);
+		fprintf(debug_file, "Mode reg = %.2X\n", data);
 #endif
-      break;
+		break;
 
-    case 0x28:
-      if((nch = data & 3) == 3) return 1;
+	case 0x28:
+		if ((nch = data & 3) == 3) return 1;
 
-      if(data & 4) nch += 3;
-      CH = &(YM2612->CHANNEL[nch]);
+		if (data & 4) nch += 3;
+		CH = &(YM2612->CHANNEL[nch]);
 
-      YM2612_Special_Update(YM2612);
+		YM2612_Special_Update(YM2612);
 
-      if(data & 0x10) KEY_ON(CH, S0);  // On appuie sur la touche pour le slot 1
-      else KEY_OFF(CH, S0);        // On relâche la touche pour le slot 1
-      if(data & 0x20) KEY_ON(CH, S1);  // On appuie sur la touche pour le slot 3
-      else KEY_OFF(CH, S1);        // On relâche la touche pour le slot 3
-      if(data & 0x40) KEY_ON(CH, S2);  // On appuie sur la touche pour le slot 2
-      else KEY_OFF(CH, S2);        // On relâche la touche pour le slot 2
-      if(data & 0x80) KEY_ON(CH, S3);  // On appuie sur la touche pour le slot 4
-      else KEY_OFF(CH, S3);        // On relâche la touche pour le slot 4
+		if (data & 0x10) KEY_ON(CH, S0);  // On appuie sur la touche pour le slot 1
+		else KEY_OFF(CH, S0);        // On relâche la touche pour le slot 1
+		if (data & 0x20) KEY_ON(CH, S1);  // On appuie sur la touche pour le slot 3
+		else KEY_OFF(CH, S1);        // On relâche la touche pour le slot 3
+		if (data & 0x40) KEY_ON(CH, S2);  // On appuie sur la touche pour le slot 2
+		else KEY_OFF(CH, S2);        // On relâche la touche pour le slot 2
+		if (data & 0x80) KEY_ON(CH, S3);  // On appuie sur la touche pour le slot 4
+		else KEY_OFF(CH, S3);        // On relâche la touche pour le slot 4
 
 #if YM_DEBUG_LEVEL > 0
-      fprintf(debug_file, "CHANNEL[%d]  KEY %.1X\n", nch, ((data & 0xf0) >> 4));
+		fprintf(debug_file, "CHANNEL[%d]  KEY %.1X\n", nch, ((data & 0xf0) >> 4));
 #endif
-      break;
+		break;
 
-    case 0x2A:
-      YM2612->DACdata = ((int) data - 0x80) << DAC_SHIFT;  // donnée du DAC
-      break;
+	case 0x2A:
+		YM2612->DACdata = ((int)data - 0x80) << DAC_SHIFT;  // donnée du DAC
+		break;
 
-    case 0x2B:
-      if(YM2612->DAC ^ (data & 0x80)) YM2612_Special_Update(YM2612);
+	case 0x2B:
+		if (YM2612->DAC ^ (data & 0x80)) YM2612_Special_Update(YM2612);
 
-      YM2612->DAC = data & 0x80;  // activation/désactivation du DAC
-      break;
-  }
+		YM2612->DAC = data & 0x80;  // activation/désactivation du DAC
+		break;
+	}
 
-  return 0;
+	return 0;
 }
 
 
@@ -804,81 +810,81 @@ int YM_SET(ym2612_ *YM2612, int Adr, unsigned char data)
  ***********************************************/
 
 
-void Env_NULL_Next(slot_ *SL)
+void Env_NULL_Next(slot_* SL)
 {
 }
 
 
-void Env_Attack_Next(slot_ *SL)
+void Env_Attack_Next(slot_* SL)
 {
-  // Verified with Gynoug even in HQ (explode SFX)
-  SL->Ecnt = ENV_DECAY;
+	// Verified with Gynoug even in HQ (explode SFX)
+	SL->Ecnt = ENV_DECAY;
 
-  SL->Einc = SL->EincD;
-  SL->Ecmp = SL->SLL;
-  SL->Ecurp = DECAY;
+	SL->Einc = SL->EincD;
+	SL->Ecmp = SL->SLL;
+	SL->Ecurp = DECAY;
 }
 
 
-void Env_Decay_Next(slot_ *SL)
+void Env_Decay_Next(slot_* SL)
 {
-  // Verified with Gynoug even in HQ (explode SFX)
-  SL->Ecnt = SL->SLL;
+	// Verified with Gynoug even in HQ (explode SFX)
+	SL->Ecnt = SL->SLL;
 
-  SL->Einc = SL->EincS;
-  SL->Ecmp = ENV_END;
-  SL->Ecurp = SUBSTAIN;
+	SL->Einc = SL->EincS;
+	SL->Ecmp = ENV_END;
+	SL->Ecurp = SUBSTAIN;
 }
 
 
-void Env_Substain_Next(slot_ *SL)
+void Env_Substain_Next(slot_* SL)
 {
-  if(YM2612_Enable_SSGEG)
-  {
-    if(SL->SEG & 8)  // SSG envelope type
-    {
-      if(SL->SEG & 1)
-      {
-        SL->Ecnt = ENV_END;
-        SL->Einc = 0;
-        SL->Ecmp = ENV_END + 1;
-      }
-      else
-      {
-        // re KEY ON
+	if (YM2612_Enable_SSGEG)
+	{
+		if (SL->SEG & 8)  // SSG envelope type
+		{
+			if (SL->SEG & 1)
+			{
+				SL->Ecnt = ENV_END;
+				SL->Einc = 0;
+				SL->Ecmp = ENV_END + 1;
+			}
+			else
+			{
+				// re KEY ON
 
-        // SL->Fcnt = 0;
-        // SL->ChgEnM = 0xFFFFFFFF;
+				// SL->Fcnt = 0;
+				// SL->ChgEnM = 0xFFFFFFFF;
 
-        SL->Ecnt = 0;
-        SL->Einc = SL->EincA;
-        SL->Ecmp = ENV_DECAY;
-        SL->Ecurp = ATTACK;
-      }
+				SL->Ecnt = 0;
+				SL->Einc = SL->EincA;
+				SL->Ecmp = ENV_DECAY;
+				SL->Ecurp = ATTACK;
+			}
 
-      SL->SEG ^= (SL->SEG & 2) << 1;
-    }
-    else
-    {
-      SL->Ecnt = ENV_END;
-      SL->Einc = 0;
-      SL->Ecmp = ENV_END + 1;
-    }
-  }
-  else
-  {
-    SL->Ecnt = ENV_END;
-    SL->Einc = 0;
-    SL->Ecmp = ENV_END + 1;
-  }
+			SL->SEG ^= (SL->SEG & 2) << 1;
+		}
+		else
+		{
+			SL->Ecnt = ENV_END;
+			SL->Einc = 0;
+			SL->Ecmp = ENV_END + 1;
+		}
+	}
+	else
+	{
+		SL->Ecnt = ENV_END;
+		SL->Einc = 0;
+		SL->Ecmp = ENV_END + 1;
+	}
 }
 
 
-void Env_Release_Next(slot_ *SL)
+void Env_Release_Next(slot_* SL)
 {
-  SL->Ecnt = ENV_END;
-  SL->Einc = 0;
-  SL->Ecmp = ENV_END + 1;
+	SL->Ecnt = ENV_END;
+	SL->Einc = 0;
+	SL->Ecmp = ENV_END + 1;
 }
 
 
@@ -1063,16 +1069,21 @@ DO_LIMIT
 
 
 #define DO_OUTPUT            \
+channeloutputs[i].Left = CH->OUTd & CH->LEFT; \
+channeloutputs[i].Right = CH->OUTd & CH->RIGHT; \
 buf[0][i] += CH->OUTd & CH->LEFT;    \
 buf[1][i] += CH->OUTd & CH->RIGHT;
+
 
 
 #define DO_OUTPUT_INT0              \
 if((int_cnt += YM2612->Inter_Step) & 0x04000)  \
 {                        \
-  int_cnt &= 0x3FFF;              \
-  buf[0][i] += CH->OUTd & CH->LEFT;      \
-  buf[1][i] += CH->OUTd & CH->RIGHT;      \
+	int_cnt &= 0x3FFF;              \
+	channeloutputs[i].Left = CH->OUTd & CH->LEFT; \
+	channeloutputs[i].Right = CH->OUTd & CH->RIGHT; \
+	buf[0][i] += CH->OUTd & CH->LEFT;      \
+	buf[1][i] += CH->OUTd & CH->RIGHT;      \
 }                        \
 else i--;
 
@@ -1081,9 +1092,11 @@ else i--;
 CH->Old_OUTd = (CH->OUTd + CH->Old_OUTd) >> 1;  \
 if((int_cnt += YM2612->Inter_Step) & 0x04000)  \
 {                        \
-  int_cnt &= 0x3FFF;              \
-  buf[0][i] += CH->Old_OUTd & CH->LEFT;    \
-  buf[1][i] += CH->Old_OUTd & CH->RIGHT;    \
+	int_cnt &= 0x3FFF;              \
+	channeloutputs[i].Left = CH->Old_OUTd & CH->LEFT; \
+	channeloutputs[i].Right = CH->Old_OUTd & CH->RIGHT; \
+	buf[0][i] += CH->Old_OUTd & CH->LEFT;    \
+	buf[1][i] += CH->Old_OUTd & CH->RIGHT;    \
 }                        \
 else i--;
 
@@ -1091,10 +1104,12 @@ else i--;
 #define DO_OUTPUT_INT2                \
 if((int_cnt += YM2612->Inter_Step) & 0x04000)    \
 {                          \
-  int_cnt &= 0x3FFF;                \
-  CH->Old_OUTd = (CH->OUTd + CH->Old_OUTd) >> 1;  \
-  buf[0][i] += CH->Old_OUTd & CH->LEFT;      \
-  buf[1][i] += CH->Old_OUTd & CH->RIGHT;      \
+	int_cnt &= 0x3FFF;                \
+	CH->Old_OUTd = (CH->OUTd + CH->Old_OUTd) >> 1;  \
+	channeloutputs[i].Left = CH->Old_OUTd & CH->LEFT; \
+	channeloutputs[i].Right = CH->Old_OUTd & CH->RIGHT; \
+	buf[0][i] += CH->Old_OUTd & CH->LEFT;      \
+	buf[1][i] += CH->Old_OUTd & CH->RIGHT;      \
 }                          \
 else i--;                      \
 CH->Old_OUTd = CH->OUTd;
@@ -1103,364 +1118,366 @@ CH->Old_OUTd = CH->OUTd;
 #define DO_OUTPUT_INT              \
 if((int_cnt += YM2612->Inter_Step) & 0x04000)  \
 {                        \
-  int_cnt &= 0x3FFF;              \
-  CH->Old_OUTd = (((int_cnt ^ 0x3FFF) * CH->OUTd) + (int_cnt * CH->Old_OUTd)) >> 14;  \
-  buf[0][i] += CH->Old_OUTd & CH->LEFT;    \
-  buf[1][i] += CH->Old_OUTd & CH->RIGHT;    \
+	int_cnt &= 0x3FFF;              \
+	CH->Old_OUTd = (((int_cnt ^ 0x3FFF) * CH->OUTd) + (int_cnt * CH->Old_OUTd)) >> 14;  \
+	channeloutputs[i].Left = CH->Old_OUTd & CH->LEFT; \
+	channeloutputs[i].Right = CH->Old_OUTd & CH->RIGHT; \
+	buf[0][i] += CH->Old_OUTd & CH->LEFT;    \
+	buf[1][i] += CH->Old_OUTd & CH->RIGHT;    \
 }                        \
 else i--;                    \
 CH->Old_OUTd = CH->OUTd;
 
 
-void Update_Chan_Algo0(ym2612_ *YM2612, channel_ *CH, int **buf, int lenght)
+void Update_Chan_Algo0(ym2612_* YM2612, channel_* CH, int** buf, int lenght, WAVE_32BS* channeloutputs, int channelcount)
 {
-  int i;
+	int i;
 
-  if(CH->SLOT[S3].Ecnt == ENV_END) return;
+	if (CH->SLOT[S3].Ecnt == ENV_END) return;
 
 #if YM_DEBUG_LEVEL > 1
-  fprintf(debug_file, "\n\nAlgo 0 len = %d\n\n", lenght);
+	fprintf(debug_file, "\n\nAlgo 0 len = %d\n\n", lenght);
 #endif
 
-  for(i = 0; i < lenght; i++)
-  {
-    GET_CURRENT_PHASE
-    UPDATE_PHASE
-    GET_CURRENT_ENV
-    UPDATE_ENV
-    DO_ALGO_0
-    DO_OUTPUT
-  }
+	for (i = 0; i < lenght; i++)
+	{
+		GET_CURRENT_PHASE
+			UPDATE_PHASE
+			GET_CURRENT_ENV
+			UPDATE_ENV
+			DO_ALGO_0
+			DO_OUTPUT
+	}
 }
 
 
-void Update_Chan_Algo1(ym2612_ *YM2612, channel_ *CH, int **buf, int lenght)
+void Update_Chan_Algo1(ym2612_* YM2612, channel_* CH, int** buf, int lenght, WAVE_32BS* channeloutputs, int channelcount)
 {
-  int i;
+	int i;
 
-  if(CH->SLOT[S3].Ecnt == ENV_END) return;
+	if (CH->SLOT[S3].Ecnt == ENV_END) return;
 
 #if YM_DEBUG_LEVEL > 1
-  fprintf(debug_file, "\n\nAlgo 1 len = %d\n\n", lenght);
+	fprintf(debug_file, "\n\nAlgo 1 len = %d\n\n", lenght);
 #endif
 
-  for(i = 0; i < lenght; i++)
-  {
-    GET_CURRENT_PHASE
-    UPDATE_PHASE
-    GET_CURRENT_ENV
-    UPDATE_ENV
-    DO_ALGO_1
-    DO_OUTPUT
-  }
+	for (i = 0; i < lenght; i++)
+	{
+		GET_CURRENT_PHASE
+			UPDATE_PHASE
+			GET_CURRENT_ENV
+			UPDATE_ENV
+			DO_ALGO_1
+			DO_OUTPUT
+	}
 }
 
 
-void Update_Chan_Algo2(ym2612_ *YM2612, channel_ *CH, int **buf, int lenght)
+void Update_Chan_Algo2(ym2612_* YM2612, channel_* CH, int** buf, int lenght, WAVE_32BS* channeloutputs, int channelcount)
 {
-  int i;
+	int i;
 
-  if(CH->SLOT[S3].Ecnt == ENV_END) return;
+	if (CH->SLOT[S3].Ecnt == ENV_END) return;
 
 #if YM_DEBUG_LEVEL > 1
-  fprintf(debug_file, "\n\nAlgo 2 len = %d\n\n", lenght);
+	fprintf(debug_file, "\n\nAlgo 2 len = %d\n\n", lenght);
 #endif
 
-  for(i = 0; i < lenght; i++)
-  {
-    GET_CURRENT_PHASE
-    UPDATE_PHASE
-    GET_CURRENT_ENV
-    UPDATE_ENV
-    DO_ALGO_2
-    DO_OUTPUT
-  }
+	for (i = 0; i < lenght; i++)
+	{
+		GET_CURRENT_PHASE
+			UPDATE_PHASE
+			GET_CURRENT_ENV
+			UPDATE_ENV
+			DO_ALGO_2
+			DO_OUTPUT
+	}
 }
 
 
-void Update_Chan_Algo3(ym2612_ *YM2612, channel_ *CH, int **buf, int lenght)
+void Update_Chan_Algo3(ym2612_* YM2612, channel_* CH, int** buf, int lenght, WAVE_32BS* channeloutputs, int channelcount)
 {
-  int i;
+	int i;
 
-  if(CH->SLOT[S3].Ecnt == ENV_END) return;
+	if (CH->SLOT[S3].Ecnt == ENV_END) return;
 
 #if YM_DEBUG_LEVEL > 1
-  fprintf(debug_file, "\n\nAlgo 3 len = %d\n\n", lenght);
+	fprintf(debug_file, "\n\nAlgo 3 len = %d\n\n", lenght);
 #endif
 
-  for(i = 0; i < lenght; i++)
-  {
-    GET_CURRENT_PHASE
-    UPDATE_PHASE
-    GET_CURRENT_ENV
-    UPDATE_ENV
-    DO_ALGO_3
-    DO_OUTPUT
-  }
+	for (i = 0; i < lenght; i++)
+	{
+		GET_CURRENT_PHASE
+			UPDATE_PHASE
+			GET_CURRENT_ENV
+			UPDATE_ENV
+			DO_ALGO_3
+			DO_OUTPUT
+	}
 }
 
 
-void Update_Chan_Algo4(ym2612_ *YM2612, channel_ *CH, int **buf, int lenght)
+void Update_Chan_Algo4(ym2612_* YM2612, channel_* CH, int** buf, int lenght, WAVE_32BS* channeloutputs, int channelcount)
 {
-  int i;
+	int i;
 
-  if((CH->SLOT[S1].Ecnt == ENV_END) && (CH->SLOT[S3].Ecnt == ENV_END)) return;
+	if ((CH->SLOT[S1].Ecnt == ENV_END) && (CH->SLOT[S3].Ecnt == ENV_END)) return;
 
 #if YM_DEBUG_LEVEL > 1
-  fprintf(debug_file, "\n\nAlgo 4 len = %d\n\n", lenght);
+	fprintf(debug_file, "\n\nAlgo 4 len = %d\n\n", lenght);
 #endif
 
-  for(i = 0; i < lenght; i++)
-  {
-    GET_CURRENT_PHASE
-    UPDATE_PHASE
-    GET_CURRENT_ENV
-    UPDATE_ENV
-    DO_ALGO_4
-    DO_OUTPUT
-  }
+	for (i = 0; i < lenght; i++)
+	{
+		GET_CURRENT_PHASE
+			UPDATE_PHASE
+			GET_CURRENT_ENV
+			UPDATE_ENV
+			DO_ALGO_4
+			DO_OUTPUT
+	}
 }
 
 
-void Update_Chan_Algo5(ym2612_ *YM2612, channel_ *CH, int **buf, int lenght)
+void Update_Chan_Algo5(ym2612_* YM2612, channel_* CH, int** buf, int lenght, WAVE_32BS* channeloutputs, int channelcount)
 {
-  int i;
+	int i;
 
-  if((CH->SLOT[S1].Ecnt == ENV_END) && (CH->SLOT[S2].Ecnt == ENV_END) && (CH->SLOT[S3].Ecnt == ENV_END)) return;
+	if ((CH->SLOT[S1].Ecnt == ENV_END) && (CH->SLOT[S2].Ecnt == ENV_END) && (CH->SLOT[S3].Ecnt == ENV_END)) return;
 
 #if YM_DEBUG_LEVEL > 1
-  fprintf(debug_file, "\n\nAlgo 5 len = %d\n\n", lenght);
+	fprintf(debug_file, "\n\nAlgo 5 len = %d\n\n", lenght);
 #endif
 
-  for(i = 0; i < lenght; i++)
-  {
-    GET_CURRENT_PHASE
-    UPDATE_PHASE
-    GET_CURRENT_ENV
-    UPDATE_ENV
-    DO_ALGO_5
-    DO_OUTPUT
-  }
+	for (i = 0; i < lenght; i++)
+	{
+		GET_CURRENT_PHASE
+			UPDATE_PHASE
+			GET_CURRENT_ENV
+			UPDATE_ENV
+			DO_ALGO_5
+			DO_OUTPUT
+	}
 }
 
 
-void Update_Chan_Algo6(ym2612_ *YM2612, channel_ *CH, int **buf, int lenght)
+void Update_Chan_Algo6(ym2612_* YM2612, channel_* CH, int** buf, int lenght, WAVE_32BS* channeloutputs, int channelcount)
 {
-  int i;
+	int i;
 
-  if((CH->SLOT[S1].Ecnt == ENV_END) && (CH->SLOT[S2].Ecnt == ENV_END) && (CH->SLOT[S3].Ecnt == ENV_END)) return;
+	if ((CH->SLOT[S1].Ecnt == ENV_END) && (CH->SLOT[S2].Ecnt == ENV_END) && (CH->SLOT[S3].Ecnt == ENV_END)) return;
 
 #if YM_DEBUG_LEVEL > 1
-  fprintf(debug_file, "\n\nAlgo 6 len = %d\n\n", lenght);
+	fprintf(debug_file, "\n\nAlgo 6 len = %d\n\n", lenght);
 #endif
 
-  for(i = 0; i < lenght; i++)
-  {
-    GET_CURRENT_PHASE
-    UPDATE_PHASE
-    GET_CURRENT_ENV
-    UPDATE_ENV
-    DO_ALGO_6
-    DO_OUTPUT
-  }
+	for (i = 0; i < lenght; i++)
+	{
+		GET_CURRENT_PHASE
+			UPDATE_PHASE
+			GET_CURRENT_ENV
+			UPDATE_ENV
+			DO_ALGO_6
+			DO_OUTPUT
+	}
 }
 
 
-void Update_Chan_Algo7(ym2612_ *YM2612, channel_ *CH, int **buf, int lenght)
+void Update_Chan_Algo7(ym2612_* YM2612, channel_* CH, int** buf, int lenght, WAVE_32BS* channeloutputs, int channelcount)
 {
-  int i;
+	int i;
 
-  if((CH->SLOT[S0].Ecnt == ENV_END) && (CH->SLOT[S1].Ecnt == ENV_END) && (CH->SLOT[S2].Ecnt == ENV_END) && (CH->SLOT[S3].Ecnt == ENV_END)) return;
+	if ((CH->SLOT[S0].Ecnt == ENV_END) && (CH->SLOT[S1].Ecnt == ENV_END) && (CH->SLOT[S2].Ecnt == ENV_END) && (CH->SLOT[S3].Ecnt == ENV_END)) return;
 
 #if YM_DEBUG_LEVEL > 1
-  fprintf(debug_file, "\n\nAlgo 7 len = %d\n\n", lenght);
+	fprintf(debug_file, "\n\nAlgo 7 len = %d\n\n", lenght);
 #endif
 
-  for(i = 0; i < lenght; i++)
-  {
-    GET_CURRENT_PHASE
-    UPDATE_PHASE
-    GET_CURRENT_ENV
-    UPDATE_ENV
-    DO_ALGO_7
-    DO_OUTPUT
-  }
+	for (i = 0; i < lenght; i++)
+	{
+		GET_CURRENT_PHASE
+			UPDATE_PHASE
+			GET_CURRENT_ENV
+			UPDATE_ENV
+			DO_ALGO_7
+			DO_OUTPUT
+	}
 }
 
 
-void Update_Chan_Algo0_LFO(ym2612_ *YM2612, channel_ *CH, int **buf, int lenght)
+void Update_Chan_Algo0_LFO(ym2612_* YM2612, channel_* CH, int** buf, int lenght, WAVE_32BS* channeloutputs, int channelcount)
 {
-  int i, env_LFO, freq_LFO;
+	int i, env_LFO, freq_LFO;
 
-  if(CH->SLOT[S3].Ecnt == ENV_END) return;
+	if (CH->SLOT[S3].Ecnt == ENV_END) return;
 
 #if YM_DEBUG_LEVEL > 1
-  fprintf(debug_file, "\n\nAlgo 0 LFO len = %d\n\n", lenght);
+	fprintf(debug_file, "\n\nAlgo 0 LFO len = %d\n\n", lenght);
 #endif
 
-  for(i = 0; i < lenght; i++)
-  {
-    GET_CURRENT_PHASE
-    UPDATE_PHASE_LFO
-    GET_CURRENT_ENV_LFO
-    UPDATE_ENV
-    DO_ALGO_0
-    DO_OUTPUT
-  }
+	for (i = 0; i < lenght; i++)
+	{
+		GET_CURRENT_PHASE
+			UPDATE_PHASE_LFO
+			GET_CURRENT_ENV_LFO
+			UPDATE_ENV
+			DO_ALGO_0
+			DO_OUTPUT
+	}
 }
 
 
-void Update_Chan_Algo1_LFO(ym2612_ *YM2612, channel_ *CH, int **buf, int lenght)
+void Update_Chan_Algo1_LFO(ym2612_* YM2612, channel_* CH, int** buf, int lenght, WAVE_32BS* channeloutputs, int channelcount)
 {
-  int i, env_LFO, freq_LFO;
+	int i, env_LFO, freq_LFO;
 
-  if(CH->SLOT[S3].Ecnt == ENV_END) return;
+	if (CH->SLOT[S3].Ecnt == ENV_END) return;
 
 #if YM_DEBUG_LEVEL > 1
-  fprintf(debug_file, "\n\nAlgo 1 LFO len = %d\n\n", lenght);
+	fprintf(debug_file, "\n\nAlgo 1 LFO len = %d\n\n", lenght);
 #endif
 
-  for(i = 0; i < lenght; i++)
-  {
-    GET_CURRENT_PHASE
-    UPDATE_PHASE_LFO
-    GET_CURRENT_ENV_LFO
-    UPDATE_ENV
-    DO_ALGO_1
-    DO_OUTPUT
-  }
+	for (i = 0; i < lenght; i++)
+	{
+		GET_CURRENT_PHASE
+			UPDATE_PHASE_LFO
+			GET_CURRENT_ENV_LFO
+			UPDATE_ENV
+			DO_ALGO_1
+			DO_OUTPUT
+	}
 }
 
 
-void Update_Chan_Algo2_LFO(ym2612_ *YM2612, channel_ *CH, int **buf, int lenght)
+void Update_Chan_Algo2_LFO(ym2612_* YM2612, channel_* CH, int** buf, int lenght, WAVE_32BS* channeloutputs, int channelcount)
 {
-  int i, env_LFO, freq_LFO;
+	int i, env_LFO, freq_LFO;
 
-  if(CH->SLOT[S3].Ecnt == ENV_END) return;
+	if (CH->SLOT[S3].Ecnt == ENV_END) return;
 
 #if YM_DEBUG_LEVEL > 1
-  fprintf(debug_file, "\n\nAlgo 2 LFO len = %d\n\n", lenght);
+	fprintf(debug_file, "\n\nAlgo 2 LFO len = %d\n\n", lenght);
 #endif
 
-  for(i = 0; i < lenght; i++)
-  {
-    GET_CURRENT_PHASE
-    UPDATE_PHASE_LFO
-    GET_CURRENT_ENV_LFO
-    UPDATE_ENV
-    DO_ALGO_2
-    DO_OUTPUT
-  }
+	for (i = 0; i < lenght; i++)
+	{
+		GET_CURRENT_PHASE
+			UPDATE_PHASE_LFO
+			GET_CURRENT_ENV_LFO
+			UPDATE_ENV
+			DO_ALGO_2
+			DO_OUTPUT
+	}
 }
 
 
-void Update_Chan_Algo3_LFO(ym2612_ *YM2612, channel_ *CH, int **buf, int lenght)
+void Update_Chan_Algo3_LFO(ym2612_* YM2612, channel_* CH, int** buf, int lenght, WAVE_32BS* channeloutputs, int channelcount)
 {
-  int i, env_LFO, freq_LFO;
+	int i, env_LFO, freq_LFO;
 
-  if(CH->SLOT[S3].Ecnt == ENV_END) return;
+	if (CH->SLOT[S3].Ecnt == ENV_END) return;
 
 #if YM_DEBUG_LEVEL > 1
-  fprintf(debug_file, "\n\nAlgo 3 LFO len = %d\n\n", lenght);
+	fprintf(debug_file, "\n\nAlgo 3 LFO len = %d\n\n", lenght);
 #endif
 
-  for(i = 0; i < lenght; i++)
-  {
-    GET_CURRENT_PHASE
-    UPDATE_PHASE_LFO
-    GET_CURRENT_ENV_LFO
-    UPDATE_ENV
-    DO_ALGO_3
-    DO_OUTPUT
-  }
+	for (i = 0; i < lenght; i++)
+	{
+		GET_CURRENT_PHASE
+			UPDATE_PHASE_LFO
+			GET_CURRENT_ENV_LFO
+			UPDATE_ENV
+			DO_ALGO_3
+			DO_OUTPUT
+	}
 }
 
 
-void Update_Chan_Algo4_LFO(ym2612_ *YM2612, channel_ *CH, int **buf, int lenght)
+void Update_Chan_Algo4_LFO(ym2612_* YM2612, channel_* CH, int** buf, int lenght, WAVE_32BS* channeloutputs, int channelcount)
 {
-  int i, env_LFO, freq_LFO;
+	int i, env_LFO, freq_LFO;
 
-  if((CH->SLOT[S1].Ecnt == ENV_END) && (CH->SLOT[S3].Ecnt == ENV_END)) return;
+	if ((CH->SLOT[S1].Ecnt == ENV_END) && (CH->SLOT[S3].Ecnt == ENV_END)) return;
 
 #if YM_DEBUG_LEVEL > 1
-  fprintf(debug_file, "\n\nAlgo 4 LFO len = %d\n\n", lenght);
+	fprintf(debug_file, "\n\nAlgo 4 LFO len = %d\n\n", lenght);
 #endif
 
-  for(i = 0; i < lenght; i++)
-  {
-    GET_CURRENT_PHASE
-    UPDATE_PHASE_LFO
-    GET_CURRENT_ENV_LFO
-    UPDATE_ENV
-    DO_ALGO_4
-    DO_OUTPUT
-  }
+	for (i = 0; i < lenght; i++)
+	{
+		GET_CURRENT_PHASE
+			UPDATE_PHASE_LFO
+			GET_CURRENT_ENV_LFO
+			UPDATE_ENV
+			DO_ALGO_4
+			DO_OUTPUT
+	}
 }
 
 
-void Update_Chan_Algo5_LFO(ym2612_ *YM2612, channel_ *CH, int **buf, int lenght)
+void Update_Chan_Algo5_LFO(ym2612_* YM2612, channel_* CH, int** buf, int lenght, WAVE_32BS* channeloutputs, int channelcount)
 {
-  int i, env_LFO, freq_LFO;
+	int i, env_LFO, freq_LFO;
 
-  if((CH->SLOT[S1].Ecnt == ENV_END) && (CH->SLOT[S2].Ecnt == ENV_END) && (CH->SLOT[S3].Ecnt == ENV_END)) return;
+	if ((CH->SLOT[S1].Ecnt == ENV_END) && (CH->SLOT[S2].Ecnt == ENV_END) && (CH->SLOT[S3].Ecnt == ENV_END)) return;
 
 #if YM_DEBUG_LEVEL > 1
-  fprintf(debug_file, "\n\nAlgo 5 LFO len = %d\n\n", lenght);
+	fprintf(debug_file, "\n\nAlgo 5 LFO len = %d\n\n", lenght);
 #endif
 
-  for(i = 0; i < lenght; i++)
-  {
-    GET_CURRENT_PHASE
-    UPDATE_PHASE_LFO
-    GET_CURRENT_ENV_LFO
-    UPDATE_ENV
-    DO_ALGO_5
-    DO_OUTPUT
-  }
+	for (i = 0; i < lenght; i++)
+	{
+		GET_CURRENT_PHASE
+			UPDATE_PHASE_LFO
+			GET_CURRENT_ENV_LFO
+			UPDATE_ENV
+			DO_ALGO_5
+			DO_OUTPUT
+	}
 }
 
 
-void Update_Chan_Algo6_LFO(ym2612_ *YM2612, channel_ *CH, int **buf, int lenght)
+void Update_Chan_Algo6_LFO(ym2612_* YM2612, channel_* CH, int** buf, int lenght, WAVE_32BS* channeloutputs, int channelcount)
 {
-  int i, env_LFO, freq_LFO;
+	int i, env_LFO, freq_LFO;
 
-  if((CH->SLOT[S1].Ecnt == ENV_END) && (CH->SLOT[S2].Ecnt == ENV_END) && (CH->SLOT[S3].Ecnt == ENV_END)) return;
+	if ((CH->SLOT[S1].Ecnt == ENV_END) && (CH->SLOT[S2].Ecnt == ENV_END) && (CH->SLOT[S3].Ecnt == ENV_END)) return;
 
 #if YM_DEBUG_LEVEL > 1
-  fprintf(debug_file, "\n\nAlgo 6 LFO len = %d\n\n", lenght);
+	fprintf(debug_file, "\n\nAlgo 6 LFO len = %d\n\n", lenght);
 #endif
 
-  for(i = 0; i < lenght; i++)
-  {
-    GET_CURRENT_PHASE
-    UPDATE_PHASE_LFO
-    GET_CURRENT_ENV_LFO
-    UPDATE_ENV
-    DO_ALGO_6
-    DO_OUTPUT
-  }
+	for (i = 0; i < lenght; i++)
+	{
+		GET_CURRENT_PHASE
+			UPDATE_PHASE_LFO
+			GET_CURRENT_ENV_LFO
+			UPDATE_ENV
+			DO_ALGO_6
+			DO_OUTPUT
+	}
 }
 
 
-void Update_Chan_Algo7_LFO(ym2612_ *YM2612, channel_ *CH, int **buf, int lenght)
+void Update_Chan_Algo7_LFO(ym2612_* YM2612, channel_* CH, int** buf, int lenght, WAVE_32BS* channeloutputs, int channelcount)
 {
-  int i, env_LFO, freq_LFO;
+	int i, env_LFO, freq_LFO;
 
-  if((CH->SLOT[S0].Ecnt == ENV_END) && (CH->SLOT[S1].Ecnt == ENV_END) && (CH->SLOT[S2].Ecnt == ENV_END) && (CH->SLOT[S3].Ecnt == ENV_END)) return;
+	if ((CH->SLOT[S0].Ecnt == ENV_END) && (CH->SLOT[S1].Ecnt == ENV_END) && (CH->SLOT[S2].Ecnt == ENV_END) && (CH->SLOT[S3].Ecnt == ENV_END)) return;
 
 #if YM_DEBUG_LEVEL > 1
-  fprintf(debug_file, "\n\nAlgo 7 LFO len = %d\n\n", lenght);
+	fprintf(debug_file, "\n\nAlgo 7 LFO len = %d\n\n", lenght);
 #endif
 
-  for(i = 0; i < lenght; i++)
-  {
-    GET_CURRENT_PHASE
-    UPDATE_PHASE_LFO
-    GET_CURRENT_ENV_LFO
-    UPDATE_ENV
-    DO_ALGO_7
-    DO_OUTPUT
-  }
+	for (i = 0; i < lenght; i++)
+	{
+		GET_CURRENT_PHASE
+			UPDATE_PHASE_LFO
+			GET_CURRENT_ENV_LFO
+			UPDATE_ENV
+			DO_ALGO_7
+			DO_OUTPUT
+	}
 }
 
 
@@ -1469,387 +1486,387 @@ void Update_Chan_Algo7_LFO(ym2612_ *YM2612, channel_ *CH, int **buf, int lenght)
  *****************************************************/
 
 
-void Update_Chan_Algo0_Int(ym2612_ *YM2612, channel_ *CH, int **buf, int lenght)
+void Update_Chan_Algo0_Int(ym2612_* YM2612, channel_* CH, int** buf, int lenght, WAVE_32BS* channeloutputs, int channelcount)
 {
-  int i;
+	int i;
 
-  if(CH->SLOT[S3].Ecnt == ENV_END) return;
+	if (CH->SLOT[S3].Ecnt == ENV_END) return;
 
 #if YM_DEBUG_LEVEL > 1
-  fprintf(debug_file, "\n\nAlgo 0 len = %d\n\n", lenght);
+	fprintf(debug_file, "\n\nAlgo 0 len = %d\n\n", lenght);
 #endif
 
-  int_cnt = YM2612->Inter_Cnt;
+	int_cnt = YM2612->Inter_Cnt;
 
-  for(i = 0; i < lenght; i++)
-  {
-    GET_CURRENT_PHASE
-    UPDATE_PHASE
-    GET_CURRENT_ENV
-    UPDATE_ENV
-    DO_ALGO_0
-    DO_OUTPUT_INT
-  }
+	for (i = 0; i < lenght; i++)
+	{
+		GET_CURRENT_PHASE
+			UPDATE_PHASE
+			GET_CURRENT_ENV
+			UPDATE_ENV
+			DO_ALGO_0
+			DO_OUTPUT_INT
+	}
 }
 
 
-void Update_Chan_Algo1_Int(ym2612_ *YM2612, channel_ *CH, int **buf, int lenght)
+void Update_Chan_Algo1_Int(ym2612_* YM2612, channel_* CH, int** buf, int lenght, WAVE_32BS* channeloutputs, int channelcount)
 {
-  int i;
+	int i;
 
-  if(CH->SLOT[S3].Ecnt == ENV_END) return;
+	if (CH->SLOT[S3].Ecnt == ENV_END) return;
 
 #if YM_DEBUG_LEVEL > 1
-  fprintf(debug_file, "\n\nAlgo 1 len = %d\n\n", lenght);
+	fprintf(debug_file, "\n\nAlgo 1 len = %d\n\n", lenght);
 #endif
 
-  int_cnt = YM2612->Inter_Cnt;
+	int_cnt = YM2612->Inter_Cnt;
 
-  for(i = 0; i < lenght; i++)
-  {
-    GET_CURRENT_PHASE
-    UPDATE_PHASE
-    GET_CURRENT_ENV
-    UPDATE_ENV
-    DO_ALGO_1
-    DO_OUTPUT_INT
-  }
+	for (i = 0; i < lenght; i++)
+	{
+		GET_CURRENT_PHASE
+			UPDATE_PHASE
+			GET_CURRENT_ENV
+			UPDATE_ENV
+			DO_ALGO_1
+			DO_OUTPUT_INT
+	}
 }
 
 
-void Update_Chan_Algo2_Int(ym2612_ *YM2612, channel_ *CH, int **buf, int lenght)
+void Update_Chan_Algo2_Int(ym2612_* YM2612, channel_* CH, int** buf, int lenght, WAVE_32BS* channeloutputs, int channelcount)
 {
-  int i;
+	int i;
 
-  if(CH->SLOT[S3].Ecnt == ENV_END) return;
+	if (CH->SLOT[S3].Ecnt == ENV_END) return;
 
 #if YM_DEBUG_LEVEL > 1
-  fprintf(debug_file, "\n\nAlgo 2 len = %d\n\n", lenght);
+	fprintf(debug_file, "\n\nAlgo 2 len = %d\n\n", lenght);
 #endif
 
-  int_cnt = YM2612->Inter_Cnt;
+	int_cnt = YM2612->Inter_Cnt;
 
-  for(i = 0; i < lenght; i++)
-  {
-    GET_CURRENT_PHASE
-    UPDATE_PHASE
-    GET_CURRENT_ENV
-    UPDATE_ENV
-    DO_ALGO_2
-    DO_OUTPUT_INT
-  }
+	for (i = 0; i < lenght; i++)
+	{
+		GET_CURRENT_PHASE
+			UPDATE_PHASE
+			GET_CURRENT_ENV
+			UPDATE_ENV
+			DO_ALGO_2
+			DO_OUTPUT_INT
+	}
 }
 
 
-void Update_Chan_Algo3_Int(ym2612_ *YM2612, channel_ *CH, int **buf, int lenght)
+void Update_Chan_Algo3_Int(ym2612_* YM2612, channel_* CH, int** buf, int lenght, WAVE_32BS* channeloutputs, int channelcount)
 {
-  int i;
+	int i;
 
-  if(CH->SLOT[S3].Ecnt == ENV_END) return;
+	if (CH->SLOT[S3].Ecnt == ENV_END) return;
 
 #if YM_DEBUG_LEVEL > 1
-  fprintf(debug_file, "\n\nAlgo 3 len = %d\n\n", lenght);
+	fprintf(debug_file, "\n\nAlgo 3 len = %d\n\n", lenght);
 #endif
 
-  int_cnt = YM2612->Inter_Cnt;
+	int_cnt = YM2612->Inter_Cnt;
 
-  for(i = 0; i < lenght; i++)
-  {
-    GET_CURRENT_PHASE
-    UPDATE_PHASE
-    GET_CURRENT_ENV
-    UPDATE_ENV
-    DO_ALGO_3
-    DO_OUTPUT_INT
-  }
+	for (i = 0; i < lenght; i++)
+	{
+		GET_CURRENT_PHASE
+			UPDATE_PHASE
+			GET_CURRENT_ENV
+			UPDATE_ENV
+			DO_ALGO_3
+			DO_OUTPUT_INT
+	}
 }
 
 
-void Update_Chan_Algo4_Int(ym2612_ *YM2612, channel_ *CH, int **buf, int lenght)
+void Update_Chan_Algo4_Int(ym2612_* YM2612, channel_* CH, int** buf, int lenght, WAVE_32BS* channeloutputs, int channelcount)
 {
-  int i;
+	int i;
 
-  if((CH->SLOT[S1].Ecnt == ENV_END) && (CH->SLOT[S3].Ecnt == ENV_END)) return;
+	if ((CH->SLOT[S1].Ecnt == ENV_END) && (CH->SLOT[S3].Ecnt == ENV_END)) return;
 
 #if YM_DEBUG_LEVEL > 1
-  fprintf(debug_file, "\n\nAlgo 4 len = %d\n\n", lenght);
+	fprintf(debug_file, "\n\nAlgo 4 len = %d\n\n", lenght);
 #endif
 
-  int_cnt = YM2612->Inter_Cnt;
+	int_cnt = YM2612->Inter_Cnt;
 
-  for(i = 0; i < lenght; i++)
-  {
-    GET_CURRENT_PHASE
-    UPDATE_PHASE
-    GET_CURRENT_ENV
-    UPDATE_ENV
-    DO_ALGO_4
-    DO_OUTPUT_INT
-  }
+	for (i = 0; i < lenght; i++)
+	{
+		GET_CURRENT_PHASE
+			UPDATE_PHASE
+			GET_CURRENT_ENV
+			UPDATE_ENV
+			DO_ALGO_4
+			DO_OUTPUT_INT
+	}
 }
 
 
-void Update_Chan_Algo5_Int(ym2612_ *YM2612, channel_ *CH, int **buf, int lenght)
+void Update_Chan_Algo5_Int(ym2612_* YM2612, channel_* CH, int** buf, int lenght, WAVE_32BS* channeloutputs, int channelcount)
 {
-  int i;
+	int i;
 
-  if((CH->SLOT[S1].Ecnt == ENV_END) && (CH->SLOT[S2].Ecnt == ENV_END) && (CH->SLOT[S3].Ecnt == ENV_END)) return;
+	if ((CH->SLOT[S1].Ecnt == ENV_END) && (CH->SLOT[S2].Ecnt == ENV_END) && (CH->SLOT[S3].Ecnt == ENV_END)) return;
 
 #if YM_DEBUG_LEVEL > 1
-  fprintf(debug_file, "\n\nAlgo 5 len = %d\n\n", lenght);
+	fprintf(debug_file, "\n\nAlgo 5 len = %d\n\n", lenght);
 #endif
 
-  int_cnt = YM2612->Inter_Cnt;
+	int_cnt = YM2612->Inter_Cnt;
 
-  for(i = 0; i < lenght; i++)
-  {
-    GET_CURRENT_PHASE
-    UPDATE_PHASE
-    GET_CURRENT_ENV
-    UPDATE_ENV
-    DO_ALGO_5
-    DO_OUTPUT_INT
-  }
+	for (i = 0; i < lenght; i++)
+	{
+		GET_CURRENT_PHASE
+			UPDATE_PHASE
+			GET_CURRENT_ENV
+			UPDATE_ENV
+			DO_ALGO_5
+			DO_OUTPUT_INT
+	}
 }
 
 
-void Update_Chan_Algo6_Int(ym2612_ *YM2612, channel_ *CH, int **buf, int lenght)
+void Update_Chan_Algo6_Int(ym2612_* YM2612, channel_* CH, int** buf, int lenght, WAVE_32BS* channeloutputs, int channelcount)
 {
-  int i;
+	int i;
 
-  if((CH->SLOT[S1].Ecnt == ENV_END) && (CH->SLOT[S2].Ecnt == ENV_END) && (CH->SLOT[S3].Ecnt == ENV_END)) return;
+	if ((CH->SLOT[S1].Ecnt == ENV_END) && (CH->SLOT[S2].Ecnt == ENV_END) && (CH->SLOT[S3].Ecnt == ENV_END)) return;
 
 #if YM_DEBUG_LEVEL > 1
-  fprintf(debug_file, "\n\nAlgo 6 len = %d\n\n", lenght);
+	fprintf(debug_file, "\n\nAlgo 6 len = %d\n\n", lenght);
 #endif
 
-  int_cnt = YM2612->Inter_Cnt;
+	int_cnt = YM2612->Inter_Cnt;
 
-  for(i = 0; i < lenght; i++)
-  {
-    GET_CURRENT_PHASE
-    UPDATE_PHASE
-    GET_CURRENT_ENV
-    UPDATE_ENV
-    DO_ALGO_6
-    DO_OUTPUT_INT
-  }
+	for (i = 0; i < lenght; i++)
+	{
+		GET_CURRENT_PHASE
+			UPDATE_PHASE
+			GET_CURRENT_ENV
+			UPDATE_ENV
+			DO_ALGO_6
+			DO_OUTPUT_INT
+	}
 }
 
 
-void Update_Chan_Algo7_Int(ym2612_ *YM2612, channel_ *CH, int **buf, int lenght)
+void Update_Chan_Algo7_Int(ym2612_* YM2612, channel_* CH, int** buf, int lenght, WAVE_32BS* channeloutputs, int channelcount)
 {
-  int i;
+	int i;
 
-  if((CH->SLOT[S0].Ecnt == ENV_END) && (CH->SLOT[S1].Ecnt == ENV_END) && (CH->SLOT[S2].Ecnt == ENV_END) && (CH->SLOT[S3].Ecnt == ENV_END)) return;
+	if ((CH->SLOT[S0].Ecnt == ENV_END) && (CH->SLOT[S1].Ecnt == ENV_END) && (CH->SLOT[S2].Ecnt == ENV_END) && (CH->SLOT[S3].Ecnt == ENV_END)) return;
 
 #if YM_DEBUG_LEVEL > 1
-  fprintf(debug_file, "\n\nAlgo 7 len = %d\n\n", lenght);
+	fprintf(debug_file, "\n\nAlgo 7 len = %d\n\n", lenght);
 #endif
 
-  int_cnt = YM2612->Inter_Cnt;
+	int_cnt = YM2612->Inter_Cnt;
 
-  for(i = 0; i < lenght; i++)
-  {
-    GET_CURRENT_PHASE
-    UPDATE_PHASE
-    GET_CURRENT_ENV
-    UPDATE_ENV
-    DO_ALGO_7
-    DO_OUTPUT_INT
-  }
+	for (i = 0; i < lenght; i++)
+	{
+		GET_CURRENT_PHASE
+			UPDATE_PHASE
+			GET_CURRENT_ENV
+			UPDATE_ENV
+			DO_ALGO_7
+			DO_OUTPUT_INT
+	}
 }
 
 
-void Update_Chan_Algo0_LFO_Int(ym2612_ *YM2612, channel_ *CH, int **buf, int lenght)
+void Update_Chan_Algo0_LFO_Int(ym2612_* YM2612, channel_* CH, int** buf, int lenght, WAVE_32BS* channeloutputs, int channelcount)
 {
-  int i, env_LFO, freq_LFO;
+	int i, env_LFO, freq_LFO;
 
-  if(CH->SLOT[S3].Ecnt == ENV_END) return;
+	if (CH->SLOT[S3].Ecnt == ENV_END) return;
 
 #if YM_DEBUG_LEVEL > 1
-  fprintf(debug_file, "\n\nAlgo 0 LFO len = %d\n\n", lenght);
+	fprintf(debug_file, "\n\nAlgo 0 LFO len = %d\n\n", lenght);
 #endif
 
-  int_cnt = YM2612->Inter_Cnt;
+	int_cnt = YM2612->Inter_Cnt;
 
-  for(i = 0; i < lenght; i++)
-  {
-    GET_CURRENT_PHASE
-    UPDATE_PHASE_LFO
-    GET_CURRENT_ENV_LFO
-    UPDATE_ENV
-    DO_ALGO_0
-    DO_OUTPUT_INT
-  }
+	for (i = 0; i < lenght; i++)
+	{
+		GET_CURRENT_PHASE
+			UPDATE_PHASE_LFO
+			GET_CURRENT_ENV_LFO
+			UPDATE_ENV
+			DO_ALGO_0
+			DO_OUTPUT_INT
+	}
 }
 
 
-void Update_Chan_Algo1_LFO_Int(ym2612_ *YM2612, channel_ *CH, int **buf, int lenght)
+void Update_Chan_Algo1_LFO_Int(ym2612_* YM2612, channel_* CH, int** buf, int lenght, WAVE_32BS* channeloutputs, int channelcount)
 {
-  int i, env_LFO, freq_LFO;
+	int i, env_LFO, freq_LFO;
 
-  if(CH->SLOT[S3].Ecnt == ENV_END) return;
+	if (CH->SLOT[S3].Ecnt == ENV_END) return;
 
 #if YM_DEBUG_LEVEL > 1
-  fprintf(debug_file, "\n\nAlgo 1 LFO len = %d\n\n", lenght);
+	fprintf(debug_file, "\n\nAlgo 1 LFO len = %d\n\n", lenght);
 #endif
 
-  int_cnt = YM2612->Inter_Cnt;
+	int_cnt = YM2612->Inter_Cnt;
 
-  for(i = 0; i < lenght; i++)
-  {
-    GET_CURRENT_PHASE
-    UPDATE_PHASE_LFO
-    GET_CURRENT_ENV_LFO
-    UPDATE_ENV
-    DO_ALGO_1
-    DO_OUTPUT_INT
-  }
+	for (i = 0; i < lenght; i++)
+	{
+		GET_CURRENT_PHASE
+			UPDATE_PHASE_LFO
+			GET_CURRENT_ENV_LFO
+			UPDATE_ENV
+			DO_ALGO_1
+			DO_OUTPUT_INT
+	}
 }
 
 
-void Update_Chan_Algo2_LFO_Int(ym2612_ *YM2612, channel_ *CH, int **buf, int lenght)
+void Update_Chan_Algo2_LFO_Int(ym2612_* YM2612, channel_* CH, int** buf, int lenght, WAVE_32BS* channeloutputs, int channelcount)
 {
-  int i, env_LFO, freq_LFO;
+	int i, env_LFO, freq_LFO;
 
-  if(CH->SLOT[S3].Ecnt == ENV_END) return;
+	if (CH->SLOT[S3].Ecnt == ENV_END) return;
 
 #if YM_DEBUG_LEVEL > 1
-  fprintf(debug_file, "\n\nAlgo 2 LFO len = %d\n\n", lenght);
+	fprintf(debug_file, "\n\nAlgo 2 LFO len = %d\n\n", lenght);
 #endif
 
-  int_cnt = YM2612->Inter_Cnt;
+	int_cnt = YM2612->Inter_Cnt;
 
-  for(i = 0; i < lenght; i++)
-  {
-    GET_CURRENT_PHASE
-    UPDATE_PHASE_LFO
-    GET_CURRENT_ENV_LFO
-    UPDATE_ENV
-    DO_ALGO_2
-    DO_OUTPUT_INT
-  }
+	for (i = 0; i < lenght; i++)
+	{
+		GET_CURRENT_PHASE
+			UPDATE_PHASE_LFO
+			GET_CURRENT_ENV_LFO
+			UPDATE_ENV
+			DO_ALGO_2
+			DO_OUTPUT_INT
+	}
 }
 
 
-void Update_Chan_Algo3_LFO_Int(ym2612_ *YM2612, channel_ *CH, int **buf, int lenght)
+void Update_Chan_Algo3_LFO_Int(ym2612_* YM2612, channel_* CH, int** buf, int lenght, WAVE_32BS* channeloutputs, int channelcount)
 {
-  int i, env_LFO, freq_LFO;
+	int i, env_LFO, freq_LFO;
 
-  if(CH->SLOT[S3].Ecnt == ENV_END) return;
+	if (CH->SLOT[S3].Ecnt == ENV_END) return;
 
 #if YM_DEBUG_LEVEL > 1
-  fprintf(debug_file, "\n\nAlgo 3 LFO len = %d\n\n", lenght);
+	fprintf(debug_file, "\n\nAlgo 3 LFO len = %d\n\n", lenght);
 #endif
 
-  int_cnt = YM2612->Inter_Cnt;
+	int_cnt = YM2612->Inter_Cnt;
 
-  for(i = 0; i < lenght; i++)
-  {
-    GET_CURRENT_PHASE
-    UPDATE_PHASE_LFO
-    GET_CURRENT_ENV_LFO
-    UPDATE_ENV
-    DO_ALGO_3
-    DO_OUTPUT_INT
-  }
+	for (i = 0; i < lenght; i++)
+	{
+		GET_CURRENT_PHASE
+			UPDATE_PHASE_LFO
+			GET_CURRENT_ENV_LFO
+			UPDATE_ENV
+			DO_ALGO_3
+			DO_OUTPUT_INT
+	}
 }
 
 
-void Update_Chan_Algo4_LFO_Int(ym2612_ *YM2612, channel_ *CH, int **buf, int lenght)
+void Update_Chan_Algo4_LFO_Int(ym2612_* YM2612, channel_* CH, int** buf, int lenght, WAVE_32BS* channeloutputs, int channelcount)
 {
-  int i, env_LFO, freq_LFO;
+	int i, env_LFO, freq_LFO;
 
-  if((CH->SLOT[S1].Ecnt == ENV_END) && (CH->SLOT[S3].Ecnt == ENV_END)) return;
+	if ((CH->SLOT[S1].Ecnt == ENV_END) && (CH->SLOT[S3].Ecnt == ENV_END)) return;
 
 #if YM_DEBUG_LEVEL > 1
-  fprintf(debug_file, "\n\nAlgo 4 LFO len = %d\n\n", lenght);
+	fprintf(debug_file, "\n\nAlgo 4 LFO len = %d\n\n", lenght);
 #endif
 
-  int_cnt = YM2612->Inter_Cnt;
+	int_cnt = YM2612->Inter_Cnt;
 
-  for(i = 0; i < lenght; i++)
-  {
-    GET_CURRENT_PHASE
-    UPDATE_PHASE_LFO
-    GET_CURRENT_ENV_LFO
-    UPDATE_ENV
-    DO_ALGO_4
-    DO_OUTPUT_INT
-  }
+	for (i = 0; i < lenght; i++)
+	{
+		GET_CURRENT_PHASE
+			UPDATE_PHASE_LFO
+			GET_CURRENT_ENV_LFO
+			UPDATE_ENV
+			DO_ALGO_4
+			DO_OUTPUT_INT
+	}
 }
 
 
-void Update_Chan_Algo5_LFO_Int(ym2612_ *YM2612, channel_ *CH, int **buf, int lenght)
+void Update_Chan_Algo5_LFO_Int(ym2612_* YM2612, channel_* CH, int** buf, int lenght, WAVE_32BS* channeloutputs, int channelcount)
 {
-  int i, env_LFO, freq_LFO;
+	int i, env_LFO, freq_LFO;
 
-  if((CH->SLOT[S1].Ecnt == ENV_END) && (CH->SLOT[S2].Ecnt == ENV_END) && (CH->SLOT[S3].Ecnt == ENV_END)) return;
+	if ((CH->SLOT[S1].Ecnt == ENV_END) && (CH->SLOT[S2].Ecnt == ENV_END) && (CH->SLOT[S3].Ecnt == ENV_END)) return;
 
 #if YM_DEBUG_LEVEL > 1
-  fprintf(debug_file, "\n\nAlgo 5 LFO len = %d\n\n", lenght);
+	fprintf(debug_file, "\n\nAlgo 5 LFO len = %d\n\n", lenght);
 #endif
 
-  int_cnt = YM2612->Inter_Cnt;
+	int_cnt = YM2612->Inter_Cnt;
 
-  for(i = 0; i < lenght; i++)
-  {
-    GET_CURRENT_PHASE
-    UPDATE_PHASE_LFO
-    GET_CURRENT_ENV_LFO
-    UPDATE_ENV
-    DO_ALGO_5
-    DO_OUTPUT_INT
-  }
+	for (i = 0; i < lenght; i++)
+	{
+		GET_CURRENT_PHASE
+			UPDATE_PHASE_LFO
+			GET_CURRENT_ENV_LFO
+			UPDATE_ENV
+			DO_ALGO_5
+			DO_OUTPUT_INT
+	}
 }
 
 
-void Update_Chan_Algo6_LFO_Int(ym2612_ *YM2612, channel_ *CH, int **buf, int lenght)
+void Update_Chan_Algo6_LFO_Int(ym2612_* YM2612, channel_* CH, int** buf, int lenght, WAVE_32BS* channeloutputs, int channelcount)
 {
-  int i, env_LFO, freq_LFO;
+	int i, env_LFO, freq_LFO;
 
-  if((CH->SLOT[S1].Ecnt == ENV_END) && (CH->SLOT[S2].Ecnt == ENV_END) && (CH->SLOT[S3].Ecnt == ENV_END)) return;
+	if ((CH->SLOT[S1].Ecnt == ENV_END) && (CH->SLOT[S2].Ecnt == ENV_END) && (CH->SLOT[S3].Ecnt == ENV_END)) return;
 
 #if YM_DEBUG_LEVEL > 1
-  fprintf(debug_file, "\n\nAlgo 6 LFO len = %d\n\n", lenght);
+	fprintf(debug_file, "\n\nAlgo 6 LFO len = %d\n\n", lenght);
 #endif
 
-  int_cnt = YM2612->Inter_Cnt;
+	int_cnt = YM2612->Inter_Cnt;
 
-  for(i = 0; i < lenght; i++)
-  {
-    GET_CURRENT_PHASE
-    UPDATE_PHASE_LFO
-    GET_CURRENT_ENV_LFO
-    UPDATE_ENV
-    DO_ALGO_6
-    DO_OUTPUT_INT
-  }
+	for (i = 0; i < lenght; i++)
+	{
+		GET_CURRENT_PHASE
+			UPDATE_PHASE_LFO
+			GET_CURRENT_ENV_LFO
+			UPDATE_ENV
+			DO_ALGO_6
+			DO_OUTPUT_INT
+	}
 }
 
 
-void Update_Chan_Algo7_LFO_Int(ym2612_ *YM2612, channel_ *CH, int **buf, int lenght)
+void Update_Chan_Algo7_LFO_Int(ym2612_* YM2612, channel_* CH, int** buf, int lenght, WAVE_32BS* channeloutputs, int channelcount)
 {
-  int i, env_LFO, freq_LFO;
+	int i, env_LFO, freq_LFO;
 
-  if((CH->SLOT[S0].Ecnt == ENV_END) && (CH->SLOT[S1].Ecnt == ENV_END) && (CH->SLOT[S2].Ecnt == ENV_END) && (CH->SLOT[S3].Ecnt == ENV_END)) return;
+	if ((CH->SLOT[S0].Ecnt == ENV_END) && (CH->SLOT[S1].Ecnt == ENV_END) && (CH->SLOT[S2].Ecnt == ENV_END) && (CH->SLOT[S3].Ecnt == ENV_END)) return;
 
 #if YM_DEBUG_LEVEL > 1
-  fprintf(debug_file, "\n\nAlgo 7 LFO len = %d\n\n", lenght);
+	fprintf(debug_file, "\n\nAlgo 7 LFO len = %d\n\n", lenght);
 #endif
 
-  int_cnt = YM2612->Inter_Cnt;
+	int_cnt = YM2612->Inter_Cnt;
 
-  for(i = 0; i < lenght; i++)
-  {
-    GET_CURRENT_PHASE
-    UPDATE_PHASE_LFO
-    GET_CURRENT_ENV_LFO
-    UPDATE_ENV
-    DO_ALGO_7
-    DO_OUTPUT_INT
-  }
+	for (i = 0; i < lenght; i++)
+	{
+		GET_CURRENT_PHASE
+			UPDATE_PHASE_LFO
+			GET_CURRENT_ENV_LFO
+			UPDATE_ENV
+			DO_ALGO_7
+			DO_OUTPUT_INT
+	}
 }
 
 
@@ -1859,481 +1876,483 @@ void Update_Chan_Algo7_LFO_Int(ym2612_ *YM2612, channel_ *CH, int **buf, int len
  ***********************************************/
 
 
-// Initialisation de l'émulateur YM2612
-ym2612_ *YM2612_Init(int Clock, int Rate, int Interpolation)
+ // Initialisation de l'émulateur YM2612
+ym2612_* YM2612_Init(int Clock, int Rate, int Interpolation)
 {
-	ym2612_ *YM2612;
-  int i, j;
-  double x;
+	ym2612_* YM2612;
+	int i, j;
+	double x;
 
-  if((Rate == 0) || (Clock == 0)) return NULL;
+	if ((Rate == 0) || (Clock == 0)) return NULL;
 
-	YM2612 = (ym2612_ *)malloc(sizeof(ym2612_));
-  memset(YM2612, 0, sizeof(ym2612_));
+	YM2612 = (ym2612_*)malloc(sizeof(ym2612_));
+	memset(YM2612, 0, sizeof(ym2612_));
 
 #if YM_DEBUG_LEVEL > 0
-  if(debug_file == NULL)
-  {
-    debug_file = fopen("ym2612.log", "w");
-    fprintf(debug_file, "YM2612 logging :\n\n");
-  }
+	if (debug_file == NULL)
+	{
+		debug_file = fopen("ym2612.log", "w");
+		fprintf(debug_file, "YM2612 logging :\n\n");
+}
 #endif
 
-  YM2612->Clock = Clock;
-  YM2612->Rate = Rate;
+	YM2612->Clock = Clock;
+	YM2612->Rate = Rate;
 
-  // 144 = 12 * (prescale * 2) = 12 * 6 * 2
-  // prescale set to 6 by default
+	// 144 = 12 * (prescale * 2) = 12 * 6 * 2
+	// prescale set to 6 by default
 
-  YM2612->Frequence = ((double) YM2612->Clock / (double) YM2612->Rate) / 144.0;
-  YM2612->TimerBase = (int) (YM2612->Frequence * 4096.0);
+	YM2612->Frequence = ((double)YM2612->Clock / (double)YM2612->Rate) / 144.0;
+	YM2612->TimerBase = (int)(YM2612->Frequence * 4096.0);
 
-  if((Interpolation) && (YM2612->Frequence > 1.0))
-  {
-    YM2612->Inter_Step = (unsigned int) ((1.0 / YM2612->Frequence) * (double) (0x4000));
-    YM2612->Inter_Cnt = 0;
+	if ((Interpolation) && (YM2612->Frequence > 1.0))
+	{
+		YM2612->Inter_Step = (unsigned int)((1.0 / YM2612->Frequence) * (double)(0x4000));
+		YM2612->Inter_Cnt = 0;
 
-    // We recalculate rate and frequence after interpolation
+		// We recalculate rate and frequence after interpolation
 
-    YM2612->Rate = YM2612->Clock / 144;
-    YM2612->Frequence = 1.0;
-  }
-  else
-  {
-    YM2612->Inter_Step = 0x4000;
-    YM2612->Inter_Cnt = 0;
-  }
+		YM2612->Rate = YM2612->Clock / 144;
+		YM2612->Frequence = 1.0;
+	}
+	else
+	{
+		YM2612->Inter_Step = 0x4000;
+		YM2612->Inter_Cnt = 0;
+	}
 
 #if YM_DEBUG_LEVEL > 1
-  fprintf(debug_file, "YM2612 frequence = %g rate = %d  interp step = %.8X\n\n", YM2612->Frequence, YM2612->Rate, YM2612->Inter_Step);
+	fprintf(debug_file, "YM2612 frequence = %g rate = %d  interp step = %.8X\n\n", YM2612->Frequence, YM2612->Rate, YM2612->Inter_Step);
 #endif
 
-  // Tableau TL :
-  // [0     -  4095] = +output  [4095  - ...] = +output overflow (fill with 0)
-  // [12288 - 16383] = -output  [16384 - ...] = -output overflow (fill with 0)
+	// Tableau TL :
+	// [0     -  4095] = +output  [4095  - ...] = +output overflow (fill with 0)
+	// [12288 - 16383] = -output  [16384 - ...] = -output overflow (fill with 0)
 
-  for(i = 0; i < TL_LENGHT; i++)
-  {
-    if(i >= PG_CUT_OFF)  // YM2612 cut off sound after 78 dB (14 bits output ?)
-    {
-      TL_TAB[TL_LENGHT + i] = TL_TAB[i] = 0;
-    }
-    else
-    {
-      x = MAX_OUT;                // Max output
-      x /= pow(10, (ENV_STEP * i) / 20);      // Decibel -> Voltage
+	for (i = 0; i < TL_LENGHT; i++)
+	{
+		if (i >= PG_CUT_OFF)  // YM2612 cut off sound after 78 dB (14 bits output ?)
+		{
+			TL_TAB[TL_LENGHT + i] = TL_TAB[i] = 0;
+		}
+		else
+		{
+			x = MAX_OUT;                // Max output
+			x /= pow(10, (ENV_STEP * i) / 20);      // Decibel -> Voltage
 
-      TL_TAB[i] = (int) x;
-      TL_TAB[TL_LENGHT + i] = -TL_TAB[i];
-    }
+			TL_TAB[i] = (int)x;
+			TL_TAB[TL_LENGHT + i] = -TL_TAB[i];
+		}
 
 #if YM_DEBUG_LEVEL > 2
-    fprintf(debug_file, "TL_TAB[%d] = %.8X    TL_TAB[%d] = %.8X\n", i, TL_TAB[i], TL_LENGHT + i, TL_TAB[TL_LENGHT + i]);
+		fprintf(debug_file, "TL_TAB[%d] = %.8X    TL_TAB[%d] = %.8X\n", i, TL_TAB[i], TL_LENGHT + i, TL_TAB[TL_LENGHT + i]);
 #endif
-  }
+	}
 
 #if YM_DEBUG_LEVEL > 2
-  fprintf(debug_file, "\n\n\n\n");
+	fprintf(debug_file, "\n\n\n\n");
 #endif
 
-  // Tableau SIN :
-  // SIN_TAB[x][y] = sin(x) * y;
-  // x = phase and y = volume
+	// Tableau SIN :
+	// SIN_TAB[x][y] = sin(x) * y;
+	// x = phase and y = volume
 
-  SIN_TAB[0] = SIN_TAB[SIN_LENGHT / 2] = &TL_TAB[(int)PG_CUT_OFF];
+	SIN_TAB[0] = SIN_TAB[SIN_LENGHT / 2] = &TL_TAB[(int)PG_CUT_OFF];
 
-  for(i = 1; i <= SIN_LENGHT / 4; i++)
-  {
-    x = sin(2.0 * PI * (double) (i) / (double) (SIN_LENGHT));  // Sinus
-    x = 20 * log10(1 / x);                    // convert to dB
+	for (i = 1; i <= SIN_LENGHT / 4; i++)
+	{
+		x = sin(2.0 * PI * (double)(i) / (double)(SIN_LENGHT));  // Sinus
+		x = 20 * log10(1 / x);                    // convert to dB
 
-    j = (int) (x / ENV_STEP);            // Get TL range
+		j = (int)(x / ENV_STEP);            // Get TL range
 
-    if(j > PG_CUT_OFF) j = (int) PG_CUT_OFF;
+		if (j > PG_CUT_OFF) j = (int)PG_CUT_OFF;
 
-    SIN_TAB[i] = SIN_TAB[(SIN_LENGHT / 2) - i] = &TL_TAB[j];
-    SIN_TAB[(SIN_LENGHT / 2) + i] = SIN_TAB[SIN_LENGHT - i] = &TL_TAB[TL_LENGHT + j];
+		SIN_TAB[i] = SIN_TAB[(SIN_LENGHT / 2) - i] = &TL_TAB[j];
+		SIN_TAB[(SIN_LENGHT / 2) + i] = SIN_TAB[SIN_LENGHT - i] = &TL_TAB[TL_LENGHT + j];
 
 #if YM_DEBUG_LEVEL > 2
-    fprintf(debug_file, "SIN[%d][0] = %.8X    SIN[%d][0] = %.8X    SIN[%d][0] = %.8X    SIN[%d][0] = %.8X\n", i, SIN_TAB[i][0], (SIN_LENGHT / 2) - i, SIN_TAB[(SIN_LENGHT / 2) - i][0], (SIN_LENGHT / 2) + i, SIN_TAB[(SIN_LENGHT / 2) + i][0], SIN_LENGHT - i, SIN_TAB[SIN_LENGHT - i][0]);
+		fprintf(debug_file, "SIN[%d][0] = %.8X    SIN[%d][0] = %.8X    SIN[%d][0] = %.8X    SIN[%d][0] = %.8X\n", i, SIN_TAB[i][0], (SIN_LENGHT / 2) - i, SIN_TAB[(SIN_LENGHT / 2) - i][0], (SIN_LENGHT / 2) + i, SIN_TAB[(SIN_LENGHT / 2) + i][0], SIN_LENGHT - i, SIN_TAB[SIN_LENGHT - i][0]);
 #endif
-  }
+	}
 
 #if YM_DEBUG_LEVEL > 2
-  fprintf(debug_file, "\n\n\n\n");
+	fprintf(debug_file, "\n\n\n\n");
 #endif
 
-  // Tableau LFO (LFO wav) :
+	// Tableau LFO (LFO wav) :
 
-  for(i = 0; i < LFO_LENGHT; i++)
-  {
-    x = sin(2.0 * PI * (double) (i) / (double) (LFO_LENGHT));  // Sinus
-    x += 1.0;
-    x /= 2.0;          // positive only
-    x *= 11.8 / ENV_STEP;    // ajusted to MAX enveloppe modulation
+	for (i = 0; i < LFO_LENGHT; i++)
+	{
+		x = sin(2.0 * PI * (double)(i) / (double)(LFO_LENGHT));  // Sinus
+		x += 1.0;
+		x /= 2.0;          // positive only
+		x *= 11.8 / ENV_STEP;    // ajusted to MAX enveloppe modulation
 
-    LFO_ENV_TAB[i] = (int) x;
+		LFO_ENV_TAB[i] = (int)x;
 
-    x = sin(2.0 * PI * (double) (i) / (double) (LFO_LENGHT));  // Sinus
-    x *= (double) ((1 << (LFO_HBITS - 1)) - 1);
+		x = sin(2.0 * PI * (double)(i) / (double)(LFO_LENGHT));  // Sinus
+		x *= (double)((1 << (LFO_HBITS - 1)) - 1);
 
-    LFO_FREQ_TAB[i] = (int) x;
+		LFO_FREQ_TAB[i] = (int)x;
 
 #if YM_DEBUG_LEVEL > 2
-    fprintf(debug_file, "LFO[%d] = %.8X\n", i, LFO_ENV_TAB[i]);
+		fprintf(debug_file, "LFO[%d] = %.8X\n", i, LFO_ENV_TAB[i]);
 #endif
-  }
+	}
 
 #if YM_DEBUG_LEVEL > 2
-  fprintf(debug_file, "\n\n\n\n");
+	fprintf(debug_file, "\n\n\n\n");
 #endif
 
-  // Tableau Enveloppe :
-  // ENV_TAB[0] -> ENV_TAB[ENV_LENGHT - 1]        = attack curve
-  // ENV_TAB[ENV_LENGHT] -> ENV_TAB[2 * ENV_LENGHT - 1]  = decay curve
+	// Tableau Enveloppe :
+	// ENV_TAB[0] -> ENV_TAB[ENV_LENGHT - 1]        = attack curve
+	// ENV_TAB[ENV_LENGHT] -> ENV_TAB[2 * ENV_LENGHT - 1]  = decay curve
 
-  for(i = 0; i < ENV_LENGHT; i++)
-  {
-    // Attack curve (x^8 - music level 2 Vectorman 2)
-    x = pow(((double) ((ENV_LENGHT - 1) - i) / (double) (ENV_LENGHT)), 8);
-    x *= ENV_LENGHT;
+	for (i = 0; i < ENV_LENGHT; i++)
+	{
+		// Attack curve (x^8 - music level 2 Vectorman 2)
+		x = pow(((double)((ENV_LENGHT - 1) - i) / (double)(ENV_LENGHT)), 8);
+		x *= ENV_LENGHT;
 
-    ENV_TAB[i] = (int) x;
+		ENV_TAB[i] = (int)x;
 
-    // Decay curve (just linear)
-    x = pow(((double) (i) / (double) (ENV_LENGHT)), 1);
-    x *= ENV_LENGHT;
+		// Decay curve (just linear)
+		x = pow(((double)(i) / (double)(ENV_LENGHT)), 1);
+		x *= ENV_LENGHT;
 
-    ENV_TAB[ENV_LENGHT + i] = (int) x;
+		ENV_TAB[ENV_LENGHT + i] = (int)x;
 
 #if YM_DEBUG_LEVEL > 2
-    fprintf(debug_file, "ATTACK[%d] = %d   DECAY[%d] = %d\n", i, ENV_TAB[i], i, ENV_TAB[ENV_LENGHT + i]);
+		fprintf(debug_file, "ATTACK[%d] = %d   DECAY[%d] = %d\n", i, ENV_TAB[i], i, ENV_TAB[ENV_LENGHT + i]);
 #endif
-  }
+	}
 
-  ENV_TAB[ENV_END >> ENV_LBITS] = ENV_LENGHT - 1;    // for the stopped state
+	ENV_TAB[ENV_END >> ENV_LBITS] = ENV_LENGHT - 1;    // for the stopped state
 
-  // Tableau pour la conversion Attack -> Decay and Decay -> Attack
+	// Tableau pour la conversion Attack -> Decay and Decay -> Attack
 
-  for(i = 0, j = ENV_LENGHT - 1; i < ENV_LENGHT; i++)
-  {
-    while (j && (ENV_TAB[j] < (unsigned) i)) j--;
+	for (i = 0, j = ENV_LENGHT - 1; i < ENV_LENGHT; i++)
+	{
+		while (j && (ENV_TAB[j] < (unsigned)i)) j--;
 
-    DECAY_TO_ATTACK[i] = j << ENV_LBITS;
-  }
+		DECAY_TO_ATTACK[i] = j << ENV_LBITS;
+	}
 
-  // Tableau pour le Substain Level
+	// Tableau pour le Substain Level
 
-  for(i = 0; i < 15; i++)
-  {
-    x = i * 3;          // 3 and not 6 (Mickey Mania first music for test)
-    x /= ENV_STEP;
+	for (i = 0; i < 15; i++)
+	{
+		x = i * 3;          // 3 and not 6 (Mickey Mania first music for test)
+		x /= ENV_STEP;
 
-    j = (int) x;
-    j <<= ENV_LBITS;
+		j = (int)x;
+		j <<= ENV_LBITS;
 
-    SL_TAB[i] = j + ENV_DECAY;
-  }
+		SL_TAB[i] = j + ENV_DECAY;
+	}
 
-  j = ENV_LENGHT - 1;        // special case : volume off
-  j <<= ENV_LBITS;
-  SL_TAB[15] = j + ENV_DECAY;
+	j = ENV_LENGHT - 1;        // special case : volume off
+	j <<= ENV_LBITS;
+	SL_TAB[15] = j + ENV_DECAY;
 
-  // Tableau Frequency Step
+	// Tableau Frequency Step
 
-  for(i = 0; i < 2048; i++)
-  {
-    x = (double) (i) * YM2612->Frequence;
+	for (i = 0; i < 2048; i++)
+	{
+		x = (double)(i)*YM2612->Frequence;
 
 #if((SIN_LBITS + SIN_HBITS - (21 - 7)) < 0)
-    x /= (double) (1 << ((21 - 7) - SIN_LBITS - SIN_HBITS));
+		x /= (double)(1 << ((21 - 7) - SIN_LBITS - SIN_HBITS));
 #else
-    x *= (double) (1 << (SIN_LBITS + SIN_HBITS - (21 - 7)));
+		x *= (double)(1 << (SIN_LBITS + SIN_HBITS - (21 - 7)));
 #endif
 
-    x /= 2.0;  // because MUL = value * 2
+		x /= 2.0;  // because MUL = value * 2
 
-    FINC_TAB[i] = (unsigned int) x;
-  }
+		FINC_TAB[i] = (unsigned int)x;
+	}
 
-  // Tableaux Attack & Decay Rate
+	// Tableaux Attack & Decay Rate
 
-  for(i = 0; i < 4; i++)
-  {
-    AR_TAB[i] = 0;
-    DR_TAB[i] = 0;
-  }
+	for (i = 0; i < 4; i++)
+	{
+		AR_TAB[i] = 0;
+		DR_TAB[i] = 0;
+	}
 
-  for(i = 0; i < 60; i++)
-  {
-    x = YM2612->Frequence;
+	for (i = 0; i < 60; i++)
+	{
+		x = YM2612->Frequence;
 
-    x *= 1.0 + ((i & 3) * 0.25);          // bits 0-1 : x1.00, x1.25, x1.50, x1.75
-    x *= (double) (1 << ((i >> 2)));        // bits 2-5 : shift bits (x2^0 - x2^15)
-    x *= (double) (ENV_LENGHT << ENV_LBITS);    // on ajuste pour le tableau ENV_TAB
+		x *= 1.0 + ((i & 3) * 0.25);          // bits 0-1 : x1.00, x1.25, x1.50, x1.75
+		x *= (double)(1 << ((i >> 2)));        // bits 2-5 : shift bits (x2^0 - x2^15)
+		x *= (double)(ENV_LENGHT << ENV_LBITS);    // on ajuste pour le tableau ENV_TAB
 
-    AR_TAB[i + 4] = (unsigned int) (x / AR_RATE);
-    DR_TAB[i + 4] = (unsigned int) (x / DR_RATE);
-  }
+		AR_TAB[i + 4] = (unsigned int)(x / AR_RATE);
+		DR_TAB[i + 4] = (unsigned int)(x / DR_RATE);
+	}
 
-  for(i = 64; i < 96; i++)
-  {
-    AR_TAB[i] = AR_TAB[63];
-    DR_TAB[i] = DR_TAB[63];
+	for (i = 64; i < 96; i++)
+	{
+		AR_TAB[i] = AR_TAB[63];
+		DR_TAB[i] = DR_TAB[63];
 
-    NULL_RATE[i - 64] = 0;
-  }
+		NULL_RATE[i - 64] = 0;
+	}
 
-  // Tableau Detune
+	// Tableau Detune
 
-  for(i = 0; i < 4; i++)
-  {
-    for (j = 0; j < 32; j++)
-    {
+	for (i = 0; i < 4; i++)
+	{
+		for (j = 0; j < 32; j++)
+		{
 #if((SIN_LBITS + SIN_HBITS - 21) < 0)
-      x = (double) DT_DEF_TAB[(i << 5) + j] * YM2612->Frequence / (double) (1 << (21 - SIN_LBITS - SIN_HBITS));
+			x = (double)DT_DEF_TAB[(i << 5) + j] * YM2612->Frequence / (double)(1 << (21 - SIN_LBITS - SIN_HBITS));
 #else
-      x = (double) DT_DEF_TAB[(i << 5) + j] * YM2612->Frequence * (double) (1 << (SIN_LBITS + SIN_HBITS - 21));
+			x = (double)DT_DEF_TAB[(i << 5) + j] * YM2612->Frequence * (double)(1 << (SIN_LBITS + SIN_HBITS - 21));
 #endif
 
-      DT_TAB[i + 0][j] = (int) x;
-      DT_TAB[i + 4][j] = (int) -x;
-    }
-  }
+			DT_TAB[i + 0][j] = (int)x;
+			DT_TAB[i + 4][j] = (int)-x;
+	}
+	}
 
-  // Tableau LFO
+	// Tableau LFO
 
-  j = (YM2612->Rate * YM2612->Inter_Step) / 0x4000;
+	j = (YM2612->Rate * YM2612->Inter_Step) / 0x4000;
 
-  LFO_INC_TAB[0] = (unsigned int) (3.98 * (double) (1 << (LFO_HBITS + LFO_LBITS)) / j);
-  LFO_INC_TAB[1] = (unsigned int) (5.56 * (double) (1 << (LFO_HBITS + LFO_LBITS)) / j);
-  LFO_INC_TAB[2] = (unsigned int) (6.02 * (double) (1 << (LFO_HBITS + LFO_LBITS)) / j);
-  LFO_INC_TAB[3] = (unsigned int) (6.37 * (double) (1 << (LFO_HBITS + LFO_LBITS)) / j);
-  LFO_INC_TAB[4] = (unsigned int) (6.88 * (double) (1 << (LFO_HBITS + LFO_LBITS)) / j);
-  LFO_INC_TAB[5] = (unsigned int) (9.63 * (double) (1 << (LFO_HBITS + LFO_LBITS)) / j);
-  LFO_INC_TAB[6] = (unsigned int) (48.1 * (double) (1 << (LFO_HBITS + LFO_LBITS)) / j);
-  LFO_INC_TAB[7] = (unsigned int) (72.2 * (double) (1 << (LFO_HBITS + LFO_LBITS)) / j);
+	LFO_INC_TAB[0] = (unsigned int)(3.98 * (double)(1 << (LFO_HBITS + LFO_LBITS)) / j);
+	LFO_INC_TAB[1] = (unsigned int)(5.56 * (double)(1 << (LFO_HBITS + LFO_LBITS)) / j);
+	LFO_INC_TAB[2] = (unsigned int)(6.02 * (double)(1 << (LFO_HBITS + LFO_LBITS)) / j);
+	LFO_INC_TAB[3] = (unsigned int)(6.37 * (double)(1 << (LFO_HBITS + LFO_LBITS)) / j);
+	LFO_INC_TAB[4] = (unsigned int)(6.88 * (double)(1 << (LFO_HBITS + LFO_LBITS)) / j);
+	LFO_INC_TAB[5] = (unsigned int)(9.63 * (double)(1 << (LFO_HBITS + LFO_LBITS)) / j);
+	LFO_INC_TAB[6] = (unsigned int)(48.1 * (double)(1 << (LFO_HBITS + LFO_LBITS)) / j);
+	LFO_INC_TAB[7] = (unsigned int)(72.2 * (double)(1 << (LFO_HBITS + LFO_LBITS)) / j);
 
-  YM2612_Reset(YM2612);
+	YM2612_Reset(YM2612);
 
-  return YM2612;
-}
+	return YM2612;
+	}
 
 
-int YM2612_End(ym2612_ *YM2612)
+int YM2612_End(ym2612_* YM2612)
 {
 	free(YM2612);
 
 #if YM_DEBUG_LEVEL > 0
-  if(debug_file) fclose(debug_file);
-  debug_file = NULL;
+	if (debug_file) fclose(debug_file);
+	debug_file = NULL;
 #endif
 
-  return 0;
+	return 0;
 }
 
 
-int YM2612_Reset(ym2612_ *YM2612)
+int YM2612_Reset(ym2612_* YM2612)
 {
-  int i, j;
+	int i, j;
 
 #if YM_DEBUG_LEVEL > 0
-  fprintf(debug_file, "\n\nStarting reseting YM2612 ...\n\n");
+	fprintf(debug_file, "\n\nStarting reseting YM2612 ...\n\n");
 #endif
 
-  YM2612->LFOcnt = 0;
-  YM2612->TimerA = 0;
-  YM2612->TimerAL = 0;
-  YM2612->TimerAcnt = 0;
-  YM2612->TimerB = 0;
-  YM2612->TimerBL = 0;
-  YM2612->TimerBcnt = 0;
-  YM2612->DAC = 0;
-  YM2612->DACdata = 0;
+	YM2612->LFOcnt = 0;
+	YM2612->TimerA = 0;
+	YM2612->TimerAL = 0;
+	YM2612->TimerAcnt = 0;
+	YM2612->TimerB = 0;
+	YM2612->TimerBL = 0;
+	YM2612->TimerBcnt = 0;
+	YM2612->DAC = 0;
+	YM2612->DACdata = 0;
 	YM2612->dac_highpass = 0;
 
-  YM2612->Status = 0;
+	YM2612->Status = 0;
 
-  YM2612->OPNAadr = 0;
-  YM2612->OPNBadr = 0;
-  YM2612->Inter_Cnt = 0;
+	YM2612->OPNAadr = 0;
+	YM2612->OPNBadr = 0;
+	YM2612->Inter_Cnt = 0;
 
-  for(i = 0; i < 6; i++)
-  {
-    YM2612->CHANNEL[i].Old_OUTd = 0;
-    YM2612->CHANNEL[i].OUTd = 0;
-    YM2612->CHANNEL[i].LEFT = 0xFFFFFFFF;
-    YM2612->CHANNEL[i].RIGHT = 0xFFFFFFFF;
-    YM2612->CHANNEL[i].ALGO = 0;;
-    YM2612->CHANNEL[i].FB = 31;
-    YM2612->CHANNEL[i].FMS = 0;
-    YM2612->CHANNEL[i].AMS = 0;
+	for (i = 0; i < 6; i++)
+	{
+		YM2612->CHANNEL[i].Old_OUTd = 0;
+		YM2612->CHANNEL[i].OUTd = 0;
+		YM2612->CHANNEL[i].LEFT = 0xFFFFFFFF;
+		YM2612->CHANNEL[i].RIGHT = 0xFFFFFFFF;
+		YM2612->CHANNEL[i].ALGO = 0;;
+		YM2612->CHANNEL[i].FB = 31;
+		YM2612->CHANNEL[i].FMS = 0;
+		YM2612->CHANNEL[i].AMS = 0;
 
-    for(j = 0 ;j < 4 ; j++)
-    {
-      YM2612->CHANNEL[i].S0_OUT[j] = 0;
-      YM2612->CHANNEL[i].FNUM[j] = 0;
-      YM2612->CHANNEL[i].FOCT[j] = 0;
-      YM2612->CHANNEL[i].KC[j] = 0;
+		for (j = 0; j < 4; j++)
+		{
+			YM2612->CHANNEL[i].S0_OUT[j] = 0;
+			YM2612->CHANNEL[i].FNUM[j] = 0;
+			YM2612->CHANNEL[i].FOCT[j] = 0;
+			YM2612->CHANNEL[i].KC[j] = 0;
 
-      YM2612->CHANNEL[i].SLOT[j].Fcnt = 0;
-      YM2612->CHANNEL[i].SLOT[j].Finc = 0;
-      YM2612->CHANNEL[i].SLOT[j].Ecnt = ENV_END;    // Put it at the end of Decay phase...
-      YM2612->CHANNEL[i].SLOT[j].Einc = 0;
-      YM2612->CHANNEL[i].SLOT[j].Ecmp = 0;
-      YM2612->CHANNEL[i].SLOT[j].Ecurp = RELEASE;
+			YM2612->CHANNEL[i].SLOT[j].Fcnt = 0;
+			YM2612->CHANNEL[i].SLOT[j].Finc = 0;
+			YM2612->CHANNEL[i].SLOT[j].Ecnt = ENV_END;    // Put it at the end of Decay phase...
+			YM2612->CHANNEL[i].SLOT[j].Einc = 0;
+			YM2612->CHANNEL[i].SLOT[j].Ecmp = 0;
+			YM2612->CHANNEL[i].SLOT[j].Ecurp = RELEASE;
 
-      YM2612->CHANNEL[i].SLOT[j].ChgEnM = 0;
-    }
-  }
+			YM2612->CHANNEL[i].SLOT[j].ChgEnM = 0;
+		}
+	}
 
-  for(i = 0; i < 0x100; i++)
-  {
-    YM2612->REG[0][i] = -1;
-    YM2612->REG[1][i] = -1;
-  }
+	for (i = 0; i < 0x100; i++)
+	{
+		YM2612->REG[0][i] = -1;
+		YM2612->REG[1][i] = -1;
+	}
 
-  for(i = 0xB6; i >= 0xB4; i--)
-  {
-    YM2612_Write(YM2612, 0, (unsigned char) i);
-    YM2612_Write(YM2612, 2, (unsigned char) i);
-    YM2612_Write(YM2612, 1, 0xC0);
-    YM2612_Write(YM2612, 3, 0xC0);
-  }
+	UINT32 ch;
+	UINT32 chValue;
+	for (i = 0xB6; i >= 0xB4; i--)
+	{
+		YM2612_Write(YM2612, 0, (unsigned char)i, &ch, &chValue);
+		YM2612_Write(YM2612, 2, (unsigned char)i, &ch, &chValue);
+		YM2612_Write(YM2612, 1, 0xC0, &ch, &chValue);
+		YM2612_Write(YM2612, 3, 0xC0, &ch, &chValue);
+	}
 
-  for(i = 0xB2; i >= 0x22; i--)
-  {
-    YM2612_Write(YM2612, 0, (unsigned char) i);
-    YM2612_Write(YM2612, 2, (unsigned char) i);
-    YM2612_Write(YM2612, 1, 0);
-    YM2612_Write(YM2612, 3, 0);
-  }
+	for (i = 0xB2; i >= 0x22; i--)
+	{
+		YM2612_Write(YM2612, 0, (unsigned char)i, &ch, &chValue);
+		YM2612_Write(YM2612, 2, (unsigned char)i, &ch, &chValue);
+		YM2612_Write(YM2612, 1, 0, &ch, &chValue);
+		YM2612_Write(YM2612, 3, 0, &ch, &chValue);
+	}
 
-  YM2612_Write(YM2612, 0, 0x2A);
-  YM2612_Write(YM2612, 1, 0x80);
+	YM2612_Write(YM2612, 0, 0x2A, &ch, &chValue);
+	YM2612_Write(YM2612, 1, 0x80, &ch, &chValue);
 
 #if YM_DEBUG_LEVEL > 0
-  fprintf(debug_file, "\n\nFinishing reseting YM2612 ...\n\n");
+	fprintf(debug_file, "\n\nFinishing reseting YM2612 ...\n\n");
 #endif
 
-  return 0;
+	return 0;
 }
 
 
-int YM2612_Read(ym2612_ *YM2612)
+int YM2612_Read(ym2612_* YM2612)
 {
-/*  static int cnt = 0;
+	/*  static int cnt = 0;
 
-  if(cnt++ == 50)
-  {
-    cnt = 0;
-    return YM2612->Status;
-  }
-  else return YM2612->Status | 0x80;
-*/
-  return YM2612->Status;
+	  if(cnt++ == 50)
+	  {
+		cnt = 0;
+		return YM2612->Status;
+	  }
+	  else return YM2612->Status | 0x80;
+	*/
+	return YM2612->Status;
 }
 
 
-int YM2612_Write(ym2612_ *YM2612, unsigned char adr, unsigned char data)
+int YM2612_Write(ym2612_* YM2612, unsigned char adr, unsigned char data, UINT32* ch, UINT32* chValue)
 {
-  int d;
+	int d;
 
-  data &= 0xFF;
-  adr  &= 0x03;
+	data &= 0xFF;
+	adr &= 0x03;
 
-  switch(adr)
-  {
-    case 0:
-      YM2612->OPNAadr = data;
-      break;
+	switch (adr)
+	{
+	case 0:
+		YM2612->OPNAadr = data;
+		break;
 
-    case 1:
-      // Trivial optimisation
-      if(YM2612->OPNAadr == 0x2A)
-      {
-        YM2612->DACdata = ((int)data - 0x80) << DAC_SHIFT;
-        return 0;
-      }
+	case 1:
+		// Trivial optimisation
+		if (YM2612->OPNAadr == 0x2A)
+		{
+			YM2612->DACdata = ((int)data - 0x80) << DAC_SHIFT;
+			return 0;
+		}
 
-      d = YM2612->OPNAadr & 0xF0;
+		d = YM2612->OPNAadr & 0xF0;
 
-      if(d >= 0x30)
-      {
-        if(YM2612->REG[0][YM2612->OPNAadr] == data) return 2;
-        YM2612->REG[0][YM2612->OPNAadr] = data;
+		if (d >= 0x30)
+		{
+			if (YM2612->REG[0][YM2612->OPNAadr] == data) return 2;
+			YM2612->REG[0][YM2612->OPNAadr] = data;
 
-//				if (GYM_Dumping) Update_GYM_Dump(1, YM2612->OPNAadr, data);
+			//				if (GYM_Dumping) Update_GYM_Dump(1, YM2612->OPNAadr, data);
 
-        if(d < 0xA0)    // SLOT
-        {
-          SLOT_SET(YM2612, YM2612->OPNAadr, data);
-        }
-        else        // CHANNEL
-        {
-          CHANNEL_SET(YM2612, YM2612->OPNAadr, data);
-        }
-      }
-      else          // YM2612
-      {
-        YM2612->REG[0][YM2612->OPNAadr] = data;
+			if (d < 0xA0)    // SLOT
+			{
+				SLOT_SET(YM2612, YM2612->OPNAadr, data, ch, chValue);
+			}
+			else        // CHANNEL
+			{
+				CHANNEL_SET(YM2612, YM2612->OPNAadr, data, ch, chValue);
+			}
+		}
+		else          // YM2612
+		{
+			YM2612->REG[0][YM2612->OPNAadr] = data;
 
-//				if ((GYM_Dumping) && ((YM2612->OPNAadr == 0x22) || (YM2612->OPNAadr == 0x27) || (YM2612->OPNAadr == 0x28))) Update_GYM_Dump(1, YM2612->OPNAadr, data);
+			//				if ((GYM_Dumping) && ((YM2612->OPNAadr == 0x22) || (YM2612->OPNAadr == 0x27) || (YM2612->OPNAadr == 0x28))) Update_GYM_Dump(1, YM2612->OPNAadr, data);
 
-        YM_SET(YM2612, YM2612->OPNAadr, data);
-      }
-      break;
+			YM_SET(YM2612, YM2612->OPNAadr, data);
+		}
+		break;
 
-    case 2:
-      YM2612->OPNBadr = data;
-      break;
+	case 2:
+		YM2612->OPNBadr = data;
+		break;
 
-    case 3:
-      d = YM2612->OPNBadr & 0xF0;
+	case 3:
+		d = YM2612->OPNBadr & 0xF0;
 
-      if(d >= 0x30)
-      {
-        if(YM2612->REG[1][YM2612->OPNBadr] == data) return 2;
-        YM2612->REG[1][YM2612->OPNBadr] = data;
+		if (d >= 0x30)
+		{
+			if (YM2612->REG[1][YM2612->OPNBadr] == data) return 2;
+			YM2612->REG[1][YM2612->OPNBadr] = data;
 
-//				if (GYM_Dumping) Update_GYM_Dump(2, YM2612->OPNBadr, data);
+			//				if (GYM_Dumping) Update_GYM_Dump(2, YM2612->OPNBadr, data);
 
-        if(d < 0xA0)    // SLOT
-        {
-          SLOT_SET(YM2612, YM2612->OPNBadr + 0x100, data);
-        }
-        else        // CHANNEL
-        {
-          CHANNEL_SET(YM2612, YM2612->OPNBadr + 0x100, data);
-        }
-      }
-      else return 1;
-      break;
-  }
+			if (d < 0xA0)    // SLOT
+			{
+				SLOT_SET(YM2612, YM2612->OPNBadr + 0x100, data, ch, chValue);
+			}
+			else        // CHANNEL
+			{
+				CHANNEL_SET(YM2612, YM2612->OPNBadr + 0x100, data, ch, chValue);
+			}
+		}
+		else return 1;
+		break;
+	}
 
-  return 0;
+	return 0;
 }
 
-int YM2612_GetMute(ym2612_ *YM2612)
+int YM2612_GetMute(ym2612_* YM2612)
 {
-  int i, result = 0;
-  for (i = 0; i < 6; ++i)
-  {
-    result |= YM2612->CHANNEL[i].Mute << i;
-  }
-  result |= YM2612->DAC_Mute << 6;
+	int i, result = 0;
+	for (i = 0; i < 6; ++i)
+	{
+		result |= YM2612->CHANNEL[i].Mute << i;
+	}
+	result |= YM2612->DAC_Mute << 6;
 	//result &= !(YM2612_Enable_SSGEG);
-  return result;  
+	return result;
 }
 
-void YM2612_SetMute(ym2612_ *YM2612, int val)
+void YM2612_SetMute(ym2612_* YM2612, int val)
 {
-  int i;
-  for (i = 0; i < 6; ++i)
-  {
-    YM2612->CHANNEL[i].Mute = (val >> i) & 1;
-  }
-  YM2612->DAC_Mute = (val >> 6) & 1;
+	int i;
+	for (i = 0; i < 6; ++i)
+	{
+		YM2612->CHANNEL[i].Mute = (val >> i) & 1;
+	}
+	YM2612->DAC_Mute = (val >> 6) & 1;
 	//YM2612_Enable_SSGEG = !(val & 1);
 }
 
@@ -2343,107 +2362,109 @@ void YM2612_SetOptions(int Flags)
 	YM2612_Enable_SSGEG = (Flags >> 1) & 0x01;
 }
 
-void YM2612_ClearBuffer(int **buffer, int length)
+void YM2612_ClearBuffer(int** buffer, int length, WAVE_32BS** channeloutputs, int channelcount)
 {
 	// the MAME core does this before updating,
 	// but the Gens core does this before mixing
-	int *bufL, *bufR;
-	int i;
-	
+	int* bufL, * bufR;
+	int i, ch;
+
 	bufL = buffer[0];
 	bufR = buffer[1];
-	
-	for(i = 0; i < length; i++)
+	 
+	for (i = 0; i < length; i++)
 	{
 		bufL[i] = 0x0000;
 		bufR[i] = 0x0000;
 	}
+
+	for (ch = 0; ch < channelcount; ch++)
+	{
+		for (i = 0; i < length; i++)
+		{
+			channeloutputs[ch][i].Left = 0;
+			channeloutputs[ch][i].Right = 0;
+		}
+	}
 }
 
-void YM2612_Update(ym2612_ *YM2612, int **buf, int length)
+void YM2612_Update(ym2612_* YM2612, int** buf, int length, WAVE_32BS** channeloutputs, int channelcount)
 {
-  int i, j, algo_type;
+	int i, j, algo_type;
 
 #if YM_DEBUG_LEVEL > 1
-  fprintf(debug_file, "\n\nStarting generating sound...\n\n");
+	fprintf(debug_file, "\n\nStarting generating sound...\n\n");
 #endif
 
-  // Mise ?jour des pas des compteurs-fréquences s'ils ont ét?modifiés
+	// Mise ?jour des pas des compteurs-fréquences s'ils ont ét?modifiés
 
-  if(YM2612->CHANNEL[0].SLOT[0].Finc == -1) CALC_FINC_CH(&YM2612->CHANNEL[0]);
-  if(YM2612->CHANNEL[1].SLOT[0].Finc == -1) CALC_FINC_CH(&YM2612->CHANNEL[1]);
-  if(YM2612->CHANNEL[2].SLOT[0].Finc == -1)
-  {
-    if(YM2612->Mode & 0x40)
-    {
-      CALC_FINC_SL(&(YM2612->CHANNEL[2].SLOT[S0]), FINC_TAB[YM2612->CHANNEL[2].FNUM[2]] >> (7 - YM2612->CHANNEL[2].FOCT[2]), YM2612->CHANNEL[2].KC[2]);
-      CALC_FINC_SL(&(YM2612->CHANNEL[2].SLOT[S1]), FINC_TAB[YM2612->CHANNEL[2].FNUM[3]] >> (7 - YM2612->CHANNEL[2].FOCT[3]), YM2612->CHANNEL[2].KC[3]);
-      CALC_FINC_SL(&(YM2612->CHANNEL[2].SLOT[S2]), FINC_TAB[YM2612->CHANNEL[2].FNUM[1]] >> (7 - YM2612->CHANNEL[2].FOCT[1]), YM2612->CHANNEL[2].KC[1]);
-      CALC_FINC_SL(&(YM2612->CHANNEL[2].SLOT[S3]), FINC_TAB[YM2612->CHANNEL[2].FNUM[0]] >> (7 - YM2612->CHANNEL[2].FOCT[0]), YM2612->CHANNEL[2].KC[0]);
-    }
-    else
-    {
-      CALC_FINC_CH(&YM2612->CHANNEL[2]);
-    }
-  }
-  if(YM2612->CHANNEL[3].SLOT[0].Finc == -1) CALC_FINC_CH(&YM2612->CHANNEL[3]);
-  if(YM2612->CHANNEL[4].SLOT[0].Finc == -1) CALC_FINC_CH(&YM2612->CHANNEL[4]);
-  if(YM2612->CHANNEL[5].SLOT[0].Finc == -1) CALC_FINC_CH(&YM2612->CHANNEL[5]);
+	if (YM2612->CHANNEL[0].SLOT[0].Finc == -1) 
+		CALC_FINC_CH(&YM2612->CHANNEL[0]);
+	if (YM2612->CHANNEL[1].SLOT[0].Finc == -1) 
+		CALC_FINC_CH(&YM2612->CHANNEL[1]);
+	if (YM2612->CHANNEL[2].SLOT[0].Finc == -1)
+	{
+		if (YM2612->Mode & 0x40)
+		{
+			CALC_FINC_SL(&(YM2612->CHANNEL[2].SLOT[S0]), FINC_TAB[YM2612->CHANNEL[2].FNUM[2]] >> (7 - YM2612->CHANNEL[2].FOCT[2]), YM2612->CHANNEL[2].KC[2]);
+			CALC_FINC_SL(&(YM2612->CHANNEL[2].SLOT[S1]), FINC_TAB[YM2612->CHANNEL[2].FNUM[3]] >> (7 - YM2612->CHANNEL[2].FOCT[3]), YM2612->CHANNEL[2].KC[3]);
+			CALC_FINC_SL(&(YM2612->CHANNEL[2].SLOT[S2]), FINC_TAB[YM2612->CHANNEL[2].FNUM[1]] >> (7 - YM2612->CHANNEL[2].FOCT[1]), YM2612->CHANNEL[2].KC[1]);
+			CALC_FINC_SL(&(YM2612->CHANNEL[2].SLOT[S3]), FINC_TAB[YM2612->CHANNEL[2].FNUM[0]] >> (7 - YM2612->CHANNEL[2].FOCT[0]), YM2612->CHANNEL[2].KC[0]);
+		}
+		else
+		{
+			CALC_FINC_CH(&YM2612->CHANNEL[2]);
+		}
+	}
+	if (YM2612->CHANNEL[3].SLOT[0].Finc == -1) 
+		CALC_FINC_CH(&YM2612->CHANNEL[3]);
+	if (YM2612->CHANNEL[4].SLOT[0].Finc == -1) 
+		CALC_FINC_CH(&YM2612->CHANNEL[4]);
+	if (YM2612->CHANNEL[5].SLOT[0].Finc == -1) 
+		CALC_FINC_CH(&YM2612->CHANNEL[5]);
 
-/*
-  CALC_FINC_CH(&YM2612->CHANNEL[0]);
-  CALC_FINC_CH(&YM2612->CHANNEL[1]);
-  if(YM2612->Mode & 0x40)
-  {
-    CALC_FINC_SL(&(YM2612->CHANNEL[2].SLOT[0]), FINC_TAB[YM2612->CHANNEL[2].FNUM[2]] >> (7 - YM2612->CHANNEL[2].FOCT[2]), YM2612->CHANNEL[2].KC[2]);
-    CALC_FINC_SL(&(YM2612->CHANNEL[2].SLOT[1]), FINC_TAB[YM2612->CHANNEL[2].FNUM[3]] >> (7 - YM2612->CHANNEL[2].FOCT[3]), YM2612->CHANNEL[2].KC[3]);
-    CALC_FINC_SL(&(YM2612->CHANNEL[2].SLOT[2]), FINC_TAB[YM2612->CHANNEL[2].FNUM[1]] >> (7 - YM2612->CHANNEL[2].FOCT[1]), YM2612->CHANNEL[2].KC[1]);
-    CALC_FINC_SL(&(YM2612->CHANNEL[2].SLOT[3]), FINC_TAB[YM2612->CHANNEL[2].FNUM[0]] >> (7 - YM2612->CHANNEL[2].FOCT[0]), YM2612->CHANNEL[2].KC[0]);
-  }
-  else
-  {
-    CALC_FINC_CH(&YM2612->CHANNEL[2]);
-  }
-  CALC_FINC_CH(&YM2612->CHANNEL[3]);
-  CALC_FINC_CH(&YM2612->CHANNEL[4]);
-  CALC_FINC_CH(&YM2612->CHANNEL[5]);
-*/
+	if (YM2612->Inter_Step & 0x04000) 
+		algo_type = 0;
+	else 
+		algo_type = 16;
 
-  if(YM2612->Inter_Step & 0x04000) algo_type = 0;
-  else algo_type = 16;
+	if (YM2612->LFOinc)
+	{
+		// Precalcul LFO wav
 
-  if(YM2612->LFOinc)
-  {
-    // Precalcul LFO wav
+		for (i = 0; i < length; i++)
+		{
+			j = ((YM2612->LFOcnt += YM2612->LFOinc) >> LFO_LBITS) & LFO_MASK;
 
-    for(i = 0; i < length; i++)
-    {
-      j = ((YM2612->LFOcnt += YM2612->LFOinc) >> LFO_LBITS) & LFO_MASK;
-
-      YM2612->LFO_ENV_UP[i] = LFO_ENV_TAB[j];
-      YM2612->LFO_FREQ_UP[i] = LFO_FREQ_TAB[j];
+			YM2612->LFO_ENV_UP[i] = LFO_ENV_TAB[j];
+			YM2612->LFO_FREQ_UP[i] = LFO_FREQ_TAB[j];
 
 #if YM_DEBUG_LEVEL > 3
-      fprintf(debug_file, "LFO_ENV_UP[%d] = %d   LFO_FREQ_UP[%d] = %d\n", i, YM2612->LFO_ENV_UP[i], i, YM2612->LFO_FREQ_UP[i]);
+			fprintf(debug_file, "LFO_ENV_UP[%d] = %d   LFO_FREQ_UP[%d] = %d\n", i, YM2612->LFO_ENV_UP[i], i, YM2612->LFO_FREQ_UP[i]);
 #endif
-    }
+		}
 
-    algo_type |= 8;
-  }
+		algo_type |= 8;
+	}
 
 
-  if (!YM2612->CHANNEL[0].Mute) UPDATE_CHAN[YM2612->CHANNEL[0].ALGO + algo_type](YM2612, &(YM2612->CHANNEL[0]), buf, length);
-	if (!YM2612->CHANNEL[1].Mute) UPDATE_CHAN[YM2612->CHANNEL[1].ALGO + algo_type](YM2612, &(YM2612->CHANNEL[1]), buf, length);
-	if (!YM2612->CHANNEL[2].Mute) UPDATE_CHAN[YM2612->CHANNEL[2].ALGO + algo_type](YM2612, &(YM2612->CHANNEL[2]), buf, length);
-	if (!YM2612->CHANNEL[3].Mute) UPDATE_CHAN[YM2612->CHANNEL[3].ALGO + algo_type](YM2612, &(YM2612->CHANNEL[3]), buf, length);
-	if (!YM2612->CHANNEL[4].Mute) UPDATE_CHAN[YM2612->CHANNEL[4].ALGO + algo_type](YM2612, &(YM2612->CHANNEL[4]), buf, length);
-	if (!YM2612->CHANNEL[5].Mute 
-		&& !(YM2612->DAC))          UPDATE_CHAN[YM2612->CHANNEL[5].ALGO + algo_type](YM2612, &(YM2612->CHANNEL[5]), buf, length);
+	if (!YM2612->CHANNEL[0].Mute) 
+		UPDATE_CHAN[YM2612->CHANNEL[0].ALGO + algo_type](YM2612, &(YM2612->CHANNEL[0]), buf, length, channeloutputs[0], channelcount);
+	if (!YM2612->CHANNEL[1].Mute) 
+		UPDATE_CHAN[YM2612->CHANNEL[1].ALGO + algo_type](YM2612, &(YM2612->CHANNEL[1]), buf, length, channeloutputs[1], channelcount);
+	if (!YM2612->CHANNEL[2].Mute) 
+		UPDATE_CHAN[YM2612->CHANNEL[2].ALGO + algo_type](YM2612, &(YM2612->CHANNEL[2]), buf, length, channeloutputs[2], channelcount);
+	if (!YM2612->CHANNEL[3].Mute)
+		UPDATE_CHAN[YM2612->CHANNEL[3].ALGO + algo_type](YM2612, &(YM2612->CHANNEL[3]), buf, length, channeloutputs[3], channelcount);
+	if (!YM2612->CHANNEL[4].Mute) 
+		UPDATE_CHAN[YM2612->CHANNEL[4].ALGO + algo_type](YM2612, &(YM2612->CHANNEL[4]), buf, length, channeloutputs[4], channelcount);
+	if (!YM2612->CHANNEL[5].Mute && !(YM2612->DAC))          
+		UPDATE_CHAN[YM2612->CHANNEL[5].ALGO + algo_type](YM2612, &(YM2612->CHANNEL[5]), buf, length, channeloutputs[5], channelcount);
 
-  YM2612->Inter_Cnt = int_cnt;
+	YM2612->Inter_Cnt = int_cnt;
 
 #if YM_DEBUG_LEVEL > 1
-  fprintf(debug_file, "\n\nFinishing generating sound...\n\n");
+	fprintf(debug_file, "\n\nFinishing generating sound...\n\n");
 #endif
 
 }
@@ -2455,8 +2476,8 @@ void YM2612_Update(ym2612_ *YM2612, int **buf, int length)
 
   for(i = 0; i < 0x100; i++)
   {
-    SAVE[0x000 + i] = YM2612->REG[0][i];
-    SAVE[0x100 + i] = YM2612->REG[1][i];
+	SAVE[0x000 + i] = YM2612->REG[0][i];
+	SAVE[0x100 + i] = YM2612->REG[1][i];
   }
 
   return 0;
@@ -2471,10 +2492,10 @@ int YM2612_Restore(ym2612_ *YM2612, unsigned char SAVE[0x200])
 
   for(i = 0; i < 0x100; i++)
   {
-    YM2612_Write(YM2612, 0, (unsigned char) i);
-    YM2612_Write(YM2612, 1, SAVE[0x000 + i]);
-    YM2612_Write(YM2612, 2, (unsigned char) i);
-    YM2612_Write(YM2612, 3, SAVE[0x100 + i]);
+	YM2612_Write(YM2612, 0, (unsigned char) i);
+	YM2612_Write(YM2612, 1, SAVE[0x000 + i]);
+	YM2612_Write(YM2612, 2, (unsigned char) i);
+	YM2612_Write(YM2612, 3, SAVE[0x100 + i]);
   }
 
   return 0;
@@ -2484,73 +2505,73 @@ int YM2612_Restore(ym2612_ *YM2612, unsigned char SAVE[0x200])
 
 enum { highpass_fract = 15 };
 enum { highpass_shift = 9 }; // higher values reduce highpass on DAC
-void YM2612_DacAndTimers_Update(ym2612_ *YM2612, int **buffer, int length)
+void YM2612_DacAndTimers_Update(ym2612_* YM2612, int** buffer, int length, WAVE_32BS** channeloutputs, int channelcount)
 {
-  int *bufL, *bufR;
-  int i;
+	int* bufL, * bufR;
+	int i;
 
-  if(YM2612->DAC && YM2612->DACdata && ! YM2612->DAC_Mute)
-  {
+	if (YM2612->DAC && YM2612->DACdata && !YM2612->DAC_Mute)
+	{
 
-    bufL = buffer[0];
-    bufR = buffer[1];
+		bufL = buffer[0];
+		bufR = buffer[1];
 
-    for(i = 0; i < length; i++)
-    {
+		for (i = 0; i < length; i++)
+		{
 			long dac = (YM2612->DACdata << highpass_fract) - YM2612->dac_highpass;
 			if (DAC_Highpass_Enable)	// else it's left at 0 and doesn't affect the sound
 				YM2612->dac_highpass += dac >> highpass_shift;
 			dac >>= highpass_fract;
 			bufL[i] += dac & YM2612->CHANNEL[5].LEFT;
 			bufR[i] += dac & YM2612->CHANNEL[5].RIGHT;
-    }
-  }
+		}
+	}
 
-  i = YM2612->TimerBase * length;
+	i = YM2612->TimerBase * length;
 
-  if(YM2612->Mode & 1)              // Timer A ON ?
-  {
-//    if((YM2612->TimerAcnt -= 14073) <= 0)    // 13879=NTSC (old: 14475=NTSC  14586=PAL)
-    if((YM2612->TimerAcnt -= i) <= 0)
-    {
-      YM2612->Status |= (YM2612->Mode & 0x04) >> 2;
-      YM2612->TimerAcnt += YM2612->TimerAL;
-
-#if YM_DEBUG_LEVEL > 0
-      fprintf(debug_file, "Counter A overflow\n");
-#endif
-
-      if(YM2612->Mode & 0x80) CSM_Key_Control(YM2612);
-    }
-  }
-
-  if(YM2612->Mode & 2)              // Timer B ON ?
-  {
-//    if((YM2612->TimerBcnt -= 14073) <= 0)    // 13879=NTSC (old: 14475=NTSC  14586=PAL)
-    if((YM2612->TimerBcnt -= i) <= 0)
-    {
-      YM2612->Status |= (YM2612->Mode & 0x08) >> 2;
-      YM2612->TimerBcnt += YM2612->TimerBL;
+	if (YM2612->Mode & 1)              // Timer A ON ?
+	{
+		//    if((YM2612->TimerAcnt -= 14073) <= 0)    // 13879=NTSC (old: 14475=NTSC  14586=PAL)
+		if ((YM2612->TimerAcnt -= i) <= 0)
+		{
+			YM2612->Status |= (YM2612->Mode & 0x04) >> 2;
+			YM2612->TimerAcnt += YM2612->TimerAL;
 
 #if YM_DEBUG_LEVEL > 0
-      fprintf(debug_file, "Counter B overflow\n");
+			fprintf(debug_file, "Counter A overflow\n");
 #endif
-    }
-  }
+
+			if (YM2612->Mode & 0x80) CSM_Key_Control(YM2612);
+		}
+	}
+
+	if (YM2612->Mode & 2)              // Timer B ON ?
+	{
+		//    if((YM2612->TimerBcnt -= 14073) <= 0)    // 13879=NTSC (old: 14475=NTSC  14586=PAL)
+		if ((YM2612->TimerBcnt -= i) <= 0)
+		{
+			YM2612->Status |= (YM2612->Mode & 0x08) >> 2;
+			YM2612->TimerBcnt += YM2612->TimerBL;
+
+#if YM_DEBUG_LEVEL > 0
+			fprintf(debug_file, "Counter B overflow\n");
+#endif
+		}
+	}
 }
 
 /* Gens */
 
-void YM2612_Special_Update(ym2612_ *YM2612)
+void YM2612_Special_Update(ym2612_* YM2612)
 {
-/*	if (YM_Len && YM2612_Enable)
-  {
-    YM2612_Update(YM_Buf, YM_Len);
+	/*	if (YM_Len && YM2612_Enable)
+	  {
+		YM2612_Update(YM_Buf, YM_Len);
 
-		YM_Buf[0] = Seg_L + Sound_Extrapol[VDP_Current_Line + 1][0];
-		YM_Buf[1] = Seg_R + Sound_Extrapol[VDP_Current_Line + 1][0];
-    YM_Len = 0;
-	}*/
+			YM_Buf[0] = Seg_L + Sound_Extrapol[VDP_Current_Line + 1][0];
+			YM_Buf[1] = Seg_R + Sound_Extrapol[VDP_Current_Line + 1][0];
+		YM_Len = 0;
+		}*/
 }
 
 /* end */

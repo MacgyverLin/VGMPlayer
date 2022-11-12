@@ -812,6 +812,9 @@ void ay8910_update_one(void *param, stream_sample_t **outputs, int samples, WAVE
 					bufL[cursmpl] += AYBuf[chan][cursmpl];
 				if (psg->StereoMask[chan] & 0x02)
 					bufR[cursmpl] += AYBuf[chan][cursmpl];
+
+				channeloutputs[chan][cursmpl].Left = AYBuf[chan][cursmpl];
+				channeloutputs[chan][cursmpl].Right = AYBuf[chan][cursmpl];
 			}
 		}
 	}

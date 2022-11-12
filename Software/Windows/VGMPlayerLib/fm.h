@@ -36,10 +36,10 @@
 typedef struct _ssg_callbacks ssg_callbacks;
 struct _ssg_callbacks
 {
-	void (*set_clock)(void *param, int clock);
-	void (*write)(void *param, int address, int data);
-	int (*read)(void *param);
-	void (*reset)(void *param);
+	void (*set_clock)(void* param, int clock);
+	void (*write)(void* param, int address, int data);
+	int (*read)(void* param);
+	void (*reset)(void* param);
 };
 
 /* --- external callback funstions for realtime update --- */
@@ -55,26 +55,26 @@ struct _ssg_callbacks
 
 #if BUILD_YM2203
   /* in 2203intf.c */
-  void ym2203_update_request(void *param);
-  #define ym2203_update_req(chip) ym2203_update_request(chip)
+void ym2203_update_request(void* param);
+#define ym2203_update_req(chip) ym2203_update_request(chip)
 #endif /* BUILD_YM2203 */
 
 #if BUILD_YM2608
-  /* in 2608intf.c */
-  void ym2608_update_request(void *param);
-  #define ym2608_update_req(chip) ym2608_update_request(chip);
+/* in 2608intf.c */
+void ym2608_update_request(void* param);
+#define ym2608_update_req(chip) ym2608_update_request(chip);
 #endif /* BUILD_YM2608 */
 
 #if (BUILD_YM2610||BUILD_YM2610B)
-  /* in 2610intf.c */
-  void ym2610_update_request(void *param);
-  #define ym2610_update_req(chip) ym2610_update_request(chip);
+/* in 2610intf.c */
+void ym2610_update_request(void* param);
+#define ym2610_update_req(chip) ym2610_update_request(chip);
 #endif /* (BUILD_YM2610||BUILD_YM2610B) */
 
 #if (BUILD_YM2612||BUILD_YM3438)
-  /* in 2612intf.c */
-  void ym2612_update_request(void *param);
-  #define ym2612_update_req(chip) ym2612_update_request(chip);
+/* in 2612intf.c */
+void ym2612_update_request(void* param);
+#define ym2612_update_req(chip) ym2612_update_request(chip);
 #endif /* (BUILD_YM2612||BUILD_YM3438) */
 
 /* compiler dependence */
@@ -102,8 +102,8 @@ typedef unsigned char  FMSAMPLE;
 #endif
 */
 
-typedef void (*FM_TIMERHANDLER)(void *param,int c,int cnt,int clock);
-typedef void (*FM_IRQHANDLER)(void *param,int irq);
+typedef void (*FM_TIMERHANDLER)(void* param, int c, int cnt, int clock);
+typedef void (*FM_IRQHANDLER)(void* param, int irq);
 /* FM_TIMERHANDLER : Stop or Start timer         */
 /* int n          = chip number                  */
 /* int c          = Channel 0=TimerA,1=TimerB    */
@@ -129,47 +129,47 @@ typedef void (*FM_IRQHANDLER)(void *param,int irq);
 */
 //void * ym2203_init(void *param, const device_config *device, int baseclock, int rate,
 //               FM_TIMERHANDLER TimerHandler,FM_IRQHANDLER IRQHandler, const ssg_callbacks *ssg);
-void * ym2203_init(void *param, int baseclock, int rate,
-               FM_TIMERHANDLER TimerHandler,FM_IRQHANDLER IRQHandler, const ssg_callbacks *ssg);
+void* ym2203_init(void* param, int baseclock, int rate,
+	FM_TIMERHANDLER TimerHandler, FM_IRQHANDLER IRQHandler, const ssg_callbacks* ssg);
 
 /*
 ** shutdown the YM2203 emulators
 */
-void ym2203_shutdown(void *chip);
+void ym2203_shutdown(void* chip);
 
 /*
 ** reset all chip registers for YM2203 number 'num'
 */
-void ym2203_reset_chip(void *chip);
+void ym2203_reset_chip(void* chip);
 
 /*
 ** update one of chip
 */
-void ym2203_update_one(void *chip, FMSAMPLE **buffer, int length, WAVE_32BS** channeloutputs, int channelcount);
+void ym2203_update_one(void* chip, FMSAMPLE** buffer, int length, WAVE_32BS** channeloutputs, int channelcount);
 
 /*
 ** Write
 ** return : InterruptLevel
 */
-int ym2203_write(void *chip,int a,unsigned char v);
+int ym2203_write(void* chip, int a, unsigned char v);
 
 /*
 ** Read
 ** return : InterruptLevel
 */
-unsigned char ym2203_read(void *chip,int a);
+unsigned char ym2203_read(void* chip, int a);
 
 /*
 **  Timer OverFlow
 */
-int ym2203_timer_over(void *chip, int c);
+int ym2203_timer_over(void* chip, int c);
 
 /*
 **  State Save
 */
-void ym2203_postload(void *chip);
+void ym2203_postload(void* chip);
 
-void ym2203_set_mutemask(void *chip, UINT32 MuteMask);
+void ym2203_set_mutemask(void* chip, UINT32 MuteMask);
 #endif /* BUILD_YM2203 */
 
 #if BUILD_YM2608
@@ -177,20 +177,20 @@ void ym2203_set_mutemask(void *chip, UINT32 MuteMask);
 //void * ym2608_init(void *param, const device_config *device, int baseclock, int rate,
 //               void *pcmroma,int pcmsizea,
 //               FM_TIMERHANDLER TimerHandler,FM_IRQHANDLER IRQHandler, const ssg_callbacks *ssg);
-void * ym2608_init(void *param, int baseclock, int rate,
-               FM_TIMERHANDLER TimerHandler,FM_IRQHANDLER IRQHandler, const ssg_callbacks *ssg);
-void ym2608_shutdown(void *chip);
-void ym2608_reset_chip(void *chip);
-void ym2608_update_one(void *chip, FMSAMPLE **buffer, int length, WAVE_32BS** channeloutputs, int channelcount);
+void* ym2608_init(void* param, int baseclock, int rate,
+	FM_TIMERHANDLER TimerHandler, FM_IRQHANDLER IRQHandler, const ssg_callbacks* ssg);
+void ym2608_shutdown(void* chip);
+void ym2608_reset_chip(void* chip);
+void ym2608_update_one(void* chip, FMSAMPLE** buffer, int length, WAVE_32BS** channeloutputs, int channelcount);
 
-int ym2608_write(void *chip, int a,unsigned char v);
-unsigned char ym2608_read(void *chip,int a);
-int ym2608_timer_over(void *chip, int c );
-void ym2608_postload(void *chip);
-void ym2608_write_pcmrom(void *chip, UINT8 rom_id, offs_t ROMSize, offs_t DataStart,
-						 offs_t DataLength, const UINT8* ROMData);
+int ym2608_write(void* chip, int a, unsigned char v);
+unsigned char ym2608_read(void* chip, int a);
+int ym2608_timer_over(void* chip, int c);
+void ym2608_postload(void* chip);
+void ym2608_write_pcmrom(void* chip, UINT8 rom_id, offs_t ROMSize, offs_t DataStart,
+	offs_t DataLength, const UINT8* ROMData);
 
-void ym2608_set_mutemask(void *chip, UINT32 MuteMask);
+void ym2608_set_mutemask(void* chip, UINT32 MuteMask);
 #endif /* BUILD_YM2608 */
 
 #if (BUILD_YM2610||BUILD_YM2610B)
@@ -198,41 +198,41 @@ void ym2608_set_mutemask(void *chip, UINT32 MuteMask);
 //void * ym2610_init(void *param, const device_config *device, int baseclock, int rate,
 //               void *pcmroma,int pcmasize,void *pcmromb,int pcmbsize,
 //               FM_TIMERHANDLER TimerHandler,FM_IRQHANDLER IRQHandler, const ssg_callbacks *ssg);
-void * ym2610_init(void *param, int baseclock, int rate,
-               FM_TIMERHANDLER TimerHandler,FM_IRQHANDLER IRQHandler, const ssg_callbacks *ssg);
-void ym2610_shutdown(void *chip);
-void ym2610_reset_chip(void *chip);
-void ym2610_update_one(void *chip, FMSAMPLE **buffer, int length, WAVE_32BS** channeloutputs, int channelcount);
+void* ym2610_init(void* param, int baseclock, int rate,
+	FM_TIMERHANDLER TimerHandler, FM_IRQHANDLER IRQHandler, const ssg_callbacks* ssg);
+void ym2610_shutdown(void* chip);
+void ym2610_reset_chip(void* chip);
+void ym2610_update_one(void* chip, FMSAMPLE** buffer, int length, WAVE_32BS** channeloutputs, int channelcount);
 
 #if BUILD_YM2610B
-void ym2610b_update_one(void *chip, FMSAMPLE **buffer, int length, WAVE_32BS** channeloutputs, int channelcount);
+void ym2610b_update_one(void* chip, FMSAMPLE** buffer, int length, WAVE_32BS** channeloutputs, int channelcount);
 #endif /* BUILD_YM2610B */
 
-int ym2610_write(void *chip, int a,unsigned char v);
-unsigned char ym2610_read(void *chip,int a);
-int ym2610_timer_over(void *chip, int c );
-void ym2610_postload(void *chip);
-void ym2610_write_pcmrom(void *chip, UINT8 rom_id, offs_t ROMSize, offs_t DataStart,
-						 offs_t DataLength, const UINT8* ROMData);
+int ym2610_write(void* chip, int a, unsigned char v);
+unsigned char ym2610_read(void* chip, int a);
+int ym2610_timer_over(void* chip, int c);
+void ym2610_postload(void* chip);
+void ym2610_write_pcmrom(void* chip, UINT8 rom_id, offs_t ROMSize, offs_t DataStart,
+	offs_t DataLength, const UINT8* ROMData);
 
-void ym2610_set_mutemask(void *chip, UINT32 MuteMask);
+void ym2610_set_mutemask(void* chip, UINT32 MuteMask);
 #endif /* (BUILD_YM2610||BUILD_YM2610B) */
 
 #if (BUILD_YM2612||BUILD_YM3438)
 //void * ym2612_init(void *param, const device_config *device, int baseclock, int rate,
 //               FM_TIMERHANDLER TimerHandler,FM_IRQHANDLER IRQHandler);
-void * ym2612_init(void *param, int baseclock, int rate,
-               FM_TIMERHANDLER TimerHandler,FM_IRQHANDLER IRQHandler);
-void ym2612_shutdown(void *chip);
-void ym2612_reset_chip(void *chip);
-void ym2612_update_one(void *chip, FMSAMPLE **buffer, int length, WAVE_32BS** channeloutputs, int channelcount);
+void* ym2612_init(void* param, int baseclock, int rate,
+	FM_TIMERHANDLER TimerHandler, FM_IRQHANDLER IRQHandler);
+void ym2612_shutdown(void* chip);
+void ym2612_reset_chip(void* chip);
+void ym2612_update_one(void* chip, FMSAMPLE** buffer, int length, WAVE_32BS** channeloutputs, int channelcount);
 
-int ym2612_write(void *chip, int a,unsigned char v);
-unsigned char ym2612_read(void *chip,int a);
-int ym2612_timer_over(void *chip, int c );
-void ym2612_postload(void *chip);
+int ym2612_write(void* chip, int a, unsigned char v, UINT32* ch, UINT32* chValue);
+unsigned char ym2612_read(void* chip, int a);
+int ym2612_timer_over(void* chip, int c);
+void ym2612_postload(void* chip);
 
-void ym2612_set_mutemask(void *chip, UINT32 MuteMask);
+void ym2612_set_mutemask(void* chip, UINT32 MuteMask);
 void ym2612_setoptions(UINT8 Flags);
 
 void ym2612_setISVGMInit(UINT8 Flags);

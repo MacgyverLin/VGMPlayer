@@ -19,6 +19,22 @@ public:
 	gzFile gzfile;
 };
 
+string ToTimeCode(float framenumber)
+{
+	UINT32 seconds = framenumber / VGM_FRAME_PER_SECOND;
+	UINT32 minutes = seconds / 60;
+	UINT32 hours = minutes / 60;
+	UINT32 frames = floor(fmod(framenumber, 30));
+	seconds = seconds % 60;
+	minutes = minutes % 60;
+	hours = hours % 24;
+
+	char buf[1024];
+	sprintf(buf, "%02d:%02d:%02d:%02d", hours, minutes, seconds, frames);
+
+	return buf;
+}
+
 UINT16 ReadLE16(const UINT8* Data)
 {
 	// read 16-Bit Word (Little Endian/Intel Byte Order)
@@ -409,7 +425,7 @@ void VGMData::VGMPlay_Init2(void)
 		if (OpenPortTalk())
 			return;
 #endif
-}
+	}
 
 #endif
 
@@ -458,15 +474,15 @@ void VGMData::VGMPlay_Deinit(void)
 
 	::free(vgmInfo.StreamBufs[0x00]);	vgmInfo.StreamBufs[0x00] = NULL;
 	::free(vgmInfo.StreamBufs[0x01]);	vgmInfo.StreamBufs[0x01] = NULL;
-	
-	
-	
+
+
+
 	for (int i = 0; i < vgmInfo.ChannelBuffers.size(); i++)
 	{
 		::free(vgmInfo.ChannelBuffers[i]);	vgmInfo.ChannelBuffers[i] = NULL;
 	}
 	vgmInfo.ChannelBuffers.clear();
-	
+
 	for (int i = 0; i < vgmInfo.OutputChannelBuffers.size(); i++)
 	{
 		::free(vgmInfo.OutputChannelBuffers[i]);	vgmInfo.OutputChannelBuffers[i] = NULL;
@@ -1144,7 +1160,7 @@ void VGMData::ReadOptions(const char* AppName)
 
 	return;
 #endif
-			}
+}
 
 bool VGMData::OpenVGMFile(const char* FileName)
 {
@@ -1313,7 +1329,7 @@ UINT32 VGMData::GetGZFileLength_Internal(FILE* hFile)
 		if (gzHead != 0x1F8B)
 		{
 			RetVal = 0;	// no .gz signature - treat as normal file
-	}
+		}
 		else
 		{
 			// .gz File
@@ -1324,7 +1340,7 @@ UINT32 VGMData::GetGZFileLength_Internal(FILE* hFile)
 			FileSize = ReadLE32((UINT8*)&FileSize);
 #endif
 		}
-}
+	}
 	if (RetVal <= 0)
 	{
 		// normal file
@@ -1333,7 +1349,7 @@ UINT32 VGMData::GetGZFileLength_Internal(FILE* hFile)
 	}
 
 	return FileSize;
-		}
+}
 
 void VGMData::CloseVGMFile(void)
 {
@@ -1855,7 +1871,7 @@ void VGMData::opl_chip_reset(void)
 			continue;
 		OPL_HW_WriteReg(0x000 | Reg, 0x00);
 		OPL_HW_WriteReg(0x100 | Reg, 0x00);
-}
+	}
 	for (Reg = 0x00; Reg < 0x09; Reg++)
 	{
 		OPL_HW_WriteReg(0x0C0 | Reg, 0x30);	// must be 30 to make OPL2 VGMs sound on OPL3
@@ -1940,8 +1956,8 @@ void VGMData::open_real_fm(void)
 		case 0x12:	// AY8910
 			start_ay8910_opl(CurMap->ChipID, CurMap->ChipOpt[0x00], CurMap->ChipOpt[0x01]);
 			break;
+		}
 	}
-}
 #endif	// DISABLE_HW_SUPPORT
 
 	return;
@@ -2524,7 +2540,7 @@ void VGMData::RefreshVolume()
 			OPL_HW_WriteReg(RegVal + 0x00, OPLReg[RegVal + 0x00]);
 			OPL_HW_WriteReg(RegVal + 0x03, OPLReg[RegVal + 0x03]);
 		}
-}
+	}
 
 	return;
 #endif
@@ -3022,6 +3038,22 @@ UINT32 VGMData::FillBuffer(UINT32 BufferSize, bool fillbuffer)
 	return CurSmpl;
 }
 
+void VGMData::ClearCommand(float time)
+{
+	assert(impl);
+	VGMInfo& vgmInfo = impl->vgmInfo;
+
+	float curTime = vgmInfo.VGMSmplPlayed / vgmInfo.SampleRate;
+	list<CPUCommand>::iterator itr = vgmInfo.OutputCPUCommands.begin();
+	for (; itr != vgmInfo.OutputCPUCommands.end(); itr++)
+	{
+		if (curTime - itr->seconds < time)
+			break;
+	}
+	if (itr != vgmInfo.OutputCPUCommands.begin())
+		vgmInfo.OutputCPUCommands.erase(vgmInfo.OutputCPUCommands.begin(), itr);
+}
+
 // I recommend 11 bits as it's fast and accurate
 #define FIXPNT_BITS		11
 #define FIXPNT_FACT		(1 << FIXPNT_BITS)
@@ -3084,7 +3116,7 @@ void VGMData::ResampleChipStream(CA_LIST* CLst, WAVE_32BS* RetOutputSample, UINT
 			if (CAA->SmpLast >= CAA->SmpNext)
 			{
 				RetOutputSample->Left += CAA->LSmpl.Left * CAA->Volume;
-				RetOutputSample->Right += CAA->LSmpl.Right * CAA->Volume;		
+				RetOutputSample->Right += CAA->LSmpl.Right * CAA->Volume;
 			}
 			else
 			{
@@ -3096,7 +3128,7 @@ void VGMData::ResampleChipStream(CA_LIST* CLst, WAVE_32BS* RetOutputSample, UINT
 				{
 					RetOutputSample->Left += CurBufL[0x00] * CAA->Volume;
 					RetOutputSample->Right += CurBufR[0x00] * CAA->Volume;
-					
+
 					CAA->LSmpl.Left = CurBufL[0x00];
 					CAA->LSmpl.Right = CurBufR[0x00];
 				}
@@ -3104,7 +3136,7 @@ void VGMData::ResampleChipStream(CA_LIST* CLst, WAVE_32BS* RetOutputSample, UINT
 				{
 					RetOutputSample->Left += (CurBufL[0x00] + CurBufL[0x01]) * CAA->Volume >> 1;
 					RetOutputSample->Right += (CurBufR[0x00] + CurBufR[0x01]) * CAA->Volume >> 1;
-			
+
 					CAA->LSmpl.Left = CurBufL[0x01];
 					CAA->LSmpl.Right = CurBufR[0x01];
 				}
@@ -3298,6 +3330,8 @@ void VGMData::InterpretFile(UINT32 SampleCount)
 
 	UINT32 TempLng;
 	UINT8 CurChip;
+	UINT32 ch;
+	UINT32 chValue;
 
 	//if (Interpreting && SampleCount == 1)
 	//	return;
@@ -3371,6 +3405,8 @@ void VGMData::Chips_GeneralActions(UINT8 Mode)
 	UINT32 MaskVal;
 	UINT32 ChipClk;
 	UINT32 BaseChannelIdx;
+	UINT32 ch;
+	UINT32 chValue;
 
 	BaseChannelIdx = 0;
 	switch (Mode)
@@ -3650,13 +3686,15 @@ void VGMData::Chips_GeneralActions(UINT8 Mode)
 				CAA = &vgmInfo.ChipAudio[CurChip].YM2610;
 				COpt = &vgmInfo.ChipOpts[CurChip].YM2610;
 				CAA->ChipType = 0x08;
-				CAA->ChannelCount = (ChipClk & 0x80000000) ? 6 : 4;
 
 				CAA->Paired = &vgmInfo.CA_Paired[CurChip][0x02];
 				CAA->Paired->ChipType = 0x80 | CAA->ChipType;
-				CAA->Paired->ChannelCount = 6;
 
 				ChipClk = GetChipClock(&vgmInfo.VGMHead, (CurChip << 7) | CAA->ChipType, NULL);
+
+				CAA->ChannelCount = (ChipClk & 0x80000000) ? 6 : 4;
+				CAA->Paired->ChannelCount = 6;
+
 				CAA->SmpRate = device_start_ym2610(CurChip, ChipClk, COpt->SpecialFlags & 0x01,
 					(int*)&CAA->Paired->SmpRate, vgmInfo.CHIP_SAMPLING_MODE, vgmInfo.CHIP_SAMPLE_RATE, vgmInfo.SampleRate);
 				CAA->StreamUpdate = (ChipClk & 0x80000000) ? ym2610b_stream_update : ym2610_stream_update;
@@ -3681,9 +3719,9 @@ void VGMData::Chips_GeneralActions(UINT8 Mode)
 			{
 				CAA = &vgmInfo.ChipAudio[CurChip].YM3812;
 				CAA->ChipType = 0x09;
-				CAA->ChannelCount = (ChipClk & 0x80000000) ? 9 : 9;
-
 				ChipClk = GetChipClock(&vgmInfo.VGMHead, (CurChip << 7) | CAA->ChipType, NULL);
+
+				CAA->ChannelCount = (ChipClk & 0x80000000) ? 9 : 9;
 				if (!vgmInfo.UseFM)
 				{
 					CAA->SmpRate = device_start_ym3812(CurChip, ChipClk, vgmInfo.CHIP_SAMPLING_MODE, vgmInfo.CHIP_SAMPLE_RATE, vgmInfo.SampleRate);
@@ -3709,9 +3747,11 @@ void VGMData::Chips_GeneralActions(UINT8 Mode)
 			{
 				CAA = &vgmInfo.ChipAudio[CurChip].YM3526;
 				CAA->ChipType = 0x0A;
-				CAA->ChannelCount = 9;
 
 				ChipClk = GetChipClock(&vgmInfo.VGMHead, (CurChip << 7) | CAA->ChipType, NULL);
+
+				CAA->ChannelCount = 9;
+
 				if (!vgmInfo.UseFM)
 				{
 					CAA->SmpRate = device_start_ym3526(CurChip, ChipClk, vgmInfo.CHIP_SAMPLING_MODE, vgmInfo.CHIP_SAMPLE_RATE, vgmInfo.SampleRate);
@@ -3737,9 +3777,11 @@ void VGMData::Chips_GeneralActions(UINT8 Mode)
 			{
 				CAA = &vgmInfo.ChipAudio[CurChip].Y8950;
 				CAA->ChipType = 0x0B;
-				CAA->ChannelCount = 9;
 
 				ChipClk = GetChipClock(&vgmInfo.VGMHead, (CurChip << 7) | CAA->ChipType, NULL);
+
+				CAA->ChannelCount = 9;
+
 				if (!vgmInfo.UseFM)
 				{
 					CAA->SmpRate = device_start_y8950(CurChip, ChipClk, vgmInfo.CHIP_SAMPLING_MODE, vgmInfo.CHIP_SAMPLE_RATE, vgmInfo.SampleRate);
@@ -3768,9 +3810,11 @@ void VGMData::Chips_GeneralActions(UINT8 Mode)
 			{
 				CAA = &vgmInfo.ChipAudio[CurChip].YMF262;
 				CAA->ChipType = 0x0C;
-				CAA->ChannelCount = 18;
 
 				ChipClk = GetChipClock(&vgmInfo.VGMHead, (CurChip << 7) | CAA->ChipType, NULL);
+
+				CAA->ChannelCount = 18;
+
 				if (!vgmInfo.UseFM)
 				{
 					CAA->SmpRate = device_start_ymf262(CurChip, ChipClk, vgmInfo.CHIP_SAMPLING_MODE, vgmInfo.CHIP_SAMPLE_RATE, vgmInfo.SampleRate);
@@ -3796,9 +3840,11 @@ void VGMData::Chips_GeneralActions(UINT8 Mode)
 			{
 				CAA = &vgmInfo.ChipAudio[CurChip].YMF278B;
 				CAA->ChipType = 0x0D;
-				CAA->ChannelCount = 24;
 
 				ChipClk = GetChipClock(&vgmInfo.VGMHead, (CurChip << 7) | CAA->ChipType, NULL);
+
+				CAA->ChannelCount = 24;
+
 				CAA->SmpRate = device_start_ymf278b(CurChip, ChipClk, vgmInfo.CHIP_SAMPLING_MODE, vgmInfo.CHIP_SAMPLE_RATE, vgmInfo.SampleRate);
 				CAA->StreamUpdate = &ymf278b_pcm_update;
 
@@ -3814,9 +3860,11 @@ void VGMData::Chips_GeneralActions(UINT8 Mode)
 			{
 				CAA = &vgmInfo.ChipAudio[CurChip].YMF271;
 				CAA->ChipType = 0x0E;
-				CAA->ChannelCount = 12;
 
 				ChipClk = GetChipClock(&vgmInfo.VGMHead, (CurChip << 7) | CAA->ChipType, NULL);
+
+				CAA->ChannelCount = 12;
+
 				CAA->SmpRate = device_start_ymf271(CurChip, ChipClk, vgmInfo.CHIP_SAMPLING_MODE, vgmInfo.CHIP_SAMPLE_RATE, vgmInfo.SampleRate);
 				CAA->StreamUpdate = &ymf271_update;
 
@@ -3850,9 +3898,11 @@ void VGMData::Chips_GeneralActions(UINT8 Mode)
 			{
 				CAA = &vgmInfo.ChipAudio[CurChip].RF5C164;
 				CAA->ChipType = 0x10;
-				CAA->ChannelCount = 8;
 
 				ChipClk = GetChipClock(&vgmInfo.VGMHead, (CurChip << 7) | CAA->ChipType, NULL);
+
+				CAA->ChannelCount = 8;
+
 				CAA->SmpRate = device_start_rf5c164(CurChip, ChipClk, vgmInfo.CHIP_SAMPLING_MODE, vgmInfo.CHIP_SAMPLE_RATE, vgmInfo.SampleRate);
 				CAA->StreamUpdate = &rf5c164_update;
 
@@ -3868,9 +3918,11 @@ void VGMData::Chips_GeneralActions(UINT8 Mode)
 			{
 				CAA = &vgmInfo.ChipAudio[CurChip].PWM;
 				CAA->ChipType = 0x11;
-				CAA->ChannelCount = 1;
 
 				ChipClk = GetChipClock(&vgmInfo.VGMHead, (CurChip << 7) | CAA->ChipType, NULL);
+
+				CAA->ChannelCount = 1;
+
 				CAA->SmpRate = device_start_pwm(CurChip, ChipClk, vgmInfo.CHIP_SAMPLING_MODE, vgmInfo.CHIP_SAMPLE_RATE, vgmInfo.SampleRate);
 				CAA->StreamUpdate = &pwm_update;
 
@@ -3889,9 +3941,11 @@ void VGMData::Chips_GeneralActions(UINT8 Mode)
 			{
 				CAA = &vgmInfo.ChipAudio[CurChip].AY8910;
 				CAA->ChipType = 0x12;
-				CAA->ChannelCount = 3;
 
 				ChipClk = GetChipClock(&vgmInfo.VGMHead, (CurChip << 7) | CAA->ChipType, NULL);
+
+				CAA->ChannelCount = 3;
+
 				if (!vgmInfo.UseFM)
 				{
 					CAA->SmpRate = device_start_ayxx(CurChip, ChipClk,
@@ -3925,9 +3979,11 @@ void VGMData::Chips_GeneralActions(UINT8 Mode)
 			{
 				CAA = &vgmInfo.ChipAudio[CurChip].GameBoy;
 				CAA->ChipType = 0x13;
-				CAA->ChannelCount = 4;
 
 				ChipClk = GetChipClock(&vgmInfo.VGMHead, (CurChip << 7) | CAA->ChipType, NULL);
+
+				CAA->ChannelCount = 4;
+
 				CAA->SmpRate = device_start_gameboy_sound(CurChip, ChipClk, vgmInfo.CHIP_SAMPLING_MODE, vgmInfo.CHIP_SAMPLE_RATE, vgmInfo.SampleRate);
 				CAA->StreamUpdate = &gameboy_update;
 
@@ -3948,9 +4004,11 @@ void VGMData::Chips_GeneralActions(UINT8 Mode)
 			{
 				CAA = &vgmInfo.ChipAudio[CurChip].NES;
 				CAA->ChipType = 0x14;
-				CAA->ChannelCount = 6;
 
 				ChipClk = GetChipClock(&vgmInfo.VGMHead, (CurChip << 7) | CAA->ChipType, NULL);
+
+				CAA->ChannelCount = 6;
+
 				CAA->SmpRate = device_start_nes(CurChip, ChipClk, vgmInfo.CHIP_SAMPLING_MODE, vgmInfo.CHIP_SAMPLE_RATE, vgmInfo.SampleRate);
 				CAA->StreamUpdate = &nes_stream_update;
 
@@ -3966,9 +4024,11 @@ void VGMData::Chips_GeneralActions(UINT8 Mode)
 			{
 				CAA = &vgmInfo.ChipAudio[CurChip].MultiPCM;
 				CAA->ChipType = 0x15;
-				CAA->ChannelCount = 28;
 
 				ChipClk = GetChipClock(&vgmInfo.VGMHead, (CurChip << 7) | CAA->ChipType, NULL);
+
+				CAA->ChannelCount = 28;
+
 				CAA->SmpRate = device_start_multipcm(CurChip, ChipClk, vgmInfo.CHIP_SAMPLING_MODE, vgmInfo.CHIP_SAMPLE_RATE, vgmInfo.SampleRate);
 				CAA->StreamUpdate = &MultiPCM_update;
 
@@ -3984,9 +4044,11 @@ void VGMData::Chips_GeneralActions(UINT8 Mode)
 			{
 				CAA = &vgmInfo.ChipAudio[CurChip].UPD7759;
 				CAA->ChipType = 0x16;
-				CAA->ChannelCount = 1;
 
 				ChipClk = GetChipClock(&vgmInfo.VGMHead, (CurChip << 7) | CAA->ChipType, NULL);
+
+				CAA->ChannelCount = 1;
+
 				CAA->SmpRate = device_start_upd7759(CurChip, ChipClk, vgmInfo.CHIP_SAMPLING_MODE, vgmInfo.CHIP_SAMPLE_RATE, vgmInfo.SampleRate);
 				CAA->StreamUpdate = &upd7759_update;
 
@@ -4005,9 +4067,11 @@ void VGMData::Chips_GeneralActions(UINT8 Mode)
 			{
 				CAA = &vgmInfo.ChipAudio[CurChip].OKIM6258;
 				CAA->ChipType = 0x17;
-				CAA->ChannelCount = 1;
 
 				ChipClk = GetChipClock(&vgmInfo.VGMHead, (CurChip << 7) | CAA->ChipType, NULL);
+
+				CAA->ChannelCount = 1;
+
 				CAA->SmpRate = device_start_okim6258(CurChip, ChipClk,
 					(vgmInfo.VGMHead.bytOKI6258Flags & 0x03) >> 0,
 					(vgmInfo.VGMHead.bytOKI6258Flags & 0x04) >> 2,
@@ -4033,9 +4097,11 @@ void VGMData::Chips_GeneralActions(UINT8 Mode)
 			{
 				CAA = &vgmInfo.ChipAudio[CurChip].OKIM6295;
 				CAA->ChipType = 0x18;
-				CAA->ChannelCount = 4;
 
 				ChipClk = GetChipClock(&vgmInfo.VGMHead, (CurChip << 7) | CAA->ChipType, NULL);
+
+				CAA->ChannelCount = 4;
+
 				CAA->SmpRate = device_start_okim6295(CurChip, ChipClk, vgmInfo.CHIP_SAMPLING_MODE, vgmInfo.CHIP_SAMPLE_RATE, vgmInfo.SampleRate);
 				CAA->StreamUpdate = &okim6295_update;
 				okim6295_set_srchg_cb(CurChip, &ChangeChipSampleRate, CAA);
@@ -4052,9 +4118,11 @@ void VGMData::Chips_GeneralActions(UINT8 Mode)
 			{
 				CAA = &vgmInfo.ChipAudio[CurChip].K051649;
 				CAA->ChipType = 0x19;
-				CAA->ChannelCount = 5;
 
 				ChipClk = GetChipClock(&vgmInfo.VGMHead, (CurChip << 7) | CAA->ChipType, NULL);
+
+				CAA->ChannelCount = 5;
+
 				CAA->SmpRate = device_start_k051649(CurChip, ChipClk, vgmInfo.CHIP_SAMPLING_MODE, vgmInfo.CHIP_SAMPLE_RATE, vgmInfo.SampleRate);
 				CAA->StreamUpdate = &k051649_update;
 
@@ -4070,9 +4138,11 @@ void VGMData::Chips_GeneralActions(UINT8 Mode)
 			{
 				CAA = &vgmInfo.ChipAudio[CurChip].K054539;
 				CAA->ChipType = 0x1A;
-				CAA->ChannelCount = 8;
 
 				ChipClk = GetChipClock(&vgmInfo.VGMHead, (CurChip << 7) | CAA->ChipType, NULL);
+
+				CAA->ChannelCount = 8;
+
 				CAA->SmpRate = device_start_k054539(CurChip, ChipClk, vgmInfo.CHIP_SAMPLING_MODE, vgmInfo.CHIP_SAMPLE_RATE, vgmInfo.SampleRate);
 				CAA->StreamUpdate = &k054539_update;
 				k054539_init_flags(CurChip, vgmInfo.VGMHead.bytK054539Flags);
@@ -4092,9 +4162,11 @@ void VGMData::Chips_GeneralActions(UINT8 Mode)
 			{
 				CAA = &vgmInfo.ChipAudio[CurChip].HuC6280;
 				CAA->ChipType = 0x1B;
-				CAA->ChannelCount = 6;
 
 				ChipClk = GetChipClock(&vgmInfo.VGMHead, (CurChip << 7) | CAA->ChipType, NULL);
+
+				CAA->ChannelCount = 6;
+
 				CAA->SmpRate = device_start_c6280(CurChip, ChipClk, vgmInfo.CHIP_SAMPLING_MODE, vgmInfo.CHIP_SAMPLE_RATE, vgmInfo.SampleRate);
 				CAA->StreamUpdate = &c6280_update;
 
@@ -4110,9 +4182,11 @@ void VGMData::Chips_GeneralActions(UINT8 Mode)
 			{
 				CAA = &vgmInfo.ChipAudio[CurChip].C140;
 				CAA->ChipType = 0x1C;
-				CAA->ChannelCount = 24;
 
 				ChipClk = GetChipClock(&vgmInfo.VGMHead, (CurChip << 7) | CAA->ChipType, NULL);
+
+				CAA->ChannelCount = 24;
+
 				CAA->SmpRate = device_start_c140(CurChip, ChipClk, vgmInfo.VGMHead.bytC140Type, vgmInfo.CHIP_SAMPLING_MODE, vgmInfo.CHIP_SAMPLE_RATE, vgmInfo.SampleRate);
 				CAA->StreamUpdate = &c140_update;
 
@@ -4128,9 +4202,11 @@ void VGMData::Chips_GeneralActions(UINT8 Mode)
 			{
 				CAA = &vgmInfo.ChipAudio[CurChip].K053260;
 				CAA->ChipType = 0x1D;
-				CAA->ChannelCount = 4;
 
 				ChipClk = GetChipClock(&vgmInfo.VGMHead, (CurChip << 7) | CAA->ChipType, NULL);
+
+				CAA->ChannelCount = 4;
+
 				CAA->SmpRate = device_start_k053260(CurChip, ChipClk, vgmInfo.CHIP_SAMPLING_MODE, vgmInfo.CHIP_SAMPLE_RATE, vgmInfo.SampleRate);
 				CAA->StreamUpdate = &k053260_update;
 
@@ -4146,9 +4222,11 @@ void VGMData::Chips_GeneralActions(UINT8 Mode)
 			{
 				CAA = &vgmInfo.ChipAudio[CurChip].Pokey;
 				CAA->ChipType = 0x1E;
-				CAA->ChannelCount = 4;
 
 				ChipClk = GetChipClock(&vgmInfo.VGMHead, (CurChip << 7) | CAA->ChipType, NULL);
+
+				CAA->ChannelCount = 4;
+
 				CAA->SmpRate = device_start_pokey(CurChip, ChipClk, vgmInfo.CHIP_SAMPLING_MODE, vgmInfo.CHIP_SAMPLE_RATE, vgmInfo.SampleRate);
 				CAA->StreamUpdate = &pokey_update;
 
@@ -4167,9 +4245,11 @@ void VGMData::Chips_GeneralActions(UINT8 Mode)
 			{
 				CAA = &vgmInfo.ChipAudio[CurChip].QSound;
 				CAA->ChipType = 0x1F;
-				CAA->ChannelCount = 16;
 
 				ChipClk = GetChipClock(&vgmInfo.VGMHead, (CurChip << 7) | CAA->ChipType, NULL);
+
+				CAA->ChannelCount = 16;
+
 				CAA->SmpRate = device_start_qsound(CurChip, ChipClk, vgmInfo.CHIP_SAMPLING_MODE, vgmInfo.CHIP_SAMPLE_RATE, vgmInfo.SampleRate);
 				CAA->StreamUpdate = &qsound_update;
 
@@ -4188,9 +4268,11 @@ void VGMData::Chips_GeneralActions(UINT8 Mode)
 			{
 				CAA = &vgmInfo.ChipAudio[CurChip].SCSP;
 				CAA->ChipType = 0x20;
-				CAA->ChannelCount = 32;
 
 				ChipClk = GetChipClock(&vgmInfo.VGMHead, (CurChip << 7) | CAA->ChipType, NULL);
+
+				CAA->ChannelCount = 32;
+
 				CAA->SmpRate = device_start_scsp(CurChip, ChipClk, vgmInfo.CHIP_SAMPLING_MODE, vgmInfo.CHIP_SAMPLE_RATE, vgmInfo.SampleRate);
 				CAA->StreamUpdate = &SCSP_Update;
 
@@ -4206,9 +4288,11 @@ void VGMData::Chips_GeneralActions(UINT8 Mode)
 			{
 				CAA = &vgmInfo.ChipAudio[CurChip].WSwan;
 				CAA->ChipType = 0x21;
-				CAA->ChannelCount = 4;
 
 				ChipClk = GetChipClock(&vgmInfo.VGMHead, (CurChip << 7) | CAA->ChipType, NULL);
+
+				CAA->ChannelCount = 4;
+
 				CAA->SmpRate = ws_audio_init(CurChip, ChipClk, vgmInfo.CHIP_SAMPLING_MODE, vgmInfo.CHIP_SAMPLE_RATE, vgmInfo.SampleRate);
 				CAA->StreamUpdate = &ws_audio_update;
 
@@ -4224,9 +4308,11 @@ void VGMData::Chips_GeneralActions(UINT8 Mode)
 			{
 				CAA = &vgmInfo.ChipAudio[CurChip].VSU;
 				CAA->ChipType = 0x22;
-				CAA->ChannelCount = 6;
 
 				ChipClk = GetChipClock(&vgmInfo.VGMHead, (CurChip << 7) | CAA->ChipType, NULL);
+
+				CAA->ChannelCount = 6;
+
 				CAA->SmpRate = device_start_vsu(CurChip, ChipClk, vgmInfo.CHIP_SAMPLING_MODE, vgmInfo.CHIP_SAMPLE_RATE, vgmInfo.SampleRate);
 				CAA->StreamUpdate = &vsu_stream_update;
 
@@ -4242,9 +4328,11 @@ void VGMData::Chips_GeneralActions(UINT8 Mode)
 			{
 				CAA = &vgmInfo.ChipAudio[CurChip].SAA1099;
 				CAA->ChipType = 0x23;
-				CAA->ChannelCount = 9;
 
 				ChipClk = GetChipClock(&vgmInfo.VGMHead, (CurChip << 7) | CAA->ChipType, NULL);
+
+				CAA->ChannelCount = 9;
+
 				CAA->SmpRate = device_start_saa1099(CurChip, ChipClk, vgmInfo.CHIP_SAMPLING_MODE, vgmInfo.CHIP_SAMPLE_RATE, vgmInfo.SampleRate);
 				CAA->StreamUpdate = &saa1099_update;
 
@@ -4260,9 +4348,11 @@ void VGMData::Chips_GeneralActions(UINT8 Mode)
 			{
 				CAA = &vgmInfo.ChipAudio[CurChip].ES5503;
 				CAA->ChipType = 0x24;
-				CAA->ChannelCount = 32;
 
 				ChipClk = GetChipClock(&vgmInfo.VGMHead, (CurChip << 7) | CAA->ChipType, NULL);
+
+				CAA->ChannelCount = 32;
+
 				CAA->SmpRate = device_start_es5503(CurChip, ChipClk, vgmInfo.VGMHead.bytES5503Chns, vgmInfo.CHIP_SAMPLING_MODE, vgmInfo.CHIP_SAMPLE_RATE, vgmInfo.SampleRate);
 				CAA->StreamUpdate = &es5503_pcm_update;
 				es5503_set_srchg_cb(CurChip, &ChangeChipSampleRate, CAA);
@@ -4279,9 +4369,11 @@ void VGMData::Chips_GeneralActions(UINT8 Mode)
 			{
 				CAA = &vgmInfo.ChipAudio[CurChip].ES5506;
 				CAA->ChipType = 0x25;
-				CAA->ChannelCount = 32;
 
 				ChipClk = GetChipClock(&vgmInfo.VGMHead, (CurChip << 7) | CAA->ChipType, NULL);
+
+				CAA->ChannelCount = 32;
+
 				CAA->SmpRate = device_start_es5506(CurChip, ChipClk, vgmInfo.VGMHead.bytES5506Chns, vgmInfo.CHIP_SAMPLING_MODE, vgmInfo.CHIP_SAMPLE_RATE, vgmInfo.SampleRate);
 				CAA->StreamUpdate = &es5506_update;
 				es5506_set_srchg_cb(CurChip, &ChangeChipSampleRate, CAA);
@@ -4298,9 +4390,11 @@ void VGMData::Chips_GeneralActions(UINT8 Mode)
 			{
 				CAA = &vgmInfo.ChipAudio[CurChip].X1_010;
 				CAA->ChipType = 0x26;
-				CAA->ChannelCount = 16;
 
 				ChipClk = GetChipClock(&vgmInfo.VGMHead, (CurChip << 7) | CAA->ChipType, NULL);
+
+				CAA->ChannelCount = 16;
+
 				CAA->SmpRate = device_start_x1_010(CurChip, ChipClk, vgmInfo.CHIP_SAMPLING_MODE, vgmInfo.CHIP_SAMPLE_RATE, vgmInfo.SampleRate);
 				CAA->StreamUpdate = &seta_update;
 
@@ -4319,9 +4413,11 @@ void VGMData::Chips_GeneralActions(UINT8 Mode)
 			{
 				CAA = &vgmInfo.ChipAudio[CurChip].C352;
 				CAA->ChipType = 0x27;
-				CAA->ChannelCount = 32;
 
 				ChipClk = GetChipClock(&vgmInfo.VGMHead, (CurChip << 7) | CAA->ChipType, NULL);
+
+				CAA->ChannelCount = 32;
+
 				CAA->SmpRate = device_start_c352(CurChip, ChipClk, vgmInfo.VGMHead.bytC352ClkDiv * 4, vgmInfo.CHIP_SAMPLING_MODE, vgmInfo.CHIP_SAMPLE_RATE, vgmInfo.SampleRate);
 				CAA->StreamUpdate = &c352_update;
 
@@ -4337,9 +4433,11 @@ void VGMData::Chips_GeneralActions(UINT8 Mode)
 			{
 				CAA = &vgmInfo.ChipAudio[CurChip].GA20;
 				CAA->ChipType = 0x28;
-				CAA->ChannelCount = 4;
 
 				ChipClk = GetChipClock(&vgmInfo.VGMHead, (CurChip << 7) | CAA->ChipType, NULL);
+
+				CAA->ChannelCount = 4;
+
 				CAA->SmpRate = device_start_iremga20(CurChip, ChipClk, vgmInfo.CHIP_SAMPLING_MODE, vgmInfo.CHIP_SAMPLE_RATE, vgmInfo.SampleRate);
 				CAA->StreamUpdate = &IremGA20_update;
 
@@ -4441,8 +4539,8 @@ void VGMData::Chips_GeneralActions(UINT8 Mode)
 					}
 					if (vgmInfo.FileMode == 0x01)
 					{
-						chip_reg_write(0x09, CurCSet, 0x00, 0x01, 0x20);	// Enable Waveform Select
-						chip_reg_write(0x09, CurCSet, 0x00, 0xBD, 0xC0);	// Disable Rhythm Mode
+						chip_reg_write(0x09, CurCSet, 0x00, 0x01, 0x20, &ch, &chValue);	// Enable Waveform Select
+						chip_reg_write(0x09, CurCSet, 0x00, 0xBD, 0xC0, &ch, &chValue);	// Disable Rhythm Mode
 					}
 				}
 				else if (CAA->ChipType == 0x0A && !vgmInfo.UseFM)
@@ -4457,9 +4555,9 @@ void VGMData::Chips_GeneralActions(UINT8 Mode)
 					}
 					if (vgmInfo.FileMode >= 0x01)
 					{
-						chip_reg_write(0x0C, CurCSet, 0x01, 0x05, 0x01);	// Enable OPL3-Mode
-						chip_reg_write(0x0C, CurCSet, 0x00, 0xBD, 0xC0);	// Disable Rhythm Mode
-						chip_reg_write(0x0C, CurCSet, 0x01, 0x04, 0x00);	// Disable 4-Op-Mode
+						chip_reg_write(0x0C, CurCSet, 0x01, 0x05, 0x01, &ch, &chValue);	// Enable OPL3-Mode
+						chip_reg_write(0x0C, CurCSet, 0x00, 0xBD, 0xC0, &ch, &chValue);	// Disable Rhythm Mode
+						chip_reg_write(0x0C, CurCSet, 0x01, 0x04, 0x00, &ch, &chValue);	// Disable 4-Op-Mode
 					}
 				}
 				else if (CAA->ChipType == 0x0D)
@@ -4936,7 +5034,7 @@ void VGMData::SetupResampler(UINT32 CurCSet, UINT32 CurChip, UINT32& BaseChannel
 	assert(impl);
 	VGMInfo& vgmInfo = impl->vgmInfo;
 	CAUD_ATTR* CAA;
-	
+
 	if (!UsePairedChip)
 		CAA = (CAUD_ATTR*)&vgmInfo.ChipAudio[CurCSet];
 	else
@@ -4952,8 +5050,6 @@ void VGMData::SetupResampler(UINT32 CurCSet, UINT32 CurChip, UINT32& BaseChannel
 
 
 	CHIP_OPTS* COpt = (CHIP_OPTS*)(&vgmInfo.ChipOpts[CAA->ChipType]);
-	int ChnCnt = CHN_COUNT[CAA->ChipType];
-	//int ChnCnt = COpt->ChnCnt;
 
 	if (CAA->SmpRate < vgmInfo.SampleRate)
 		CAA->Resampler = 0x01;
@@ -4975,7 +5071,7 @@ void VGMData::SetupResampler(UINT32 CurCSet, UINT32 CurChip, UINT32& BaseChannel
 	if (CAA->Resampler == 0x01)
 	{
 		// Pregenerate first Sample (the upsampler is always one too late)
-		CAA->StreamUpdate(CAA->ChipID, vgmInfo.StreamBufs, 1, &vgmInfo.ChannelBuffers[BaseChannelIdx], ChnCnt);
+		CAA->StreamUpdate(CAA->ChipID, vgmInfo.StreamBufs, 1, &vgmInfo.ChannelBuffers[BaseChannelIdx], CAA->ChannelCount);
 		CAA->NSmpl.Left = vgmInfo.StreamBufs[0x00][0x00];
 		CAA->NSmpl.Right = vgmInfo.StreamBufs[0x01][0x00];
 	}
@@ -4985,7 +5081,7 @@ void VGMData::SetupResampler(UINT32 CurCSet, UINT32 CurChip, UINT32& BaseChannel
 		CAA->NSmpl.Right = 0x00;
 	}
 
-	BaseChannelIdx += ChnCnt;
+	BaseChannelIdx += CAA->ChannelCount;
 
 	return;
 }
@@ -5015,6 +5111,9 @@ void VGMData::InterpretVGM(UINT32 SampleCount)
 	if (vgmInfo.PausePlay && !vgmInfo.ForceVGMExec)
 		return;
 
+	UINT32 ch = -1;
+	UINT32 chValue = 0;
+
 	SmplPlayed = SamplePbk2VGM_I(vgmInfo.VGMSmplPlayed + SampleCount);
 	while (vgmInfo.VGMSmplPos <= SmplPlayed)
 	{
@@ -5030,7 +5129,7 @@ void VGMData::InterpretVGM(UINT32 SampleCount)
 				TempByt = GetDACFromPCMBank();
 				if (vgmInfo.VGMHead.lngHzYM2612)
 				{
-					chip_reg_write(0x02, 0x00, 0x00, 0x2A, TempByt);
+					chip_reg_write(0x02, 0x00, 0x00, 0x2A, TempByt, &ch, &chValue);
 				}
 				vgmInfo.VGMSmplPos += (Command & 0x0F);
 				break;
@@ -5204,14 +5303,14 @@ void VGMData::InterpretVGM(UINT32 SampleCount)
 			case 0x50:	// SN76496 write
 				if (CHIP_CHECK(SN76496))
 				{
-					chip_reg_write(0x00, CurChip, 0x00, 0x00, VGMPnt[0x01]);
+					chip_reg_write(0x00, CurChip, 0x00, 0x00, VGMPnt[0x01], &ch, &chValue);
 				}
 				vgmInfo.VGMPos += 0x02;
 				break;
 			case 0x51:	// YM2413 write
 				if (CHIP_CHECK(YM2413))
 				{
-					chip_reg_write(0x01, CurChip, 0x00, VGMPnt[0x01], VGMPnt[0x02]);
+					chip_reg_write(0x01, CurChip, 0x00, VGMPnt[0x01], VGMPnt[0x02], &ch, &chValue);
 				}
 				vgmInfo.VGMPos += 0x03;
 				break;
@@ -5219,7 +5318,7 @@ void VGMData::InterpretVGM(UINT32 SampleCount)
 			case 0x53:	// YM2612 write port 1
 				if (CHIP_CHECK(YM2612))
 				{
-					chip_reg_write(0x02, CurChip, Command & 0x01, VGMPnt[0x01], VGMPnt[0x02]);
+					chip_reg_write(0x02, CurChip, Command & 0x01, VGMPnt[0x01], VGMPnt[0x02], &ch, &chValue);
 				}
 				vgmInfo.VGMPos += 0x03;
 				break;
@@ -5424,14 +5523,14 @@ void VGMData::InterpretVGM(UINT32 SampleCount)
 			case 0x4F:	// GG Stereo
 				if (CHIP_CHECK(SN76496))
 				{
-					chip_reg_write(0x00, CurChip, 0x01, 0x00, VGMPnt[0x01]);
+					chip_reg_write(0x00, CurChip, 0x01, 0x00, VGMPnt[0x01], &ch, &chValue);
 				}
 				vgmInfo.VGMPos += 0x02;
 				break;
 			case 0x54:	// YM2151 write
 				if (CHIP_CHECK(YM2151))
 				{
-					chip_reg_write(0x03, CurChip, 0x01, VGMPnt[0x01], VGMPnt[0x02]);
+					chip_reg_write(0x03, CurChip, 0x01, VGMPnt[0x01], VGMPnt[0x02], &ch, &chValue);
 				}
 				//VGMSmplPos += 80;
 				vgmInfo.VGMPos += 0x03;
@@ -5441,14 +5540,14 @@ void VGMData::InterpretVGM(UINT32 SampleCount)
 				CurChip = (TempSht & 0x8000) >> 15;
 				if (CHIP_CHECK(SegaPCM))
 				{
-					sega_pcm_w(CurChip, TempSht & 0x7FFF, VGMPnt[0x03]);
+					sega_pcm_w(CurChip, TempSht & 0x7FFF, VGMPnt[0x03], &ch, &chValue);
 				}
 				vgmInfo.VGMPos += 0x04;
 				break;
 			case 0xB0:	// RF5C68 register write
 				if (CHIP_CHECK(RF5C68))
 				{
-					chip_reg_write(0x05, CurChip, 0x00, VGMPnt[0x01], VGMPnt[0x02]);
+					chip_reg_write(0x05, CurChip, 0x00, VGMPnt[0x01], VGMPnt[0x02], &ch, &chValue);
 				}
 				vgmInfo.VGMPos += 0x03;
 				break;
@@ -5456,14 +5555,14 @@ void VGMData::InterpretVGM(UINT32 SampleCount)
 				if (CHIP_CHECK(RF5C68))
 				{
 					TempSht = ReadLE16(&VGMPnt[0x01]);
-					rf5c68_mem_w(CurChip, TempSht, VGMPnt[0x03]);
+					rf5c68_mem_w(CurChip, TempSht, VGMPnt[0x03], &ch, &chValue);
 				}
 				vgmInfo.VGMPos += 0x04;
 				break;
 			case 0x55:	// YM2203
 				if (CHIP_CHECK(YM2203))
 				{
-					chip_reg_write(0x06, CurChip, 0x00, VGMPnt[0x01], VGMPnt[0x02]);
+					chip_reg_write(0x06, CurChip, 0x00, VGMPnt[0x01], VGMPnt[0x02], &ch, &chValue);
 				}
 				vgmInfo.VGMPos += 0x03;
 				break;
@@ -5471,7 +5570,7 @@ void VGMData::InterpretVGM(UINT32 SampleCount)
 			case 0x57:	// YM2608 write port 1
 				if (CHIP_CHECK(YM2608))
 				{
-					chip_reg_write(0x07, CurChip, Command & 0x01, VGMPnt[0x01], VGMPnt[0x02]);
+					chip_reg_write(0x07, CurChip, Command & 0x01, VGMPnt[0x01], VGMPnt[0x02], &ch, &chValue);
 				}
 				vgmInfo.VGMPos += 0x03;
 				break;
@@ -5479,28 +5578,28 @@ void VGMData::InterpretVGM(UINT32 SampleCount)
 			case 0x59:	// YM2610 write port 1
 				if (CHIP_CHECK(YM2610))
 				{
-					chip_reg_write(0x08, CurChip, Command & 0x01, VGMPnt[0x01], VGMPnt[0x02]);
+					chip_reg_write(0x08, CurChip, Command & 0x01, VGMPnt[0x01], VGMPnt[0x02], &ch, &chValue);
 				}
 				vgmInfo.VGMPos += 0x03;
 				break;
 			case 0x5A:	// YM3812 write
 				if (CHIP_CHECK(YM3812))
 				{
-					chip_reg_write(0x09, CurChip, 0x00, VGMPnt[0x01], VGMPnt[0x02]);
+					chip_reg_write(0x09, CurChip, 0x00, VGMPnt[0x01], VGMPnt[0x02], &ch, &chValue);
 				}
 				vgmInfo.VGMPos += 0x03;
 				break;
 			case 0x5B:	// YM3526 write
 				if (CHIP_CHECK(YM3526))
 				{
-					chip_reg_write(0x0A, CurChip, 0x00, VGMPnt[0x01], VGMPnt[0x02]);
+					chip_reg_write(0x0A, CurChip, 0x00, VGMPnt[0x01], VGMPnt[0x02], &ch, &chValue);
 				}
 				vgmInfo.VGMPos += 0x03;
 				break;
 			case 0x5C:	// Y8950 write
 				if (CHIP_CHECK(Y8950))
 				{
-					chip_reg_write(0x0B, CurChip, 0x00, VGMPnt[0x01], VGMPnt[0x02]);
+					chip_reg_write(0x0B, CurChip, 0x00, VGMPnt[0x01], VGMPnt[0x02], &ch, &chValue);
 				}
 				vgmInfo.VGMPos += 0x03;
 				break;
@@ -5508,14 +5607,14 @@ void VGMData::InterpretVGM(UINT32 SampleCount)
 			case 0x5F:	// YMF262 write port 1
 				if (CHIP_CHECK(YMF262))
 				{
-					chip_reg_write(0x0C, CurChip, Command & 0x01, VGMPnt[0x01], VGMPnt[0x02]);
+					chip_reg_write(0x0C, CurChip, Command & 0x01, VGMPnt[0x01], VGMPnt[0x02], &ch, &chValue);
 				}
 				vgmInfo.VGMPos += 0x03;
 				break;
 			case 0x5D:	// YMZ280B write
 				if (CHIP_CHECK(YMZ280B))
 				{
-					chip_reg_write(0x0F, CurChip, 0x00, VGMPnt[0x01], VGMPnt[0x02]);
+					chip_reg_write(0x0F, CurChip, 0x00, VGMPnt[0x01], VGMPnt[0x02], &ch, &chValue);
 				}
 				vgmInfo.VGMPos += 0x03;
 				break;
@@ -5523,7 +5622,7 @@ void VGMData::InterpretVGM(UINT32 SampleCount)
 				if (CHIP_CHECK(YMF278B))
 				{
 					CurChip = (VGMPnt[0x01] & 0x80) >> 7;
-					chip_reg_write(0x0D, CurChip, VGMPnt[0x01] & 0x7F, VGMPnt[0x02], VGMPnt[0x03]);
+					chip_reg_write(0x0D, CurChip, VGMPnt[0x01] & 0x7F, VGMPnt[0x02], VGMPnt[0x03], &ch, &chValue);
 				}
 				vgmInfo.VGMPos += 0x04;
 				break;
@@ -5531,14 +5630,14 @@ void VGMData::InterpretVGM(UINT32 SampleCount)
 				if (CHIP_CHECK(YMF271))
 				{
 					CurChip = (VGMPnt[0x01] & 0x80) >> 7;
-					chip_reg_write(0x0E, CurChip, VGMPnt[0x01] & 0x7F, VGMPnt[0x02], VGMPnt[0x03]);
+					chip_reg_write(0x0E, CurChip, VGMPnt[0x01] & 0x7F, VGMPnt[0x02], VGMPnt[0x03], &ch, &chValue);
 				}
 				vgmInfo.VGMPos += 0x04;
 				break;
 			case 0xB1:	// RF5C164 register write
 				if (CHIP_CHECK(RF5C164))
 				{
-					chip_reg_write(0x10, CurChip, 0x00, VGMPnt[0x01], VGMPnt[0x02]);
+					chip_reg_write(0x10, CurChip, 0x00, VGMPnt[0x01], VGMPnt[0x02], &ch, &chValue);
 				}
 				vgmInfo.VGMPos += 0x03;
 				break;
@@ -5546,15 +5645,14 @@ void VGMData::InterpretVGM(UINT32 SampleCount)
 				if (CHIP_CHECK(RF5C164))
 				{
 					TempSht = ReadLE16(&VGMPnt[0x01]);
-					rf5c164_mem_w(CurChip, TempSht, VGMPnt[0x03]);
+					rf5c164_mem_w(CurChip, TempSht, VGMPnt[0x03], &ch, &chValue);
 				}
 				vgmInfo.VGMPos += 0x04;
 				break;
 			case 0xB2:	// PWM channel write
 				if (CHIP_CHECK(PWM))
 				{
-					chip_reg_write(0x11, CurChip, (VGMPnt[0x01] & 0xF0) >> 4,
-						VGMPnt[0x01] & 0x0F, VGMPnt[0x02]);
+					chip_reg_write(0x11, CurChip, (VGMPnt[0x01] & 0xF0) >> 4, VGMPnt[0x01] & 0x0F, VGMPnt[0x02], &ch, &chValue);
 				}
 				vgmInfo.VGMPos += 0x03;
 				break;
@@ -5605,7 +5703,7 @@ void VGMData::InterpretVGM(UINT32 SampleCount)
 				CurChip = (VGMPnt[0x01] & 0x80) >> 7;
 				if (CHIP_CHECK(AY8910))
 				{
-					chip_reg_write(0x12, CurChip, 0x00, VGMPnt[0x01] & 0x7F, VGMPnt[0x02]);
+					chip_reg_write(0x12, CurChip, 0x00, VGMPnt[0x01] & 0x7F, VGMPnt[0x02], &ch, &chValue);
 				}
 				vgmInfo.VGMPos += 0x03;
 				break;
@@ -5613,7 +5711,7 @@ void VGMData::InterpretVGM(UINT32 SampleCount)
 				CurChip = (VGMPnt[0x01] & 0x80) >> 7;
 				if (CHIP_CHECK(GameBoy))
 				{
-					chip_reg_write(0x13, CurChip, 0x00, VGMPnt[0x01] & 0x7F, VGMPnt[0x02]);
+					chip_reg_write(0x13, CurChip, 0x00, VGMPnt[0x01] & 0x7F, VGMPnt[0x02], &ch, &chValue);
 				}
 				vgmInfo.VGMPos += 0x03;
 				break;
@@ -5621,7 +5719,7 @@ void VGMData::InterpretVGM(UINT32 SampleCount)
 				CurChip = (VGMPnt[0x01] & 0x80) >> 7;
 				if (CHIP_CHECK(NES))
 				{
-					chip_reg_write(0x14, CurChip, 0x00, VGMPnt[0x01] & 0x7F, VGMPnt[0x02]);
+					chip_reg_write(0x14, CurChip, 0x00, VGMPnt[0x01] & 0x7F, VGMPnt[0x02], &ch, &chValue);
 				}
 				vgmInfo.VGMPos += 0x03;
 				break;
@@ -5629,7 +5727,7 @@ void VGMData::InterpretVGM(UINT32 SampleCount)
 				CurChip = (VGMPnt[0x01] & 0x80) >> 7;
 				if (CHIP_CHECK(MultiPCM))
 				{
-					chip_reg_write(0x15, CurChip, 0x00, VGMPnt[0x01] & 0x7F, VGMPnt[0x02]);
+					chip_reg_write(0x15, CurChip, 0x00, VGMPnt[0x01] & 0x7F, VGMPnt[0x02], &ch, &chValue);
 				}
 				vgmInfo.VGMPos += 0x03;
 				break;
@@ -5646,7 +5744,7 @@ void VGMData::InterpretVGM(UINT32 SampleCount)
 				CurChip = (VGMPnt[0x01] & 0x80) >> 7;
 				if (CHIP_CHECK(UPD7759))
 				{
-					chip_reg_write(0x16, CurChip, 0x00, VGMPnt[0x01] & 0x7F, VGMPnt[0x02]);
+					chip_reg_write(0x16, CurChip, 0x00, VGMPnt[0x01] & 0x7F, VGMPnt[0x02], &ch, &chValue);
 				}
 				vgmInfo.VGMPos += 0x03;
 				break;
@@ -5654,7 +5752,7 @@ void VGMData::InterpretVGM(UINT32 SampleCount)
 				CurChip = (VGMPnt[0x01] & 0x80) >> 7;
 				if (CHIP_CHECK(OKIM6258))
 				{
-					chip_reg_write(0x17, CurChip, 0x00, VGMPnt[0x01] & 0x7F, VGMPnt[0x02]);
+					chip_reg_write(0x17, CurChip, 0x00, VGMPnt[0x01] & 0x7F, VGMPnt[0x02], &ch, &chValue);
 				}
 				vgmInfo.VGMPos += 0x03;
 				break;
@@ -5662,7 +5760,7 @@ void VGMData::InterpretVGM(UINT32 SampleCount)
 				CurChip = (VGMPnt[0x01] & 0x80) >> 7;
 				if (CHIP_CHECK(OKIM6295))
 				{
-					chip_reg_write(0x18, CurChip, 0x00, VGMPnt[0x01] & 0x7F, VGMPnt[0x02]);
+					chip_reg_write(0x18, CurChip, 0x00, VGMPnt[0x01] & 0x7F, VGMPnt[0x02], &ch, &chValue);
 				}
 				vgmInfo.VGMPos += 0x03;
 				break;
@@ -5670,8 +5768,7 @@ void VGMData::InterpretVGM(UINT32 SampleCount)
 				CurChip = (VGMPnt[0x01] & 0x80) >> 7;
 				if (CHIP_CHECK(K051649))
 				{
-					chip_reg_write(0x19, CurChip, VGMPnt[0x01] & 0x7F, VGMPnt[0x02],
-						VGMPnt[0x03]);
+					chip_reg_write(0x19, CurChip, VGMPnt[0x01] & 0x7F, VGMPnt[0x02], VGMPnt[0x03], &ch, &chValue);
 				}
 				vgmInfo.VGMPos += 0x04;
 				break;
@@ -5679,8 +5776,7 @@ void VGMData::InterpretVGM(UINT32 SampleCount)
 				CurChip = (VGMPnt[0x01] & 0x80) >> 7;
 				if (CHIP_CHECK(K054539))
 				{
-					chip_reg_write(0x1A, CurChip, VGMPnt[0x01] & 0x7F, VGMPnt[0x02],
-						VGMPnt[0x03]);
+					chip_reg_write(0x1A, CurChip, VGMPnt[0x01] & 0x7F, VGMPnt[0x02], VGMPnt[0x03], &ch, &chValue);
 				}
 				vgmInfo.VGMPos += 0x04;
 				break;
@@ -5688,7 +5784,7 @@ void VGMData::InterpretVGM(UINT32 SampleCount)
 				CurChip = (VGMPnt[0x01] & 0x80) >> 7;
 				if (CHIP_CHECK(HuC6280))
 				{
-					chip_reg_write(0x1B, CurChip, 0x00, VGMPnt[0x01] & 0x7F, VGMPnt[0x02]);
+					chip_reg_write(0x1B, CurChip, 0x00, VGMPnt[0x01] & 0x7F, VGMPnt[0x02], &ch, &chValue);
 				}
 				vgmInfo.VGMPos += 0x03;
 				break;
@@ -5696,8 +5792,7 @@ void VGMData::InterpretVGM(UINT32 SampleCount)
 				CurChip = (VGMPnt[0x01] & 0x80) >> 7;
 				if (CHIP_CHECK(C140))
 				{
-					chip_reg_write(0x1C, CurChip, VGMPnt[0x01] & 0x7F, VGMPnt[0x02],
-						VGMPnt[0x03]);
+					chip_reg_write(0x1C, CurChip, VGMPnt[0x01] & 0x7F, VGMPnt[0x02], VGMPnt[0x03], &ch, &chValue);
 				}
 				vgmInfo.VGMPos += 0x04;
 				break;
@@ -5705,7 +5800,7 @@ void VGMData::InterpretVGM(UINT32 SampleCount)
 				CurChip = (VGMPnt[0x01] & 0x80) >> 7;
 				if (CHIP_CHECK(K053260))
 				{
-					chip_reg_write(0x1D, CurChip, 0x00, VGMPnt[0x01] & 0x7F, VGMPnt[0x02]);
+					chip_reg_write(0x1D, CurChip, 0x00, VGMPnt[0x01] & 0x7F, VGMPnt[0x02], &ch, &chValue);
 				}
 				vgmInfo.VGMPos += 0x03;
 				break;
@@ -5713,14 +5808,14 @@ void VGMData::InterpretVGM(UINT32 SampleCount)
 				CurChip = (VGMPnt[0x01] & 0x80) >> 7;
 				if (CHIP_CHECK(Pokey))
 				{
-					chip_reg_write(0x1E, CurChip, 0x00, VGMPnt[0x01] & 0x7F, VGMPnt[0x02]);
+					chip_reg_write(0x1E, CurChip, 0x00, VGMPnt[0x01] & 0x7F, VGMPnt[0x02], &ch, &chValue);
 				}
 				vgmInfo.VGMPos += 0x03;
 				break;
 			case 0xC4:	// QSound write
 				if (CHIP_CHECK(QSound))
 				{
-					chip_reg_write(0x1F, CurChip, VGMPnt[0x01], VGMPnt[0x02], VGMPnt[0x03]);
+					chip_reg_write(0x1F, CurChip, VGMPnt[0x01], VGMPnt[0x02], VGMPnt[0x03], &ch, &chValue);
 				}
 				vgmInfo.VGMPos += 0x04;
 				break;
@@ -5728,8 +5823,7 @@ void VGMData::InterpretVGM(UINT32 SampleCount)
 				CurChip = (VGMPnt[0x01] & 0x80) >> 7;
 				if (CHIP_CHECK(SCSP))
 				{
-					chip_reg_write(0x20, CurChip, VGMPnt[0x01] & 0x7F, VGMPnt[0x02],
-						VGMPnt[0x03]);
+					chip_reg_write(0x20, CurChip, VGMPnt[0x01] & 0x7F, VGMPnt[0x02], VGMPnt[0x03], &ch, &chValue);
 				}
 				vgmInfo.VGMPos += 0x04;
 				break;
@@ -5737,7 +5831,7 @@ void VGMData::InterpretVGM(UINT32 SampleCount)
 				CurChip = (VGMPnt[0x01] & 0x80) >> 7;
 				if (CHIP_CHECK(WSwan))
 				{
-					chip_reg_write(0x21, CurChip, 0x00, VGMPnt[0x01] & 0x7F, VGMPnt[0x02]);
+					chip_reg_write(0x21, CurChip, 0x00, VGMPnt[0x01] & 0x7F, VGMPnt[0x02], &ch, &chValue);
 				}
 				vgmInfo.VGMPos += 0x03;
 				break;
@@ -5754,8 +5848,7 @@ void VGMData::InterpretVGM(UINT32 SampleCount)
 				CurChip = (VGMPnt[0x01] & 0x80) >> 7;
 				if (CHIP_CHECK(VSU))
 				{
-					chip_reg_write(0x22, CurChip, VGMPnt[0x01] & 0x7F, VGMPnt[0x02],
-						VGMPnt[0x03]);
+					chip_reg_write(0x22, CurChip, VGMPnt[0x01] & 0x7F, VGMPnt[0x02], VGMPnt[0x03], &ch, &chValue);
 				}
 				vgmInfo.VGMPos += 0x04;
 				break;
@@ -5763,7 +5856,7 @@ void VGMData::InterpretVGM(UINT32 SampleCount)
 				CurChip = (VGMPnt[0x01] & 0x80) >> 7;
 				if (CHIP_CHECK(SAA1099))
 				{
-					chip_reg_write(0x23, CurChip, 0x00, VGMPnt[0x01] & 0x7F, VGMPnt[0x02]);
+					chip_reg_write(0x23, CurChip, 0x00, VGMPnt[0x01] & 0x7F, VGMPnt[0x02], &ch, &chValue);
 				}
 				vgmInfo.VGMPos += 0x03;
 				break;
@@ -5771,8 +5864,7 @@ void VGMData::InterpretVGM(UINT32 SampleCount)
 				CurChip = (VGMPnt[0x01] & 0x80) >> 7;
 				if (CHIP_CHECK(ES5503))
 				{
-					chip_reg_write(0x24, CurChip, VGMPnt[0x01] & 0x7F, VGMPnt[0x02],
-						VGMPnt[0x03]);
+					chip_reg_write(0x24, CurChip, VGMPnt[0x01] & 0x7F, VGMPnt[0x02], VGMPnt[0x03], &ch, &chValue);
 				}
 				vgmInfo.VGMPos += 0x04;
 				break;
@@ -5780,7 +5872,7 @@ void VGMData::InterpretVGM(UINT32 SampleCount)
 				CurChip = (VGMPnt[0x01] & 0x80) >> 7;
 				if (CHIP_CHECK(ES5506))
 				{
-					chip_reg_write(0x25, CurChip, VGMPnt[0x01] & 0x7F, 0x00, VGMPnt[0x02]);
+					chip_reg_write(0x25, CurChip, VGMPnt[0x01] & 0x7F, 0x00, VGMPnt[0x02], &ch, &chValue);
 				}
 				vgmInfo.VGMPos += 0x03;
 				break;
@@ -5788,8 +5880,7 @@ void VGMData::InterpretVGM(UINT32 SampleCount)
 				CurChip = (VGMPnt[0x01] & 0x80) >> 7;
 				if (CHIP_CHECK(ES5506))
 				{
-					chip_reg_write(0x25, CurChip, 0x80 | (VGMPnt[0x01] & 0x7F),
-						VGMPnt[0x02], VGMPnt[0x03]);
+					chip_reg_write(0x25, CurChip, 0x80 | (VGMPnt[0x01] & 0x7F), VGMPnt[0x02], VGMPnt[0x03], &ch, &chValue);
 				}
 				vgmInfo.VGMPos += 0x04;
 				break;
@@ -5797,8 +5888,7 @@ void VGMData::InterpretVGM(UINT32 SampleCount)
 				CurChip = (VGMPnt[0x01] & 0x80) >> 7;
 				if (CHIP_CHECK(X1_010))
 				{
-					chip_reg_write(0x26, CurChip, VGMPnt[0x01] & 0x7F, VGMPnt[0x02],
-						VGMPnt[0x03]);
+					chip_reg_write(0x26, CurChip, VGMPnt[0x01] & 0x7F, VGMPnt[0x02], VGMPnt[0x03], &ch, &chValue);
 				}
 				vgmInfo.VGMPos += 0x04;
 				break;
@@ -5821,7 +5911,7 @@ void VGMData::InterpretVGM(UINT32 SampleCount)
 				if (CHIP_CHECK(C352))
 				{
 					TempSht = ((VGMPnt[0x01] & 0x7F) << 8) | (VGMPnt[0x02] << 0);
-					c352_w(CurChip, TempSht, (VGMPnt[0x03] << 8) | VGMPnt[0x04]);
+					c352_w(CurChip, TempSht, (VGMPnt[0x03] << 8) | VGMPnt[0x04], &ch, &chValue);
 				}
 				vgmInfo.VGMPos += 0x05;
 				break;
@@ -5829,7 +5919,7 @@ void VGMData::InterpretVGM(UINT32 SampleCount)
 				CurChip = (VGMPnt[0x01] & 0x80) >> 7;
 				if (CHIP_CHECK(GA20))
 				{
-					chip_reg_write(0x28, CurChip, 0x00, VGMPnt[0x01] & 0x7F, VGMPnt[0x02]);
+					chip_reg_write(0x28, CurChip, 0x00, VGMPnt[0x01] & 0x7F, VGMPnt[0x02], &ch, &chValue);
 				}
 				vgmInfo.VGMPos += 0x03;
 				break;
@@ -5866,8 +5956,7 @@ void VGMData::InterpretVGM(UINT32 SampleCount)
 
 				TempPCM = &vgmInfo.PCMBank[vgmInfo.DacCtrl[CurChip].Bank];
 				vgmInfo.Last95Max = TempPCM->BankCount;
-				daccontrol_set_data(CurChip, TempPCM->Data, TempPCM->DataSize,
-					VGMPnt[0x03], VGMPnt[0x04]);
+				daccontrol_set_data(CurChip, TempPCM->Data, TempPCM->DataSize, VGMPnt[0x03], VGMPnt[0x04]);
 				vgmInfo.VGMPos += 0x05;
 				break;
 			case 0x92:	// DAC Ctrl: Set Freq
@@ -5977,17 +6066,44 @@ void VGMData::InterpretVGM(UINT32 SampleCount)
 					break;
 				}
 				break;
+			}
 		}
-	}
 
 		if (vgmInfo.VGMPos >= vgmInfo.VGMHead.lngEOFOffset)
 			vgmInfo.VGMEnd = true;
 
 		if (vgmInfo.VGMEnd)
 			break;
+
+		if (ch != -1)
+		{
+			CPUCommand cmd = GetCommand(ch, chValue);
+			vgmInfo.OutputCPUCommands.push_back(cmd);
+		}
 	}
 
 	return;
+}
+
+CPUCommand VGMData::GetCommand(UINT32 ch, UINT32 chValue)
+{
+	assert(impl);
+	VGMInfo& vgmInfo = impl->vgmInfo;
+
+	float seconds = (float)(vgmInfo.VGMSmplPlayed) / vgmInfo.SampleRate;
+	float frame = seconds * VGM_FRAME_PER_SECOND;
+	string tc = ToTimeCode(frame);
+
+	char command[1024];
+	sprintf(command, "%s: %04x %04x", tc.c_str(), ch, chValue);
+
+	CPUCommand cmd;
+	cmd.seconds = seconds;
+	cmd.ch = ch;
+	cmd.chValue = chValue;
+	cmd.command = command;
+
+	return cmd;
 }
 
 void VGMData::ChangeChipSampleRate(void* DataPtr, UINT32 NewSmplRate)
@@ -6310,7 +6426,7 @@ bool VGMData::DecompressDataBlk(VGM_PCM_DATA* Bank, UINT32 DataSize, const UINT8
 				OutPos[0x01] = (UINT8)((OutVal & 0xFF00) >> 8);
 			}
 #endif
-			}
+		}
 		break;
 	case 0x01:	// Delta-PCM
 		BitDec = Data[0x05];
@@ -6396,7 +6512,7 @@ bool VGMData::DecompressDataBlk(VGM_PCM_DATA* Bank, UINT32 DataSize, const UINT8
 	default:
 		fprintf(stderr, "Error: Unknown data block compression!\n");
 		return false;
-		}
+	}
 
 #if defined(_DEBUG) && defined(WIN32)
 	Time = GetTickCount() - Time;
@@ -6404,7 +6520,7 @@ bool VGMData::DecompressDataBlk(VGM_PCM_DATA* Bank, UINT32 DataSize, const UINT8
 #endif
 
 	return true;
-	}
+}
 
 void VGMData::ReadVGMHeader(VGM_HEADER* RetVGMHead)
 {
@@ -6441,8 +6557,8 @@ void VGMData::ReadVGMHeader(VGM_HEADER* RetVGMHead)
 				// everything else is 32-bit
 				*(UINT32*)TempPtr = ReadLE32(TempPtr);
 				break;
-}
-}
+			}
+		}
 	}
 #endif
 
@@ -6755,7 +6871,7 @@ void VGMData::PauseStream(bool PauseOn)
 	case false:
 		RetVal = waveOutRestart(vgmInfo.hWaveOut);
 		break;
-}
+	}
 	vgmInfo.StreamPause = PauseOn;
 #else
 	vgmInfo.PauseThread = PauseOn;
@@ -6788,6 +6904,8 @@ void VGMData::InterpretOther(UINT32 SampleCount)
 	bool RhythmOn;
 	bool NoteOn;
 	UINT8 OpMask;
+	UINT32 ch;
+	UINT32 chValue;
 
 	if (vgmInfo.VGMEnd)
 		return;
@@ -6981,13 +7099,12 @@ void VGMData::InterpretOther(UINT32 SampleCount)
 					if (NoteOn)
 					{
 						if (!RhythmOn)
-							SendMIDIVolume(CurChip, Channel | (RhythmOn << 7), Command,
-								ChnIns[Command & 0x0F], vgmInfo.VGMData[vgmInfo.VGMPos + 0x01]);
+							SendMIDIVolume(CurChip, Channel | (RhythmOn << 7), Command, ChnIns[Command & 0x0F], vgmInfo.VGMData[vgmInfo.VGMPos + 0x01], &ch, &chValue);
 					}
 					if (NoteOn || !RhythmOn)
 					{
-						chip_reg_write(0x09, CurChip, 0x00, 0xA0 | Channel, TempSht & 0xFF);
-						chip_reg_write(0x09, CurChip, 0x00, 0xB0 | Channel, TempSht >> 8);
+						chip_reg_write(0x09, CurChip, 0x00, 0xA0 | Channel, TempSht & 0xFF, &ch, &chValue);
+						chip_reg_write(0x09, CurChip, 0x00, 0xB0 | Channel, TempSht >> 8, &ch, &chValue);
 					}
 
 					if (RhythmOn)
@@ -6995,9 +7112,9 @@ void VGMData::InterpretOther(UINT32 SampleCount)
 						TempByt = 0x0F - (Command & 0x0F);
 						DrumReg[CurChip] &= ~(0x01 << TempByt);
 						if (NoteOn)
-							chip_reg_write(0x09, CurChip, 0x00, 0xBD, DrumReg[CurChip]);
+							chip_reg_write(0x09, CurChip, 0x00, 0xBD, DrumReg[CurChip], &ch, &chValue);
 						DrumReg[CurChip] |= (UINT8)NoteOn << TempByt;
-						chip_reg_write(0x09, CurChip, 0x00, 0xBD, DrumReg[CurChip]);
+						chip_reg_write(0x09, CurChip, 0x00, 0xBD, DrumReg[CurChip], &ch, &chValue);
 					}
 				}
 				vgmInfo.VGMPos += 0x02;
@@ -7019,8 +7136,8 @@ void VGMData::InterpretOther(UINT32 SampleCount)
 						DrumReg[0x00] = 0xE0;
 						DrumReg[0x01] = 0xE0;
 					}
-					chip_reg_write(0x09, CurChip, 0x00, 0xBD, DrumReg[0x00]);
-					chip_reg_write(0x09, CurChip, 0x00, 0xBD, DrumReg[0x01]);
+					chip_reg_write(0x09, CurChip, 0x00, 0xBD, DrumReg[0x00], &ch, &chValue);
+					chip_reg_write(0x09, CurChip, 0x00, 0xBD, DrumReg[0x01], &ch, &chValue);
 					break;
 				case 0x68:	// Pitch Upward
 					ChnPitch[Channel] = +vgmInfo.VGMData[vgmInfo.VGMPos + 0x01];
@@ -7041,8 +7158,8 @@ void VGMData::InterpretOther(UINT32 SampleCount)
 							TempSht = MIDINote2FNum(TempByt, ChnPitch[Channel]);
 							TempSht |= 0x01 << 13;	// << (8+5)
 
-							chip_reg_write(0x09, CurChip, 0x00, 0xA0 | Channel, TempSht & 0xFF);
-							chip_reg_write(0x09, CurChip, 0x00, 0xB0 | Channel, TempSht >> 8);
+							chip_reg_write(0x09, CurChip, 0x00, 0xA0 | Channel, TempSht & 0xFF, &ch, &chValue);
+							chip_reg_write(0x09, CurChip, 0x00, 0xB0 | Channel, TempSht >> 8, &ch, &chValue);
 						}
 					}
 				}
@@ -7098,35 +7215,25 @@ void VGMData::InterpretOther(UINT32 SampleCount)
 					if (OpMask & 0x01)
 					{
 						// Write Operator 1
-						chip_reg_write(0x09, CurChip, 0x00,
-							0x20 | (OpBase + 0x00), TempIns->Character[TempByt]);
-						chip_reg_write(0x09, CurChip, 0x00,
-							0x40 | (OpBase + 0x00), TempIns->ScaleLevel[TempByt]);
-						chip_reg_write(0x09, CurChip, 0x00,
-							0x60 | (OpBase + 0x00), TempIns->AttackDelay[TempByt]);
-						chip_reg_write(0x09, CurChip, 0x00,
-							0x80 | (OpBase + 0x00), TempIns->SustnRelease[TempByt]);
-						chip_reg_write(0x09, CurChip, 0x00,
-							0xE0 | (OpBase + 0x00), TempIns->WaveSelect[TempByt]);
+						chip_reg_write(0x09, CurChip, 0x00, 0x20 | (OpBase + 0x00), TempIns->Character[TempByt], &ch, &chValue);
+						chip_reg_write(0x09, CurChip, 0x00, 0x40 | (OpBase + 0x00), TempIns->ScaleLevel[TempByt], &ch, &chValue);
+						chip_reg_write(0x09, CurChip, 0x00, 0x60 | (OpBase + 0x00), TempIns->AttackDelay[TempByt], &ch, &chValue);
+						chip_reg_write(0x09, CurChip, 0x00, 0x80 | (OpBase + 0x00), TempIns->SustnRelease[TempByt], &ch, &chValue);
+						chip_reg_write(0x09, CurChip, 0x00, 0xE0 | (OpBase + 0x00), TempIns->WaveSelect[TempByt], &ch, &chValue);
 						TempByt++;
 					}
 					if (OpMask & 0x02)
 					{
 						// Write Operator 2
-						chip_reg_write(0x09, CurChip, 0x00,
-							0x20 | (OpBase + 0x03), TempIns->Character[TempByt]);
-						chip_reg_write(0x09, CurChip, 0x00,
-							0x40 | (OpBase + 0x03), TempIns->ScaleLevel[TempByt]);
-						chip_reg_write(0x09, CurChip, 0x00,
-							0x60 | (OpBase + 0x03), TempIns->AttackDelay[TempByt]);
-						chip_reg_write(0x09, CurChip, 0x00,
-							0x80 | (OpBase + 0x03), TempIns->SustnRelease[TempByt]);
-						chip_reg_write(0x09, CurChip, 0x00,
-							0xE0 | (OpBase + 0x03), TempIns->WaveSelect[TempByt]);
+						chip_reg_write(0x09, CurChip, 0x00, 0x20 | (OpBase + 0x03), TempIns->Character[TempByt], &ch, &chValue);
+						chip_reg_write(0x09, CurChip, 0x00, 0x40 | (OpBase + 0x03), TempIns->ScaleLevel[TempByt], &ch, &chValue);
+						chip_reg_write(0x09, CurChip, 0x00, 0x60 | (OpBase + 0x03), TempIns->AttackDelay[TempByt], &ch, &chValue);
+						chip_reg_write(0x09, CurChip, 0x00, 0x80 | (OpBase + 0x03), TempIns->SustnRelease[TempByt], &ch, &chValue);
+						chip_reg_write(0x09, CurChip, 0x00, 0xE0 | (OpBase + 0x03), TempIns->WaveSelect[TempByt], &ch, &chValue);
 						TempByt++;
 					}
 
-					chip_reg_write(0x09, CurChip, 0x00, 0xC0 | Channel, TempIns->FeedbConnect);
+					chip_reg_write(0x09, CurChip, 0x00, 0xC0 | Channel, TempIns->FeedbConnect, &ch, &chValue);
 				}
 
 				vgmInfo.VGMPos += 0x01;
@@ -7156,35 +7263,35 @@ void VGMData::InterpretOther(UINT32 SampleCount)
 			{
 			case 0x00:	// OPL 2
 				for (TempByt = 0xFF; TempByt >= 0x20; TempByt--)
-					chip_reg_write(0x09, 0x00, 0x00, TempByt, 0x00);
-				chip_reg_write(0x09, 0x00, 0x00, 0x08, 0x00);
-				chip_reg_write(0x09, 0x00, 0x00, 0x01, 0x00);
+					chip_reg_write(0x09, 0x00, 0x00, TempByt, 0x00, &ch, &chValue);
+				chip_reg_write(0x09, 0x00, 0x00, 0x08, 0x00, &ch, &chValue);
+				chip_reg_write(0x09, 0x00, 0x00, 0x01, 0x00, &ch, &chValue);
 				break;
 			case 0x01:	// Dual OPL 2
 				for (TempByt = 0xFF; TempByt >= 0x20; TempByt--)
-					chip_reg_write(0x09, 0x00, 0x00, TempByt, 0x00);
-				chip_reg_write(0x09, 0x00, 0x00, 0x08, 0x00);
-				chip_reg_write(0x09, 0x00, 0x00, 0x01, 0x00);
+					chip_reg_write(0x09, 0x00, 0x00, TempByt, 0x00, &ch, &chValue);
+				chip_reg_write(0x09, 0x00, 0x00, 0x08, 0x00, &ch, &chValue);
+				chip_reg_write(0x09, 0x00, 0x00, 0x01, 0x00, &ch, &chValue);
 				//Sleep(1);
 				for (TempByt = 0xFF; TempByt >= 0x20; TempByt--)
-					chip_reg_write(0x09, 0x01, 0x00, TempByt, 0x00);
-				chip_reg_write(0x09, 0x01, 0x00, 0x08, 0x00);
-				chip_reg_write(0x09, 0x01, 0x00, 0x01, 0x00);
+					chip_reg_write(0x09, 0x01, 0x00, TempByt, 0x00, &ch, &chValue);
+				chip_reg_write(0x09, 0x01, 0x00, 0x08, 0x00, &ch, &chValue);
+				chip_reg_write(0x09, 0x01, 0x00, 0x01, 0x00, &ch, &chValue);
 				break;
 			case 0x02:	// OPL 3
 				for (TempByt = 0xFF; TempByt >= 0x20; TempByt--)
-					chip_reg_write(0x0C, 0x00, 0x00, TempByt, 0x00);
-				chip_reg_write(0x0C, 0x00, 0x00, 0x08, 0x00);
-				chip_reg_write(0x0C, 0x00, 0x00, 0x01, 0x00);
+					chip_reg_write(0x0C, 0x00, 0x00, TempByt, 0x00, &ch, &chValue);
+				chip_reg_write(0x0C, 0x00, 0x00, 0x08, 0x00, &ch, &chValue);
+				chip_reg_write(0x0C, 0x00, 0x00, 0x01, 0x00, &ch, &chValue);
 				//Sleep(1);
 				for (TempByt = 0xFF; TempByt >= 0x20; TempByt--)
-					chip_reg_write(0x0C, 0x00, 0x01, TempByt, 0x00);
+					chip_reg_write(0x0C, 0x00, 0x01, TempByt, 0x00, &ch, &chValue);
 				//chip_reg_write(0x0C, 0x00, 0x01, 0x05, 0x00);
-				chip_reg_write(0x0C, 0x00, 0x01, 0x04, 0x00);
+				chip_reg_write(0x0C, 0x00, 0x01, 0x04, 0x00, &ch, &chValue);
 				break;
 			default:
 				for (TempByt = 0xFF; TempByt >= 0x20; TempByt--)
-					chip_reg_write(0x09, 0x00, 0x00, TempByt, 0x00);
+					chip_reg_write(0x09, 0x00, 0x00, TempByt, 0x00, &ch, &chValue);
 				break;
 			}
 			Sleep(1);
@@ -7307,16 +7414,16 @@ void VGMData::InterpretOther(UINT32 SampleCount)
 				case 0x00:	// OPL 2
 					if (CurChip > 0x00)
 						break;
-					chip_reg_write(0x09, 0x00, 0x00, Command, vgmInfo.VGMData[vgmInfo.VGMPos + 0x01]);
+					chip_reg_write(0x09, 0x00, 0x00, Command, vgmInfo.VGMData[vgmInfo.VGMPos + 0x01], &ch, &chValue);
 					break;
 				case 0x01:
-					chip_reg_write(0x09, CurChip, 0x00, Command, vgmInfo.VGMData[vgmInfo.VGMPos + 0x01]);
+					chip_reg_write(0x09, CurChip, 0x00, Command, vgmInfo.VGMData[vgmInfo.VGMPos + 0x01], &ch, &chValue);
 					break;
 				case 0x02:	// OPL 3
-					chip_reg_write(0x0C, 0x00, CurChip, Command, vgmInfo.VGMData[vgmInfo.VGMPos + 0x01]);
+					chip_reg_write(0x0C, 0x00, CurChip, Command, vgmInfo.VGMData[vgmInfo.VGMPos + 0x01], &ch, &chValue);
 					break;
 				default:
-					chip_reg_write(0x09, CurChip, 0x00, Command, vgmInfo.VGMData[vgmInfo.VGMPos + 0x01]);
+					chip_reg_write(0x09, CurChip, 0x00, Command, vgmInfo.VGMData[vgmInfo.VGMPos + 0x01], &ch, &chValue);
 					break;
 				}
 				vgmInfo.VGMPos += 0x02;
@@ -7383,7 +7490,7 @@ UINT16 VGMData::MIDINote2FNum(UINT8 Note, INT8 Pitch)
 	return (BlockVal << 10) | KeyVal;	// << (8+2)
 }
 
-void VGMData::SendMIDIVolume(UINT8 ChipID, UINT8 Channel, UINT8 Command, UINT8 ChnIns, UINT8 Volume)
+void VGMData::SendMIDIVolume(UINT8 ChipID, UINT8 Channel, UINT8 Command, UINT8 ChnIns, UINT8 Volume, UINT32* ch, UINT32* chValue)
 {
 	assert(impl);
 	VGMInfo& vgmInfo = impl->vgmInfo;
@@ -7448,7 +7555,7 @@ void VGMData::SendMIDIVolume(UINT8 ChipID, UINT8 Channel, UINT8 Command, UINT8 C
 		NoteVol = 0x00;
 
 	TempByt = NoteVol | (TempIns->ScaleLevel[TempLng] & 0xC0);
-	chip_reg_write(0x09, ChipID, 0x00, 0x40 | (OpBase + OpMask), TempByt);
+	chip_reg_write(0x09, ChipID, 0x00, 0x40 | (OpBase + OpMask), TempByt, ch, chValue);
 
 	return;
 }
@@ -7498,17 +7605,17 @@ bool VGMData::OpenOtherFile(const char* FileName)
 	if (vgmInfo.FileMode == 0xFF)
 		goto OpenErr;
 
-	vgmInfo.VGMTag.strTrackNameE  = const_cast<wchar_t*>(L"");
-	vgmInfo.VGMTag.strTrackNameJ  = const_cast<wchar_t*>(L"");
-	vgmInfo.VGMTag.strGameNameE   = const_cast<wchar_t*>(L"");
-	vgmInfo.VGMTag.strGameNameJ   = const_cast<wchar_t*>(L"");
+	vgmInfo.VGMTag.strTrackNameE = const_cast<wchar_t*>(L"");
+	vgmInfo.VGMTag.strTrackNameJ = const_cast<wchar_t*>(L"");
+	vgmInfo.VGMTag.strGameNameE = const_cast<wchar_t*>(L"");
+	vgmInfo.VGMTag.strGameNameJ = const_cast<wchar_t*>(L"");
 	vgmInfo.VGMTag.strSystemNameE = const_cast<wchar_t*>(L"");
 	vgmInfo.VGMTag.strSystemNameJ = const_cast<wchar_t*>(L"");
 	vgmInfo.VGMTag.strAuthorNameE = const_cast<wchar_t*>(L"");
 	vgmInfo.VGMTag.strAuthorNameJ = const_cast<wchar_t*>(L"");
 	vgmInfo.VGMTag.strReleaseDate = const_cast<wchar_t*>(L"");
-	vgmInfo.VGMTag.strCreator     = const_cast<wchar_t*>(L"");
-	vgmInfo.VGMTag.strNotes       = const_cast<wchar_t*>(L"");
+	vgmInfo.VGMTag.strCreator = const_cast<wchar_t*>(L"");
+	vgmInfo.VGMTag.strNotes = const_cast<wchar_t*>(L"");
 
 	switch (vgmInfo.FileMode)
 	{

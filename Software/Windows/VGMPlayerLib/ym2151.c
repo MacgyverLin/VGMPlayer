@@ -1054,7 +1054,7 @@ INLINE void refresh_EG(YM2151Operator * op)
 
 
 /* write a register on YM2151 chip number 'n' */
-void ym2151_write_reg(void *_chip, int r, int v)
+void ym2151_write_reg(void *_chip, int r, int v, UINT32* ch, UINT32* chValue)
 {
 	YM2151 *chip = (YM2151 *)_chip;
 	YM2151Operator *op = &chip->oper[ (r&0x07)*4+((r&0x18)>>3) ];
@@ -1088,6 +1088,12 @@ void ym2151_write_reg(void *_chip, int r, int v)
 		case 0x08:
 			PSG = chip; /* PSG is used in KEY_ON macro */
 			envelope_KONKOFF(&chip->oper[ (v&7)*4 ], v );
+
+			if (ch && chValue)
+			{
+				*ch = (v & 7);
+				*chValue = v;
+			}
 			break;
 
 		case 0x0f:	/* noise mode enable, noise period */
@@ -1657,11 +1663,11 @@ void ym2151_reset_chip(void *_chip)
 	chip->csm_req	= 0;
 	chip->status    = 0;
 
-	ym2151_write_reg(chip, 0x1b, 0);	/* only because of CT1, CT2 output pins */
-	ym2151_write_reg(chip, 0x18, 0);	/* set LFO frequency */
+	ym2151_write_reg(chip, 0x1b, 0, NULL, NULL);	/* only because of CT1, CT2 output pins */
+	ym2151_write_reg(chip, 0x18, 0, NULL, NULL);	/* set LFO frequency */
 	for (i=0x20; i<0x100; i++)		/* set the operators */
 	{
-		ym2151_write_reg(chip, i, 0);
+		ym2151_write_reg(chip, i, 0, NULL, NULL);
 	}
 }
 

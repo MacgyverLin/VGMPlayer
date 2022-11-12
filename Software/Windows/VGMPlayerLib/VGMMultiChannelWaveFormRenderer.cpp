@@ -139,10 +139,17 @@ void VGMMultiChannelWaveFormRenderer::OnNotifyUpdate(Obserable& observable)
 
 		SetViewport(x * channelViewportWidth, y * channelViewportHeight, channelViewportWidth, channelViewportHeight);
 
+		for (UINT32 i = startX; i < endX - stepX; i += stepX)
+		{
+			FLOAT32 y0 = vgmInfo.GetOutputChannelBufferSample(ch, i + 0).Right * waveScale;
+			FLOAT32 y1 = vgmInfo.GetOutputChannelBufferSample(ch, i + stepX).Right * waveScale;
+			videoDevice.DrawLine(Vector2(i, y0), skin.rightColor, Vector2(i + stepX, y1), skin.rightColor);
+		}
+		/*
 		for (UINT32 i = startX; i < (endX - stepX) ; i += stepX)
 		{
-			FLOAT32 y0 = vgmInfo.GetOutputChannelBufferSample(ch, i + 0).Left * waveScale + 16384;
-			FLOAT32 y1 = vgmInfo.GetOutputChannelBufferSample(ch, i + stepX).Left * waveScale + 16384;
+			FLOAT32 y0 = vgmInfo.GetOutputChannelBufferSample(ch, i + 0).Left * waveScale / 2 + 16384;
+			FLOAT32 y1 = vgmInfo.GetOutputChannelBufferSample(ch, i + stepX).Left * waveScale / 2 + 16384;
 			videoDevice.DrawLine(Vector2(i, y0), skin.leftColor, Vector2(i + stepX, y1), skin.leftColor);
 		}
 
@@ -152,6 +159,7 @@ void VGMMultiChannelWaveFormRenderer::OnNotifyUpdate(Obserable& observable)
 			FLOAT32 y1 = vgmInfo.GetOutputChannelBufferSample(ch, i + stepX).Right * waveScale / 2 - 16384;
 			videoDevice.DrawLine(Vector2(i, y0), skin.rightColor, Vector2(i + stepX, y1), skin.rightColor);
 		}
+		*/
 	}
 
 	//////////////////////////////////////////////////////////////////////////////

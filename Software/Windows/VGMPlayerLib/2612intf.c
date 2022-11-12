@@ -305,21 +305,21 @@ UINT8 ym2612_r(UINT8 ChipID, offs_t offset)
 }
 
 //WRITE8_DEVICE_HANDLER( ym2612_w )
-void ym2612_w(UINT8 ChipID, offs_t offset, UINT8 data)
+void ym2612_w(UINT8 ChipID, offs_t offset, UINT8 data, UINT32* ch, UINT32* chValue)
 {
 	//ym2612_state *info = get_safe_token(device);
 	ym2612_state *info = &YM2612Data[ChipID];
 	switch(EMU_CORE)
 	{
 	case EC_MAME:
-		ym2612_write(info->chip, offset & 3, data);
+		ym2612_write(info->chip, offset & 3, data, ch, chValue);
 		break;
 #ifdef ENABLE_ALL_CORES
 	case EC_GENS:
-		YM2612_Write(info->chip, (unsigned char)(offset & 0x03), data);
+		YM2612_Write(info->chip, (unsigned char)(offset & 0x03), data, ch, chValue);
 		break;
 	case EC_NUKED:
-		OPN2_WriteBuffered(info->chip, offset, data);
+		OPN2_WriteBuffered(info->chip, offset, data, ch, chValue);
 		break;
 #endif
 	}
@@ -352,21 +352,21 @@ UINT8 ym2612_data_port_b_r(UINT8 ChipID, offs_t offset)
 	return ym2612_r(ChipID, 3);
 }
 
-void ym2612_control_port_a_w(UINT8 ChipID, offs_t offset, UINT8 data)
+void ym2612_control_port_a_w(UINT8 ChipID, offs_t offset, UINT8 data, UINT32* ch, UINT32* chValue)
 {
-	ym2612_w(ChipID, 0, data);
+	ym2612_w(ChipID, 0, data, ch, chValue);
 }
-void ym2612_control_port_b_w(UINT8 ChipID, offs_t offset, UINT8 data)
+void ym2612_control_port_b_w(UINT8 ChipID, offs_t offset, UINT8 data, UINT32* ch, UINT32* chValue)
 {
-	ym2612_w(ChipID, 2, data);
+	ym2612_w(ChipID, 2, data, ch, chValue);
 }
-void ym2612_data_port_a_w(UINT8 ChipID, offs_t offset, UINT8 data)
+void ym2612_data_port_a_w(UINT8 ChipID, offs_t offset, UINT8 data, UINT32* ch, UINT32* chValue)
 {
-	ym2612_w(ChipID, 1, data);
+	ym2612_w(ChipID, 1, data, ch, chValue);
 }
-void ym2612_data_port_b_w(UINT8 ChipID, offs_t offset, UINT8 data)
+void ym2612_data_port_b_w(UINT8 ChipID, offs_t offset, UINT8 data, UINT32* ch, UINT32* chValue)
 {
-	ym2612_w(ChipID, 3, data);
+	ym2612_w(ChipID, 3, data, ch, chValue);
 }
 
 

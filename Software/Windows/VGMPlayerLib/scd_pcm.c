@@ -477,13 +477,13 @@ void device_reset_rf5c164(UINT8 ChipID)
 	PCM_Reset(ChipID);
 }
 
-void rf5c164_w(UINT8 ChipID, offs_t offset, UINT8 data)
+void rf5c164_w(UINT8 ChipID, offs_t offset, UINT8 data, UINT32* ch, UINT32* chValue)
 {
 	//struct pcm_chip_ *chip = &PCM_Chip[ChipID];
 	PCM_Write_Reg(ChipID, offset, data);
 }
 
-void rf5c164_mem_w(UINT8 ChipID, offs_t offset, UINT8 data)
+void rf5c164_mem_w(UINT8 ChipID, offs_t offset, UINT8 data, UINT32* ch, UINT32* chValue)
 {
 	struct pcm_chip_ *chip = &PCM_Chip[ChipID];
 	chip->RAM[chip->Bank | offset] = data;

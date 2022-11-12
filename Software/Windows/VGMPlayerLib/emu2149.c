@@ -467,6 +467,12 @@ PSG_calc_stereo (PSG * psg, e_int32 **out, e_int32 samples, WAVE_32BS** channelo
       bufRO[i] = (e_int32) (((double) psg->snext[1] * (psg->psgstep - psg->psgtime)
                            + (double) psg->sprev[1] * psg->psgtime) / psg->psgstep);
     }
+
+    for (int ch = 0; ch < channelcount; ch++)
+    {
+        channeloutputs[ch][i].Left = psg->cout[ch];
+        channeloutputs[ch][i].Right = psg->cout[ch];
+    }
   }
 }
 

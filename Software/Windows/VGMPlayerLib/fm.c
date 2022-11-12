@@ -2181,6 +2181,12 @@ void ym2203_update_one(void *chip, FMSAMPLE **buffer, int length, WAVE_32BS** ch
 		chan_calc(OPN, cch[1], 1 );
 		chan_calc(OPN, cch[2], 2 );
 
+		for (int ch = 0; ch < channelcount; ch++)
+		{
+			channeloutputs[ch][i].Left = OPN->out_fm[ch];
+			channeloutputs[ch][i].Right = OPN->out_fm[ch];
+		}
+
 		/* buffering */
 		{
 			int lt;

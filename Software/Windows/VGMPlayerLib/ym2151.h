@@ -69,7 +69,7 @@ void ym2151_reset_chip(void *chip);
 void ym2151_update_one(void *chip, SAMP **buffers, int length, WAVE_32BS** channeloutputs, int channelcount);
 
 /* write 'v' to register 'r' on YM2151 chip number 'n'*/
-void ym2151_write_reg(void *chip, int r, int v);
+void ym2151_write_reg(void *chip, int r, int v, UINT32* ch, UINT32* chValue);
 
 /* read status register on YM2151 chip number 'n'*/
 int ym2151_read_status(void *chip);

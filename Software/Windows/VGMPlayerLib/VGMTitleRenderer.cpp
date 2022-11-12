@@ -27,10 +27,10 @@ void VGMTitleRenderer::OnNotifyOpen(Obserable& observable)
 	float scale = 16.0f / 300;
 	font = videoDevice.CreateFont("arial.ttf", region.h * scale);
 
-	titleString += name + " |";
-	titleString += name + " |";
-	titleString += name + " |";
-	titleString += name + " |";
+	titleString += name + "        ";
+	titleString += name + "        ";
+	titleString += name + "        ";
+	titleString += name + "        ";
 }
 
 void VGMTitleRenderer::OnNotifyClose(Obserable& observable)

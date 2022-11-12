@@ -40,7 +40,7 @@ typedef void (*strm_func)(UINT8 ChipID, stream_sample_t** outputs, int samples, 
 extern stream_sample_t* DUMMYBUF[];
 typedef void (*SRATE_CALLBACK)(void*, UINT32);
 
-extern void chip_reg_write(UINT8 ChipType, UINT8 ChipID, UINT8 Port, UINT8 Offset, UINT8 Data);
+extern void chip_reg_write(UINT8 ChipType, UINT8 ChipID, UINT8 Port, UINT8 Offset, UINT8 Data, UINT32* ch, UINT32* chValue);
 
 #if defined(_MSC_VER)
 //#define INLINE	static __forceinline

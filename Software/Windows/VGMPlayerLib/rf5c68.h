@@ -19,10 +19,10 @@ int device_start_rf5c68(UINT8 ChipID, int clock, UINT8 CHIP_SAMPLING_MODE, INT32
 void device_stop_rf5c68(UINT8 ChipID);
 void device_reset_rf5c68(UINT8 ChipID);
 
-void rf5c68_w(UINT8 ChipID, offs_t offset, UINT8 data);
+void rf5c68_w(UINT8 ChipID, offs_t offset, UINT8 data, UINT32* ch, UINT32* chValue);
 
 UINT8 rf5c68_mem_r(UINT8 ChipID, offs_t offset);
-void rf5c68_mem_w(UINT8 ChipID, offs_t offset, UINT8 data);
+void rf5c68_mem_w(UINT8 ChipID, offs_t offset, UINT8 data, UINT32* ch, UINT32* chValue);
 void rf5c68_write_ram(UINT8 ChipID, offs_t DataStart, offs_t DataLength, const UINT8* RAMData);
 
 void rf5c68_set_mute_mask(UINT8 ChipID, UINT32 MuteMask);

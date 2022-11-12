@@ -50,13 +50,13 @@ struct _rf5c68_state
 	UINT8				wbank;
 	UINT8				enable;
 	UINT32				datasize;
-	UINT8*				data;
+	UINT8* data;
 	//void				(*sample_callback)(running_device* device,int channel);
 	mem_stream			memstrm;
 };
 
 
-static void rf5c68_mem_stream_flush(rf5c68_state *chip);
+static void rf5c68_mem_stream_flush(rf5c68_state* chip);
 
 #define MAX_CHIPS	0x02
 static rf5c68_state RF5C68Data[MAX_CHIPS];
@@ -74,11 +74,11 @@ static rf5c68_state RF5C68Data[MAX_CHIPS];
 /*    RF5C68 stream update                      */
 /************************************************/
 
-static void memstream_sample_check(rf5c68_state *chip, UINT32 addr, UINT16 Speed)
+static void memstream_sample_check(rf5c68_state* chip, UINT32 addr, UINT16 Speed)
 {
 	mem_stream* ms = &chip->memstrm;
 	UINT32 SmplSpd;
-	
+
 	SmplSpd = (Speed >= 0x0800) ? (Speed >> 11) : 1;
 	if (addr >= ms->CurAddr)
 	{
@@ -107,18 +107,18 @@ static void memstream_sample_check(rf5c68_state *chip, UINT32 addr, UINT16 Speed
 			}
 		}
 	}
-	
+
 	return;
 }
 
 //static STREAM_UPDATE( rf5c68_update )
-void rf5c68_update(UINT8 ChipID, stream_sample_t **outputs, int samples, WAVE_32BS** channeloutputs, int channelcount)
+void rf5c68_update(UINT8 ChipID, stream_sample_t** outputs, int samples, WAVE_32BS** channeloutputs, int channelcount)
 {
 	//rf5c68_state *chip = (rf5c68_state *)param;
-	rf5c68_state *chip = &RF5C68Data[ChipID];
+	rf5c68_state* chip = &RF5C68Data[ChipID];
 	mem_stream* ms = &chip->memstrm;
-	stream_sample_t *left = outputs[0];
-	stream_sample_t *right = outputs[1];
+	stream_sample_t* left = outputs[0];
+	stream_sample_t* right = outputs[1];
 	int i, j;
 
 	/* start with clean buffers */
@@ -130,12 +130,14 @@ void rf5c68_update(UINT8 ChipID, stream_sample_t **outputs, int samples, WAVE_32
 		return;
 
 	/* loop over channels */
+	assert(channelcount == NUM_CHANNELS);
+
 	for (i = 0; i < NUM_CHANNELS; i++)
 	{
-		pcm_channel *chan = &chip->chan[i];
+		pcm_channel* chan = &chip->chan[i];
 
 		/* if this channel is active, accumulate samples */
-		if (chan->enable && ! chan->Muted)
+		if (chan->enable && !chan->Muted)
 		{
 			int lv = (chan->pan & 0x0f) * chan->env;
 			int rv = ((chan->pan >> 4) & 0x0f) * chan->env;
@@ -170,14 +172,29 @@ void rf5c68_update(UINT8 ChipID, stream_sample_t **outputs, int samples, WAVE_32
 				if (sample & 0x80)
 				{
 					sample &= 0x7f;
-					left[j] += (sample * lv) >> 5;
-					right[j] += (sample * rv) >> 5;
+
+					channeloutputs[i][j].Left = (sample * lv) >> 5;
+					channeloutputs[i][j].Right = (sample * rv) >> 5;
+
+					left[j] += channeloutputs[i][j].Left;
+					right[j] += channeloutputs[i][j].Right;
 				}
 				else
 				{
-					left[j] -= (sample * lv) >> 5;
-					right[j] -= (sample * rv) >> 5;
+					channeloutputs[i][j].Left = -(sample * lv) >> 5;
+					channeloutputs[i][j].Right = -(sample * rv) >> 5;
+
+					left[j] -= channeloutputs[i][j].Left;
+					right[j] -= channeloutputs[i][j].Right;
 				}
+			}
+		}
+		else
+		{
+			for (j = 0; j < samples; j++)
+			{
+				channeloutputs[i][j].Left = 0;
+				channeloutputs[i][j].Right = 0;
 			}
 		}
 	}
@@ -189,15 +206,15 @@ void rf5c68_update(UINT8 ChipID, stream_sample_t **outputs, int samples, WAVE_32
 		{
 			i = ms->CurStep >> 11;
 			ms->CurStep &= 0x07FF;
-			
+
 			if (ms->CurAddr + i > ms->EndAddr)
 				i = ms->EndAddr - ms->CurAddr;
-			
+
 			memcpy(chip->data + ms->CurAddr, ms->MemPnt + (ms->CurAddr - ms->BaseAddr), i);
 			ms->CurAddr += i;
 		}
 	}
-	
+
 	// I think, this is completely useless
 	/* now clamp and shift the result (output is only 10 bits) */
 	/*for (j = 0; j < samples; j++)
@@ -225,20 +242,20 @@ void rf5c68_update(UINT8 ChipID, stream_sample_t **outputs, int samples, WAVE_32
 int device_start_rf5c68(UINT8 ChipID, int clock, UINT8 CHIP_SAMPLING_MODE, INT32 CHIP_SAMPLE_RATE, UINT32 SampleRate)
 {
 	//const rf5c68_interface* intf = (const rf5c68_interface*)device->baseconfig().static_config();
-	
+
 	/* allocate memory for the chip */
 	//rf5c68_state *chip = get_safe_token(device);
-	rf5c68_state *chip;
+	rf5c68_state* chip;
 	int chn;
-	
+
 	if (ChipID >= MAX_CHIPS)
 		return 0;
-	
+
 	chip = &RF5C68Data[ChipID];
-	
+
 	chip->datasize = 0x10000;
 	chip->data = (UINT8*)malloc(chip->datasize);
-	
+
 	/* allocate the stream */
 	//chip->stream = stream_create(device, 0, 2, device->clock / 384, chip, rf5c68_update);
 
@@ -247,36 +264,36 @@ int device_start_rf5c68(UINT8 ChipID, int clock, UINT8 CHIP_SAMPLING_MODE, INT32
 		chip->sample_callback = intf->sample_end_callback;
 	else
 		chip->sample_callback = NULL;*/
-	for (chn = 0; chn < NUM_CHANNELS; chn ++)
+	for (chn = 0; chn < NUM_CHANNELS; chn++)
 		chip->chan[chn].Muted = 0x00;
-	
+
 	return (clock & 0x7FFFFFFF) / 384;
 }
 
 void device_stop_rf5c68(UINT8 ChipID)
 {
-	rf5c68_state *chip = &RF5C68Data[ChipID];
+	rf5c68_state* chip = &RF5C68Data[ChipID];
 	free(chip->data);	chip->data = NULL;
-	
+
 	return;
 }
 
 void device_reset_rf5c68(UINT8 ChipID)
 {
-	rf5c68_state *chip = &RF5C68Data[ChipID];
+	rf5c68_state* chip = &RF5C68Data[ChipID];
 	int i;
 	pcm_channel* chan;
 	mem_stream* ms = &chip->memstrm;
-	
+
 	// Clear the PCM memory.
 	memset(chip->data, 0x00, chip->datasize);
-	
+
 	chip->enable = 0;
 	chip->cbank = 0;
 	chip->wbank = 0;
-	
+
 	/* clear channel registers */
-	for (i = 0; i < NUM_CHANNELS; i ++)
+	for (i = 0; i < NUM_CHANNELS; i++)
 	{
 		chan = &chip->chan[i];
 		chan->enable = 0;
@@ -287,7 +304,7 @@ void device_reset_rf5c68(UINT8 ChipID)
 		chan->step = 0;
 		chan->loopst = 0;
 	}
-	
+
 	ms->BaseAddr = 0x0000;
 	ms->CurAddr = 0x0000;
 	ms->EndAddr = 0x0000;
@@ -300,11 +317,11 @@ void device_reset_rf5c68(UINT8 ChipID)
 /************************************************/
 
 //WRITE8_DEVICE_HANDLER( rf5c68_w )
-void rf5c68_w(UINT8 ChipID, offs_t offset, UINT8 data)
+void rf5c68_w(UINT8 ChipID, offs_t offset, UINT8 data, UINT32* ch, UINT32* chValue)
 {
 	//rf5c68_state *chip = get_safe_token(device);
-	rf5c68_state *chip = &RF5C68Data[ChipID];
-	pcm_channel *chan = &chip->chan[chip->cbank];
+	rf5c68_state* chip = &RF5C68Data[ChipID];
+	pcm_channel* chan = &chip->chan[chip->cbank];
 	int i;
 
 	/* force the stream to update first */
@@ -313,52 +330,57 @@ void rf5c68_w(UINT8 ChipID, offs_t offset, UINT8 data)
 	/* switch off the address */
 	switch (offset)
 	{
-		case 0x00:	/* envelope */
-			chan->env = data;
-			break;
+	case 0x00:	/* envelope */
+		chan->env = data;
+		break;
 
-		case 0x01:	/* pan */
-			chan->pan = data;
-			break;
+	case 0x01:	/* pan */
+		chan->pan = data;
+		break;
 
-		case 0x02:	/* FDL */
-			chan->step = (chan->step & 0xff00) | (data & 0x00ff);
-			break;
+	case 0x02:	/* FDL */
+		chan->step = (chan->step & 0xff00) | (data & 0x00ff);
+		break;
 
-		case 0x03:	/* FDH */
-			chan->step = (chan->step & 0x00ff) | ((data << 8) & 0xff00);
-			break;
+	case 0x03:	/* FDH */
+		chan->step = (chan->step & 0x00ff) | ((data << 8) & 0xff00);
+		break;
 
-		case 0x04:	/* LSL */
-			chan->loopst = (chan->loopst & 0xff00) | (data & 0x00ff);
-			break;
+	case 0x04:	/* LSL */
+		chan->loopst = (chan->loopst & 0xff00) | (data & 0x00ff);
+		break;
 
-		case 0x05:	/* LSH */
-			chan->loopst = (chan->loopst & 0x00ff) | ((data << 8) & 0xff00);
-			break;
+	case 0x05:	/* LSH */
+		chan->loopst = (chan->loopst & 0x00ff) | ((data << 8) & 0xff00);
+		break;
 
-		case 0x06:	/* ST */
-			chan->start = data;
-			if (!chan->enable)
-				chan->addr = chan->start << (8 + 11);
-			break;
+	case 0x06:	/* ST */
+		chan->start = data;
+		if (!chan->enable)
+			chan->addr = chan->start << (8 + 11);
+		break;
 
-		case 0x07:	/* control reg */
-			chip->enable = (data >> 7) & 1;
-			if (data & 0x40)
-				chip->cbank = data & 7;
-			else
-				chip->wbank = data & 15;
-			break;
+	case 0x07:	/* control reg */
+		chip->enable = (data >> 7) & 1;
+		if (data & 0x40)
+			chip->cbank = data & 7;
+		else
+			chip->wbank = data & 15;
+		break;
 
-		case 0x08:	/* channel on/off reg */
-			for (i = 0; i < 8; i++)
+	case 0x08:	/* channel on/off reg */
+		for (i = 0; i < 8; i++)
+		{
+			chip->chan[i].enable = (~data >> i) & 1;
+			if (!chip->chan[i].enable)
 			{
-				chip->chan[i].enable = (~data >> i) & 1;
-				if (!chip->chan[i].enable)
-					chip->chan[i].addr = chip->chan[i].start << (8 + 11);
+				chip->chan[i].addr = chip->chan[i].start << (8 + 11);
 			}
-			break;
+
+			*ch = chip->cbank;
+			*chValue = data;
+		}
+		break;
 	}
 }
 
@@ -371,7 +393,7 @@ void rf5c68_w(UINT8 ChipID, offs_t offset, UINT8 data)
 UINT8 rf5c68_mem_r(UINT8 ChipID, offs_t offset)
 {
 	//rf5c68_state *chip = get_safe_token(device);
-	rf5c68_state *chip = &RF5C68Data[ChipID];
+	rf5c68_state* chip = &RF5C68Data[ChipID];
 	return chip->data[chip->wbank * 0x1000 + offset];
 }
 
@@ -381,69 +403,69 @@ UINT8 rf5c68_mem_r(UINT8 ChipID, offs_t offset)
 /************************************************/
 
 //WRITE8_DEVICE_HANDLER( rf5c68_mem_w )
-void rf5c68_mem_w(UINT8 ChipID, offs_t offset, UINT8 data)
+void rf5c68_mem_w(UINT8 ChipID, offs_t offset, UINT8 data, UINT32* ch, UINT32* chValue)
 {
 	//rf5c68_state *chip = get_safe_token(device);
-	rf5c68_state *chip = &RF5C68Data[ChipID];
+	rf5c68_state* chip = &RF5C68Data[ChipID];
 	rf5c68_mem_stream_flush(chip);
 	chip->data[chip->wbank * 0x1000 | offset] = data;
 }
 
-static void rf5c68_mem_stream_flush(rf5c68_state *chip)
+static void rf5c68_mem_stream_flush(rf5c68_state* chip)
 {
 	mem_stream* ms = &chip->memstrm;
-	
+
 	if (ms->CurAddr >= ms->EndAddr)
 		return;
-	
+
 	memcpy(chip->data + ms->CurAddr, ms->MemPnt + (ms->CurAddr - ms->BaseAddr), ms->EndAddr - ms->CurAddr);
 	ms->CurAddr = ms->EndAddr;
-	
+
 	return;
 }
 
 void rf5c68_write_ram(UINT8 ChipID, offs_t DataStart, offs_t DataLength, const UINT8* RAMData)
 {
-	rf5c68_state *chip = &RF5C68Data[ChipID];
+	rf5c68_state* chip = &RF5C68Data[ChipID];
 	mem_stream* ms = &chip->memstrm;
 	UINT16 BytCnt;
-	
+
 	DataStart |= chip->wbank * 0x1000;
 	if (DataStart >= chip->datasize)
 		return;
 	if (DataStart + DataLength > chip->datasize)
 		DataLength = chip->datasize - DataStart;
-	
+
 	//memcpy(chip->data + DataStart, RAMData, DataLength);
-	
+
 	rf5c68_mem_stream_flush(chip);
-	
+
 	ms->BaseAddr = DataStart;
 	ms->CurAddr = ms->BaseAddr;
 	ms->EndAddr = ms->BaseAddr + DataLength;
 	ms->CurStep = 0x0000;
 	ms->MemPnt = RAMData;
-	
+
 	//BytCnt = (STEAM_STEP * 32) >> 11;
 	BytCnt = 0x40;	// SegaSonic Arcade: Run! Run! Run! needs such a high value
 	if (ms->CurAddr + BytCnt > ms->EndAddr)
 		BytCnt = ms->EndAddr - ms->CurAddr;
-	
+
 	memcpy(chip->data + ms->CurAddr, ms->MemPnt + (ms->CurAddr - ms->BaseAddr), BytCnt);
 	ms->CurAddr += BytCnt;
-	
+
 	return;
 }
 
 
 void rf5c68_set_mute_mask(UINT8 ChipID, UINT32 MuteMask)
 {
-	rf5c68_state *chip = &RF5C68Data[ChipID];
+	rf5c68_state* chip = &RF5C68Data[ChipID];
 	unsigned char CurChn;
-	
-	for (CurChn = 0; CurChn < NUM_CHANNELS; CurChn ++)
+
+	for (CurChn = 0; CurChn < NUM_CHANNELS; CurChn++)
 		chip->chan[CurChn].Muted = (MuteMask >> CurChn) & 0x01;
-	
+
 	return;
 }
 
@@ -453,25 +475,25 @@ void rf5c68_set_mute_mask(UINT8 ChipID, UINT32 MuteMask)
  * Generic get_info
  **************************************************************************/
 
-/*DEVICE_GET_INFO( rf5c68 )
-{
-	switch (state)
-	{
-		// --- the following bits of info are returned as 64-bit signed integers ---
-		case DEVINFO_INT_TOKEN_BYTES:					info->i = sizeof(rf5c68_state);				break;
+ /*DEVICE_GET_INFO( rf5c68 )
+ {
+	 switch (state)
+	 {
+		 // --- the following bits of info are returned as 64-bit signed integers ---
+		 case DEVINFO_INT_TOKEN_BYTES:					info->i = sizeof(rf5c68_state);				break;
 
-		// --- the following bits of info are returned as pointers to data or functions ---
-		case DEVINFO_FCT_START:							info->start = DEVICE_START_NAME( rf5c68 );			break;
-		case DEVINFO_FCT_STOP:							// Nothing										break;
-		case DEVINFO_FCT_RESET:							// Nothing										break;
+		 // --- the following bits of info are returned as pointers to data or functions ---
+		 case DEVINFO_FCT_START:							info->start = DEVICE_START_NAME( rf5c68 );			break;
+		 case DEVINFO_FCT_STOP:							// Nothing										break;
+		 case DEVINFO_FCT_RESET:							// Nothing										break;
 
-		// --- the following bits of info are returned as NULL-terminated strings ---
-		case DEVINFO_STR_NAME:							strcpy(info->s, "RF5C68");						break;
-		case DEVINFO_STR_FAMILY:					strcpy(info->s, "Ricoh PCM");					break;
-		case DEVINFO_STR_VERSION:					strcpy(info->s, "1.0");							break;
-		case DEVINFO_STR_SOURCE_FILE:						strcpy(info->s, __FILE__);						break;
-		case DEVINFO_STR_CREDITS:					strcpy(info->s, "Copyright Nicola Salmoria and the MAME Team"); break;
-	}
-}*/
+		 // --- the following bits of info are returned as NULL-terminated strings ---
+		 case DEVINFO_STR_NAME:							strcpy(info->s, "RF5C68");						break;
+		 case DEVINFO_STR_FAMILY:					strcpy(info->s, "Ricoh PCM");					break;
+		 case DEVINFO_STR_VERSION:					strcpy(info->s, "1.0");							break;
+		 case DEVINFO_STR_SOURCE_FILE:						strcpy(info->s, __FILE__);						break;
+		 case DEVINFO_STR_CREDITS:					strcpy(info->s, "Copyright Nicola Salmoria and the MAME Team"); break;
+	 }
+ }*/
 
-/**************** end of file ****************/
+ /**************** end of file ****************/

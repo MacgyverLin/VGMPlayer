@@ -39,7 +39,7 @@ VGMViewer::VGMViewer(const string& name_, UINT32 x_, UINT32 y_, UINT32 width_, U
 	, vgmTitleRenderer(videoDevice, "Title", GetRegion4(width, height), VGMTitleRenderer::Skin())
 
 	, vgmWaveFormRenderer(videoDevice, "Output Wave", GetRegion3(width, height), 2.0f, VGMWaveFormRenderer::Skin())
-	, vgmMultiChannelWaveFormRenderer(videoDevice, "Channels  Wave", GetRegion2(width, height), 2.0f, VGMMultiChannelWaveFormRenderer::Skin())
+	, vgmMultiChannelWaveFormRenderer(videoDevice, "Channels  Wave", GetRegion2(width, height), 5.0f, VGMMultiChannelWaveFormRenderer::Skin())
 	, vgmSpectrumRenderer(videoDevice, "Spectrum", GetRegion1(width, height), 0.7f, VGMSpectrumRenderer::Skin())
 	, vgmMultiChannelNoteRenderer(videoDevice, "Notes", GetRegion0(width, height), 2.0f, VGMMultiChannelNoteRenderer::Skin())
 {

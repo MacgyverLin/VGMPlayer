@@ -1430,7 +1430,7 @@ Bit8u OPN2_Read(ym3438_t *chip, Bit32u port)
     return 0;
 }
 
-void OPN2_WriteBuffered(ym3438_t *chip, Bit32u port, Bit8u data)
+void OPN2_WriteBuffered(ym3438_t *chip, Bit32u port, Bit8u data, Bit32u* ch, Bit32u* chValue)
 {
     Bit64u time1, time2;
     Bit32s buffer[2];
@@ -1543,7 +1543,7 @@ void OPN2_GenerateResampled(ym3438_t *chip, Bit32s *buf)
 
 void OPN2_GenerateStream(ym3438_t *chip, Bit32s **sndptr, Bit32u numsamples, WAVE_32BS** channeloutputs, int channelcount)
 {
-    Bit32u i;
+    Bit32u i, ch;
     Bit32s *smpl, *smpr;
     Bit32s buffer[2];
     smpl = sndptr[0];
@@ -1552,6 +1552,12 @@ void OPN2_GenerateStream(ym3438_t *chip, Bit32s **sndptr, Bit32u numsamples, WAV
     for (i = 0; i < numsamples; i++)
     {
         OPN2_GenerateResampled(chip, buffer);
+        for (ch = 0; ch < channelcount; ch++)
+        {
+            channeloutputs[ch][i].Left = buffer[0];
+            channeloutputs[ch][i].Right = buffer[1];
+        }
+
         *smpl++ = buffer[0];
         *smpr++ = buffer[1];
     }

@@ -117,7 +117,7 @@ void VGMWaveFormRenderer::OnNotifyUpdate(Obserable& observable)
 
 		if ((ch % 2))
 		{
-			int stepX = 10;
+			int stepX = 3;
 			const Color& c = skin.rightColor;
 			for (UINT32 i = startX; i < endX - stepX; i += stepX)
 			{
@@ -128,7 +128,7 @@ void VGMWaveFormRenderer::OnNotifyUpdate(Obserable& observable)
 		}
 		else
 		{
-			int stepX = 10;
+			int stepX = 3;
 			const Color& c = skin.leftColor;
 			for (UINT32 i = startX; i < endX - stepX; i += stepX)
 			{
