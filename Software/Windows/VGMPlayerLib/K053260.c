@@ -138,6 +138,8 @@ void k053260_update(UINT8 ChipID, stream_sample_t** outputs, int samples, WAVE_3
 	//k053260_state *ic = (k053260_state *)param;
 	k053260_state* ic = &K053260Data[ChipID];
 
+	assert(channelcount == 4);
+
 	/* precache some values */
 	for (i = 0; i < 4; i++) {
 		if (ic->channels[i].Muted)
@@ -209,13 +211,18 @@ void k053260_update(UINT8 ChipID, stream_sample_t** outputs, int samples, WAVE_3
 
 					pos[i] += delta[i];
 				}
-				else { /* PCM */
+				else 
+				{ /* PCM */
 					d = rom[i][pos[i] >> BASE_SHIFT];
 
 					pos[i] += delta[i];
 				}
 
-				if (ic->mode & 2) {
+				if (ic->mode & 2) 
+				{
+					channeloutputs[i][j].Left = ((d * lvol[i]) >> 2) * 4;
+					channeloutputs[i][j].Right = ((d * rvol[i]) >> 2) * 4;
+
 					dataL += (d * lvol[i]) >> 2;
 					dataR += (d * rvol[i]) >> 2;
 				}

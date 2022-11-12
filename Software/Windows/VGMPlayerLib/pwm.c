@@ -336,6 +336,9 @@ void PWM_Update(pwm_chip* chip, int **buf, int length, WAVE_32BS** channeloutput
 	{
 		buf[0][i] = tmpOutL;
 		buf[1][i] = tmpOutR;
+
+		channeloutputs[0][i].Left = tmpOutL;
+		channeloutputs[0][i].Right = tmpOutR;
 	}
 }
 

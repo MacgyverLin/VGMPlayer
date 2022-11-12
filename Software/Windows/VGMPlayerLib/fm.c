@@ -2181,30 +2181,20 @@ void ym2203_update_one(void *chip, FMSAMPLE **buffer, int length, WAVE_32BS** ch
 		chan_calc(OPN, cch[1], 1 );
 		chan_calc(OPN, cch[2], 2 );
 
+		bufL[i] = 0;
+		bufR[i] = 0;
 		for (int ch = 0; ch < channelcount; ch++)
 		{
-			channeloutputs[ch][i].Left = OPN->out_fm[ch];
-			channeloutputs[ch][i].Right = OPN->out_fm[ch];
+			int d = OPN->out_fm[ch] >> 2;
+			channeloutputs[ch][i].Left = d;
+			channeloutputs[ch][i].Right = d;
+
+			bufL[i] += d;
+			bufR[i] += d;
 		}
-
-		/* buffering */
-		{
-			int lt;
-
-			lt = OPN->out_fm[0] + OPN->out_fm[1] + OPN->out_fm[2];
-
-			lt >>= FINAL_SH;
-
-			//Limit( lt , MAXOUT, MINOUT );
-
-			#ifdef SAVE_SAMPLE
-				SAVE_ALL_CHANNELS
-			#endif
-
-			/* buffering */
-			bufL[i] = lt;
-			bufR[i] = lt;
-		}
+		
+		bufL[i] >>= FINAL_SH;
+		bufR[i] >>= FINAL_SH;
 
 		/* timer A control */
 		INTERNAL_TIMER_A( &F2203->OPN.ST , cch[2] )

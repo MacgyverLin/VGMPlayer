@@ -338,7 +338,7 @@ void okim6295_update(UINT8 ChipID, stream_sample_t **outputs, int samples, WAVE_
 {
 	//okim6295_state *chip = (okim6295_state *)param;
 	okim6295_state *chip = &OKIM6295Data[ChipID];
-	int i;
+	int i, j;
 
 	memset(outputs[0], 0, samples * sizeof(*outputs[0]));
 
@@ -350,6 +350,7 @@ void okim6295_update(UINT8 ChipID, stream_sample_t **outputs, int samples, WAVE_
 			stream_sample_t *buffer = outputs[0];
 			INT16 sample_data[MAX_SAMPLE_CHUNK];
 			int remaining = samples;
+			j = 0;
 
 			/* loop while we have samples remaining */
 			while (remaining)
@@ -358,8 +359,13 @@ void okim6295_update(UINT8 ChipID, stream_sample_t **outputs, int samples, WAVE_
 				int samp;
 
 				generate_adpcm(chip, voice, sample_data, samples);
-				for (samp = 0; samp < samples; samp++)
+				for (samp = 0; samp < samples; samp++, j++)
+				{
 					*buffer++ += sample_data[samp];
+					
+					channeloutputs[i][j].Left = sample_data[samp] * 4;
+					channeloutputs[i][j].Right = sample_data[samp] * 4;
+				}
 
 				remaining -= samples;
 			}

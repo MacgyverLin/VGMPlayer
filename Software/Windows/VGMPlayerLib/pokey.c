@@ -340,7 +340,7 @@ struct _pokey_state
 	/* store sum of output signals into the buffer */					\
 /*	*buffer++ = (sum > 0x7fff) ? 0x7fff : sum;	*/						\
 	*bufL++ = *bufR++ = sum;											\
-	samples--
+	sampleIdx++
 
 #if HEAVY_MACRO_USAGE
 
@@ -353,6 +353,7 @@ struct _pokey_state
 
 #define PROCESS_POKEY(chip) 											\
 	UINT32 sum = 0; 													\
+	UINT32 sampleIdx = 0;												\
 	if( chip->output[CHAN1] && ! chip->Muted[CHAN1] )					\
 		sum += chip->volume[CHAN1];										\
 	if( chip->output[CHAN2] && ! chip->Muted[CHAN2] )					\
@@ -361,8 +362,13 @@ struct _pokey_state
 		sum += chip->volume[CHAN3];										\
 	if( chip->output[CHAN4] && ! chip->Muted[CHAN4] )					\
 		sum += chip->volume[CHAN4];										\
-    while( samples > 0 )                                                \
+    while( sampleIdx < samples)                                         \
 	{																	\
+		for(ch = 0; ch<channelcount; ch++)								\
+		{																\
+			channeloutputs[ch][sampleIdx].Left = sum;		\
+			channeloutputs[ch][sampleIdx].Right = sum;		\
+		}																\
 		if( chip->counter[CHAN1] < chip->samplepos_whole )				\
 		{																\
 			if( chip->counter[CHAN2] <  chip->counter[CHAN1] )			\
@@ -471,7 +477,8 @@ struct _pokey_state
 			UINT32 event = chip->samplepos_whole;						\
 			PROCESS_SAMPLE(chip);										\
 		}																\
-	}/*																	\
+	}
+	/*																	\
 	chip->rtimer->adjust(attotime::never)*/
 
 #else   /* no HEAVY_MACRO_USAGE */
@@ -542,6 +549,7 @@ static pokey_state PokeyData[MAX_CHIPS];
 //static STREAM_UPDATE( pokey_update )
 void pokey_update(UINT8 ChipID, stream_sample_t **outputs, int samples, WAVE_32BS** channeloutputs, int channelcount)
 {
+	int i = 0, ch = 0;;
 	//pokey_state *chip = (pokey_state *)param;
 	pokey_state *chip = &PokeyData[ChipID];
 	//stream_sample_t *buffer = outputs[0];

@@ -436,6 +436,7 @@ void VGMData::VGMPlay_Init2(void)
 	for (int i = 0; i < vgmInfo.ChannelBuffers.size(); i++)
 	{
 		vgmInfo.ChannelBuffers[i] = (WAVE_32BS*)(malloc(VGM_SAMPLE_BUFFER_SIZE * sizeof(WAVE_32BS)));
+		memset(vgmInfo.ChannelBuffers[i], 0, VGM_SAMPLE_BUFFER_SIZE * sizeof(WAVE_32BS));
 	}
 	vgmInfo.OutputChannelBuffers.resize(CHANNEL_BUFFER_COUNT);
 	for (int i = 0; i < vgmInfo.OutputChannelBuffers.size(); i++)

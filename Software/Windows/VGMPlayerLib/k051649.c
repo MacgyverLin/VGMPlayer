@@ -111,7 +111,8 @@ void k051649_update(UINT8 ChipID, stream_sample_t **outputs, int samples, WAVE_3
 	// zap the contents of the mixer buffer
 	memset(info->mixer_buffer, 0, samples * sizeof(short));
 
-	for (j=0; j<5; j++) {
+	for (j=0; j<5; j++)
+	{
 		// channel is halted for freq < 9
 		if (voice[j].frequency > 8 && ! voice[j].Muted)
 		{
@@ -131,6 +132,10 @@ void k051649_update(UINT8 ChipID, stream_sample_t **outputs, int samples, WAVE_3
 
 				c += step;
 				offs = (c >> FREQ_BITS) & 0x1f;
+
+				channeloutputs[j][i].Left = ((w[offs] * v) >> 3)*5;
+				channeloutputs[j][i].Right = ((w[offs] * v) >> 3)*5;
+
 				*mix++ += (w[offs] * v)>>3;
 			}
 

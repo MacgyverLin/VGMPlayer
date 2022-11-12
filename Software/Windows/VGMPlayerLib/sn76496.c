@@ -40,7 +40,7 @@
   extra register for mapping which channels go to which speaker.
   The register, connected to a z80 port, means:
   for bits 7  6  5  4  3  2  1  0
-           L3 L2 L1 L0 R3 R2 R1 R0
+		   L3 L2 L1 L0 R3 R2 R1 R0
   Noise is an XOR function, and audio output is negated before being output.
   All the Sega-made PSG chips act as if the frequency was set to 0 if 0 is written
   to the frequency register.
@@ -106,12 +106,12 @@
   on SMS hardware.
 
   TODO: * Implement the TMS9919 - any difference to sn94624?
-        * Implement the T6W28; has registers in a weird order, needs writes
-          to be 'sanitized' first. Also is stereo, similar to game gear.
-        * Test the NCR7496; Smspower says the whitenoise taps are A and E,
-          but this needs verification on real hardware.
-        * Factor out common code so that the SAA1099 can share some code.
-        * Convert to modern device
+		* Implement the T6W28; has registers in a weird order, needs writes
+		  to be 'sanitized' first. Also is stereo, similar to game gear.
+		* Test the NCR7496; Smspower says the whitenoise taps are A and E,
+		  but this needs verification on real hardware.
+		* Factor out common code so that the SAA1099 can share some code.
+		* Convert to modern device
 ***************************************************************************/
 
 /* Note: I patched the core to speed the emulation up (factor 8!!)
@@ -122,8 +122,8 @@
 #ifdef _DEBUG
 #include <stdio.h>
 #endif
-//#include "emu.h"
-//#include "streams.h"
+	//#include "emu.h"
+	//#include "streams.h"
 #include <stdlib.h>
 #include <string.h>	// for memset
 #include <stddef.h>	// for NULL
@@ -181,19 +181,19 @@ static unsigned short int FNumLimit;
 }*/
 
 //READ_LINE_DEVICE_HANDLER( sn76496_ready_r )
-UINT8 sn76496_ready_r(void *chip, offs_t offset)
+UINT8 sn76496_ready_r(void* chip, offs_t offset)
 {
 	//sn76496_state *R = get_safe_token(device);
-	sn76496_state *R = (sn76496_state*)chip;
+	sn76496_state* R = (sn76496_state*)chip;
 	//stream_update(R->Channel);
-	return (R->CyclestoREADY? 0 : 1);
+	return (R->CyclestoREADY ? 0 : 1);
 }
 
 //WRITE8_DEVICE_HANDLER( sn76496_stereo_w )
-void sn76496_stereo_w(void *chip, offs_t offset, UINT8 data)
+void sn76496_stereo_w(void* chip, offs_t offset, UINT8 data)
 {
 	//sn76496_state *R = get_safe_token(device);
-	sn76496_state *R = (sn76496_state*)chip;
+	sn76496_state* R = (sn76496_state*)chip;
 	//stream_update(R->Channel);
 	if (R->Stereo) R->StereoMask = data;
 #ifdef _DEBUG
@@ -202,10 +202,10 @@ void sn76496_stereo_w(void *chip, offs_t offset, UINT8 data)
 }
 
 //WRITE8_DEVICE_HANDLER( sn76496_w )
-void sn76496_write_reg(void *chip, offs_t offset, UINT8 data)
+void sn76496_write_reg(void* chip, offs_t offset, UINT8 data)
 {
 	//sn76496_state *R = get_safe_token(device);
-	sn76496_state *R = (sn76496_state*)chip;
+	sn76496_state* R = (sn76496_state*)chip;
 	int n, r, c;
 
 
@@ -213,14 +213,14 @@ void sn76496_write_reg(void *chip, offs_t offset, UINT8 data)
 	//stream_update(R->Channel);
 
 	/* set number of cycles until READY is active; this is always one
-           'sample', i.e. it equals the clock divider exactly; until the
-           clock divider is fully supported, we delay until one sample has
-           played. The fact that this below is '2' and not '1' is because
-           of a ?race condition? in the mess crvision driver, where after
-           any sample is played at all, no matter what, the cycles_to_ready
-           ends up never being not ready, unless this value is greater than
-           1. Once the full clock divider stuff is written, this should no
-           longer be an issue. */
+		   'sample', i.e. it equals the clock divider exactly; until the
+		   clock divider is fully supported, we delay until one sample has
+		   played. The fact that this below is '2' and not '1' is because
+		   of a ?race condition? in the mess crvision driver, where after
+		   any sample is played at all, no matter what, the cycles_to_ready
+		   ends up never being not ready, unless this value is greater than
+		   1. Once the full clock divider stuff is written, this should no
+		   longer be an issue. */
 	R->CyclestoREADY = 2;
 
 	if (data & 0x80)
@@ -230,76 +230,77 @@ void sn76496_write_reg(void *chip, offs_t offset, UINT8 data)
 		R->Register[r] = (R->Register[r] & 0x3f0) | (data & 0x0f);
 	}
 	else
-    {
+	{
 		r = R->LastRegister;
 	}
-	c = r/2;
+	c = r / 2;
 	switch (r)
 	{
-		case 0:	/* tone 0 : frequency */
-		case 2:	/* tone 1 : frequency */
-		case 4:	/* tone 2 : frequency */
-		    if ((data & 0x80) == 0) R->Register[r] = (R->Register[r] & 0x0f) | ((data & 0x3f) << 4);
-			if ((R->Register[r] != 0) || (R->Freq0IsMax == 0)) R->Period[c] = R->Register[r];
-			else R->Period[c] = 0x400;
-			if (r == 4)
-			{
-				/* update noise shift frequency */
-				if ((R->Register[6] & 0x03) == 0x03)
-					R->Period[3] = 2 * R->Period[2];
-			}
-			break;
-		case 1:	/* tone 0 : volume */
-		case 3:	/* tone 1 : volume */
-		case 5:	/* tone 2 : volume */
-		case 7:	/* noise  : volume */
-			R->Volume[c] = R->VolTable[data & 0x0f];
-			if ((data & 0x80) == 0) R->Register[r] = (R->Register[r] & 0x3f0) | (data & 0x0f);
-			
+	case 0:	/* tone 0 : frequency */
+	case 2:	/* tone 1 : frequency */
+	case 4:	/* tone 2 : frequency */
+		if ((data & 0x80) == 0) R->Register[r] = (R->Register[r] & 0x0f) | ((data & 0x3f) << 4);
+		if ((R->Register[r] != 0) || (R->Freq0IsMax == 0)) R->Period[c] = R->Register[r];
+		else R->Period[c] = 0x400;
+		if (r == 4)
+		{
+			/* update noise shift frequency */
+			if ((R->Register[6] & 0x03) == 0x03)
+				R->Period[3] = 2 * R->Period[2];
+		}
+		break;
+	case 1:	/* tone 0 : volume */
+	case 3:	/* tone 1 : volume */
+	case 5:	/* tone 2 : volume */
+	case 7:	/* noise  : volume */
+		R->Volume[c] = R->VolTable[data & 0x0f];
+		if ((data & 0x80) == 0) R->Register[r] = (R->Register[r] & 0x3f0) | (data & 0x0f);
+
 		//	// "Every volume write resets the waveform to High level.", TmEE, 2012-11-24 on SMSPower
 		//	R->Output[c] = 1;
 		//	R->Count[c] = R->Period[c];
 		//	disabled for now - sounds awful
-			break;
-		case 6:	/* noise  : frequency, mode */
-			{
+		break;
+	case 6:	/* noise  : frequency, mode */
+	{
 #ifdef _DEBUG
-				//if ((data & 0x80) == 0) logerror("sn76489: write to reg 6 with bit 7 clear; data was %03x, new write is %02x! report this to LN!\n", R->Register[6], data);
+		//if ((data & 0x80) == 0) logerror("sn76489: write to reg 6 with bit 7 clear; data was %03x, new write is %02x! report this to LN!\n", R->Register[6], data);
 #endif
-				if ((data & 0x80) == 0) R->Register[r] = (R->Register[r] & 0x3f0) | (data & 0x0f);
-				n = R->Register[6];
-				/* N/512,N/1024,N/2048,Tone #3 output */
-				R->Period[3] = ((n&3) == 3) ? 2 * R->Period[2] : (1 << (5+(n&3)));
-				R->RNG = R->FeedbackMask;
-			}
-			break;
+		if ((data & 0x80) == 0) R->Register[r] = (R->Register[r] & 0x3f0) | (data & 0x0f);
+		n = R->Register[6];
+		/* N/512,N/1024,N/2048,Tone #3 output */
+		R->Period[3] = ((n & 3) == 3) ? 2 * R->Period[2] : (1 << (5 + (n & 3)));
+		R->RNG = R->FeedbackMask;
+	}
+	break;
 	}
 }
 
 //static STREAM_UPDATE( SN76496Update )
-void SN76496Update(void *chip, stream_sample_t **outputs, int samples, WAVE_32BS** channeloutputs, int channelcount)
+void SN76496Update(void* chip, stream_sample_t** outputs, int samples1, WAVE_32BS** channeloutputs, int channelcount)
 {
 	int i;
 	//sn76496_state *R = (sn76496_state *)param;
-	sn76496_state *R = (sn76496_state*)chip;
-	sn76496_state *R2;
-	stream_sample_t *lbuffer = outputs[0];
+	sn76496_state* R = (sn76496_state*)chip;
+	sn76496_state* R2;
+	stream_sample_t* lbuffer = outputs[0];
 	//stream_sample_t *rbuffer = (R->Stereo)?outputs[1]:NULL;
-	stream_sample_t *rbuffer = outputs[1];
+	stream_sample_t* rbuffer = outputs[1];
 	INT32 out = 0;
 	INT32 out2 = 0;
 	INT32 vol[4];
 	UINT8 NGPMode;
 	INT32 ggst[2];
+	INT32 curSample;
 
 	NGPMode = (R->NgpFlags >> 7) & 0x01;
 	R2 = R->NgpChip2;
 
-	if (! NGPMode)
+	if (!NGPMode)
 	{
 		// Speed Hack
 		out = 0;
-		for (i = 0; i < 3; i ++)
+		for (i = 0; i < 3; i++)
 		{
 			if (R->Period[i] || R->Volume[i])
 			{
@@ -309,17 +310,17 @@ void SN76496Update(void *chip, stream_sample_t **outputs, int samples, WAVE_32BS
 		}
 		if (R->Volume[3])
 			out = 1;
-		if (! out)
+		if (!out)
 		{
-			memset(lbuffer, 0x00, sizeof(stream_sample_t) * samples);
-			memset(rbuffer, 0x00, sizeof(stream_sample_t) * samples);
+			memset(lbuffer, 0x00, sizeof(stream_sample_t) * samples1);
+			memset(rbuffer, 0x00, sizeof(stream_sample_t) * samples1);
 			return;
 		}
 	}
-	
+
 	ggst[0] = 0x01;
 	ggst[1] = 0x01;
-	while (samples > 0)
+	for (curSample = 0; curSample < samples1; curSample++)
 	{
 		/* Speed Patch */
 		/*// clock chip once
@@ -331,38 +332,38 @@ void SN76496Update(void *chip, stream_sample_t **outputs, int samples, WAVE_32BS
 		{
 			R->CurrentClock = R->ClockDivider-1;*/
 			/* decrement Cycles to READY by one */
-			if (R->CyclestoREADY >0) R->CyclestoREADY--;
+		if (R->CyclestoREADY > 0) R->CyclestoREADY--;
 
-			// handle channels 0,1,2
-			for (i = 0;i < 3;i++)
+		// handle channels 0,1,2
+		for (i = 0; i < 3; i++)
+		{
+			R->Count[i]--;
+			if (R->Count[i] <= 0)
 			{
-				R->Count[i]--;
-				if (R->Count[i] <= 0)
-				{
-					R->Output[i] ^= 1;
-					R->Count[i] = R->Period[i];
-				}
+				R->Output[i] ^= 1;
+				R->Count[i] = R->Period[i];
 			}
+		}
 
-			// handle channel 3
-			R->Count[3]--;
-			if (R->Count[3] <= 0)
-			{
+		// handle channel 3
+		R->Count[3]--;
+		if (R->Count[3] <= 0)
+		{
 			// if noisemode is 1, both taps are enabled
 			// if noisemode is 0, the lower tap, whitenoisetap2, is held at 0
-				if (((R->RNG & R->WhitenoiseTap1)?1:0) ^ ((((R->RNG & R->WhitenoiseTap2)?1:0))*(NOISEMODE)))
-				{
-					R->RNG >>= 1;
-					R->RNG |= R->FeedbackMask;
-				}
-				else
-				{
-					R->RNG >>= 1;
-				}
-				R->Output[3] = R->RNG & 1;
-
-				R->Count[3] = R->Period[3];
+			if (((R->RNG & R->WhitenoiseTap1) ? 1 : 0) ^ ((((R->RNG & R->WhitenoiseTap2) ? 1 : 0)) * (NOISEMODE)))
+			{
+				R->RNG >>= 1;
+				R->RNG |= R->FeedbackMask;
 			}
+			else
+			{
+				R->RNG >>= 1;
+			}
+			R->Output[3] = R->RNG & 1;
+
+			R->Count[3] = R->Period[3];
+		}
 		//}
 
 
@@ -388,14 +389,14 @@ void SN76496Update(void *chip, stream_sample_t **outputs, int samples, WAVE_32BS
 
 		// --- CUSTOM CODE START --
 		out = out2 = 0;
-		if (! R->NgpFlags)
+		if (!R->NgpFlags)
 		{
-			for (i = 0; i < 4; i ++)
+			for (i = 0; i < 4; i++)
 			{
 				// --- Preparation Start ---
 				// Bipolar output
 				vol[i] = R->Output[i] ? +1 : -1;
-				
+
 				// Disable high frequencies (> SampleRate / 2) for tone channels
 				// Freq. 0/1 isn't disabled becaus it would also disable PCM
 				if (i != 3)
@@ -405,14 +406,18 @@ void SN76496Update(void *chip, stream_sample_t **outputs, int samples, WAVE_32BS
 				}
 				vol[i] &= R->MuteMsk[i];
 				// --- Preparation End ---
-				
+
 				if (R->Stereo)
 				{
 					ggst[0] = (R->StereoMask & (0x10 << i)) ? 0x01 : 0x00;
 					ggst[1] = (R->StereoMask & (0x01 << i)) ? 0x01 : 0x00;
 				}
+
 				if (R->Period[i] > 1 || i == 3)
 				{
+					channeloutputs[i][curSample].Left = vol[i] * R->Volume[i] * ggst[0] << 2;
+					channeloutputs[i][curSample].Right = vol[i] * R->Volume[i] * ggst[1] << 2;
+
 					out += vol[i] * R->Volume[i] * ggst[0];
 					out2 += vol[i] * R->Volume[i] * ggst[1];
 				}
@@ -421,6 +426,9 @@ void SN76496Update(void *chip, stream_sample_t **outputs, int samples, WAVE_32BS
 					// Make Bipolar Output with PCM possible
 					//out += (2 * R->Volume[i] - R->VolTable[5]) * ggst[0];
 					//out2 += (2 * R->Volume[i] - R->VolTable[5]) * ggst[1];
+					channeloutputs[i][curSample].Left = R->Volume[i] * ggst[0] << 2;
+					channeloutputs[i][curSample].Right = R->Volume[i] * ggst[1] << 2;
+
 					out += R->Volume[i] * ggst[0];
 					out2 += R->Volume[i] * ggst[1];
 				}
@@ -428,7 +436,7 @@ void SN76496Update(void *chip, stream_sample_t **outputs, int samples, WAVE_32BS
 		}
 		else
 		{
-			if (! (R->NgpFlags & 0x01))
+			if (!(R->NgpFlags & 0x01))
 			{
 				// Tone Channel 1-3
 				if (R->Stereo)
@@ -436,28 +444,35 @@ void SN76496Update(void *chip, stream_sample_t **outputs, int samples, WAVE_32BS
 					ggst[0] = (R->StereoMask & (0x10 << i)) ? 0x01 : 0x00;
 					ggst[1] = (R->StereoMask & (0x01 << i)) ? 0x01 : 0x00;
 				}
-				for (i = 0; i < 3; i ++)
+
+				for (i = 0; i < 3; i++)
 				{
 					// --- Preparation Start ---
 					// Bipolar output
 					vol[i] = R->Output[i] ? +1 : -1;
-					
+
 					// Disable high frequencies (> SampleRate / 2) for tone channels
 					// Freq. 0 isn't disabled becaus it would also disable PCM
 					if (R->Period[i] <= FNumLimit && R->Period[i])
 						vol[i] = 0;
 					vol[i] &= R->MuteMsk[i];
 					// --- Preparation End ---
-					
+
 					//out += vol[i] * R->Volume[i];
 					//out2 += vol[i] * R2->Volume[i];
 					if (R->Period[i])
 					{
+						channeloutputs[i][curSample].Left = vol[i] * R->Volume[i] * ggst[0] << 2;
+						channeloutputs[i][curSample].Right = vol[i] * R2->Volume[i] * ggst[1] << 2;
+
 						out += vol[i] * R->Volume[i] * ggst[0];
 						out2 += vol[i] * R2->Volume[i] * ggst[1];
 					}
 					else if (R->MuteMsk[i])
 					{
+						channeloutputs[i][curSample].Left = R->Volume[i] * ggst[0] << 2;
+						channeloutputs[i][curSample].Right = R2->Volume[i] * ggst[1] << 2;
+
 						// Make Bipolar Output with PCM possible
 						out += R->Volume[i] * ggst[0];
 						out2 += R2->Volume[i] * ggst[1];
@@ -469,11 +484,11 @@ void SN76496Update(void *chip, stream_sample_t **outputs, int samples, WAVE_32BS
 				// --- Preparation Start ---
 				// Bipolar output
 				vol[i] = R->Output[i] ? +1 : -1;
-				
+
 				//vol[i] &= R->MuteMsk[i];
 				vol[i] &= R2->MuteMsk[i];	// use MuteMask from chip 0
 				// --- Preparation End ---
-				
+
 				// Noise Channel
 				if (R->Stereo)
 				{
@@ -487,24 +502,30 @@ void SN76496Update(void *chip, stream_sample_t **outputs, int samples, WAVE_32BS
 				}
 				//out += vol[3] * R2->Volume[3];
 				//out2 += vol[3] * R->Volume[3];
+				channeloutputs[i][curSample].Left = vol[3] * R2->Volume[3] * ggst[0] << 2;
+				channeloutputs[i][curSample].Right = vol[3] * R->Volume[3] * ggst[1] << 2;
+
 				out += vol[3] * R2->Volume[3] * ggst[0];
 				out2 += vol[3] * R->Volume[3] * ggst[1];
 			}
 		}
 		// --- CUSTOM CODE END --
-		
-		if(R->Negate) { out = -out; out2 = -out2; }
+
+		if (R->Negate)
+		{
+			out = -out;
+			out2 = -out2;
+		}
 
 		*(lbuffer++) = out >> 1;	// Output is Bipolar
 		//if (R->Stereo) *(rbuffer++) = out2;
 		*(rbuffer++) = out2 >> 1;
-		samples--;
 	}
 }
 
 
 
-static void SN76496_set_gain(sn76496_state *R,int gain)
+static void SN76496_set_gain(sn76496_state* R, int gain)
 {
 	int i;
 	double out;
@@ -518,7 +539,7 @@ static void SN76496_set_gain(sn76496_state *R,int gain)
 		out *= 1.023292992;	/* = (10 ^ (0.2/20)) */
 
 	/* build volume table (2dB per step) */
-	for (i = 0;i < 15;i++)
+	for (i = 0; i < 15; i++)
 	{
 		/* limit volume to avoid clipping */
 		if (out > MAX_OUTPUT / 4) R->VolTable[i] = MAX_OUTPUT / 4;
@@ -533,23 +554,23 @@ static void SN76496_set_gain(sn76496_state *R,int gain)
 
 
 //static int SN76496_init(running_device *device, sn76496_state *R, int stereo)
-static int SN76496_init(int clock, sn76496_state *R, int stereo)
+static int SN76496_init(int clock, sn76496_state* R, int stereo)
 {
-	int sample_rate = clock/2;
+	int sample_rate = clock / 2;
 	int i;
 
 	//R->Channel = stream_create(device,0,(stereo?2:1),sample_rate,R,SN76496Update);
 
-	for (i = 0;i < 4;i++) R->Volume[i] = 0;
+	for (i = 0; i < 4; i++) R->Volume[i] = 0;
 
 	R->LastRegister = 0;
-	for (i = 0;i < 8;i+=2)
+	for (i = 0; i < 8; i += 2)
 	{
 		R->Register[i] = 0;
 		R->Register[i + 1] = 0x0f;	/* volume = 0 */
 	}
 
-	for (i = 0;i < 4;i++)
+	for (i = 0; i < 4; i++)
 	{
 		R->Output[i] = R->Period[i] = R->Count[i] = 0;
 		R->MuteMsk[i] = ~0x00;
@@ -578,14 +599,14 @@ static int SN76496_init(int clock, sn76496_state *R, int stereo)
 
 
 //static void generic_start(running_device *device, int feedbackmask, int noisetap1, int noisetap2, int negate, int stereo, int clockdivider, int freq0)
-static int generic_start(sn76496_state *chip, int clock, int feedbackmask, int noisetap1, int noisetap2, int negate, int stereo, int clockdivider, int freq0)
+static int generic_start(sn76496_state* chip, int clock, int feedbackmask, int noisetap1, int noisetap2, int negate, int stereo, int clockdivider, int freq0)
 {
 	int sample_rate;
-	
+
 	//sn76496_state *chip = get_safe_token(device);
 	//sn76496_state *chip;
-	sn76496_state *chip2;
-	
+	sn76496_state* chip2;
+
 	//if (SN76496_init(device,chip,stereo) != 0)
 	//	fatalerror("Error creating SN76496 chip");
 	sample_rate = SN76496_init(clock & 0x7FFFFFFF, chip, stereo);
@@ -604,7 +625,7 @@ static int generic_start(sn76496_state *chip, int clock, int feedbackmask, int n
 		LastChipInit = chip;
 	}
 	SN76496_set_gain(chip, 0);
-	
+
 	chip->FeedbackMask = feedbackmask;
 	chip->WhitenoiseTap1 = noisetap1;
 	chip->WhitenoiseTap2 = noisetap2;
@@ -612,12 +633,12 @@ static int generic_start(sn76496_state *chip, int clock, int feedbackmask, int n
 	chip->Stereo = stereo;
 	if (clockdivider)
 		chip->ClockDivider = clockdivider;
-	chip->CurrentClock = clockdivider-1;
+	chip->CurrentClock = clockdivider - 1;
 	chip->Freq0IsMax = freq0;
-	
+
 	/* Speed Patch*/
 	sample_rate /= chip->ClockDivider;
-	
+
 	/*state_save_register_device_item_array(device, 0, chip->VolTable);
 	state_save_register_device_item_array(device, 0, chip->Register);
 	state_save_register_device_item(device, 0, chip->LastRegister);
@@ -635,71 +656,71 @@ static int generic_start(sn76496_state *chip, int clock, int feedbackmask, int n
 	state_save_register_device_item_array(device, 0, chip->Count);
 	state_save_register_device_item_array(device, 0, chip->Output);
 	state_save_register_device_item(device, 0, chip->CyclestoREADY);*/
-	
+
 	return sample_rate;
 }
 
-unsigned long int sn76496_start(void **chip, int clock, int shiftregwidth, int noisetaps,
-								int negate, int stereo, int clockdivider, int freq0)
+unsigned long int sn76496_start(void** chip, int clock, int shiftregwidth, int noisetaps,
+	int negate, int stereo, int clockdivider, int freq0)
 {
 	sn76496_state* sn_chip;
 	int ntap[2];
 	int curbit;
 	int curtap;
-	
+
 	sn_chip = (sn76496_state*)malloc(sizeof(sn76496_state));
 	if (sn_chip == NULL)
 		return 0;
 	memset(sn_chip, 0x00, sizeof(sn76496_state));
 	*chip = sn_chip;
-	
+
 	// extract single noise tap bits
 	curtap = 0;
-	for (curbit = 0; curbit < 16; curbit ++)
+	for (curbit = 0; curbit < 16; curbit++)
 	{
 		if (noisetaps & (1 << curbit))
 		{
 			ntap[curtap] = (1 << curbit);
-			curtap ++;
+			curtap++;
 			if (curtap >= 2)
 				break;
 		}
 	}
-	while(curtap < 2)
+	while (curtap < 2)
 	{
 		ntap[curtap] = ntap[0];
-		curtap ++;
+		curtap++;
 	}
-	
+
 	return generic_start(sn_chip, clock, 1 << (shiftregwidth - 1), ntap[0], ntap[1],
-						negate, ! stereo, clockdivider ? 1 : 8, freq0);
+		negate, !stereo, clockdivider ? 1 : 8, freq0);
 }
 
-void sn76496_shutdown(void *chip)
+void sn76496_shutdown(void* chip)
 {
-	sn76496_state *R = (sn76496_state*)chip;
-	
+	sn76496_state* R = (sn76496_state*)chip;
+
 	free(R);
 	return;
 }
 
-void sn76496_reset(void *chip)
+void sn76496_reset(void* chip)
 {
-	sn76496_state *R;
+	sn76496_state* R;
 	UINT8 i;
-	
+
 	R = (sn76496_state*)chip;
-	
-	for (i = 0;i < 4;i++) R->Volume[i] = 0;
+
+	for (i = 0; i < 4; i++) R->Volume[i] = 0;
 
 	R->LastRegister = 0;
-	for (i = 0;i < 8;i+=2)
+	for (i = 0; i < 8; i += 2)
 	{
 		R->Register[i] = 0;
 		R->Register[i + 1] = 0x0f;	/* volume = 0 */
 	}
 
-	for (i = 0;i < 4;i++)
+	for (i = 0; i < 4; i++)
 	{
 		R->Output[i] = R->Period[i] = R->Count[i] = 0;
 	}
@@ -709,25 +730,25 @@ void sn76496_reset(void *chip)
 
 	R->RNG = R->FeedbackMask;
 	R->Output[3] = R->RNG & 1;
-	
+
 	return;
 }
 
 void sn76496_freq_limiter(int clock, int clockdiv, int sample_rate)
 {
 	FNumLimit = (unsigned short int)((clock / (clockdiv ? 2.0 : 16.0)) / sample_rate);
-	
+
 	return;
 }
 
-void sn76496_set_mutemask(void *chip, UINT32 MuteMask)
+void sn76496_set_mutemask(void* chip, UINT32 MuteMask)
 {
-	sn76496_state *R = (sn76496_state*)chip;
+	sn76496_state* R = (sn76496_state*)chip;
 	UINT8 CurChn;
-	
-	for (CurChn = 0; CurChn < 4; CurChn ++)
+
+	for (CurChn = 0; CurChn < 4; CurChn++)
 		R->MuteMsk[CurChn] = (MuteMask & (1 << CurChn)) ? 0 : ~0;
-	
+
 	return;
 }
 
@@ -779,103 +800,103 @@ static DEVICE_START( smsiii )
  * Generic get_info
  **************************************************************************/
 
-/*DEVICE_GET_INFO( sn76496 )
-{
-	switch (state)
-	{
-		// --- the following bits of info are returned as 64-bit signed integers ---
-		case DEVINFO_INT_TOKEN_BYTES:					info->i = sizeof(sn76496_state);				break;
+ /*DEVICE_GET_INFO( sn76496 )
+ {
+	 switch (state)
+	 {
+		 // --- the following bits of info are returned as 64-bit signed integers ---
+		 case DEVINFO_INT_TOKEN_BYTES:					info->i = sizeof(sn76496_state);				break;
 
-		// --- the following bits of info are returned as pointers to data or functions ---
-		case DEVINFO_FCT_START:							info->start = DEVICE_START_NAME( sn76496 );		break;
-		case DEVINFO_FCT_STOP:							// Nothing										break;
-		case DEVINFO_FCT_RESET:							// Nothing										break;
+		 // --- the following bits of info are returned as pointers to data or functions ---
+		 case DEVINFO_FCT_START:							info->start = DEVICE_START_NAME( sn76496 );		break;
+		 case DEVINFO_FCT_STOP:							// Nothing										break;
+		 case DEVINFO_FCT_RESET:							// Nothing										break;
 
-		// --- the following bits of info are returned as NULL-terminated strings ---
-		case DEVINFO_STR_NAME:							strcpy(info->s, "SN76496");						break;
-		case DEVINFO_STR_FAMILY:					strcpy(info->s, "TI PSG");						break;
-		case DEVINFO_STR_VERSION:					strcpy(info->s, "1.1");							break;
-		case DEVINFO_STR_SOURCE_FILE:						strcpy(info->s, __FILE__);						break;
-		case DEVINFO_STR_CREDITS:					strcpy(info->s, "Copyright Nicola Salmoria and the MAME Team"); break;
-	}
-}
+		 // --- the following bits of info are returned as NULL-terminated strings ---
+		 case DEVINFO_STR_NAME:							strcpy(info->s, "SN76496");						break;
+		 case DEVINFO_STR_FAMILY:					strcpy(info->s, "TI PSG");						break;
+		 case DEVINFO_STR_VERSION:					strcpy(info->s, "1.1");							break;
+		 case DEVINFO_STR_SOURCE_FILE:						strcpy(info->s, __FILE__);						break;
+		 case DEVINFO_STR_CREDITS:					strcpy(info->s, "Copyright Nicola Salmoria and the MAME Team"); break;
+	 }
+ }
 
-DEVICE_GET_INFO( sn76489 )
-{
-	switch (state)
-	{
-		case DEVINFO_FCT_START:							info->start = DEVICE_START_NAME( sn76489 );		break;
-		case DEVINFO_STR_NAME:							strcpy(info->s, "SN76489");						break;
-		default:										DEVICE_GET_INFO_CALL(sn76496);						break;
-	}
-}
+ DEVICE_GET_INFO( sn76489 )
+ {
+	 switch (state)
+	 {
+		 case DEVINFO_FCT_START:							info->start = DEVICE_START_NAME( sn76489 );		break;
+		 case DEVINFO_STR_NAME:							strcpy(info->s, "SN76489");						break;
+		 default:										DEVICE_GET_INFO_CALL(sn76496);						break;
+	 }
+ }
 
-DEVICE_GET_INFO( sn76489a )
-{
-	switch (state)
-	{
-		case DEVINFO_FCT_START:							info->start = DEVICE_START_NAME( sn76489a );		break;
-		case DEVINFO_STR_NAME:							strcpy(info->s, "SN76489A");					break;
-		default:										DEVICE_GET_INFO_CALL(sn76496);						break;
-	}
-}
+ DEVICE_GET_INFO( sn76489a )
+ {
+	 switch (state)
+	 {
+		 case DEVINFO_FCT_START:							info->start = DEVICE_START_NAME( sn76489a );		break;
+		 case DEVINFO_STR_NAME:							strcpy(info->s, "SN76489A");					break;
+		 default:										DEVICE_GET_INFO_CALL(sn76496);						break;
+	 }
+ }
 
-DEVICE_GET_INFO( sn76494 )
-{
-	switch (state)
-	{
-		case DEVINFO_FCT_START:							info->start = DEVICE_START_NAME( sn76494 );		break;
-		case DEVINFO_STR_NAME:							strcpy(info->s, "SN76494");						break;
-		default:										DEVICE_GET_INFO_CALL(sn76496);						break;
-	}
-}
+ DEVICE_GET_INFO( sn76494 )
+ {
+	 switch (state)
+	 {
+		 case DEVINFO_FCT_START:							info->start = DEVICE_START_NAME( sn76494 );		break;
+		 case DEVINFO_STR_NAME:							strcpy(info->s, "SN76494");						break;
+		 default:										DEVICE_GET_INFO_CALL(sn76496);						break;
+	 }
+ }
 
-DEVICE_GET_INFO( sn94624 )
-{
-	switch (state)
-	{
-		case DEVINFO_FCT_START:							info->start = DEVICE_START_NAME( sn94624 );		break;
-		case DEVINFO_STR_NAME:							strcpy(info->s, "SN94624");						break;
-		default:										DEVICE_GET_INFO_CALL(sn76496);						break;
-	}
-}
+ DEVICE_GET_INFO( sn94624 )
+ {
+	 switch (state)
+	 {
+		 case DEVINFO_FCT_START:							info->start = DEVICE_START_NAME( sn94624 );		break;
+		 case DEVINFO_STR_NAME:							strcpy(info->s, "SN94624");						break;
+		 default:										DEVICE_GET_INFO_CALL(sn76496);						break;
+	 }
+ }
 
-DEVICE_GET_INFO( ncr7496 )
-{
-	switch (state)
-	{
-		case DEVINFO_FCT_START:							info->start = DEVICE_START_NAME( ncr7496 );		break;
-		case DEVINFO_STR_NAME:							strcpy(info->s, "NCR7496");						break;
-		default:										DEVICE_GET_INFO_CALL(sn76496);						break;
-	}
-}
+ DEVICE_GET_INFO( ncr7496 )
+ {
+	 switch (state)
+	 {
+		 case DEVINFO_FCT_START:							info->start = DEVICE_START_NAME( ncr7496 );		break;
+		 case DEVINFO_STR_NAME:							strcpy(info->s, "NCR7496");						break;
+		 default:										DEVICE_GET_INFO_CALL(sn76496);						break;
+	 }
+ }
 
-DEVICE_GET_INFO( gamegear )
-{
-	switch (state)
-	{
-		case DEVINFO_FCT_START:							info->start = DEVICE_START_NAME( gamegear );		break;
-		case DEVINFO_STR_NAME:							strcpy(info->s, "Game Gear PSG");				break;
-		default:										DEVICE_GET_INFO_CALL(sn76496);						break;
-	}
-}
+ DEVICE_GET_INFO( gamegear )
+ {
+	 switch (state)
+	 {
+		 case DEVINFO_FCT_START:							info->start = DEVICE_START_NAME( gamegear );		break;
+		 case DEVINFO_STR_NAME:							strcpy(info->s, "Game Gear PSG");				break;
+		 default:										DEVICE_GET_INFO_CALL(sn76496);						break;
+	 }
+ }
 
-DEVICE_GET_INFO( smsiii )
-{
-	switch (state)
-	{
-		case DEVINFO_FCT_START:							info->start = DEVICE_START_NAME( smsiii );			break;
-		case DEVINFO_STR_NAME:							strcpy(info->s, "SMSIII PSG");					break;
-		default:										DEVICE_GET_INFO_CALL(sn76496);						break;
-	}
-}*/
+ DEVICE_GET_INFO( smsiii )
+ {
+	 switch (state)
+	 {
+		 case DEVINFO_FCT_START:							info->start = DEVICE_START_NAME( smsiii );			break;
+		 case DEVINFO_STR_NAME:							strcpy(info->s, "SMSIII PSG");					break;
+		 default:										DEVICE_GET_INFO_CALL(sn76496);						break;
+	 }
+ }*/
 
 
-/*DEFINE_LEGACY_SOUND_DEVICE(SN76496, sn76496);
-DEFINE_LEGACY_SOUND_DEVICE(SN76489, sn76489);
-DEFINE_LEGACY_SOUND_DEVICE(SN76489A, sn76489a);
-DEFINE_LEGACY_SOUND_DEVICE(SN76494, sn76494);
-DEFINE_LEGACY_SOUND_DEVICE(SN94624, sn94624);
-DEFINE_LEGACY_SOUND_DEVICE(NCR7496, ncr7496);
-DEFINE_LEGACY_SOUND_DEVICE(GAMEGEAR, gamegear);
-DEFINE_LEGACY_SOUND_DEVICE(SMSIII, smsiii);*/
+ /*DEFINE_LEGACY_SOUND_DEVICE(SN76496, sn76496);
+ DEFINE_LEGACY_SOUND_DEVICE(SN76489, sn76489);
+ DEFINE_LEGACY_SOUND_DEVICE(SN76489A, sn76489a);
+ DEFINE_LEGACY_SOUND_DEVICE(SN76494, sn76494);
+ DEFINE_LEGACY_SOUND_DEVICE(SN94624, sn94624);
+ DEFINE_LEGACY_SOUND_DEVICE(NCR7496, ncr7496);
+ DEFINE_LEGACY_SOUND_DEVICE(GAMEGEAR, gamegear);
+ DEFINE_LEGACY_SOUND_DEVICE(SMSIII, smsiii);*/

@@ -1466,7 +1466,7 @@ static int init_tables(void)
 			logerror(", [%02i] %5i", i * 2, tl_tab[x * 2 /*+1*/ + i * 2 * TL_RES_LEN]);
 		logerror("\n");
 #endif
-}
+	}
 	/*logerror("FMOPL.C: TL_TAB_LEN = %i elements (%i bytes)\n",TL_TAB_LEN, (int)sizeof(tl_tab));*/
 
 
@@ -1533,7 +1533,7 @@ static int init_tables(void)
 #endif
 
 	return 1;
-	}
+}
 
 static void OPLCloseTable(void)
 {
@@ -1912,24 +1912,24 @@ static void OPLWriteReg(FM_OPL* OPL, int r, int v)
 					FM_KEYOFF(&OPL->P_CH[6].SLOT[SLOT2], ~2);
 				}
 				/* HH key on/off */
-				if (v & 0x01) 
+				if (v & 0x01)
 					FM_KEYON(&OPL->P_CH[7].SLOT[SLOT1], 2);
-				else       
+				else
 					FM_KEYOFF(&OPL->P_CH[7].SLOT[SLOT1], ~2);
 				/* SD key on/off */
-				if (v & 0x08) 
+				if (v & 0x08)
 					FM_KEYON(&OPL->P_CH[7].SLOT[SLOT2], 2);
-				else       
+				else
 					FM_KEYOFF(&OPL->P_CH[7].SLOT[SLOT2], ~2);
 				/* TOM key on/off */
-				if (v & 0x04) 
+				if (v & 0x04)
 					FM_KEYON(&OPL->P_CH[8].SLOT[SLOT1], 2);
-				else       
+				else
 					FM_KEYOFF(&OPL->P_CH[8].SLOT[SLOT1], ~2);
 				/* TOP-CY key on/off */
-				if (v & 0x02) 
+				if (v & 0x02)
 					FM_KEYON(&OPL->P_CH[8].SLOT[SLOT2], 2);
-				else       
+				else
 					FM_KEYOFF(&OPL->P_CH[8].SLOT[SLOT2], ~2);
 			}
 			else
@@ -1950,9 +1950,9 @@ static void OPLWriteReg(FM_OPL* OPL, int r, int v)
 		}
 
 		/* keyon,block,fnum */
-		if ((r & 0x0f) > 8) 
+		if ((r & 0x0f) > 8)
 			return;
-		
+
 		CH = &OPL->P_CH[r & 0x0f];
 		if (!(r & 0x10))
 		{	/* a0-a8 */
@@ -2217,7 +2217,7 @@ static void OPLsave_state_channel(OPL_CH* CH)
 			state_save_register_device_item(device, ch * 2 + slot, SLOT->vib);
 
 			state_save_register_device_item(device, ch * 2 + slot, SLOT->wavetable);
-}
+		}
 	}
 }
 #endif
@@ -2682,6 +2682,7 @@ void ym3526_update_one(void* chip, OPLSAMPLE** buffer, int length, WAVE_32BS** c
 	OPLSAMPLE* bufL = buffer[0];
 	OPLSAMPLE* bufR = buffer[1];
 	int i;
+	int o6, o7, o8;
 
 	for (i = 0; i < length; i++)
 	{
@@ -2692,26 +2693,37 @@ void ym3526_update_one(void* chip, OPLSAMPLE** buffer, int length, WAVE_32BS** c
 		advance_lfo(OPL);
 
 		/* FM part */
-		channeloutputs[0][i].Left = channeloutputs[0][i].Right = OPL_CALC_CH(OPL, &OPL->P_CH[0]);
-		channeloutputs[1][i].Left = channeloutputs[1][i].Right = OPL_CALC_CH(OPL, &OPL->P_CH[1]);
-		channeloutputs[2][i].Left = channeloutputs[2][i].Right = OPL_CALC_CH(OPL, &OPL->P_CH[2]);
-		channeloutputs[3][i].Left = channeloutputs[3][i].Right = OPL_CALC_CH(OPL, &OPL->P_CH[3]);
-		channeloutputs[4][i].Left = channeloutputs[4][i].Right = OPL_CALC_CH(OPL, &OPL->P_CH[4]);
-		channeloutputs[5][i].Left = channeloutputs[5][i].Right = OPL_CALC_CH(OPL, &OPL->P_CH[5]);
+		channeloutputs[0][i].Left = OPL_CALC_CH(OPL, &OPL->P_CH[0]) << 1;
+		channeloutputs[1][i].Left = OPL_CALC_CH(OPL, &OPL->P_CH[1]) << 1;
+		channeloutputs[2][i].Left = OPL_CALC_CH(OPL, &OPL->P_CH[2]) << 1;
+		channeloutputs[3][i].Left = OPL_CALC_CH(OPL, &OPL->P_CH[3]) << 1;
+		channeloutputs[4][i].Left = OPL_CALC_CH(OPL, &OPL->P_CH[4]) << 1;
+		channeloutputs[5][i].Left = OPL_CALC_CH(OPL, &OPL->P_CH[5]) << 1;
 
 		if (!rhythm)
 		{
-			channeloutputs[6][i].Left = channeloutputs[6][i].Right = OPL_CALC_CH(OPL, &OPL->P_CH[6]);
-			channeloutputs[7][i].Left = channeloutputs[7][i].Right = OPL_CALC_CH(OPL, &OPL->P_CH[7]);
-			channeloutputs[8][i].Left = channeloutputs[8][i].Right = OPL_CALC_CH(OPL, &OPL->P_CH[8]);
+			channeloutputs[6][i].Left = OPL_CALC_CH(OPL, &OPL->P_CH[6]) << 1;
+			channeloutputs[7][i].Left = OPL_CALC_CH(OPL, &OPL->P_CH[7]) << 1;
+			channeloutputs[8][i].Left = OPL_CALC_CH(OPL, &OPL->P_CH[8]) << 1;
 		}
 		else		/* Rhythm part */
 		{
-			OPL_CALC_RH(OPL, &OPL->P_CH[0], (OPL->noise_rng >> 0) & 1, &channeloutputs[6][i].Right, &channeloutputs[7][i].Right, &channeloutputs[8][i].Right, &channeloutputs[8][i].Right, &channeloutputs[8][i].Right);
-			channeloutputs[6][i].Left = channeloutputs[6][i].Right;
-			channeloutputs[7][i].Left = channeloutputs[7][i].Right;
-			channeloutputs[8][i].Left = channeloutputs[8][i].Right;
+			OPL_CALC_RH(OPL, &OPL->P_CH[0], (OPL->noise_rng >> 0) & 1, &channeloutputs[6][i].Right, &o6, &o7, &o8);
+			channeloutputs[6][i].Left = o6 << 1;
+			channeloutputs[7][i].Left = o7 << 1;
+			channeloutputs[8][i].Left = o8 << 1;
 		}
+		
+		channeloutputs[0][i].Right = channeloutputs[0][i].Left;
+		channeloutputs[1][i].Right = channeloutputs[1][i].Left;
+		channeloutputs[2][i].Right = channeloutputs[2][i].Left;
+		channeloutputs[3][i].Right = channeloutputs[3][i].Left;
+		channeloutputs[4][i].Right = channeloutputs[4][i].Left;
+		channeloutputs[5][i].Right = channeloutputs[5][i].Left;
+		channeloutputs[6][i].Right = channeloutputs[6][i].Left;
+		channeloutputs[7][i].Right = channeloutputs[7][i].Left;
+		channeloutputs[8][i].Right = channeloutputs[8][i].Left;
+
 
 		lt = OPL->output[0];
 
