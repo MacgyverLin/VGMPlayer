@@ -21,10 +21,10 @@ public:
 
 string ToTimeCode(float framenumber)
 {
-	UINT32 seconds = framenumber / VGM_FRAME_PER_SECOND;
+	UINT32 seconds = (UINT32)(framenumber / VGM_FRAME_PER_SECOND);
 	UINT32 minutes = seconds / 60;
 	UINT32 hours = minutes / 60;
-	UINT32 frames = floor(fmod(framenumber, 30));
+	UINT32 frames = (UINT32)floor(fmod(framenumber, 30));
 	seconds = seconds % 60;
 	minutes = minutes % 60;
 	hours = hours % 24;
@@ -433,15 +433,16 @@ void VGMData::VGMPlay_Init2(void)
 	vgmInfo.StreamBufs[0x01] = (INT32*)malloc(VGM_SAMPLE_BUFFER_SIZE * sizeof(INT32));
 
 	vgmInfo.ChannelBuffers.resize(CHANNEL_BUFFER_COUNT);
-	for (int i = 0; i < vgmInfo.ChannelBuffers.size(); i++)
+	for (size_t i = 0; i < vgmInfo.ChannelBuffers.size(); i++)
 	{
 		vgmInfo.ChannelBuffers[i] = (WAVE_32BS*)(malloc(VGM_SAMPLE_BUFFER_SIZE * sizeof(WAVE_32BS)));
-		memset(vgmInfo.ChannelBuffers[i], 0, VGM_SAMPLE_BUFFER_SIZE * sizeof(WAVE_32BS));
+		::memset(vgmInfo.ChannelBuffers[i], 0, VGM_SAMPLE_BUFFER_SIZE * sizeof(WAVE_32BS));
 	}
 	vgmInfo.OutputChannelBuffers.resize(CHANNEL_BUFFER_COUNT);
-	for (int i = 0; i < vgmInfo.OutputChannelBuffers.size(); i++)
+	for (size_t i = 0; i < vgmInfo.OutputChannelBuffers.size(); i++)
 	{
 		vgmInfo.OutputChannelBuffers[i] = (WAVE_32BS*)(malloc(VGM_SAMPLE_BUFFER_SIZE * sizeof(WAVE_32BS)));
+		::memset(vgmInfo.OutputChannelBuffers[i], 0, VGM_SAMPLE_BUFFER_SIZE * sizeof(WAVE_32BS));
 	}
 	vgmInfo.OutputBuffer.resize(VGM_SAMPLE_BUFFER_SIZE);
 
@@ -478,13 +479,13 @@ void VGMData::VGMPlay_Deinit(void)
 
 
 
-	for (int i = 0; i < vgmInfo.ChannelBuffers.size(); i++)
+	for (size_t i = 0; i < vgmInfo.ChannelBuffers.size(); i++)
 	{
 		::free(vgmInfo.ChannelBuffers[i]);	vgmInfo.ChannelBuffers[i] = NULL;
 	}
 	vgmInfo.ChannelBuffers.clear();
 
-	for (int i = 0; i < vgmInfo.OutputChannelBuffers.size(); i++)
+	for (size_t i = 0; i < vgmInfo.OutputChannelBuffers.size(); i++)
 	{
 		::free(vgmInfo.OutputChannelBuffers[i]);	vgmInfo.OutputChannelBuffers[i] = NULL;
 	}
@@ -1525,7 +1526,7 @@ void VGMData::PlayVGM(void)
 		vgmInfo.VGMEnd = true;
 
 #ifdef CONSOLE_MODE
-	memset(vgmInfo.CmdList, 0x00, 0x100 * sizeof(UINT8));
+	::memset(vgmInfo.CmdList, 0x00, 0x100 * sizeof(UINT8));
 #endif
 
 	if (!vgmInfo.PauseEmulate)
@@ -1584,6 +1585,9 @@ void VGMData::PlayVGM(void)
 	vgmInfo.Last95Max = 0xFFFF;
 	ym2612_setISVGMInit(true);	//vgmInfo.IsVGMInit = true;
 	vgmInfo.Interpreting = false;
+
+	UINT32 ch=-1;
+	UINT32 chValue=0;
 	InterpretFile(0);
 	ym2612_setISVGMInit(false); // vgmInfo.IsVGMInit = false;
 
@@ -1691,7 +1695,11 @@ void VGMData::RestartPlaying(void)
 	vgmInfo.Interpreting = false;
 	vgmInfo.ForceVGMExec = true;
 	ym2612_setISVGMInit(true);	//vgmInfo.IsVGMInit = true;
+
+	UINT32 ch = -1;
+	UINT32 chValue = 0;
 	InterpretFile(0);
+
 	ym2612_setISVGMInit(false); // vgmInfo.IsVGMInit = false;
 	vgmInfo.ForceVGMExec = false;
 #ifndef CONSOLE_MODE
@@ -1782,7 +1790,11 @@ void VGMData::SeekVGM(bool Relative, INT32 PlayBkSamples)
 	}
 
 	vgmInfo.ForceVGMExec = true;
+
+	UINT32 ch = -1;
+	UINT32 chValue = 0;
 	InterpretFile(Samples);
+
 	vgmInfo.ForceVGMExec = false;
 #ifdef CONSOLE_MODE
 	if (vgmInfo.FadePlay && vgmInfo.FadeStart)
@@ -3004,7 +3016,7 @@ UINT32 VGMData::FillBuffer(UINT32 BufferSize, bool fillbuffer)
 
 		Buffer[CurSmpl].Left = Limit2Short(TempBuf.Left);
 		Buffer[CurSmpl].Right = Limit2Short(TempBuf.Right);
-		for (int i = 0; i < BaseChannelIdx; i++)
+		for (size_t i = 0; i < BaseChannelIdx; i++)
 		{
 			vgmInfo.OutputChannelBuffers[i][CurSmpl].Left = Limit2Short(vgmInfo.ChannelBuffers[i][0].Left);
 			vgmInfo.OutputChannelBuffers[i][CurSmpl].Right = Limit2Short(vgmInfo.ChannelBuffers[i][0].Right);
@@ -3044,7 +3056,7 @@ void VGMData::ClearCommand(float time)
 	assert(impl);
 	VGMInfo& vgmInfo = impl->vgmInfo;
 
-	float curTime = vgmInfo.VGMSmplPlayed / vgmInfo.SampleRate;
+	float curTime = ((float)vgmInfo.VGMSmplPlayed) / vgmInfo.SampleRate;
 	list<CPUCommand>::iterator itr = vgmInfo.OutputCPUCommands.begin();
 	for (; itr != vgmInfo.OutputCPUCommands.end(); itr++)
 	{
@@ -3097,7 +3109,6 @@ void VGMData::ResampleChipStream(CA_LIST* CLst, WAVE_32BS* RetOutputSample, UINT
 	INT32 SmpCnt;	// must be signed, else I'm getting calculation errors
 	INT32 CurSmpl;
 	UINT64 ChipSmpRate;
-	INT32 i;
 
 	COpts = CLst->COpts;
 	CAA = CLst->CAud;
@@ -3331,8 +3342,6 @@ void VGMData::InterpretFile(UINT32 SampleCount)
 
 	UINT32 TempLng;
 	UINT8 CurChip;
-	UINT32 ch;
-	UINT32 chValue;
 
 	//if (Interpreting && SampleCount == 1)
 	//	return;
@@ -3406,8 +3415,6 @@ void VGMData::Chips_GeneralActions(UINT8 Mode)
 	UINT32 MaskVal;
 	UINT32 ChipClk;
 	UINT32 BaseChannelIdx;
-	UINT32 ch;
-	UINT32 chValue;
 
 	BaseChannelIdx = 0;
 	switch (Mode)
@@ -4540,8 +4547,8 @@ void VGMData::Chips_GeneralActions(UINT8 Mode)
 					}
 					if (vgmInfo.FileMode == 0x01)
 					{
-						chip_reg_write(0x09, CurCSet, 0x00, 0x01, 0x20, &ch, &chValue);	// Enable Waveform Select
-						chip_reg_write(0x09, CurCSet, 0x00, 0xBD, 0xC0, &ch, &chValue);	// Disable Rhythm Mode
+						chip_reg_write(0x09, CurCSet, 0x00, 0x01, 0x20);	// Enable Waveform Select
+						chip_reg_write(0x09, CurCSet, 0x00, 0xBD, 0xC0);	// Disable Rhythm Mode
 					}
 				}
 				else if (CAA->ChipType == 0x0A && !vgmInfo.UseFM)
@@ -4556,9 +4563,9 @@ void VGMData::Chips_GeneralActions(UINT8 Mode)
 					}
 					if (vgmInfo.FileMode >= 0x01)
 					{
-						chip_reg_write(0x0C, CurCSet, 0x01, 0x05, 0x01, &ch, &chValue);	// Enable OPL3-Mode
-						chip_reg_write(0x0C, CurCSet, 0x00, 0xBD, 0xC0, &ch, &chValue);	// Disable Rhythm Mode
-						chip_reg_write(0x0C, CurCSet, 0x01, 0x04, 0x00, &ch, &chValue);	// Disable 4-Op-Mode
+						chip_reg_write(0x0C, CurCSet, 0x01, 0x05, 0x01);	// Enable OPL3-Mode
+						chip_reg_write(0x0C, CurCSet, 0x00, 0xBD, 0xC0);	// Disable Rhythm Mode
+						chip_reg_write(0x0C, CurCSet, 0x01, 0x04, 0x00);	// Disable 4-Op-Mode
 					}
 				}
 				else if (CAA->ChipType == 0x0D)
@@ -5112,9 +5119,6 @@ void VGMData::InterpretVGM(UINT32 SampleCount)
 	if (vgmInfo.PausePlay && !vgmInfo.ForceVGMExec)
 		return;
 
-	UINT32 ch = -1;
-	UINT32 chValue = 0;
-
 	SmplPlayed = SamplePbk2VGM_I(vgmInfo.VGMSmplPlayed + SampleCount);
 	while (vgmInfo.VGMSmplPos <= SmplPlayed)
 	{
@@ -5130,7 +5134,7 @@ void VGMData::InterpretVGM(UINT32 SampleCount)
 				TempByt = GetDACFromPCMBank();
 				if (vgmInfo.VGMHead.lngHzYM2612)
 				{
-					chip_reg_write(0x02, 0x00, 0x00, 0x2A, TempByt, &ch, &chValue);
+					chip_reg_write(0x02, 0x00, 0x00, 0x2A, TempByt);
 				}
 				vgmInfo.VGMSmplPos += (Command & 0x0F);
 				break;
@@ -5304,14 +5308,14 @@ void VGMData::InterpretVGM(UINT32 SampleCount)
 			case 0x50:	// SN76496 write
 				if (CHIP_CHECK(SN76496))
 				{
-					chip_reg_write(0x00, CurChip, 0x00, 0x00, VGMPnt[0x01], &ch, &chValue);
+					chip_reg_write(0x00, CurChip, 0x00, 0x00, VGMPnt[0x01]);
 				}
 				vgmInfo.VGMPos += 0x02;
 				break;
 			case 0x51:	// YM2413 write
 				if (CHIP_CHECK(YM2413))
 				{
-					chip_reg_write(0x01, CurChip, 0x00, VGMPnt[0x01], VGMPnt[0x02], &ch, &chValue);
+					chip_reg_write(0x01, CurChip, 0x00, VGMPnt[0x01], VGMPnt[0x02]);
 				}
 				vgmInfo.VGMPos += 0x03;
 				break;
@@ -5319,7 +5323,7 @@ void VGMData::InterpretVGM(UINT32 SampleCount)
 			case 0x53:	// YM2612 write port 1
 				if (CHIP_CHECK(YM2612))
 				{
-					chip_reg_write(0x02, CurChip, Command & 0x01, VGMPnt[0x01], VGMPnt[0x02], &ch, &chValue);
+					chip_reg_write(0x02, CurChip, Command & 0x01, VGMPnt[0x01], VGMPnt[0x02]);
 				}
 				vgmInfo.VGMPos += 0x03;
 				break;
@@ -5524,14 +5528,14 @@ void VGMData::InterpretVGM(UINT32 SampleCount)
 			case 0x4F:	// GG Stereo
 				if (CHIP_CHECK(SN76496))
 				{
-					chip_reg_write(0x00, CurChip, 0x01, 0x00, VGMPnt[0x01], &ch, &chValue);
+					chip_reg_write(0x00, CurChip, 0x01, 0x00, VGMPnt[0x01]);
 				}
 				vgmInfo.VGMPos += 0x02;
 				break;
 			case 0x54:	// YM2151 write
 				if (CHIP_CHECK(YM2151))
 				{
-					chip_reg_write(0x03, CurChip, 0x01, VGMPnt[0x01], VGMPnt[0x02], &ch, &chValue);
+					chip_reg_write(0x03, CurChip, 0x01, VGMPnt[0x01], VGMPnt[0x02]);
 				}
 				//VGMSmplPos += 80;
 				vgmInfo.VGMPos += 0x03;
@@ -5541,14 +5545,14 @@ void VGMData::InterpretVGM(UINT32 SampleCount)
 				CurChip = (TempSht & 0x8000) >> 15;
 				if (CHIP_CHECK(SegaPCM))
 				{
-					sega_pcm_w(CurChip, TempSht & 0x7FFF, VGMPnt[0x03], &ch, &chValue);
+					sega_pcm_w(CurChip, TempSht & 0x7FFF, VGMPnt[0x03]);
 				}
 				vgmInfo.VGMPos += 0x04;
 				break;
 			case 0xB0:	// RF5C68 register write
 				if (CHIP_CHECK(RF5C68))
 				{
-					chip_reg_write(0x05, CurChip, 0x00, VGMPnt[0x01], VGMPnt[0x02], &ch, &chValue);
+					chip_reg_write(0x05, CurChip, 0x00, VGMPnt[0x01], VGMPnt[0x02]);
 				}
 				vgmInfo.VGMPos += 0x03;
 				break;
@@ -5556,14 +5560,14 @@ void VGMData::InterpretVGM(UINT32 SampleCount)
 				if (CHIP_CHECK(RF5C68))
 				{
 					TempSht = ReadLE16(&VGMPnt[0x01]);
-					rf5c68_mem_w(CurChip, TempSht, VGMPnt[0x03], &ch, &chValue);
+					rf5c68_mem_w(CurChip, TempSht, VGMPnt[0x03]);
 				}
 				vgmInfo.VGMPos += 0x04;
 				break;
 			case 0x55:	// YM2203
 				if (CHIP_CHECK(YM2203))
 				{
-					chip_reg_write(0x06, CurChip, 0x00, VGMPnt[0x01], VGMPnt[0x02], &ch, &chValue);
+					chip_reg_write(0x06, CurChip, 0x00, VGMPnt[0x01], VGMPnt[0x02]);
 				}
 				vgmInfo.VGMPos += 0x03;
 				break;
@@ -5571,7 +5575,7 @@ void VGMData::InterpretVGM(UINT32 SampleCount)
 			case 0x57:	// YM2608 write port 1
 				if (CHIP_CHECK(YM2608))
 				{
-					chip_reg_write(0x07, CurChip, Command & 0x01, VGMPnt[0x01], VGMPnt[0x02], &ch, &chValue);
+					chip_reg_write(0x07, CurChip, Command & 0x01, VGMPnt[0x01], VGMPnt[0x02]);
 				}
 				vgmInfo.VGMPos += 0x03;
 				break;
@@ -5579,28 +5583,28 @@ void VGMData::InterpretVGM(UINT32 SampleCount)
 			case 0x59:	// YM2610 write port 1
 				if (CHIP_CHECK(YM2610))
 				{
-					chip_reg_write(0x08, CurChip, Command & 0x01, VGMPnt[0x01], VGMPnt[0x02], &ch, &chValue);
+					chip_reg_write(0x08, CurChip, Command & 0x01, VGMPnt[0x01], VGMPnt[0x02]);
 				}
 				vgmInfo.VGMPos += 0x03;
 				break;
 			case 0x5A:	// YM3812 write
 				if (CHIP_CHECK(YM3812))
 				{
-					chip_reg_write(0x09, CurChip, 0x00, VGMPnt[0x01], VGMPnt[0x02], &ch, &chValue);
+					chip_reg_write(0x09, CurChip, 0x00, VGMPnt[0x01], VGMPnt[0x02]);
 				}
 				vgmInfo.VGMPos += 0x03;
 				break;
 			case 0x5B:	// YM3526 write
 				if (CHIP_CHECK(YM3526))
 				{
-					chip_reg_write(0x0A, CurChip, 0x00, VGMPnt[0x01], VGMPnt[0x02], &ch, &chValue);
+					chip_reg_write(0x0A, CurChip, 0x00, VGMPnt[0x01], VGMPnt[0x02]);
 				}
 				vgmInfo.VGMPos += 0x03;
 				break;
 			case 0x5C:	// Y8950 write
 				if (CHIP_CHECK(Y8950))
 				{
-					chip_reg_write(0x0B, CurChip, 0x00, VGMPnt[0x01], VGMPnt[0x02], &ch, &chValue);
+					chip_reg_write(0x0B, CurChip, 0x00, VGMPnt[0x01], VGMPnt[0x02]);
 				}
 				vgmInfo.VGMPos += 0x03;
 				break;
@@ -5608,14 +5612,14 @@ void VGMData::InterpretVGM(UINT32 SampleCount)
 			case 0x5F:	// YMF262 write port 1
 				if (CHIP_CHECK(YMF262))
 				{
-					chip_reg_write(0x0C, CurChip, Command & 0x01, VGMPnt[0x01], VGMPnt[0x02], &ch, &chValue);
+					chip_reg_write(0x0C, CurChip, Command & 0x01, VGMPnt[0x01], VGMPnt[0x02]);
 				}
 				vgmInfo.VGMPos += 0x03;
 				break;
 			case 0x5D:	// YMZ280B write
 				if (CHIP_CHECK(YMZ280B))
 				{
-					chip_reg_write(0x0F, CurChip, 0x00, VGMPnt[0x01], VGMPnt[0x02], &ch, &chValue);
+					chip_reg_write(0x0F, CurChip, 0x00, VGMPnt[0x01], VGMPnt[0x02]);
 				}
 				vgmInfo.VGMPos += 0x03;
 				break;
@@ -5623,7 +5627,7 @@ void VGMData::InterpretVGM(UINT32 SampleCount)
 				if (CHIP_CHECK(YMF278B))
 				{
 					CurChip = (VGMPnt[0x01] & 0x80) >> 7;
-					chip_reg_write(0x0D, CurChip, VGMPnt[0x01] & 0x7F, VGMPnt[0x02], VGMPnt[0x03], &ch, &chValue);
+					chip_reg_write(0x0D, CurChip, VGMPnt[0x01] & 0x7F, VGMPnt[0x02], VGMPnt[0x03]);
 				}
 				vgmInfo.VGMPos += 0x04;
 				break;
@@ -5631,14 +5635,14 @@ void VGMData::InterpretVGM(UINT32 SampleCount)
 				if (CHIP_CHECK(YMF271))
 				{
 					CurChip = (VGMPnt[0x01] & 0x80) >> 7;
-					chip_reg_write(0x0E, CurChip, VGMPnt[0x01] & 0x7F, VGMPnt[0x02], VGMPnt[0x03], &ch, &chValue);
+					chip_reg_write(0x0E, CurChip, VGMPnt[0x01] & 0x7F, VGMPnt[0x02], VGMPnt[0x03]);
 				}
 				vgmInfo.VGMPos += 0x04;
 				break;
 			case 0xB1:	// RF5C164 register write
 				if (CHIP_CHECK(RF5C164))
 				{
-					chip_reg_write(0x10, CurChip, 0x00, VGMPnt[0x01], VGMPnt[0x02], &ch, &chValue);
+					chip_reg_write(0x10, CurChip, 0x00, VGMPnt[0x01], VGMPnt[0x02]);
 				}
 				vgmInfo.VGMPos += 0x03;
 				break;
@@ -5646,14 +5650,14 @@ void VGMData::InterpretVGM(UINT32 SampleCount)
 				if (CHIP_CHECK(RF5C164))
 				{
 					TempSht = ReadLE16(&VGMPnt[0x01]);
-					rf5c164_mem_w(CurChip, TempSht, VGMPnt[0x03], &ch, &chValue);
+					rf5c164_mem_w(CurChip, TempSht, VGMPnt[0x03]);
 				}
 				vgmInfo.VGMPos += 0x04;
 				break;
 			case 0xB2:	// PWM channel write
 				if (CHIP_CHECK(PWM))
 				{
-					chip_reg_write(0x11, CurChip, (VGMPnt[0x01] & 0xF0) >> 4, VGMPnt[0x01] & 0x0F, VGMPnt[0x02], &ch, &chValue);
+					chip_reg_write(0x11, CurChip, (VGMPnt[0x01] & 0xF0) >> 4, VGMPnt[0x01] & 0x0F, VGMPnt[0x02]);
 				}
 				vgmInfo.VGMPos += 0x03;
 				break;
@@ -5704,7 +5708,7 @@ void VGMData::InterpretVGM(UINT32 SampleCount)
 				CurChip = (VGMPnt[0x01] & 0x80) >> 7;
 				if (CHIP_CHECK(AY8910))
 				{
-					chip_reg_write(0x12, CurChip, 0x00, VGMPnt[0x01] & 0x7F, VGMPnt[0x02], &ch, &chValue);
+					chip_reg_write(0x12, CurChip, 0x00, VGMPnt[0x01] & 0x7F, VGMPnt[0x02]);
 				}
 				vgmInfo.VGMPos += 0x03;
 				break;
@@ -5712,7 +5716,7 @@ void VGMData::InterpretVGM(UINT32 SampleCount)
 				CurChip = (VGMPnt[0x01] & 0x80) >> 7;
 				if (CHIP_CHECK(GameBoy))
 				{
-					chip_reg_write(0x13, CurChip, 0x00, VGMPnt[0x01] & 0x7F, VGMPnt[0x02], &ch, &chValue);
+					chip_reg_write(0x13, CurChip, 0x00, VGMPnt[0x01] & 0x7F, VGMPnt[0x02]);
 				}
 				vgmInfo.VGMPos += 0x03;
 				break;
@@ -5720,7 +5724,7 @@ void VGMData::InterpretVGM(UINT32 SampleCount)
 				CurChip = (VGMPnt[0x01] & 0x80) >> 7;
 				if (CHIP_CHECK(NES))
 				{
-					chip_reg_write(0x14, CurChip, 0x00, VGMPnt[0x01] & 0x7F, VGMPnt[0x02], &ch, &chValue);
+					chip_reg_write(0x14, CurChip, 0x00, VGMPnt[0x01] & 0x7F, VGMPnt[0x02]);
 				}
 				vgmInfo.VGMPos += 0x03;
 				break;
@@ -5728,7 +5732,7 @@ void VGMData::InterpretVGM(UINT32 SampleCount)
 				CurChip = (VGMPnt[0x01] & 0x80) >> 7;
 				if (CHIP_CHECK(MultiPCM))
 				{
-					chip_reg_write(0x15, CurChip, 0x00, VGMPnt[0x01] & 0x7F, VGMPnt[0x02], &ch, &chValue);
+					chip_reg_write(0x15, CurChip, 0x00, VGMPnt[0x01] & 0x7F, VGMPnt[0x02]);
 				}
 				vgmInfo.VGMPos += 0x03;
 				break;
@@ -5745,7 +5749,7 @@ void VGMData::InterpretVGM(UINT32 SampleCount)
 				CurChip = (VGMPnt[0x01] & 0x80) >> 7;
 				if (CHIP_CHECK(UPD7759))
 				{
-					chip_reg_write(0x16, CurChip, 0x00, VGMPnt[0x01] & 0x7F, VGMPnt[0x02], &ch, &chValue);
+					chip_reg_write(0x16, CurChip, 0x00, VGMPnt[0x01] & 0x7F, VGMPnt[0x02]);
 				}
 				vgmInfo.VGMPos += 0x03;
 				break;
@@ -5753,7 +5757,7 @@ void VGMData::InterpretVGM(UINT32 SampleCount)
 				CurChip = (VGMPnt[0x01] & 0x80) >> 7;
 				if (CHIP_CHECK(OKIM6258))
 				{
-					chip_reg_write(0x17, CurChip, 0x00, VGMPnt[0x01] & 0x7F, VGMPnt[0x02], &ch, &chValue);
+					chip_reg_write(0x17, CurChip, 0x00, VGMPnt[0x01] & 0x7F, VGMPnt[0x02]);
 				}
 				vgmInfo.VGMPos += 0x03;
 				break;
@@ -5761,7 +5765,7 @@ void VGMData::InterpretVGM(UINT32 SampleCount)
 				CurChip = (VGMPnt[0x01] & 0x80) >> 7;
 				if (CHIP_CHECK(OKIM6295))
 				{
-					chip_reg_write(0x18, CurChip, 0x00, VGMPnt[0x01] & 0x7F, VGMPnt[0x02], &ch, &chValue);
+					chip_reg_write(0x18, CurChip, 0x00, VGMPnt[0x01] & 0x7F, VGMPnt[0x02]);
 				}
 				vgmInfo.VGMPos += 0x03;
 				break;
@@ -5769,7 +5773,7 @@ void VGMData::InterpretVGM(UINT32 SampleCount)
 				CurChip = (VGMPnt[0x01] & 0x80) >> 7;
 				if (CHIP_CHECK(K051649))
 				{
-					chip_reg_write(0x19, CurChip, VGMPnt[0x01] & 0x7F, VGMPnt[0x02], VGMPnt[0x03], &ch, &chValue);
+					chip_reg_write(0x19, CurChip, VGMPnt[0x01] & 0x7F, VGMPnt[0x02], VGMPnt[0x03]);
 				}
 				vgmInfo.VGMPos += 0x04;
 				break;
@@ -5777,7 +5781,7 @@ void VGMData::InterpretVGM(UINT32 SampleCount)
 				CurChip = (VGMPnt[0x01] & 0x80) >> 7;
 				if (CHIP_CHECK(K054539))
 				{
-					chip_reg_write(0x1A, CurChip, VGMPnt[0x01] & 0x7F, VGMPnt[0x02], VGMPnt[0x03], &ch, &chValue);
+					chip_reg_write(0x1A, CurChip, VGMPnt[0x01] & 0x7F, VGMPnt[0x02], VGMPnt[0x03]);
 				}
 				vgmInfo.VGMPos += 0x04;
 				break;
@@ -5785,7 +5789,7 @@ void VGMData::InterpretVGM(UINT32 SampleCount)
 				CurChip = (VGMPnt[0x01] & 0x80) >> 7;
 				if (CHIP_CHECK(HuC6280))
 				{
-					chip_reg_write(0x1B, CurChip, 0x00, VGMPnt[0x01] & 0x7F, VGMPnt[0x02], &ch, &chValue);
+					chip_reg_write(0x1B, CurChip, 0x00, VGMPnt[0x01] & 0x7F, VGMPnt[0x02]);
 				}
 				vgmInfo.VGMPos += 0x03;
 				break;
@@ -5793,7 +5797,7 @@ void VGMData::InterpretVGM(UINT32 SampleCount)
 				CurChip = (VGMPnt[0x01] & 0x80) >> 7;
 				if (CHIP_CHECK(C140))
 				{
-					chip_reg_write(0x1C, CurChip, VGMPnt[0x01] & 0x7F, VGMPnt[0x02], VGMPnt[0x03], &ch, &chValue);
+					chip_reg_write(0x1C, CurChip, VGMPnt[0x01] & 0x7F, VGMPnt[0x02], VGMPnt[0x03]);
 				}
 				vgmInfo.VGMPos += 0x04;
 				break;
@@ -5801,7 +5805,7 @@ void VGMData::InterpretVGM(UINT32 SampleCount)
 				CurChip = (VGMPnt[0x01] & 0x80) >> 7;
 				if (CHIP_CHECK(K053260))
 				{
-					chip_reg_write(0x1D, CurChip, 0x00, VGMPnt[0x01] & 0x7F, VGMPnt[0x02], &ch, &chValue);
+					chip_reg_write(0x1D, CurChip, 0x00, VGMPnt[0x01] & 0x7F, VGMPnt[0x02]);
 				}
 				vgmInfo.VGMPos += 0x03;
 				break;
@@ -5809,14 +5813,14 @@ void VGMData::InterpretVGM(UINT32 SampleCount)
 				CurChip = (VGMPnt[0x01] & 0x80) >> 7;
 				if (CHIP_CHECK(Pokey))
 				{
-					chip_reg_write(0x1E, CurChip, 0x00, VGMPnt[0x01] & 0x7F, VGMPnt[0x02], &ch, &chValue);
+					chip_reg_write(0x1E, CurChip, 0x00, VGMPnt[0x01] & 0x7F, VGMPnt[0x02]);
 				}
 				vgmInfo.VGMPos += 0x03;
 				break;
 			case 0xC4:	// QSound write
 				if (CHIP_CHECK(QSound))
 				{
-					chip_reg_write(0x1F, CurChip, VGMPnt[0x01], VGMPnt[0x02], VGMPnt[0x03], &ch, &chValue);
+					chip_reg_write(0x1F, CurChip, VGMPnt[0x01], VGMPnt[0x02], VGMPnt[0x03]);
 				}
 				vgmInfo.VGMPos += 0x04;
 				break;
@@ -5824,7 +5828,7 @@ void VGMData::InterpretVGM(UINT32 SampleCount)
 				CurChip = (VGMPnt[0x01] & 0x80) >> 7;
 				if (CHIP_CHECK(SCSP))
 				{
-					chip_reg_write(0x20, CurChip, VGMPnt[0x01] & 0x7F, VGMPnt[0x02], VGMPnt[0x03], &ch, &chValue);
+					chip_reg_write(0x20, CurChip, VGMPnt[0x01] & 0x7F, VGMPnt[0x02], VGMPnt[0x03]);
 				}
 				vgmInfo.VGMPos += 0x04;
 				break;
@@ -5832,7 +5836,7 @@ void VGMData::InterpretVGM(UINT32 SampleCount)
 				CurChip = (VGMPnt[0x01] & 0x80) >> 7;
 				if (CHIP_CHECK(WSwan))
 				{
-					chip_reg_write(0x21, CurChip, 0x00, VGMPnt[0x01] & 0x7F, VGMPnt[0x02], &ch, &chValue);
+					chip_reg_write(0x21, CurChip, 0x00, VGMPnt[0x01] & 0x7F, VGMPnt[0x02]);
 				}
 				vgmInfo.VGMPos += 0x03;
 				break;
@@ -5849,7 +5853,7 @@ void VGMData::InterpretVGM(UINT32 SampleCount)
 				CurChip = (VGMPnt[0x01] & 0x80) >> 7;
 				if (CHIP_CHECK(VSU))
 				{
-					chip_reg_write(0x22, CurChip, VGMPnt[0x01] & 0x7F, VGMPnt[0x02], VGMPnt[0x03], &ch, &chValue);
+					chip_reg_write(0x22, CurChip, VGMPnt[0x01] & 0x7F, VGMPnt[0x02], VGMPnt[0x03]);
 				}
 				vgmInfo.VGMPos += 0x04;
 				break;
@@ -5857,7 +5861,7 @@ void VGMData::InterpretVGM(UINT32 SampleCount)
 				CurChip = (VGMPnt[0x01] & 0x80) >> 7;
 				if (CHIP_CHECK(SAA1099))
 				{
-					chip_reg_write(0x23, CurChip, 0x00, VGMPnt[0x01] & 0x7F, VGMPnt[0x02], &ch, &chValue);
+					chip_reg_write(0x23, CurChip, 0x00, VGMPnt[0x01] & 0x7F, VGMPnt[0x02]);
 				}
 				vgmInfo.VGMPos += 0x03;
 				break;
@@ -5865,7 +5869,7 @@ void VGMData::InterpretVGM(UINT32 SampleCount)
 				CurChip = (VGMPnt[0x01] & 0x80) >> 7;
 				if (CHIP_CHECK(ES5503))
 				{
-					chip_reg_write(0x24, CurChip, VGMPnt[0x01] & 0x7F, VGMPnt[0x02], VGMPnt[0x03], &ch, &chValue);
+					chip_reg_write(0x24, CurChip, VGMPnt[0x01] & 0x7F, VGMPnt[0x02], VGMPnt[0x03]);
 				}
 				vgmInfo.VGMPos += 0x04;
 				break;
@@ -5873,7 +5877,7 @@ void VGMData::InterpretVGM(UINT32 SampleCount)
 				CurChip = (VGMPnt[0x01] & 0x80) >> 7;
 				if (CHIP_CHECK(ES5506))
 				{
-					chip_reg_write(0x25, CurChip, VGMPnt[0x01] & 0x7F, 0x00, VGMPnt[0x02], &ch, &chValue);
+					chip_reg_write(0x25, CurChip, VGMPnt[0x01] & 0x7F, 0x00, VGMPnt[0x02]);
 				}
 				vgmInfo.VGMPos += 0x03;
 				break;
@@ -5881,7 +5885,7 @@ void VGMData::InterpretVGM(UINT32 SampleCount)
 				CurChip = (VGMPnt[0x01] & 0x80) >> 7;
 				if (CHIP_CHECK(ES5506))
 				{
-					chip_reg_write(0x25, CurChip, 0x80 | (VGMPnt[0x01] & 0x7F), VGMPnt[0x02], VGMPnt[0x03], &ch, &chValue);
+					chip_reg_write(0x25, CurChip, 0x80 | (VGMPnt[0x01] & 0x7F), VGMPnt[0x02], VGMPnt[0x03]);
 				}
 				vgmInfo.VGMPos += 0x04;
 				break;
@@ -5889,7 +5893,7 @@ void VGMData::InterpretVGM(UINT32 SampleCount)
 				CurChip = (VGMPnt[0x01] & 0x80) >> 7;
 				if (CHIP_CHECK(X1_010))
 				{
-					chip_reg_write(0x26, CurChip, VGMPnt[0x01] & 0x7F, VGMPnt[0x02], VGMPnt[0x03], &ch, &chValue);
+					chip_reg_write(0x26, CurChip, VGMPnt[0x01] & 0x7F, VGMPnt[0x02], VGMPnt[0x03]);
 				}
 				vgmInfo.VGMPos += 0x04;
 				break;
@@ -5912,7 +5916,7 @@ void VGMData::InterpretVGM(UINT32 SampleCount)
 				if (CHIP_CHECK(C352))
 				{
 					TempSht = ((VGMPnt[0x01] & 0x7F) << 8) | (VGMPnt[0x02] << 0);
-					c352_w(CurChip, TempSht, (VGMPnt[0x03] << 8) | VGMPnt[0x04], &ch, &chValue);
+					c352_w(CurChip, TempSht, (VGMPnt[0x03] << 8) | VGMPnt[0x04]);
 				}
 				vgmInfo.VGMPos += 0x05;
 				break;
@@ -5920,7 +5924,7 @@ void VGMData::InterpretVGM(UINT32 SampleCount)
 				CurChip = (VGMPnt[0x01] & 0x80) >> 7;
 				if (CHIP_CHECK(GA20))
 				{
-					chip_reg_write(0x28, CurChip, 0x00, VGMPnt[0x01] & 0x7F, VGMPnt[0x02], &ch, &chValue);
+					chip_reg_write(0x28, CurChip, 0x00, VGMPnt[0x01] & 0x7F, VGMPnt[0x02]);
 				}
 				vgmInfo.VGMPos += 0x03;
 				break;
@@ -6076,11 +6080,11 @@ void VGMData::InterpretVGM(UINT32 SampleCount)
 		if (vgmInfo.VGMEnd)
 			break;
 
-		if (ch != -1)
-		{
-			CPUCommand cmd = GetCommand(ch, chValue);
-			vgmInfo.OutputCPUCommands.push_back(cmd);
-		}
+		//if (*ch != -1)
+		//{
+			//CPUCommand cmd = GetCommand(*ch, *chValue);
+			//vgmInfo.OutputCPUCommands.push_back(cmd);
+		//}
 	}
 
 	return;
@@ -6096,7 +6100,7 @@ CPUCommand VGMData::GetCommand(UINT32 ch, UINT32 chValue)
 	string tc = ToTimeCode(frame);
 
 	char command[1024];
-	sprintf(command, "%s: %04x %04x", tc.c_str(), ch, chValue);
+	sprintf(command, "%s:", tc.c_str());
 
 	CPUCommand cmd;
 	cmd.seconds = seconds;
@@ -6905,8 +6909,6 @@ void VGMData::InterpretOther(UINT32 SampleCount)
 	bool RhythmOn;
 	bool NoteOn;
 	UINT8 OpMask;
-	UINT32 ch;
-	UINT32 chValue;
 
 	if (vgmInfo.VGMEnd)
 		return;
@@ -7100,12 +7102,12 @@ void VGMData::InterpretOther(UINT32 SampleCount)
 					if (NoteOn)
 					{
 						if (!RhythmOn)
-							SendMIDIVolume(CurChip, Channel | (RhythmOn << 7), Command, ChnIns[Command & 0x0F], vgmInfo.VGMData[vgmInfo.VGMPos + 0x01], &ch, &chValue);
+							SendMIDIVolume(CurChip, Channel | (RhythmOn << 7), Command, ChnIns[Command & 0x0F], vgmInfo.VGMData[vgmInfo.VGMPos + 0x01]);
 					}
 					if (NoteOn || !RhythmOn)
 					{
-						chip_reg_write(0x09, CurChip, 0x00, 0xA0 | Channel, TempSht & 0xFF, &ch, &chValue);
-						chip_reg_write(0x09, CurChip, 0x00, 0xB0 | Channel, TempSht >> 8, &ch, &chValue);
+						chip_reg_write(0x09, CurChip, 0x00, 0xA0 | Channel, TempSht & 0xFF);
+						chip_reg_write(0x09, CurChip, 0x00, 0xB0 | Channel, TempSht >> 8);
 					}
 
 					if (RhythmOn)
@@ -7113,9 +7115,9 @@ void VGMData::InterpretOther(UINT32 SampleCount)
 						TempByt = 0x0F - (Command & 0x0F);
 						DrumReg[CurChip] &= ~(0x01 << TempByt);
 						if (NoteOn)
-							chip_reg_write(0x09, CurChip, 0x00, 0xBD, DrumReg[CurChip], &ch, &chValue);
+							chip_reg_write(0x09, CurChip, 0x00, 0xBD, DrumReg[CurChip]);
 						DrumReg[CurChip] |= (UINT8)NoteOn << TempByt;
-						chip_reg_write(0x09, CurChip, 0x00, 0xBD, DrumReg[CurChip], &ch, &chValue);
+						chip_reg_write(0x09, CurChip, 0x00, 0xBD, DrumReg[CurChip]);
 					}
 				}
 				vgmInfo.VGMPos += 0x02;
@@ -7137,8 +7139,8 @@ void VGMData::InterpretOther(UINT32 SampleCount)
 						DrumReg[0x00] = 0xE0;
 						DrumReg[0x01] = 0xE0;
 					}
-					chip_reg_write(0x09, CurChip, 0x00, 0xBD, DrumReg[0x00], &ch, &chValue);
-					chip_reg_write(0x09, CurChip, 0x00, 0xBD, DrumReg[0x01], &ch, &chValue);
+					chip_reg_write(0x09, CurChip, 0x00, 0xBD, DrumReg[0x00]);
+					chip_reg_write(0x09, CurChip, 0x00, 0xBD, DrumReg[0x01]);
 					break;
 				case 0x68:	// Pitch Upward
 					ChnPitch[Channel] = +vgmInfo.VGMData[vgmInfo.VGMPos + 0x01];
@@ -7159,8 +7161,8 @@ void VGMData::InterpretOther(UINT32 SampleCount)
 							TempSht = MIDINote2FNum(TempByt, ChnPitch[Channel]);
 							TempSht |= 0x01 << 13;	// << (8+5)
 
-							chip_reg_write(0x09, CurChip, 0x00, 0xA0 | Channel, TempSht & 0xFF, &ch, &chValue);
-							chip_reg_write(0x09, CurChip, 0x00, 0xB0 | Channel, TempSht >> 8, &ch, &chValue);
+							chip_reg_write(0x09, CurChip, 0x00, 0xA0 | Channel, TempSht & 0xFF);
+							chip_reg_write(0x09, CurChip, 0x00, 0xB0 | Channel, TempSht >> 8);
 						}
 					}
 				}
@@ -7216,25 +7218,25 @@ void VGMData::InterpretOther(UINT32 SampleCount)
 					if (OpMask & 0x01)
 					{
 						// Write Operator 1
-						chip_reg_write(0x09, CurChip, 0x00, 0x20 | (OpBase + 0x00), TempIns->Character[TempByt], &ch, &chValue);
-						chip_reg_write(0x09, CurChip, 0x00, 0x40 | (OpBase + 0x00), TempIns->ScaleLevel[TempByt], &ch, &chValue);
-						chip_reg_write(0x09, CurChip, 0x00, 0x60 | (OpBase + 0x00), TempIns->AttackDelay[TempByt], &ch, &chValue);
-						chip_reg_write(0x09, CurChip, 0x00, 0x80 | (OpBase + 0x00), TempIns->SustnRelease[TempByt], &ch, &chValue);
-						chip_reg_write(0x09, CurChip, 0x00, 0xE0 | (OpBase + 0x00), TempIns->WaveSelect[TempByt], &ch, &chValue);
+						chip_reg_write(0x09, CurChip, 0x00, 0x20 | (OpBase + 0x00), TempIns->Character[TempByt]);
+						chip_reg_write(0x09, CurChip, 0x00, 0x40 | (OpBase + 0x00), TempIns->ScaleLevel[TempByt]);
+						chip_reg_write(0x09, CurChip, 0x00, 0x60 | (OpBase + 0x00), TempIns->AttackDelay[TempByt]);
+						chip_reg_write(0x09, CurChip, 0x00, 0x80 | (OpBase + 0x00), TempIns->SustnRelease[TempByt]);
+						chip_reg_write(0x09, CurChip, 0x00, 0xE0 | (OpBase + 0x00), TempIns->WaveSelect[TempByt]);
 						TempByt++;
 					}
 					if (OpMask & 0x02)
 					{
 						// Write Operator 2
-						chip_reg_write(0x09, CurChip, 0x00, 0x20 | (OpBase + 0x03), TempIns->Character[TempByt], &ch, &chValue);
-						chip_reg_write(0x09, CurChip, 0x00, 0x40 | (OpBase + 0x03), TempIns->ScaleLevel[TempByt], &ch, &chValue);
-						chip_reg_write(0x09, CurChip, 0x00, 0x60 | (OpBase + 0x03), TempIns->AttackDelay[TempByt], &ch, &chValue);
-						chip_reg_write(0x09, CurChip, 0x00, 0x80 | (OpBase + 0x03), TempIns->SustnRelease[TempByt], &ch, &chValue);
-						chip_reg_write(0x09, CurChip, 0x00, 0xE0 | (OpBase + 0x03), TempIns->WaveSelect[TempByt], &ch, &chValue);
+						chip_reg_write(0x09, CurChip, 0x00, 0x20 | (OpBase + 0x03), TempIns->Character[TempByt]);
+						chip_reg_write(0x09, CurChip, 0x00, 0x40 | (OpBase + 0x03), TempIns->ScaleLevel[TempByt]);
+						chip_reg_write(0x09, CurChip, 0x00, 0x60 | (OpBase + 0x03), TempIns->AttackDelay[TempByt]);
+						chip_reg_write(0x09, CurChip, 0x00, 0x80 | (OpBase + 0x03), TempIns->SustnRelease[TempByt]);
+						chip_reg_write(0x09, CurChip, 0x00, 0xE0 | (OpBase + 0x03), TempIns->WaveSelect[TempByt]);
 						TempByt++;
 					}
 
-					chip_reg_write(0x09, CurChip, 0x00, 0xC0 | Channel, TempIns->FeedbConnect, &ch, &chValue);
+					chip_reg_write(0x09, CurChip, 0x00, 0xC0 | Channel, TempIns->FeedbConnect);
 				}
 
 				vgmInfo.VGMPos += 0x01;
@@ -7264,35 +7266,35 @@ void VGMData::InterpretOther(UINT32 SampleCount)
 			{
 			case 0x00:	// OPL 2
 				for (TempByt = 0xFF; TempByt >= 0x20; TempByt--)
-					chip_reg_write(0x09, 0x00, 0x00, TempByt, 0x00, &ch, &chValue);
-				chip_reg_write(0x09, 0x00, 0x00, 0x08, 0x00, &ch, &chValue);
-				chip_reg_write(0x09, 0x00, 0x00, 0x01, 0x00, &ch, &chValue);
+					chip_reg_write(0x09, 0x00, 0x00, TempByt, 0x00);
+				chip_reg_write(0x09, 0x00, 0x00, 0x08, 0x00);
+				chip_reg_write(0x09, 0x00, 0x00, 0x01, 0x00);
 				break;
 			case 0x01:	// Dual OPL 2
 				for (TempByt = 0xFF; TempByt >= 0x20; TempByt--)
-					chip_reg_write(0x09, 0x00, 0x00, TempByt, 0x00, &ch, &chValue);
-				chip_reg_write(0x09, 0x00, 0x00, 0x08, 0x00, &ch, &chValue);
-				chip_reg_write(0x09, 0x00, 0x00, 0x01, 0x00, &ch, &chValue);
+					chip_reg_write(0x09, 0x00, 0x00, TempByt, 0x00);
+				chip_reg_write(0x09, 0x00, 0x00, 0x08, 0x00);
+				chip_reg_write(0x09, 0x00, 0x00, 0x01, 0x00);
 				//Sleep(1);
 				for (TempByt = 0xFF; TempByt >= 0x20; TempByt--)
-					chip_reg_write(0x09, 0x01, 0x00, TempByt, 0x00, &ch, &chValue);
-				chip_reg_write(0x09, 0x01, 0x00, 0x08, 0x00, &ch, &chValue);
-				chip_reg_write(0x09, 0x01, 0x00, 0x01, 0x00, &ch, &chValue);
+					chip_reg_write(0x09, 0x01, 0x00, TempByt, 0x00);
+				chip_reg_write(0x09, 0x01, 0x00, 0x08, 0x00);
+				chip_reg_write(0x09, 0x01, 0x00, 0x01, 0x00);
 				break;
 			case 0x02:	// OPL 3
 				for (TempByt = 0xFF; TempByt >= 0x20; TempByt--)
-					chip_reg_write(0x0C, 0x00, 0x00, TempByt, 0x00, &ch, &chValue);
-				chip_reg_write(0x0C, 0x00, 0x00, 0x08, 0x00, &ch, &chValue);
-				chip_reg_write(0x0C, 0x00, 0x00, 0x01, 0x00, &ch, &chValue);
+					chip_reg_write(0x0C, 0x00, 0x00, TempByt, 0x00);
+				chip_reg_write(0x0C, 0x00, 0x00, 0x08, 0x00);
+				chip_reg_write(0x0C, 0x00, 0x00, 0x01, 0x00);
 				//Sleep(1);
 				for (TempByt = 0xFF; TempByt >= 0x20; TempByt--)
-					chip_reg_write(0x0C, 0x00, 0x01, TempByt, 0x00, &ch, &chValue);
+					chip_reg_write(0x0C, 0x00, 0x01, TempByt, 0x00);
 				//chip_reg_write(0x0C, 0x00, 0x01, 0x05, 0x00);
-				chip_reg_write(0x0C, 0x00, 0x01, 0x04, 0x00, &ch, &chValue);
+				chip_reg_write(0x0C, 0x00, 0x01, 0x04, 0x00);
 				break;
 			default:
 				for (TempByt = 0xFF; TempByt >= 0x20; TempByt--)
-					chip_reg_write(0x09, 0x00, 0x00, TempByt, 0x00, &ch, &chValue);
+					chip_reg_write(0x09, 0x00, 0x00, TempByt, 0x00);
 				break;
 			}
 			Sleep(1);
@@ -7415,16 +7417,16 @@ void VGMData::InterpretOther(UINT32 SampleCount)
 				case 0x00:	// OPL 2
 					if (CurChip > 0x00)
 						break;
-					chip_reg_write(0x09, 0x00, 0x00, Command, vgmInfo.VGMData[vgmInfo.VGMPos + 0x01], &ch, &chValue);
+					chip_reg_write(0x09, 0x00, 0x00, Command, vgmInfo.VGMData[vgmInfo.VGMPos + 0x01]);
 					break;
 				case 0x01:
-					chip_reg_write(0x09, CurChip, 0x00, Command, vgmInfo.VGMData[vgmInfo.VGMPos + 0x01], &ch, &chValue);
+					chip_reg_write(0x09, CurChip, 0x00, Command, vgmInfo.VGMData[vgmInfo.VGMPos + 0x01]);
 					break;
 				case 0x02:	// OPL 3
-					chip_reg_write(0x0C, 0x00, CurChip, Command, vgmInfo.VGMData[vgmInfo.VGMPos + 0x01], &ch, &chValue);
+					chip_reg_write(0x0C, 0x00, CurChip, Command, vgmInfo.VGMData[vgmInfo.VGMPos + 0x01]);
 					break;
 				default:
-					chip_reg_write(0x09, CurChip, 0x00, Command, vgmInfo.VGMData[vgmInfo.VGMPos + 0x01], &ch, &chValue);
+					chip_reg_write(0x09, CurChip, 0x00, Command, vgmInfo.VGMData[vgmInfo.VGMPos + 0x01]);
 					break;
 				}
 				vgmInfo.VGMPos += 0x02;
@@ -7491,7 +7493,7 @@ UINT16 VGMData::MIDINote2FNum(UINT8 Note, INT8 Pitch)
 	return (BlockVal << 10) | KeyVal;	// << (8+2)
 }
 
-void VGMData::SendMIDIVolume(UINT8 ChipID, UINT8 Channel, UINT8 Command, UINT8 ChnIns, UINT8 Volume, UINT32* ch, UINT32* chValue)
+void VGMData::SendMIDIVolume(UINT8 ChipID, UINT8 Channel, UINT8 Command, UINT8 ChnIns, UINT8 Volume)
 {
 	assert(impl);
 	VGMInfo& vgmInfo = impl->vgmInfo;
@@ -7556,7 +7558,7 @@ void VGMData::SendMIDIVolume(UINT8 ChipID, UINT8 Channel, UINT8 Command, UINT8 C
 		NoteVol = 0x00;
 
 	TempByt = NoteVol | (TempIns->ScaleLevel[TempLng] & 0xC0);
-	chip_reg_write(0x09, ChipID, 0x00, 0x40 | (OpBase + OpMask), TempByt, ch, chValue);
+	chip_reg_write(0x09, ChipID, 0x00, 0x40 | (OpBase + OpMask), TempByt);
 
 	return;
 }

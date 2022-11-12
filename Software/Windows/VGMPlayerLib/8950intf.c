@@ -128,7 +128,7 @@ static void _stream_update(void *param/*, int interval*/)
 	y8950_state *info = (y8950_state *)param;
 	//stream_update(info->stream);
 	
-	y8950_update_one(info->chip, DUMMYBUF, 0, DUMMYBUF, 0);
+	y8950_update_one(info->chip, DUMMYBUF, 0, DUMMY_CHANNEL_BUF, 0);
 }
 
 

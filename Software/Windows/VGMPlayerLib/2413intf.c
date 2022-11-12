@@ -154,14 +154,14 @@ static void _stream_update(void *param, int interval)
 	{
 #ifdef ENABLE_ALL_CORES
 	case EC_MAME:
-		ym2413_update_one(info->chip, DUMMYBUF, 0, DUMMYBUF, 0);
+		ym2413_update_one(info->chip, DUMMYBUF, 0, DUMMY_CHANNEL_BUF, 0);
 		break;
 	case EC_NUKED:
-		// OPLL_GenerateStream(info->chip, DUMMYBUF, 0, DUMMYBUF, 0);
+		// OPLL_GenerateStream(info->chip, DUMMYBUF, 0, DUMMY_CHANNEL_BUF, 0);
 		break;
 #endif
 	case EC_EMU2413:
-		_emu2413_calc_stereo(info->chip, DUMMYBUF, 0, DUMMYBUF, 0);
+		_emu2413_calc_stereo(info->chip, DUMMYBUF, 0, DUMMY_CHANNEL_BUF, 0);
 		break;
 	}
 }

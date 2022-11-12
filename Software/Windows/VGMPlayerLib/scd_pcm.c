@@ -18,7 +18,7 @@ int  PCM_Init(UINT8 ChipID, int Rate);
 void PCM_Set_Rate(UINT8 ChipID, int Rate);
 void PCM_Reset(UINT8 ChipID);
 void PCM_Write_Reg(UINT8 ChipID, unsigned int Reg, unsigned int Data);
-int  PCM_Update(UINT8 ChipID, int **buf, int Length);
+int  PCM_Update(UINT8 ChipID, int **buf, int Length, WAVE_32BS** channeloutputs, int channelcount);
 
 #define PCM_STEP_SHIFT 11
 
@@ -267,7 +267,7 @@ void PCM_Write_Reg(UINT8 ChipID, unsigned int Reg, unsigned int Data)
  * @param buf PCM buffer.
  * @param Length Buffer length.
  */
-int PCM_Update(UINT8 ChipID, int **buf, int Length)
+int PCM_Update(UINT8 ChipID, int **buf, int Length, WAVE_32BS** channeloutputs, int channelcount)
 {
 	struct pcm_chip_ *chip = &PCM_Chip[ChipID];
 	int i, j;
@@ -477,13 +477,13 @@ void device_reset_rf5c164(UINT8 ChipID)
 	PCM_Reset(ChipID);
 }
 
-void rf5c164_w(UINT8 ChipID, offs_t offset, UINT8 data, UINT32* ch, UINT32* chValue)
+void rf5c164_w(UINT8 ChipID, offs_t offset, UINT8 data)
 {
 	//struct pcm_chip_ *chip = &PCM_Chip[ChipID];
 	PCM_Write_Reg(ChipID, offset, data);
 }
 
-void rf5c164_mem_w(UINT8 ChipID, offs_t offset, UINT8 data, UINT32* ch, UINT32* chValue)
+void rf5c164_mem_w(UINT8 ChipID, offs_t offset, UINT8 data)
 {
 	struct pcm_chip_ *chip = &PCM_Chip[ChipID];
 	chip->RAM[chip->Bank | offset] = data;

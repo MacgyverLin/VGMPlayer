@@ -1262,7 +1262,7 @@ void ADLIBEMU(getsample)(void* chip, INT32** sndptr, INT32 numsamples, WAVE_32BS
 	Bits cursmp;
 	Bit32s vib_tshift;
 	Bitu max_channel = NUM_CHANNELS;
-	Bits cur_ch;
+	Bitu cur_ch;
 
 	Bit32s* vibval1, * vibval2, * vibval3, * vibval4;
 	Bit32s* tremval1, * tremval2, * tremval3, * tremval4;

@@ -1054,7 +1054,7 @@ INLINE void refresh_EG(YM2151Operator * op)
 
 
 /* write a register on YM2151 chip number 'n' */
-void ym2151_write_reg(void *_chip, int r, int v, UINT32* ch, UINT32* chValue)
+void ym2151_write_reg(void *_chip, int r, int v)
 {
 	YM2151 *chip = (YM2151 *)_chip;
 	YM2151Operator *op = &chip->oper[ (r&0x07)*4+((r&0x18)>>3) ];
@@ -1088,12 +1088,6 @@ void ym2151_write_reg(void *_chip, int r, int v, UINT32* ch, UINT32* chValue)
 		case 0x08:
 			PSG = chip; /* PSG is used in KEY_ON macro */
 			envelope_KONKOFF(&chip->oper[ (v&7)*4 ], v );
-
-			if (ch && chValue)
-			{
-				*ch = (v & 7);
-				*chValue = v;
-			}
 			break;
 
 		case 0x0f:	/* noise mode enable, noise period */

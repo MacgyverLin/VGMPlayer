@@ -2,9 +2,9 @@
 #include <stdio.h>
 
 stream_sample_t* DUMMYBUF[0x02] = { NULL, NULL };
-stream_sample_t* DUMMY_CHANNEL_BUF[32] = { 0 };
+WAVE_32BS* DUMMY_CHANNEL_BUF[CHANNEL_BUFFER_COUNT] = { 0 };
 
-void chip_reg_write(UINT8 ChipType, UINT8 ChipID, UINT8 Port, UINT8 Offset, UINT8 Data, UINT32* ch, UINT32* chValue)
+void chip_reg_write(UINT8 ChipType, UINT8 ChipID, UINT8 Port, UINT8 Offset, UINT8 Data)
 {
 #ifndef DISABLE_HW_SUPPORT
 	bool ModeFM;
@@ -38,147 +38,147 @@ void chip_reg_write(UINT8 ChipType, UINT8 ChipID, UINT8 Port, UINT8 Offset, UINT
 		switch (ChipType)
 		{
 		case 0x00:	// SN76496
-			sn764xx_w(ChipID, Port, Data, ch, chValue);
+			sn764xx_w(ChipID, Port, Data);
 			break;
 		case 0x01:	// YM2413
-			ym2413_w(ChipID, 0x00, Offset, ch, chValue);
-			ym2413_w(ChipID, 0x01, Data, ch, chValue);
+			ym2413_w(ChipID, 0x00, Offset);
+			ym2413_w(ChipID, 0x01, Data);
 			break;
 		case 0x02:	// YM2612
-			ym2612_w(ChipID, (Port << 1) | 0x00, Offset, ch, chValue);
-			ym2612_w(ChipID, (Port << 1) | 0x01, Data, ch, chValue);
+			ym2612_w(ChipID, (Port << 1) | 0x00, Offset);
+			ym2612_w(ChipID, (Port << 1) | 0x01, Data);
 			break;
 		case 0x03:	// YM2151
-			ym2151_w(ChipID, 0x00, Offset, ch, chValue);
-			ym2151_w(ChipID, 0x01, Data, ch, chValue);
+			ym2151_w(ChipID, 0x00, Offset);
+			ym2151_w(ChipID, 0x01, Data);
 			break;
 		case 0x04:	// SegaPCM
 			break;
 		case 0x05:	// RF5C68
-			rf5c68_w(ChipID, Offset, Data, ch, chValue);
+			rf5c68_w(ChipID, Offset, Data);
 			break;
 		case 0x06:	// YM2203
-			ym2203_w(ChipID, 0x00, Offset, ch, chValue);
-			ym2203_w(ChipID, 0x01, Data, ch, chValue);
+			ym2203_w(ChipID, 0x00, Offset);
+			ym2203_w(ChipID, 0x01, Data);
 			break;
 		case 0x07:	// YM2608
-			ym2608_w(ChipID, (Port << 1) | 0x00, Offset, ch, chValue);
-			ym2608_w(ChipID, (Port << 1) | 0x01, Data, ch, chValue);
+			ym2608_w(ChipID, (Port << 1) | 0x00, Offset);
+			ym2608_w(ChipID, (Port << 1) | 0x01, Data);
 			break;
 		case 0x08:	// YM2610/YM2610B
-			ym2610_w(ChipID, (Port << 1) | 0x00, Offset, ch, chValue);
-			ym2610_w(ChipID, (Port << 1) | 0x01, Data, ch, chValue);
+			ym2610_w(ChipID, (Port << 1) | 0x00, Offset);
+			ym2610_w(ChipID, (Port << 1) | 0x01, Data);
 			break;
 		case 0x09:	// YM3812
-			ym3812_w(ChipID, 0x00, Offset, ch, chValue);
-			ym3812_w(ChipID, 0x01, Data, ch, chValue);
+			ym3812_w(ChipID, 0x00, Offset);
+			ym3812_w(ChipID, 0x01, Data);
 			break;
 		case 0x0A:	// YM3526
-			ym3526_w(ChipID, 0x00, Offset, ch, chValue);
-			ym3526_w(ChipID, 0x01, Data, ch, chValue);
+			ym3526_w(ChipID, 0x00, Offset);
+			ym3526_w(ChipID, 0x01, Data);
 			break;
 		case 0x0B:	// Y8950
-			y8950_w(ChipID, 0x00, Offset, ch, chValue);
-			y8950_w(ChipID, 0x01, Data, ch, chValue);
+			y8950_w(ChipID, 0x00, Offset);
+			y8950_w(ChipID, 0x01, Data);
 			break;
 		case 0x0C:	// YMF262
-			ymf262_w(ChipID, (Port << 1) | 0x00, Offset, ch, chValue);
-			ymf262_w(ChipID, (Port << 1) | 0x01, Data, ch, chValue);
+			ymf262_w(ChipID, (Port << 1) | 0x00, Offset);
+			ymf262_w(ChipID, (Port << 1) | 0x01, Data);
 			break;
 		case 0x0D:	// YMF278B
-			ymf278b_w(ChipID, (Port << 1) | 0x00, Offset, ch, chValue);
-			ymf278b_w(ChipID, (Port << 1) | 0x01, Data, ch, chValue);
+			ymf278b_w(ChipID, (Port << 1) | 0x00, Offset);
+			ymf278b_w(ChipID, (Port << 1) | 0x01, Data);
 			break;
 		case 0x0E:	// YMF271
-			ymf271_w(ChipID, (Port << 1) | 0x00, Offset, ch, chValue);
-			ymf271_w(ChipID, (Port << 1) | 0x01, Data, ch, chValue);
+			ymf271_w(ChipID, (Port << 1) | 0x00, Offset);
+			ymf271_w(ChipID, (Port << 1) | 0x01, Data);
 			break;
 		case 0x0F:	// YMZ280B
-			ymz280b_w(ChipID, 0x00, Offset, ch, chValue);
-			ymz280b_w(ChipID, 0x01, Data, ch, chValue);
+			ymz280b_w(ChipID, 0x00, Offset);
+			ymz280b_w(ChipID, 0x01, Data);
 			break;
 		case 0x10:	// RF5C164
-			rf5c164_w(ChipID, Offset, Data, ch, chValue);
+			rf5c164_w(ChipID, Offset, Data);
 			break;
 		case 0x11:	// PWM
-			pwm_chn_w(ChipID, Port, (Offset << 8) | (Data << 0), ch, chValue);
+			pwm_chn_w(ChipID, Port, (Offset << 8) | (Data << 0));
 			break;
 		case 0x12:	// AY8910
-			ayxx_w(ChipID, 0x00, Offset, ch, chValue);
-			ayxx_w(ChipID, 0x01, Data, ch, chValue);
+			ayxx_w(ChipID, 0x00, Offset);
+			ayxx_w(ChipID, 0x01, Data);
 			break;
 		case 0x13:	// GameBoy
-			gb_sound_w(ChipID, Offset, Data, ch, chValue);
+			gb_sound_w(ChipID, Offset, Data);
 			break;
 		case 0x14:	// NES APU
-			nes_w(ChipID, Offset, Data, ch, chValue);
+			nes_w(ChipID, Offset, Data);
 			break;
 		case 0x15:	// MultiPCM
-			multipcm_w(ChipID, Offset, Data, ch, chValue);
+			multipcm_w(ChipID, Offset, Data);
 			break;
 		case 0x16:	// UPD7759
-			upd7759_write(ChipID, Offset, Data, ch, chValue);
+			upd7759_write(ChipID, Offset, Data);
 			break;
 		case 0x17:	// OKIM6258
-			okim6258_write(ChipID, Offset, Data, ch, chValue);
+			okim6258_write(ChipID, Offset, Data);
 			break;
 		case 0x18:	// OKIM6295
-			okim6295_w(ChipID, Offset, Data, ch, chValue);
+			okim6295_w(ChipID, Offset, Data);
 			break;
 		case 0x19:	// K051649 / SCC1
-			k051649_w(ChipID, (Port << 1) | 0x00, Offset, ch, chValue);
-			k051649_w(ChipID, (Port << 1) | 0x01, Data, ch, chValue);
+			k051649_w(ChipID, (Port << 1) | 0x00, Offset);
+			k051649_w(ChipID, (Port << 1) | 0x01, Data);
 			break;
 		case 0x1A:	// K054539
-			k054539_w(ChipID, (Port << 8) | (Offset << 0), Data, ch, chValue);
+			k054539_w(ChipID, (Port << 8) | (Offset << 0), Data);
 			break;
 		case 0x1B:	// HuC6280
-			c6280_w(ChipID, Offset, Data, ch, chValue);
+			c6280_w(ChipID, Offset, Data);
 			break;
 		case 0x1C:	// C140
-			c140_w(ChipID, (Port << 8) | (Offset << 0), Data, ch, chValue);
+			c140_w(ChipID, (Port << 8) | (Offset << 0), Data);
 			break;
 		case 0x1D:	// K053260
-			k053260_w(ChipID, Offset, Data, ch, chValue);
+			k053260_w(ChipID, Offset, Data);
 			break;
 		case 0x1E:	// Pokey
-			pokey_w(ChipID, Offset, Data, ch, chValue);
+			pokey_w(ChipID, Offset, Data);
 			break;
 		case 0x1F:	// QSound
-			qsound_w(ChipID, 0x00, Port, ch, chValue);	// Data MSB
-			qsound_w(ChipID, 0x01, Offset, ch, chValue);	// Data LSB
-			qsound_w(ChipID, 0x02, Data, ch, chValue);	// Register
+			qsound_w(ChipID, 0x00, Port);	// Data MSB
+			qsound_w(ChipID, 0x01, Offset);	// Data LSB
+			qsound_w(ChipID, 0x02, Data);	// Register
 			break;
 		case 0x20:	// YMF292/SCSP
-			scsp_w(ChipID, (Port << 8) | (Offset << 0), Data, ch, chValue);
+			scsp_w(ChipID, (Port << 8) | (Offset << 0), Data);
 			break;
 		case 0x21:	// WonderSwan
-			ws_audio_port_write(ChipID, 0x80 | Offset, Data, ch, chValue);
+			ws_audio_port_write(ChipID, 0x80 | Offset, Data);
 			break;
 		case 0x22:	// VSU
-			VSU_Write(ChipID, (Port << 8) | (Offset << 0), Data, ch, chValue);
+			VSU_Write(ChipID, (Port << 8) | (Offset << 0), Data);
 			break;
 		case 0x23:	// SAA1099
-			saa1099_control_w(ChipID, 0, Offset, ch, chValue);
-			saa1099_data_w(ChipID, 0, Data, ch, chValue);
+			saa1099_control_w(ChipID, 0, Offset);
+			saa1099_data_w(ChipID, 0, Data);
 			break;
 		case 0x24:	// ES5503
-			es5503_w(ChipID, Offset, Data, ch, chValue);
+			es5503_w(ChipID, Offset, Data);
 			break;
 		case 0x25:	// ES5506
 			if (Port & 0x80)
-				es550x_w16(ChipID, Port & 0x7F, (Offset << 8) | (Data << 0), ch, chValue);
+				es550x_w16(ChipID, Port & 0x7F, (Offset << 8) | (Data << 0));
 			else
-				es550x_w(ChipID, Port, Data, ch, chValue);
+				es550x_w(ChipID, Port, Data);
 			break;
 		case 0x26:	// X1-010
-			seta_sound_w(ChipID, (Port << 8) | (Offset << 0), Data, ch, chValue);
+			seta_sound_w(ChipID, (Port << 8) | (Offset << 0), Data);
 			break;
 		case 0x27:	// C352
-			c352_w(ChipID, Port, (Offset << 8) | (Data << 0), ch, chValue);
+			c352_w(ChipID, Port, (Offset << 8) | (Data << 0));
 			break;
 		case 0x28:	// GA20
-			irem_ga20_w(ChipID, Offset, Data, ch, chValue);
+			irem_ga20_w(ChipID, Offset, Data);
 			break;
 			//		case 0x##:	// OKIM6376
 			//			break;

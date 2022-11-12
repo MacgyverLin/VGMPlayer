@@ -157,7 +157,7 @@ void ym2203_update_request(void *param)
 	ym2203_state *info = (ym2203_state *)param;
 	//stream_update(info->stream);
 	
-	ym2203_update_one(info->chip, DUMMYBUF, 0, DUMMYBUF, 0);
+	ym2203_update_one(info->chip, DUMMYBUF, 0, DUMMY_CHANNEL_BUF, 0);
 	// We really don't need this.
 	/*if (info->psg != NULL)
 	{

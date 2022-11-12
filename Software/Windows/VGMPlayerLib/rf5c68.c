@@ -317,7 +317,7 @@ void device_reset_rf5c68(UINT8 ChipID)
 /************************************************/
 
 //WRITE8_DEVICE_HANDLER( rf5c68_w )
-void rf5c68_w(UINT8 ChipID, offs_t offset, UINT8 data, UINT32* ch, UINT32* chValue)
+void rf5c68_w(UINT8 ChipID, offs_t offset, UINT8 data)
 {
 	//rf5c68_state *chip = get_safe_token(device);
 	rf5c68_state* chip = &RF5C68Data[ChipID];
@@ -376,9 +376,6 @@ void rf5c68_w(UINT8 ChipID, offs_t offset, UINT8 data, UINT32* ch, UINT32* chVal
 			{
 				chip->chan[i].addr = chip->chan[i].start << (8 + 11);
 			}
-
-			*ch = chip->cbank;
-			*chValue = data;
 		}
 		break;
 	}
@@ -403,7 +400,7 @@ UINT8 rf5c68_mem_r(UINT8 ChipID, offs_t offset)
 /************************************************/
 
 //WRITE8_DEVICE_HANDLER( rf5c68_mem_w )
-void rf5c68_mem_w(UINT8 ChipID, offs_t offset, UINT8 data, UINT32* ch, UINT32* chValue)
+void rf5c68_mem_w(UINT8 ChipID, offs_t offset, UINT8 data)
 {
 	//rf5c68_state *chip = get_safe_token(device);
 	rf5c68_state* chip = &RF5C68Data[ChipID];

@@ -325,6 +325,9 @@ void PWM_Update(pwm_chip* chip, int **buf, int length, WAVE_32BS** channeloutput
 	{
 		memset(buf[0], 0x00, length * sizeof(int));
 		memset(buf[1], 0x00, length * sizeof(int));
+
+		memset(channeloutputs[0], 0x00, length * sizeof(WAVE_32BS));
+	
 		return;
 	}
 	

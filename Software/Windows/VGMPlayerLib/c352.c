@@ -330,7 +330,7 @@ UINT16 c352_r(UINT8 ChipID, offs_t address)
         return 0;
 }
 
-void c352_w(UINT8 ChipID, offs_t address, UINT16 val, UINT32* ch, UINT32* chValue)
+void c352_w(UINT8 ChipID, offs_t address, UINT16 val)
 {
     C352 *c = &C352Data[ChipID];
     

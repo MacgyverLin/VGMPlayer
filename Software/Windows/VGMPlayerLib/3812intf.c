@@ -126,11 +126,11 @@ static void _stream_update(void * param/*, int interval*/)
 	{
 #ifdef ENABLE_ALL_CORES
 	case EC_MAME:
-		ym3812_update_one(info->chip, DUMMYBUF, 0, DUMMYBUF, 0);
+		ym3812_update_one(info->chip, DUMMYBUF, 0, DUMMY_CHANNEL_BUF, 0);
 		break;
 #endif
 	case EC_DBOPL:
-		adlib_OPL2_getsample(info->chip, DUMMYBUF, 0, DUMMYBUF, 0);
+		adlib_OPL2_getsample(info->chip, DUMMYBUF, 0, DUMMY_CHANNEL_BUF, 0);
 		break;
 	}
 }

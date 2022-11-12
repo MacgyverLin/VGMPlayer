@@ -759,7 +759,7 @@ private:
 	void InterpretOther(UINT32 SampleCount);
 	UINT32 GetMIDIDelay(UINT32* DelayLen);
 	UINT16 MIDINote2FNum(UINT8 Note, INT8 Pitch);
-	void SendMIDIVolume(UINT8 ChipID, UINT8 Channel, UINT8 Command, UINT8 ChnIns, UINT8 Volume, UINT32* ch, UINT32* chValue);
+	void SendMIDIVolume(UINT8 ChipID, UINT8 Channel, UINT8 Command, UINT8 ChnIns, UINT8 Volume);
 	bool OpenOtherFile(const char* FileName);
 public:
 	static void ChangeChipSampleRate(void* DataPtr, UINT32 NewSmplRate);

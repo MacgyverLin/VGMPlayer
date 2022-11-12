@@ -432,6 +432,11 @@ void SN76496Update(void* chip, stream_sample_t** outputs, int samples1, WAVE_32B
 					out += R->Volume[i] * ggst[0];
 					out2 += R->Volume[i] * ggst[1];
 				}
+				else
+				{
+					channeloutputs[i][curSample].Left = 0;
+					channeloutputs[i][curSample].Right = 0;
+				}
 			}
 		}
 		else
@@ -477,6 +482,11 @@ void SN76496Update(void* chip, stream_sample_t** outputs, int samples1, WAVE_32B
 						out += R->Volume[i] * ggst[0];
 						out2 += R2->Volume[i] * ggst[1];
 					}
+					else
+					{
+						channeloutputs[i][curSample].Left = 0;
+						channeloutputs[i][curSample].Right = 0;
+					}
 				}
 			}
 			else
@@ -500,6 +510,7 @@ void SN76496Update(void* chip, stream_sample_t** outputs, int samples1, WAVE_32B
 					ggst[0] = 0x01;
 					ggst[1] = 0x01;
 				}
+			
 				//out += vol[3] * R2->Volume[3];
 				//out2 += vol[3] * R->Volume[3];
 				channeloutputs[i][curSample].Left = vol[3] * R2->Volume[3] * ggst[0] << 2;

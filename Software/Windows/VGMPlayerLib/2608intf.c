@@ -185,7 +185,7 @@ void ym2608_update_request(void *param)
 	ym2608_state *info = (ym2608_state *)param;
 	//stream_update(info->stream);
 	
-	ym2608_update_one(info->chip, DUMMYBUF, 0, DUMMYBUF, 0);
+	ym2608_update_one(info->chip, DUMMYBUF, 0, DUMMY_CHANNEL_BUF, 0);
 	// Not necessary.
 	//if (info->psg != NULL)
 	//	ay8910_update_one(info->psg, DUMMYBUF, 0);

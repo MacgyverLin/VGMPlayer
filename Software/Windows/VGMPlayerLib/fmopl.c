@@ -1000,7 +1000,7 @@ INLINE signed int OPL_CALC_CH(FM_OPL* OPL, OPL_CH* CH)
 	signed int out;
 
 	if (CH->Muted)
-		return;
+		return 0 ;
 
 	OPL->phase_modulation = 0;
 
@@ -1259,6 +1259,8 @@ INLINE signed int OPL_CALC_RH1(FM_OPL* OPL, OPL_CH* CH, unsigned int noise, sign
 	{
 		*o0 = 0;
 	}
+
+	return 0;
 }
 
 
@@ -1426,6 +1428,9 @@ INLINE signed int OPL_CALC_RH(FM_OPL* OPL, OPL_CH* CH, unsigned int noise)
 			OPL->output[0] += op_calc(phase << FREQ_SH, env, 0, SLOT8_2->wavetable) * 2;
 		}
 	}
+
+
+	return 0;
 }
 
 /* generic table initialize */
@@ -2682,7 +2687,7 @@ void ym3526_update_one(void* chip, OPLSAMPLE** buffer, int length, WAVE_32BS** c
 	OPLSAMPLE* bufL = buffer[0];
 	OPLSAMPLE* bufR = buffer[1];
 	int i;
-	int o6, o7, o8;
+	int o6, o7, o8, o9;
 
 	for (i = 0; i < length; i++)
 	{
@@ -2708,7 +2713,7 @@ void ym3526_update_one(void* chip, OPLSAMPLE** buffer, int length, WAVE_32BS** c
 		}
 		else		/* Rhythm part */
 		{
-			OPL_CALC_RH(OPL, &OPL->P_CH[0], (OPL->noise_rng >> 0) & 1, &channeloutputs[6][i].Right, &o6, &o7, &o8);
+			OPL_CALC_RH1(OPL, &OPL->P_CH[0], (OPL->noise_rng >> 0) & 1, &channeloutputs[6][i].Right, &o6, &o7, &o8, &o9);
 			channeloutputs[6][i].Left = o6 << 1;
 			channeloutputs[7][i].Left = o7 << 1;
 			channeloutputs[8][i].Left = o8 << 1;

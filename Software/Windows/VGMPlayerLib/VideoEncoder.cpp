@@ -96,7 +96,7 @@ private:
 
 			c->me_method = 1;
 
-			c->bit_rate = 400000;
+			c->bit_rate = 40000;
 			/* Resolution must be a multiple of two. */
 			c->width = width;
 			c->height = height;

@@ -29,7 +29,7 @@ int device_start_segapcm(UINT8 ChipID, int clock, int intf_bank, UINT8 CHIP_SAMP
 void device_stop_segapcm(UINT8 ChipID);
 void device_reset_segapcm(UINT8 ChipID);
 
-void sega_pcm_w(UINT8 ChipID, offs_t offset, UINT8 data, UINT32* ch, UINT32* chValue);
+void sega_pcm_w(UINT8 ChipID, offs_t offset, UINT8 data);
 UINT8 sega_pcm_r(UINT8 ChipID, offs_t offset);
 void sega_pcm_write_rom(UINT8 ChipID, offs_t ROMSize, offs_t DataStart, offs_t DataLength,
 						const UINT8* ROMData);

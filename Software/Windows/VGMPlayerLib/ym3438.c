@@ -1430,7 +1430,7 @@ Bit8u OPN2_Read(ym3438_t *chip, Bit32u port)
     return 0;
 }
 
-void OPN2_WriteBuffered(ym3438_t *chip, Bit32u port, Bit8u data, Bit32u* ch, Bit32u* chValue)
+void OPN2_WriteBuffered(ym3438_t *chip, Bit32u port, Bit8u data)
 {
     Bit64u time1, time2;
     Bit32s buffer[2];

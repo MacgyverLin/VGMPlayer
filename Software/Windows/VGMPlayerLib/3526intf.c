@@ -98,7 +98,7 @@ static void _stream_update(void *param/*, int interval*/)
 	ym3526_state *info = (ym3526_state *)param;
 	//stream_update(info->stream);
 	
-	ym3526_update_one(info->chip, DUMMYBUF, 0, DUMMYBUF, 0);
+	ym3526_update_one(info->chip, DUMMYBUF, 0, DUMMY_CHANNEL_BUF, 0);
 }
 
 

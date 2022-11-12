@@ -2623,7 +2623,7 @@ void ym2612_reset_chip(void *chip)
 /* n = number  */
 /* a = address */
 /* v = value   */
-int ym2612_write(void *chip, int a, UINT8 v, UINT32* ch, UINT32* chValue)
+int ym2612_write(void *chip, int a, UINT8 v)
 {
 	YM2612 *F2612 = (YM2612 *)chip;
 	int addr;

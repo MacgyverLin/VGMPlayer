@@ -186,7 +186,7 @@ UINT8 ym2151_r(UINT8 ChipID, offs_t offset)
 }
 
 //WRITE8_DEVICE_HANDLER( ym2151_w )
-void ym2151_w(UINT8 ChipID, offs_t offset, UINT8 data, UINT32* ch, UINT32* chValue)
+void ym2151_w(UINT8 ChipID, offs_t offset, UINT8 data)
 {
 	//ym2151_state *token = get_safe_token(device);
 	ym2151_state *token = &YM2151Data[ChipID];
@@ -196,7 +196,7 @@ void ym2151_w(UINT8 ChipID, offs_t offset, UINT8 data, UINT32* ch, UINT32* chVal
 		if (offset & 1)
 		{
 			//stream_update(token->stream);
-			ym2151_write_reg(token->chip, token->lastreg, data, ch, chValue);
+			ym2151_write_reg(token->chip, token->lastreg, data);
 			//YM2151WriteReg(0x00, token->lastreg, data);
 		}
 		else
@@ -220,13 +220,13 @@ UINT8 ym2151_status_port_r(UINT8 ChipID, offs_t offset)
 	return ym2151_r(ChipID, 1);
 }
 
-void ym2151_register_port_w(UINT8 ChipID, offs_t offset, UINT8 data, UINT32* ch, UINT32* chValue)
+void ym2151_register_port_w(UINT8 ChipID, offs_t offset, UINT8 data)
 {
-	ym2151_w(ChipID, 0, data, ch, chValue);
+	ym2151_w(ChipID, 0, data);
 }
-void ym2151_data_port_w(UINT8 ChipID, offs_t offset, UINT8 data, UINT32* ch, UINT32* chValue)
+void ym2151_data_port_w(UINT8 ChipID, offs_t offset, UINT8 data)
 {
-	ym2151_w(ChipID, 1, data, ch, chValue);
+	ym2151_w(ChipID, 1, data);
 }
 
 

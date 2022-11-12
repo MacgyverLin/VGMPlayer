@@ -40,7 +40,7 @@ typedef void (*strm_func)(UINT8 ChipID, stream_sample_t** outputs, int samples, 
 extern stream_sample_t* DUMMYBUF[];
 typedef void (*SRATE_CALLBACK)(void*, UINT32);
 
-extern void chip_reg_write(UINT8 ChipType, UINT8 ChipID, UINT8 Port, UINT8 Offset, UINT8 Data, UINT32* ch, UINT32* chValue);
+extern void chip_reg_write(UINT8 ChipType, UINT8 ChipID, UINT8 Port, UINT8 Offset, UINT8 Data);
 
 #if defined(_MSC_VER)
 //#define INLINE	static __forceinline
@@ -76,6 +76,7 @@ extern char* FindFile(const char* FileName);
 #define VGMPlayer_MIN(a, b) ((a)<(b)) ? (a) : (b)
 #define VGMPlayer_MAX(a, b) ((a)>(b)) ? (a) : (b)
 
+extern WAVE_32BS* DUMMY_CHANNEL_BUF[CHANNEL_BUFFER_COUNT];
 
 
 #endif

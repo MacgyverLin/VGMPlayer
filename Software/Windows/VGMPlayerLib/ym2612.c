@@ -375,7 +375,7 @@ INLINE void CSM_Key_Control(ym2612_* YM2612)
 }
 
 
-int SLOT_SET(ym2612_* YM2612, int Adr, unsigned char data, UINT32* ch, UINT32* chValue)
+int SLOT_SET(ym2612_* YM2612, int Adr, unsigned char data)
 {
 	channel_* CH;
 	slot_* SL;
@@ -388,9 +388,6 @@ int SLOT_SET(ym2612_* YM2612, int Adr, unsigned char data, UINT32* ch, UINT32* c
 
 	CH = &(YM2612->CHANNEL[nch]);
 	SL = &(CH->SLOT[nsl]);
-
-	*ch = nch;
-	*chValue = data;
 
 	switch (Adr & 0xF0)
 	{
@@ -522,7 +519,7 @@ int SLOT_SET(ym2612_* YM2612, int Adr, unsigned char data, UINT32* ch, UINT32* c
 }
 
 
-int CHANNEL_SET(ym2612_* YM2612, int Adr, unsigned char data, UINT32* ch, UINT32* chValue)
+int CHANNEL_SET(ym2612_* YM2612, int Adr, unsigned char data)
 {
 	channel_* CH;
 	int num;
@@ -657,9 +654,6 @@ int CHANNEL_SET(ym2612_* YM2612, int Adr, unsigned char data, UINT32* ch, UINT32
 #endif
 		break;
 	}
-
-	*ch = num;
-	*chValue = data;
 
 	return 0;
 }
@@ -2210,26 +2204,24 @@ int YM2612_Reset(ym2612_* YM2612)
 		YM2612->REG[1][i] = -1;
 	}
 
-	UINT32 ch;
-	UINT32 chValue;
 	for (i = 0xB6; i >= 0xB4; i--)
 	{
-		YM2612_Write(YM2612, 0, (unsigned char)i, &ch, &chValue);
-		YM2612_Write(YM2612, 2, (unsigned char)i, &ch, &chValue);
-		YM2612_Write(YM2612, 1, 0xC0, &ch, &chValue);
-		YM2612_Write(YM2612, 3, 0xC0, &ch, &chValue);
+		YM2612_Write(YM2612, 0, (unsigned char)i);
+		YM2612_Write(YM2612, 2, (unsigned char)i);
+		YM2612_Write(YM2612, 1, 0xC0);
+		YM2612_Write(YM2612, 3, 0xC0);
 	}
 
 	for (i = 0xB2; i >= 0x22; i--)
 	{
-		YM2612_Write(YM2612, 0, (unsigned char)i, &ch, &chValue);
-		YM2612_Write(YM2612, 2, (unsigned char)i, &ch, &chValue);
-		YM2612_Write(YM2612, 1, 0, &ch, &chValue);
-		YM2612_Write(YM2612, 3, 0, &ch, &chValue);
+		YM2612_Write(YM2612, 0, (unsigned char)i);
+		YM2612_Write(YM2612, 2, (unsigned char)i);
+		YM2612_Write(YM2612, 1, 0);
+		YM2612_Write(YM2612, 3, 0);
 	}
 
-	YM2612_Write(YM2612, 0, 0x2A, &ch, &chValue);
-	YM2612_Write(YM2612, 1, 0x80, &ch, &chValue);
+	YM2612_Write(YM2612, 0, 0x2A);
+	YM2612_Write(YM2612, 1, 0x80);
 
 #if YM_DEBUG_LEVEL > 0
 	fprintf(debug_file, "\n\nFinishing reseting YM2612 ...\n\n");
@@ -2254,7 +2246,7 @@ int YM2612_Read(ym2612_* YM2612)
 }
 
 
-int YM2612_Write(ym2612_* YM2612, unsigned char adr, unsigned char data, UINT32* ch, UINT32* chValue)
+int YM2612_Write(ym2612_* YM2612, unsigned char adr, unsigned char data)
 {
 	int d;
 
@@ -2286,11 +2278,11 @@ int YM2612_Write(ym2612_* YM2612, unsigned char adr, unsigned char data, UINT32*
 
 			if (d < 0xA0)    // SLOT
 			{
-				SLOT_SET(YM2612, YM2612->OPNAadr, data, ch, chValue);
+				SLOT_SET(YM2612, YM2612->OPNAadr, data);
 			}
 			else        // CHANNEL
 			{
-				CHANNEL_SET(YM2612, YM2612->OPNAadr, data, ch, chValue);
+				CHANNEL_SET(YM2612, YM2612->OPNAadr, data);
 			}
 		}
 		else          // YM2612
@@ -2319,11 +2311,11 @@ int YM2612_Write(ym2612_* YM2612, unsigned char adr, unsigned char data, UINT32*
 
 			if (d < 0xA0)    // SLOT
 			{
-				SLOT_SET(YM2612, YM2612->OPNBadr + 0x100, data, ch, chValue);
+				SLOT_SET(YM2612, YM2612->OPNBadr + 0x100, data);
 			}
 			else        // CHANNEL
 			{
-				CHANNEL_SET(YM2612, YM2612->OPNBadr + 0x100, data, ch, chValue);
+				CHANNEL_SET(YM2612, YM2612->OPNBadr + 0x100, data);
 			}
 		}
 		else return 1;

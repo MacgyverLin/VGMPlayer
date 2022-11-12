@@ -227,7 +227,7 @@ void ym2612_shutdown(void* chip);
 void ym2612_reset_chip(void* chip);
 void ym2612_update_one(void* chip, FMSAMPLE** buffer, int length, WAVE_32BS** channeloutputs, int channelcount);
 
-int ym2612_write(void* chip, int a, unsigned char v, UINT32* ch, UINT32* chValue);
+int ym2612_write(void* chip, int a, unsigned char v);
 unsigned char ym2612_read(void* chip, int a);
 int ym2612_timer_over(void* chip, int c);
 void ym2612_postload(void* chip);
