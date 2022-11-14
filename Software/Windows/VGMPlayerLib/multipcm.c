@@ -477,6 +477,7 @@ void MultiPCM_update(UINT8 ChipID, stream_sample_t **outputs, int samples, WAVE_
 	memset(datap[0], 0, sizeof(*datap[0])*samples);
 	memset(datap[1], 0, sizeof(*datap[1])*samples);
 
+	assert(channelcount == 28);
 
 	for(i=0;i<samples;++i)
 	{
@@ -522,8 +523,17 @@ void MultiPCM_update(UINT8 ChipID, stream_sample_t **outputs, int samples, WAVE_
 
 				sample=(sample*EG_Update(slot))>>10;
 
-				smpl+=(LPANTABLE[vol]*sample)>>SHIFT;
-				smpr+=(RPANTABLE[vol]*sample)>>SHIFT;
+				channeloutputs[sl][i].Left = (LPANTABLE[vol] * sample) >> SHIFT;
+				channeloutputs[sl][i].Right = (RPANTABLE[vol] * sample) >> SHIFT;
+
+				smpl+= channeloutputs[sl][i].Left;
+				smpr+= channeloutputs[sl][i].Right;
+			}
+			else
+			{
+				channeloutputs[sl][i].Left = 0;
+				channeloutputs[sl][i].Right =0;
+
 			}
 		}
 /*#define ICLIP16(x) (x<-32768)?-32768:((x>32767)?32767:x)

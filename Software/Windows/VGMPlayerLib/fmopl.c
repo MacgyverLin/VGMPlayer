@@ -1425,10 +1425,14 @@ INLINE signed int OPL_CALC_RH(FM_OPL* OPL, OPL_CH* CH, unsigned int noise)
 			if (res2)
 				phase = 0x300;
 
-			OPL->output[0] += op_calc(phase << FREQ_SH, env, 0, SLOT8_2->wavetable) * 2;
+			signed int ch_out = 0;
+			ch_out = op_calc(phase << FREQ_SH, env, 0, SLOT8_2->wavetable) * 2;
+
+			OPL->output[0] += ch_out; 
+
+			return ch_out;
 		}
 	}
-
 
 	return 0;
 }
@@ -2903,22 +2907,22 @@ void y8950_update_one(void* chip, OPLSAMPLE** buffer, int length, WAVE_32BS** ch
 			YM_DELTAT_ADPCM_CALC(DELTAT);
 
 		/* FM part */
-		OPL_CALC_CH(OPL, &OPL->P_CH[0]);
-		OPL_CALC_CH(OPL, &OPL->P_CH[1]);
-		OPL_CALC_CH(OPL, &OPL->P_CH[2]);
-		OPL_CALC_CH(OPL, &OPL->P_CH[3]);
-		OPL_CALC_CH(OPL, &OPL->P_CH[4]);
-		OPL_CALC_CH(OPL, &OPL->P_CH[5]);
+		channeloutputs[0][i].Right = channeloutputs[0][i].Left = OPL_CALC_CH(OPL, &OPL->P_CH[0]) << 3;
+		channeloutputs[1][i].Right = channeloutputs[1][i].Left = OPL_CALC_CH(OPL, &OPL->P_CH[1]) << 3;
+		channeloutputs[2][i].Right = channeloutputs[2][i].Left = OPL_CALC_CH(OPL, &OPL->P_CH[2]) << 3;
+		channeloutputs[3][i].Right = channeloutputs[3][i].Left = OPL_CALC_CH(OPL, &OPL->P_CH[3]) << 3;
+		channeloutputs[4][i].Right = channeloutputs[4][i].Left = OPL_CALC_CH(OPL, &OPL->P_CH[4]) << 3;
+		channeloutputs[5][i].Right = channeloutputs[5][i].Left = OPL_CALC_CH(OPL, &OPL->P_CH[5]) << 3;
 
 		if (!rhythm)
 		{
-			OPL_CALC_CH(OPL, &OPL->P_CH[6]);
-			OPL_CALC_CH(OPL, &OPL->P_CH[7]);
-			OPL_CALC_CH(OPL, &OPL->P_CH[8]);
+			channeloutputs[6][i].Right = channeloutputs[6][i].Left = OPL_CALC_CH(OPL, &OPL->P_CH[6]) << 3;
+			channeloutputs[7][i].Right = channeloutputs[7][i].Left = OPL_CALC_CH(OPL, &OPL->P_CH[7]) << 3;
+			channeloutputs[8][i].Right = channeloutputs[8][i].Left = OPL_CALC_CH(OPL, &OPL->P_CH[8]) << 3;
 		}
 		else		/* Rhythm part */
 		{
-			OPL_CALC_RH(OPL, &OPL->P_CH[0], (OPL->noise_rng >> 0) & 1);
+			channeloutputs[0][i].Right = channeloutputs[0][i].Left = OPL_CALC_RH(OPL, &OPL->P_CH[0], (OPL->noise_rng >> 0) & 1) << 3;
 		}
 
 		lt = OPL->output[0] + (OPL->output_deltat[0] >> 11);

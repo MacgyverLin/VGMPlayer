@@ -3115,6 +3115,9 @@ void VGMData::ResampleChipStream(CA_LIST* CLst, WAVE_32BS* RetOutputSample, UINT
 	CurBufL = vgmInfo.StreamBufs[0x00];
 	CurBufR = vgmInfo.StreamBufs[0x01];
 
+	if (BaseChannelIdx + CAA->ChannelCount >= 32)
+		return;
+
 	// This Do-While-Loop gets and resamples the chip output of one or more chips.
 	// It's a loop to support the AY8910 paired with the YM2203/YM2608/YM2610.
 	do

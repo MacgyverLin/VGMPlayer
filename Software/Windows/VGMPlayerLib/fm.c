@@ -4207,24 +4207,35 @@ void ym2610b_update_one(void *chip, FMSAMPLE **buffer, int length, WAVE_32BS** c
 			rt += ((out_fm[4]>>1) & OPN->pan[9]);
 			lt += ((out_fm[5]>>1) & OPN->pan[10]);
 			rt += ((out_fm[5]>>1) & OPN->pan[11]);*/
-			lt =  (OPN->out_adpcm[OUTD_LEFT]  + OPN->out_adpcm[OUTD_CENTER]) << 1;
-			rt =  (OPN->out_adpcm[OUTD_RIGHT] + OPN->out_adpcm[OUTD_CENTER]) << 1;
-			lt += (OPN->out_delta[OUTD_LEFT]  + OPN->out_delta[OUTD_CENTER])>>8;
-			rt += (OPN->out_delta[OUTD_RIGHT] + OPN->out_delta[OUTD_CENTER])>>8;
 
-			lt += (out_fm[0] & OPN->pan[0]);
-			rt += (out_fm[0] & OPN->pan[1]);
-			lt += (out_fm[1] & OPN->pan[2]);
-			rt += (out_fm[1] & OPN->pan[3]);
-			lt += (out_fm[2] & OPN->pan[4]);
-			rt += (out_fm[2] & OPN->pan[5]);
-			lt += (out_fm[3] & OPN->pan[6]);
-			rt += (out_fm[3] & OPN->pan[7]);
-			lt += (out_fm[4] & OPN->pan[8]);
-			rt += (out_fm[4] & OPN->pan[9]);
-			lt += (out_fm[5] & OPN->pan[10]);
-			rt += (out_fm[5] & OPN->pan[11]);
 
+			lt = 0;
+			rt = 0;
+			for (int ch = 0; ch < channelcount; ch++)
+			{
+				if (ch >=6)
+				{
+					int l = ((OPN->out_adpcm[OUTD_LEFT] + OPN->out_adpcm[OUTD_CENTER]) << 1) + ((OPN->out_delta[OUTD_LEFT] + OPN->out_delta[OUTD_CENTER]) >> 8);
+					int r = ((OPN->out_adpcm[OUTD_RIGHT] + OPN->out_adpcm[OUTD_CENTER]) << 1) + ((OPN->out_delta[OUTD_RIGHT] + OPN->out_delta[OUTD_CENTER]) >> 8);
+
+					channeloutputs[ch][i].Left = l << 2;
+					channeloutputs[ch][i].Right = r << 2;
+					
+					lt += l;
+					rt += r;
+				}
+				else
+				{
+					int l = (out_fm[ch] & OPN->pan[(ch << 1) + 0]);
+					int r = (out_fm[ch] & OPN->pan[(ch<<1) + 1]);
+
+					channeloutputs[ch][i].Left = l << 2;
+					channeloutputs[ch][i].Right = r << 2;
+
+					lt += l;
+					rt += r;
+				}
+			}
 
 			lt >>= FINAL_SH;
 			rt >>= FINAL_SH;

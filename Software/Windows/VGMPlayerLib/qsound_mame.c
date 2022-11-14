@@ -370,6 +370,8 @@ void qsoundm_update(UINT8 ChipID, stream_sample_t **outputs, int samples, WAVE_3
 	if (! chip->sample_rom_length)
 		return;
 
+	assert(channelcount == QSOUND_CHANNELS);
+
 	for (i=0; i<QSOUND_CHANNELS; i++, pC++)
 	{
 		if (pC->enabled && ! pC->Muted)
@@ -377,7 +379,7 @@ void qsoundm_update(UINT8 ChipID, stream_sample_t **outputs, int samples, WAVE_3
 			QSOUND_SAMPLE *pOutL=outputs[0];
 			QSOUND_SAMPLE *pOutR=outputs[1];
 			
-			for (j=samples-1; j>=0; j--)
+			for (j=0; j< samples; j++)
 			{
 				advance = (pC->step_ptr >> 12);
 				pC->step_ptr &= 0xfff;
@@ -412,8 +414,12 @@ void qsoundm_update(UINT8 ChipID, stream_sample_t **outputs, int samples, WAVE_3
 				
 				offset = (pC->bank | pC->address) % chip->sample_rom_length;
 				sample = chip->sample_rom[offset];
-				*pOutL++ += ((sample * pC->lvol * pC->vol) >> 14);
-				*pOutR++ += ((sample * pC->rvol * pC->vol) >> 14);
+
+				channeloutputs[i][j].Left = ((sample * pC->lvol * pC->vol) >> 14);
+				channeloutputs[i][j].Right = ((sample * pC->rvol * pC->vol) >> 14);
+
+				*pOutL++ += channeloutputs[i][j].Left;
+				*pOutR++ += channeloutputs[i][j].Right;
 			}
 		}
 	}

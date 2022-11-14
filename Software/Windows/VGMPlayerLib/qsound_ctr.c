@@ -115,12 +115,12 @@ struct qsound_chip {
 
 static void init_pan_tables(struct qsound_chip *chip);
 static void init_register_map(struct qsound_chip *chip);
-static void update_sample(struct qsound_chip *chip);
+static void update_sample(struct qsound_chip *chip, int curSample, WAVE_32BS** channeloutputs, int channelcount);
 
-static void state_init(struct qsound_chip *chip);
-static void state_refresh_filter_1(struct qsound_chip *chip);
-static void state_refresh_filter_2(struct qsound_chip *chip);
-static void state_normal_update(struct qsound_chip *chip);
+static void state_init(struct qsound_chip *chip, WAVE_32BS** channeloutputs, int channelcount);
+static void state_refresh_filter_1(struct qsound_chip *chip, WAVE_32BS** channeloutputs, int channelcount);
+static void state_refresh_filter_2(struct qsound_chip *chip, WAVE_32BS** channeloutputs, int channelcount);
+static void state_normal_update(struct qsound_chip *chip, int curSmpl, WAVE_32BS** channeloutputs, int channelcount);
 
 INLINE INT16 get_sample(struct qsound_chip *chip, UINT16 bank,UINT16 address);
 INLINE const INT16* get_filter_table(struct qsound_chip *chip, UINT16 offset);
@@ -226,7 +226,7 @@ void qsoundc_update(UINT8 ChipID, stream_sample_t **outputs, int samples, WAVE_3
 	
 	for (curSmpl = 0; curSmpl < samples; curSmpl ++)
 	{
-		update_sample(chip);
+		update_sample(chip, curSmpl, channeloutputs, channelcount);
 		outputs[0][curSmpl] = chip->out[0];
 		outputs[1][curSmpl] = chip->out[1];
 	}
@@ -271,12 +271,12 @@ void qsoundc_wait_busy(UINT8 ChipID)
 	
 	while(chip->ready_flag == 0)
 	{
-		update_sample(chip);
+		update_sample(chip, 0, NULL, 0);
 	}
 }
 
 // ============================================================================
-
+ 
 static const INT16 qsound_dry_mix_table[33] = {
 	-16384,-16384,-16384,-16384,-16384,-16384,-16384,-16384,
 	-16384,-16384,-16384,-16384,-16384,-16384,-16384,-16384,
@@ -486,30 +486,30 @@ INLINE const INT16* get_filter_table(struct qsound_chip *chip, UINT16 offset)
 /********************************************************************/
 
 // updates one DSP sample
-static void update_sample(struct qsound_chip *chip)
+static void update_sample(struct qsound_chip *chip, int curSmpl, WAVE_32BS** channeloutputs, int channelcount)
 {
 	switch(chip->state)
 	{
 		default:
 		case STATE_INIT1:
 		case STATE_INIT2:
-			state_init(chip);
+			state_init(chip, channeloutputs, channelcount);
 			return;
 		case STATE_REFRESH1:
-			state_refresh_filter_1(chip);
+			state_refresh_filter_1(chip, channeloutputs, channelcount);
 			return;
 		case STATE_REFRESH2:
-			state_refresh_filter_2(chip);
+			state_refresh_filter_2(chip, channeloutputs, channelcount);
 			return;
 		case STATE_NORMAL1:
 		case STATE_NORMAL2:
-			state_normal_update(chip);
+			state_normal_update(chip, curSmpl, channeloutputs, channelcount);
 			return;
 	}
 }
 
 // Initialization routine
-static void state_init(struct qsound_chip *chip)
+static void state_init(struct qsound_chip *chip, WAVE_32BS** channeloutputs, int channelcount)
 {
 	int mode = (chip->state == STATE_INIT2) ? 1 : 0;
 	int i;
@@ -584,7 +584,7 @@ static void state_init(struct qsound_chip *chip)
 }
 
 // Updates filter parameters for mode 1
-static void state_refresh_filter_1(struct qsound_chip *chip)
+static void state_refresh_filter_1(struct qsound_chip *chip, WAVE_32BS** channeloutputs, int channelcount)
 {
 	const INT16 *table;
 	int ch;
@@ -603,7 +603,7 @@ static void state_refresh_filter_1(struct qsound_chip *chip)
 }
 
 // Updates filter parameters for mode 2
-static void state_refresh_filter_2(struct qsound_chip *chip)
+static void state_refresh_filter_2(struct qsound_chip *chip, WAVE_32BS** channeloutputs, int channelcount)
 {
 	const INT16 *table;
 	int ch;
@@ -740,7 +740,7 @@ INLINE INT16 echo(struct qsound_echo *r,INT32 input)
 }
 
 // Process a sample update
-static void state_normal_update(struct qsound_chip *chip)
+static void state_normal_update(struct qsound_chip *chip, int curSmpl, WAVE_32BS** channeloutputs, int channelcount)
 {
 	int v, ch;
 	INT32 echo_input = 0;
@@ -757,8 +757,16 @@ static void state_normal_update(struct qsound_chip *chip)
 	chip->echo.length = CLAMP(chip->echo.length, 0, 1024);
 	
 	// update PCM voices
-	for(v=0; v<16; v++)
+	for (v = 0; v < 16; v++)
+	{
 		chip->voice_output[v] = pcm_update(chip, v, &echo_input);
+
+		if (channeloutputs)
+		{
+			channeloutputs[v][curSmpl].Left = chip->voice_output[v]<<4;
+			channeloutputs[v][curSmpl].Right = chip->voice_output[v] << 4;
+		}
+	}
 
 	// update ADPCM voices (one every third sample)
 	adpcm_update(chip, chip->state_counter % 3, chip->state_counter / 3);

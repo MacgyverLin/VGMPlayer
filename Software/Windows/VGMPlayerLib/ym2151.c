@@ -1657,11 +1657,11 @@ void ym2151_reset_chip(void *_chip)
 	chip->csm_req	= 0;
 	chip->status    = 0;
 
-	ym2151_write_reg(chip, 0x1b, 0, NULL, NULL);	/* only because of CT1, CT2 output pins */
-	ym2151_write_reg(chip, 0x18, 0, NULL, NULL);	/* set LFO frequency */
+	ym2151_write_reg(chip, 0x1b, 0);	/* only because of CT1, CT2 output pins */
+	ym2151_write_reg(chip, 0x18, 0);	/* set LFO frequency */
 	for (i=0x20; i<0x100; i++)		/* set the operators */
 	{
-		ym2151_write_reg(chip, i, 0, NULL, NULL);
+		ym2151_write_reg(chip, i, 0);
 	}
 }
 
@@ -2401,7 +2401,7 @@ INLINE signed int acc_calc(signed int value)
 */
 void ym2151_update_one(void *chip, SAMP **buffers, int length, WAVE_32BS** channeloutputs, int channelcount)
 {
-	int i, j, chn;
+	int i, j;
 	signed int outl,outr;
 	SAMP *bufL, *bufR;
 
@@ -2452,7 +2452,7 @@ void ym2151_update_one(void *chip, SAMP **buffers, int length, WAVE_32BS** chann
 		SAVE_SINGLE_CHANNEL(3)
 		chan_calc(4);
 		SAVE_SINGLE_CHANNEL(4)
-		chan_calc(5);
+		chan_calc(5); 
 		SAVE_SINGLE_CHANNEL(5)
 		chan_calc(6);
 		SAVE_SINGLE_CHANNEL(6)
@@ -2463,8 +2463,8 @@ void ym2151_update_one(void *chip, SAMP **buffers, int length, WAVE_32BS** chann
 		{
 			WAVE_32BS* sample = (channeloutputs[j]);
 
-			sample[i].Left  = chanout[j] & PSG->pan[(j << 1) + 0];
-			sample[i].Right = chanout[j] & PSG->pan[(j << 1) + 1];
+			sample[i].Left  = (chanout[j] & PSG->pan[(j << 1) + 0]) << 2;
+			sample[i].Right = (chanout[j] & PSG->pan[(j << 1) + 1]) << 2;
 		}
 
 		outl = chanout[0] & PSG->pan[0];

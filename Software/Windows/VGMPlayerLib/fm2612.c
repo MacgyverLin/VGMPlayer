@@ -2377,13 +2377,13 @@ void ym2612_update_one(void *chip, FMSAMPLE **buffer, int length, WAVE_32BS** ch
 		{
 			if (F2612->dac_test && ch == 4)
 			{
-				channeloutputs[ch][i].Left = dacout;
-				channeloutputs[ch][i].Right = dacout;
+				channeloutputs[ch][i].Left = dacout << 2;
+				channeloutputs[ch][i].Right = dacout << 2;
 			}
 			else
 			{
-				channeloutputs[ch][i].Left = ((out_fm[ch] >> 0) & OPN->pan[(ch << 1) + 0]);
-				channeloutputs[ch][i].Right = ((out_fm[ch] >> 0) & OPN->pan[(ch << 1) + 1]);
+				channeloutputs[ch][i].Left = ((out_fm[ch] >> 0) & OPN->pan[(ch << 1) + 0]) << 2;
+				channeloutputs[ch][i].Right = ((out_fm[ch] >> 0) & OPN->pan[(ch << 1) + 1]) << 2;
 			}
 		}
 

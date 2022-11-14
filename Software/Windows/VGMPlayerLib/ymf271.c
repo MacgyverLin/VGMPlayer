@@ -565,7 +565,7 @@ INLINE int calculate_slot_volume(YMF271Chip *chip, YMF271Slot *slot)
 	return volume;
 }
 
-static void update_pcm(YMF271Chip *chip, int slotnum, INT32 *mixp, int length)
+static void update_pcm(YMF271Chip *chip, int slotnum, INT32 *mixp, int length, WAVE_32BS** channeloutputs, int channelcount)
 {
 	int i;
 	INT64 final_volume;
@@ -633,8 +633,14 @@ static void update_pcm(YMF271Chip *chip, int slotnum, INT32 *mixp, int length)
 		if (ch0_vol > 65536) ch0_vol = 65536;
 		if (ch1_vol > 65536) ch1_vol = 65536;
 
-		*mixp++ += (sample * ch0_vol) >> 16;
-		*mixp++ += (sample * ch1_vol) >> 16;
+		int l = sample * ch0_vol;
+		int r = sample * ch1_vol;
+
+		channeloutputs[0][i].Left  = l >> 16;
+		channeloutputs[0][i].Right = r >> 16;
+
+		*mixp++ += l >> 16;
+		*mixp++ += r >> 16;
 
 		// go to next step
 		slot->stepptr += slot->step;
@@ -687,6 +693,7 @@ void ymf271_update(UINT8 ChipID, stream_sample_t **outputs, int samples, WAVE_32
 
 	memset(chip->mix_buffer, 0, sizeof(chip->mix_buffer[0])*samples*2);
 
+	assert(channelcount == 12);
 	for (j = 0; j < 12; j++)
 	{
 		YMF271Group *slot_group = &chip->groups[j];
@@ -918,14 +925,28 @@ void ymf271_update(UINT8 ChipID, stream_sample_t **outputs, int samples, WAVE_32
 								break;
 						}
 
-						*mixp++ += ((output1 * chip->lut_attenuation[chip->slots[slot1].ch0_level]) +
-									(output2 * chip->lut_attenuation[chip->slots[slot2].ch0_level]) +
-									(output3 * chip->lut_attenuation[chip->slots[slot3].ch0_level]) +
-									(output4 * chip->lut_attenuation[chip->slots[slot4].ch0_level])) >> 16;
-						*mixp++ += ((output1 * chip->lut_attenuation[chip->slots[slot1].ch1_level]) +
-									(output2 * chip->lut_attenuation[chip->slots[slot2].ch1_level]) +
-									(output3 * chip->lut_attenuation[chip->slots[slot3].ch1_level]) +
-									(output4 * chip->lut_attenuation[chip->slots[slot4].ch1_level])) >> 16;
+						int l0 = (output1 * chip->lut_attenuation[chip->slots[slot1].ch0_level]);
+						int l1 = (output2 * chip->lut_attenuation[chip->slots[slot2].ch0_level]);
+						int l2 = (output3 * chip->lut_attenuation[chip->slots[slot3].ch0_level]);
+						int l3 = (output4 * chip->lut_attenuation[chip->slots[slot4].ch0_level]);
+
+						int r0 = (output1 * chip->lut_attenuation[chip->slots[slot1].ch1_level]);
+						int r1 = (output2 * chip->lut_attenuation[chip->slots[slot2].ch1_level]);
+						int r2 = (output3 * chip->lut_attenuation[chip->slots[slot3].ch1_level]);
+						int r3 = (output4 * chip->lut_attenuation[chip->slots[slot4].ch1_level]);
+
+						channeloutputs[0][i].Left = l0 >> 16;
+						channeloutputs[1][i].Left = l1 >> 16;
+						channeloutputs[2][i].Left = l2 >> 16;
+						channeloutputs[3][i].Left = l3 >> 16;
+
+						channeloutputs[0][i].Right = r0 >> 16;
+						channeloutputs[1][i].Right = r1 >> 16;
+						channeloutputs[2][i].Right = r2 >> 16;
+						channeloutputs[3][i].Right = r3 >> 16;
+
+						*mixp++ = (l0 + l1 + l2 + l3) >> 16;
+						*mixp++ = (r0 + r1 + r2 + r3) >> 16;
 					}
 				}
 				break;
@@ -985,10 +1006,23 @@ void ymf271_update(UINT8 ChipID, stream_sample_t **outputs, int samples, WAVE_32
 									break;
 							}
 
-							*mixp++ += ((output1 * chip->lut_attenuation[chip->slots[slot1].ch0_level]) +
-										(output3 * chip->lut_attenuation[chip->slots[slot3].ch0_level])) >> 16;
-							*mixp++ += ((output1 * chip->lut_attenuation[chip->slots[slot1].ch1_level]) +
-										(output3 * chip->lut_attenuation[chip->slots[slot3].ch1_level])) >> 16;
+							// *mixp++ += ((output1 * chip->lut_attenuation[chip->slots[slot1].ch0_level]) +
+							// 			(output3 * chip->lut_attenuation[chip->slots[slot3].ch0_level])) >> 16;
+							// *mixp++ += ((output1 * chip->lut_attenuation[chip->slots[slot1].ch1_level]) +
+								// 		(output3 * chip->lut_attenuation[chip->slots[slot3].ch1_level])) >> 16;
+
+							int l0 = (output1 * chip->lut_attenuation[chip->slots[slot1].ch0_level]);
+							int l1 = (output3 * chip->lut_attenuation[chip->slots[slot3].ch0_level]);
+							int r0 = (output1 * chip->lut_attenuation[chip->slots[slot1].ch1_level]);
+							int r1 = (output3 * chip->lut_attenuation[chip->slots[slot3].ch1_level]);
+
+							channeloutputs[(op << 1) + 0][i].Left = l0 >> 16;
+							channeloutputs[(op << 1) + 1][i].Left = l1 >> 16;
+							channeloutputs[(op << 1) + 0][i].Right = r0 >> 16;
+							channeloutputs[(op << 1) + 1][i].Right = r1 >> 16;
+
+							*mixp++ = (l0 + l1) >> 16;
+							*mixp++ = (r0 + r1) >> 16;
 						}
 					}
 				}
@@ -1095,27 +1129,46 @@ void ymf271_update(UINT8 ChipID, stream_sample_t **outputs, int samples, WAVE_32
 								break;
 						}
 
+						/*
 						*mixp++ += ((output1 * chip->lut_attenuation[chip->slots[slot1].ch0_level]) +
 									(output2 * chip->lut_attenuation[chip->slots[slot2].ch0_level]) +
 									(output3 * chip->lut_attenuation[chip->slots[slot3].ch0_level])) >> 16;
 						*mixp++ += ((output1 * chip->lut_attenuation[chip->slots[slot1].ch1_level]) +
 									(output2 * chip->lut_attenuation[chip->slots[slot2].ch1_level]) +
 									(output3 * chip->lut_attenuation[chip->slots[slot3].ch1_level])) >> 16;
+						*/
+						int l0 = (output1 * chip->lut_attenuation[chip->slots[slot1].ch0_level]);
+						int l1 = (output2 * chip->lut_attenuation[chip->slots[slot2].ch0_level]);
+						int l2 = (output3 * chip->lut_attenuation[chip->slots[slot3].ch0_level]);
+						int r0 = (output1 * chip->lut_attenuation[chip->slots[slot1].ch1_level]);
+						int r1 = (output2 * chip->lut_attenuation[chip->slots[slot2].ch1_level]);
+						int r2 = (output3 * chip->lut_attenuation[chip->slots[slot3].ch1_level]);
+
+						channeloutputs[0][i].Left = l0 >> 16;
+						channeloutputs[1][i].Left = l1 >> 16;
+						channeloutputs[2][i].Left = l2 >> 16;
+
+						channeloutputs[0][i].Right = r0 >> 16;
+						channeloutputs[1][i].Right = r1 >> 16;
+						channeloutputs[2][i].Right = r1 >> 16;
+
+						*mixp++ = (l0 + l1) >> 16;
+						*mixp++ = (r0 + r1) >> 16;
 					}
 				}
 
 				mixp = chip->mix_buffer;
-				update_pcm(chip, j + (3*12), mixp, samples);
+				update_pcm(chip, j + (3*12), mixp, samples, &channeloutputs[3], channelcount);
 				break;
 			}
 
 			// PCM
 			case 3:
 			{
-				update_pcm(chip, j + (0*12), mixp, samples);
-				update_pcm(chip, j + (1*12), mixp, samples);
-				update_pcm(chip, j + (2*12), mixp, samples);
-				update_pcm(chip, j + (3*12), mixp, samples);
+				update_pcm(chip, j + (0*12), mixp, samples, &channeloutputs[0], channelcount);
+				update_pcm(chip, j + (1*12), mixp, samples, &channeloutputs[1], channelcount);
+				update_pcm(chip, j + (2*12), mixp, samples, &channeloutputs[2], channelcount);
+				update_pcm(chip, j + (3*12), mixp, samples, &channeloutputs[3], channelcount);
 				break;
 			}
 		}
