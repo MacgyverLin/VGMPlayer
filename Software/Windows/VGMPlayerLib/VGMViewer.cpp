@@ -1,6 +1,7 @@
 #include "VGMViewer.h"
 #include "FFT.h"
 
+/*
 Rect GetRegion4(int width, int height)
 {
 	return Rect(0, height / 4 * 3.0f, width, height / 4 * 1.0f);
@@ -25,6 +26,33 @@ Rect GetRegion0(int width, int height)
 {
 	return Rect(0, height / 4 * 0.0f, width, height / 4 * 1.0f);
 }
+*/
+
+Rect GetRegion4(int width, int height)
+{
+	return Rect(0, height / 4 * 2.5f, width, height / 4 * 1.5f);
+}
+
+Rect GetRegion3(int width, int height)
+{
+	return Rect(0, height / 4 * 2.0f, width, height / 4 * 0.5f);
+}
+
+Rect GetRegion2(int width, int height)
+{
+	return Rect(0, height / 4 * 1.0f, width, height / 4 * 1.0f);
+}
+
+Rect GetRegion1(int width, int height)
+{
+	return Rect(0, height / 4 * 0.5f, width, height / 4 * 0.5f);
+}
+
+Rect GetRegion0(int width, int height)
+{
+	return Rect(0, height / 4 * 0.0f, width, height / 4 * 0.5f);
+}
+
 
 VGMViewer::VGMViewer(const string& name_, UINT32 x_, UINT32 y_, UINT32 width_, UINT32 height_)
 	: VGMObverser()
@@ -161,13 +189,12 @@ void VGMViewer::OnNotifyResume(Obserable& observable)
 	vgmMultiChannelNoteRenderer.OnNotifyResume(observable);
 }
 
-void VGMViewer::OnNotifyUpdate(Obserable& observable, bool needUpdateSample)
+void VGMViewer::OnNotifyUpdate(Obserable& observable)
 {
 	VGMData& vgmData = (VGMData&)observable;
 	const VGMInfo& vgmInfo = vgmData.GetInfo();
 	
-
-	if (needUpdateSample)
+	if (vgmData.RequireFillBuffer())
 	{
 		videoDevice.MakeCurrent();
 		videoDevice.ClearColor(Color(0.0, 0.0, 0.0, 1.0));

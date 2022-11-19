@@ -50,7 +50,9 @@ void nes_stream_update(UINT8 ChipID, stream_sample_t **outputs, int samples, WAV
 	nes_state *info = &NESAPUData[ChipID];
 	int CurSmpl;
 	INT32 Buffer[4];
-	
+
+	WAVE_32BS ChannelBuffer[6];
+
 	switch(EMU_CORE)
 	{
 #ifdef ENABLE_ALL_CORES
@@ -61,10 +63,17 @@ void nes_stream_update(UINT8 ChipID, stream_sample_t **outputs, int samples, WAV
 	case EC_NSFPLAY:
 		for (CurSmpl = 0x00; CurSmpl < samples; CurSmpl ++)
 		{
-			NES_APU_np_Render(info->chip_apu, &Buffer[0], channeloutputs, channelcount);
-			NES_DMC_np_Render(info->chip_dmc, &Buffer[2], channeloutputs, channelcount);
+			NES_APU_np_Render(info->chip_apu, &Buffer[0], &ChannelBuffer[0]);
+			NES_DMC_np_Render(info->chip_dmc, &Buffer[2], &ChannelBuffer[2]);
+			
 			outputs[0][CurSmpl] = Buffer[0] + Buffer[2];
 			outputs[1][CurSmpl] = Buffer[1] + Buffer[3];
+
+			channeloutputs[0][CurSmpl] = ChannelBuffer[0];
+			channeloutputs[1][CurSmpl] = ChannelBuffer[1];
+			channeloutputs[2][CurSmpl] = ChannelBuffer[2];
+			channeloutputs[3][CurSmpl] = ChannelBuffer[3];
+			channeloutputs[4][CurSmpl] = ChannelBuffer[4];
 		}
 		break;
 	}
@@ -73,9 +82,11 @@ void nes_stream_update(UINT8 ChipID, stream_sample_t **outputs, int samples, WAV
 	{
 		for (CurSmpl = 0x00; CurSmpl < samples; CurSmpl ++)
 		{
-			NES_FDS_Render(info->chip_fds, &Buffer[0], channeloutputs, channelcount);
+			NES_FDS_Render(info->chip_fds, &Buffer[0], &ChannelBuffer[5]);
 			outputs[0][CurSmpl] += Buffer[0];
 			outputs[1][CurSmpl] += Buffer[1];
+
+			channeloutputs[5][CurSmpl] = ChannelBuffer[5];
 		}
 	}
 	

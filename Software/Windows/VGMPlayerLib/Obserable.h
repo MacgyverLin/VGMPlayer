@@ -22,7 +22,7 @@ protected:
 	void NotifyStop();
 	void NotifyPause();
 	void NotifyResume();
-	void NotifyUpdate(bool needUpdateSample);
+	void NotifyUpdate();
 private:
 	list<Observer *> observers;
 };

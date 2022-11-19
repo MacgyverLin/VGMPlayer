@@ -380,7 +380,7 @@ static void Tick(NES_FDS* fds, UINT32 clocks)
 	fds->last_vol = vol_out;
 }
 
-UINT32 NES_FDS_Render(void* chip, INT32 b[2], WAVE_32BS** channeloutputs, UINT32 channelcount)
+UINT32 NES_FDS_Render(void* chip, INT32 b[2], WAVE_32BS* ChannelBuffer)
 {
 	NES_FDS* fds = (NES_FDS*)chip;
 
@@ -412,6 +412,9 @@ UINT32 NES_FDS_Render(void* chip, INT32 b[2], WAVE_32BS** channeloutputs, UINT32
 	m = fds->mask ? 0 : v;
 	b[0] = (m * fds->sm[0]) >> (7-2);
 	b[1] = (m * fds->sm[1]) >> (7-2);
+
+	ChannelBuffer[0].Left = (m * fds->sm[0]) >> (4);
+	ChannelBuffer[0].Right = (m * fds->sm[1]) >> (4);
 	return 2;
 }
 

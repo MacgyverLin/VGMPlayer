@@ -418,6 +418,8 @@ public:
 		this->bitPerSamples = bitPerSample_;
 
 		SampleRate = sampleRate_;
+
+		requireFillBuffer = true;
 	}
 
 	~VGMInfo()
@@ -494,6 +496,7 @@ public:
 	string texturePath;
 	INT32 channels;
 	INT32 bitPerSamples;
+	bool requireFillBuffer;
 
 	vector<WAVE_32BS*> ChannelBuffers;
 	vector<WAVE_32BS*> OutputChannelBuffers;
@@ -684,10 +687,13 @@ public:
 	void Resume();
 	boolean IsPaused();
 
-	boolean Update(bool needUpdateSample);
+	boolean Update();
 
 	const VGMInfo& GetInfo() const;
 	void ClearCommand(float time);
+
+	void SetRequireFillBuffer(bool requireFillBuffer);
+	bool RequireFillBuffer() const;
 private:
 protected:
 private:

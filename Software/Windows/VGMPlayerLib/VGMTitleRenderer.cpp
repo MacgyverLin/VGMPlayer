@@ -70,10 +70,20 @@ void VGMTitleRenderer::OnNotifyUpdate(Obserable& observable)
 	VGMData& vgmData = (VGMData&)observable;
 	const VGMInfo& vgmInfo = vgmData.GetInfo();
 	
-
-	float scaleY = (((float)region.h / texture.GetHeight()));
-	float texWidth = scaleY * texture.GetWidth();
-	float texHeight = region.h;
+	float texWidth;
+	float texHeight;
+	if (texture.GetHeight() > texture.GetWidth())
+	{
+		float scale = (((float)region.h / texture.GetHeight()));
+		texWidth = scale * texture.GetWidth();
+		texHeight = region.h;
+	}
+	else
+	{
+		float scale = (((float)region.w / texture.GetWidth()));
+		texHeight = scale * texture.GetHeight();
+		texWidth = region.w;
+	}
 
 	float x0 = (region.w - texWidth) / 2.0f;
 	float y0 = (region.h - texHeight) / 2.0f;

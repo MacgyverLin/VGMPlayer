@@ -447,7 +447,7 @@ static void Tick(NES_DMC* dmc, UINT32 clocks)
 	dmc->out[2] = calc_dmc(dmc, clocks);
 }
 
-UINT32 NES_DMC_np_Render(void* chip, INT32 b[2], WAVE_32BS** channeloutputs, int channelcount)
+UINT32 NES_DMC_np_Render(void* chip, INT32 b[2], WAVE_32BS* channelBuffer)
 {
 	NES_DMC* dmc = (NES_DMC*)chip;
 	UINT32 clocks;
@@ -509,14 +509,22 @@ UINT32 NES_DMC_np_Render(void* chip, INT32 b[2], WAVE_32BS** channeloutputs, int
 		else if (dmc->dmc_pop_offset < 0) ++dmc->dmc_pop_offset;
 	}
 
-	b[0]  = m[0] * dmc->sm[0][0];
-	b[0] += m[1] * dmc->sm[0][1];
-	b[0] +=-m[2] * dmc->sm[0][2];
+	
+	channelBuffer[0].Left = m[0] * dmc->sm[0][0] >> (4);
+	channelBuffer[1].Left = m[1] * dmc->sm[0][1] >> (4);
+	channelBuffer[2].Left = m[2] * dmc->sm[0][2] >> (5);
+	channelBuffer[0].Right = m[0] * dmc->sm[1][0] >> (4);
+	channelBuffer[1].Right = m[1] * dmc->sm[1][1] >> (4);
+	channelBuffer[2].Right = m[2] * dmc->sm[1][2] >> (5);
+
+	b[0]  =  m[0] * dmc->sm[0][0];
+	b[0] +=  m[1] * dmc->sm[0][1];
+	b[0] += -m[2] * dmc->sm[0][2];
 	b[0] >>= 7-2;
 
-	b[1]  = m[0] * dmc->sm[1][0];
-	b[1] += m[1] * dmc->sm[1][1];
-	b[1] +=-m[2] * dmc->sm[1][2];
+	b[1]  =  m[0] * dmc->sm[1][0];
+	b[1] +=  m[1] * dmc->sm[1][1];
+	b[1] += -m[2] * dmc->sm[1][2];
 	b[1] >>= 7-2;
 
 	return 2;
@@ -666,7 +674,6 @@ void NES_DMC_np_SetOption(void* chip, int id, int val)
 
 	if(id<OPT_END)
 	{
-		dmc->option[id] = val;
 		if(id==OPT_NONLINEAR_MIXER)
 			InitializeTNDTable(dmc, 8227,12241,22638);
 	}

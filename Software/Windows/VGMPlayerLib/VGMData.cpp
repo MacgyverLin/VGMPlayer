@@ -223,18 +223,18 @@ boolean VGMData::IsPaused()
 	return vgmInfo.PausePlay;
 }
 
-boolean VGMData::Update(bool needUpdateSample)
+boolean VGMData::Update()
 {
 	assert(impl);
 	VGMInfo& vgmInfo = impl->vgmInfo;
 
-	if (needUpdateSample)
+	NotifyUpdate();
+
+	if (RequireFillBuffer())
 	{
 		FillBuffer(VGM_SAMPLE_BUFFER_SIZE, true);
+	
 	}
-
-	NotifyUpdate(needUpdateSample);
-
 	return TRUE;
 }
 
@@ -246,14 +246,21 @@ const VGMInfo& VGMData::GetInfo() const
 	return impl->vgmInfo;
 }
 
-const UINT8 CHN_COUNT[CHIP_COUNT] =
-{ 0x04, 0x09, 0x06, 0x08, 0x10, 0x08, 0x03, 0x00,
-	0x00, 0x09, 0x09, 0x09, 0x12, 0x00, 0x0C, 0x08,
-	0x08, 0x00, 0x03, 0x04, 0x05, 0x1C, 0x00, 0x00,
-	0x04, 0x05, 0x08, 0x08, 0x18, 0x04, 0x04, 0x10,
-	0x20, 0x04, 0x06, 0x06, 0x20, 0x20, 0x10, 0x20,
-	0x04
-};
+void VGMData::SetRequireFillBuffer(bool requireFillBuffer)
+{
+	assert(impl);
+	VGMInfo& vgmInfo = impl->vgmInfo;
+
+	vgmInfo.requireFillBuffer = requireFillBuffer;
+}
+
+bool VGMData::RequireFillBuffer() const
+{
+	assert(impl);
+	VGMInfo& vgmInfo = impl->vgmInfo;
+
+	return vgmInfo.requireFillBuffer;
+}
 
 void VGMData::VGMPlay_Init(void)
 {
@@ -307,7 +314,7 @@ void VGMData::VGMPlay_Init(void)
 			TempCOpt->Disabled = false;
 			TempCOpt->EmuCore = 0x00;
 			TempCOpt->SpecialFlags = 0x00;
-			TempCOpt->ChnCnt = CHN_COUNT[CurChip]; // 0x00;
+			TempCOpt->ChnCnt =  0x00;
 			TempCOpt->ChnMute1 = 0x00;
 			TempCOpt->ChnMute2 = 0x00;
 			TempCOpt->ChnMute3 = 0x00;

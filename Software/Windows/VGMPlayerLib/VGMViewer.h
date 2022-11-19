@@ -28,7 +28,7 @@ protected:
 	virtual void OnNotifyStop(Obserable& vgmData);
 	virtual void OnNotifyPause(Obserable& vgmData);
 	virtual void OnNotifyResume(Obserable& vgmData);
-	virtual void OnNotifyUpdate(Obserable& vgmData, bool needUpdateSample);
+	virtual void OnNotifyUpdate(Obserable& vgmData);
 private:
 public:
 protected:

@@ -74,10 +74,10 @@ void Obserable::NotifyResume()
 	}
 }
 
-void Obserable::NotifyUpdate(bool needUpdateSample)
+void Obserable::NotifyUpdate()
 {
 	for (auto& observer : observers)
 	{
-		observer->OnNotifyUpdate(*this, needUpdateSample);
+		observer->OnNotifyUpdate(*this);
 	}
 }

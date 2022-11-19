@@ -57,12 +57,13 @@ void VGMAudioPlayer::OnNotifyResume(Obserable& observable)
 	VGMData& vgmData = (VGMData&)observable;
 }
 
-void VGMAudioPlayer::OnNotifyUpdate(Obserable& observable, bool needUpdateSample)
+void VGMAudioPlayer::OnNotifyUpdate(Obserable& observable)
 {
 	VGMData& vgmData = (VGMData&)observable;
 	const VGMInfo& vgmInfo = vgmData.GetInfo();
-	
-	if (needUpdateSample)
+
+	vgmData.SetRequireFillBuffer((outputDevice.GetQueued() < VGM_OUTPUT_BUFFER_COUNT - 1));
+	if (vgmData.RequireFillBuffer())
 	{
 		if (!outputDevice.Queue(vgmInfo.GetOutputBufferPtr(), VGM_SAMPLE_BUFFER_SIZE * (sizeof(WAVE_16BS))))
 			return;
@@ -70,9 +71,6 @@ void VGMAudioPlayer::OnNotifyUpdate(Obserable& observable, bool needUpdateSample
 		if (outputDevice.GetDeviceState() != 3)
 		{
 			outputDevice.Play();
-
-			//outputDevice.setVolume(1.0);
-			//outputDevice.setPlayRate(1.0);
 		}
 	}
 
