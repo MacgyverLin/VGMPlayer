@@ -343,8 +343,8 @@ void k054539_update(UINT8 ChipID, stream_sample_t** outputs, int samples, WAVE_3
 					break;
 				}
 
-				channeloutputs[ch][i].Left = (cur_val * lvol) * 8;
-				channeloutputs[ch][i].Right = (cur_val * rvol) * 8;
+				channeloutputs[ch][i].Left = ((INT32)(cur_val * lvol)) <<2;
+				channeloutputs[ch][i].Right = ((INT32)(cur_val * rvol)) <<2;
 
 				lval += cur_val * lvol;
 				rval += cur_val * rvol;

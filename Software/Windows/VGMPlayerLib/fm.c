@@ -3940,7 +3940,7 @@ void ym2610_update_one(void *chip, FMSAMPLE **buffer, int length, WAVE_32BS** ch
 	YM2610 *F2610 = (YM2610 *)chip;
 	FM_OPN *OPN   = &F2610->OPN;
 	YM_DELTAT *DELTAT = &F2610->deltaT;
-	int i,j;
+	int i,j, k;
 	FMSAMPLE  *bufL,*bufR;
 	FM_CH	*cch[4];
 	INT32 *out_fm = OPN->out_fm;
@@ -4053,22 +4053,28 @@ void ym2610_update_one(void *chip, FMSAMPLE **buffer, int length, WAVE_32BS** ch
 			lt += ((out_fm[5]>>1) & OPN->pan[10]);
 			rt += ((out_fm[5]>>1) & OPN->pan[11]);*/
 
-			lt =  (OPN->out_adpcm[OUTD_LEFT]  + OPN->out_adpcm[OUTD_CENTER]) << 1;
-			rt =  (OPN->out_adpcm[OUTD_RIGHT] + OPN->out_adpcm[OUTD_CENTER]) << 1;
-			lt += (OPN->out_delta[OUTD_LEFT]  + OPN->out_delta[OUTD_CENTER])>>8;
-			rt += (OPN->out_delta[OUTD_RIGHT] + OPN->out_delta[OUTD_CENTER])>>8;
+
+			channeloutputs[0][i].Left = (out_fm[1] & OPN->pan[2]) << 2;
+			channeloutputs[0][i].Right = (out_fm[1] & OPN->pan[3]) << 2;
+			channeloutputs[1][i].Left = (out_fm[2] & OPN->pan[4]) << 2;
+			channeloutputs[1][i].Right = (out_fm[2] & OPN->pan[5]) << 2;
+			channeloutputs[2][i].Left = (out_fm[4] & OPN->pan[8]) << 2;
+			channeloutputs[2][i].Right = (out_fm[4] & OPN->pan[9]) << 2;
+			channeloutputs[3][i].Left = (out_fm[5] & OPN->pan[10]) << 2;
+			channeloutputs[3][i].Right = (out_fm[5] & OPN->pan[11]) << 2;
+			channeloutputs[4][i].Left = ((OPN->out_adpcm[OUTD_LEFT] + OPN->out_adpcm[OUTD_CENTER]) << 1) << 2;
+			channeloutputs[4][i].Right = ((OPN->out_adpcm[OUTD_RIGHT] + OPN->out_adpcm[OUTD_CENTER]) << 1) << 2;
+			channeloutputs[5][i].Left = ((OPN->out_delta[OUTD_LEFT] + OPN->out_delta[OUTD_CENTER]) >> 8) << 2;
+			channeloutputs[5][i].Right = ((OPN->out_delta[OUTD_RIGHT] + OPN->out_delta[OUTD_CENTER]) >> 8) << 2;
 
 
-			lt += (out_fm[1] & OPN->pan[2]);
-			rt += (out_fm[1] & OPN->pan[3]);
-			lt += (out_fm[2] & OPN->pan[4]);
-			rt += (out_fm[2] & OPN->pan[5]);
-
-			lt += (out_fm[4] & OPN->pan[8]);
-			rt += (out_fm[4] & OPN->pan[9]);
-			lt += (out_fm[5] & OPN->pan[10]);
-			rt += (out_fm[5] & OPN->pan[11]);
-
+			lt = 0;
+			rt = 0;
+			for (k = 0; k < 6; k++)
+			{
+				lt += channeloutputs[k][i].Left >> 3;
+				rt += channeloutputs[k][i].Right >> 3;
+			}
 
 			lt >>= FINAL_SH;
 			rt >>= FINAL_SH;

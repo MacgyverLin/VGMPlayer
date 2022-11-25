@@ -184,7 +184,6 @@ void c352_update(UINT8 ChipID, stream_sample_t **outputs, int samples, WAVE_32BS
 
         for(j=0;j<C352_VOICES;j++)
         {
-
             v = &c->v[j];
             s = 0;
 
@@ -214,8 +213,12 @@ void c352_update(UINT8 ChipID, stream_sample_t **outputs, int samples, WAVE_32BS
                     s = v->last_sample + (v->counter*(v->sample-v->last_sample)>>16);
             }
 
+
             if(!c->v[j].mute)
             {
+                channeloutputs[j][i].Left = (((v->flags & C352_FLG_PHASEFL) ? -s : s) * v->curr_vol[0]) >> 6;
+                channeloutputs[j][i].Right = (((v->flags & C352_FLG_PHASEFL) ? -s : s) * v->curr_vol[1]) >> 6;
+
                 // Left
                 out[0] += (((v->flags & C352_FLG_PHASEFL) ? -s : s) * v->curr_vol[0])>>8;
                 out[2] += (((v->flags & C352_FLG_PHASERL) ? -s : s) * v->curr_vol[2])>>8;

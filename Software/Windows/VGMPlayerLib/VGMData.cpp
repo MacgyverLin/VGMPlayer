@@ -3122,7 +3122,7 @@ void VGMData::ResampleChipStream(CA_LIST* CLst, WAVE_32BS* RetOutputSample, UINT
 	CurBufL = vgmInfo.StreamBufs[0x00];
 	CurBufR = vgmInfo.StreamBufs[0x01];
 
-	if (BaseChannelIdx + CAA->ChannelCount >= 32)
+	if (BaseChannelIdx + CAA->ChannelCount > 32)
 		return;
 
 	// This Do-While-Loop gets and resamples the chip output of one or more chips.
@@ -3710,7 +3710,7 @@ void VGMData::Chips_GeneralActions(UINT8 Mode)
 
 				ChipClk = GetChipClock(&vgmInfo.VGMHead, (CurChip << 7) | CAA->ChipType, NULL);
 
-				CAA->ChannelCount = (ChipClk & 0x80000000) ? 6 : 4;
+				CAA->ChannelCount = 6;// (ChipClk & 0x80000000) ? 6 : 4;
 				CAA->Paired->ChannelCount = 6;
 
 				CAA->SmpRate = device_start_ym2610(CurChip, ChipClk, COpt->SpecialFlags & 0x01,
